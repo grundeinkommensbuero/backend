@@ -1,0 +1,139 @@
+const randomBytes = require("crypto").randomBytes;
+
+const AWS = require("aws-sdk");
+
+const ddb = new AWS.DynamoDB.DocumentClient();
+
+exports.handler = async event => {
+  const tableName = process.env.TABLE_NAME;
+
+  try {
+    const requestBody = JSON.parse(event.body);
+
+    //check if there is a user with the passed user id
+    try {
+      const date = new Date();
+      const timestamp = date.toISOString();
+      console.log("request body", requestBody);
+      if (!validateParams(requestBody)) {
+        return errorResponse(400, "One or more parameters are missing", null);
+      }
+
+      const userId = requestBody.userId;
+      const user = await getUser(tableName, requestBody.userId);
+      console.log("user", user);
+      //if user does not have Item as property, there was no user found
+      if (user.Item === undefined) {
+        return errorResponse(
+          400,
+          "No user found with the passed user id",
+          null
+        );
+      }
+
+      try {
+        await savePledge(tableName, userId, timestamp, requestBody);
+        //saving pledge was successfull, return appropriate json
+        return {
+          statusCode: 204,
+          headers: {
+            "Access-Control-Allow-Origin": "*"
+          },
+          isBase64Encoded: false
+        };
+      } catch (error) {
+        return errorResponse(500, "Error saving pledge", error);
+      }
+    } catch (error) {
+      return errorResponse(
+        500,
+        "Error while getting user from users table",
+        error
+      );
+    }
+  } catch (error) {
+    return errorResponse(400, "JSON Parsing was not successful", error);
+  }
+};
+
+const savePledge = (tableName, userId, timestamp, requestBody) => {
+  const data = {
+    ":engagementLevel": requestBody.engagementLevel,
+    ":groupMeetings": requestBody.groupMeetings,
+    ":financialAid": requestBody.financialAid,
+    ":zipCode": requestBody.zipCode,
+    ":eligible": requestBody.eligible,
+    ":createdAt": timestamp,
+    ":username": requestBody.name,
+    ":customOption":
+      requestBody.customOption !== undefined ? requestBody.customOption : null
+  };
+
+  return ddb
+    .update({
+      TableName: tableName,
+      Key: { cognitoId: userId },
+      UpdateExpression: `set pledge.engagementLevel = :engagementLevel, 
+      pledge.groupMeetings = :groupMeetings, 
+      pledge.financialAid = :financialAid,
+      pledge.customOption = :customOption,
+      zipCode = :zipCode,
+      eligible = :eligible,
+      username = :username,
+      createdAt = :createdAt`,
+      ExpressionAttributeValues: data,
+      ReturnValues: "UPDATED_NEW"
+    })
+    .promise();
+};
+
+const toUrlString = buffer => {
+  return buffer
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
+};
+
+const validateParams = requestBody => {
+  return (
+    requestBody.userId !== undefined &&
+    requestBody.engagementLevel !== undefined &&
+    requestBody.financialAid !== undefined &&
+    requestBody.zipCode !== undefined &&
+    requestBody.eligible !== undefined
+  );
+};
+
+const getUser = (tableName, userId) => {
+  return ddb
+    .get({
+      TableName: tableName,
+      Key: {
+        cognitoId: userId
+      }
+    })
+    .promise();
+};
+
+const errorResponse = (statusCode, message, error) => {
+  let body;
+  if (error !== null) {
+    body = JSON.stringify({
+      message: message,
+      error: error
+    });
+  } else {
+    body = JSON.stringify({
+      message: message
+    });
+  }
+  return {
+    statusCode: statusCode,
+    body: body,
+    headers: {
+      "Access-Control-Allow-Origin": "*"
+    },
+    isBase64Encoded: false
+  };
+};
