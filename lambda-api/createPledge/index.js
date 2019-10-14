@@ -37,7 +37,8 @@ exports.handler = async event => {
         return {
           statusCode: 204,
           headers: {
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json"
           },
           isBase64Encoded: false
         };
@@ -59,14 +60,18 @@ exports.handler = async event => {
 const savePledge = (tableName, userId, timestamp, requestBody) => {
   const data = {
     ":engagementLevel": requestBody.engagementLevel,
-    ":groupMeetings": requestBody.groupMeetings,
-    ":financialAid": requestBody.financialAid,
+    ":wouldVisitLocalGroup": requestBody.wouldVisitLocalGroup,
+    ":wouldDonate": requestBody.wouldDonate,
     ":zipCode": requestBody.zipCode,
-    ":eligible": requestBody.eligible,
+    ":eligibleToVote": requestBody.eligibleToVote,
     ":createdAt": timestamp,
     ":username": requestBody.name,
-    ":customOption":
-      requestBody.customOption !== undefined ? requestBody.customOption : null
+    ":wouldEngageCustom":
+      requestBody.wouldEngageCustom !== undefined
+        ? requestBody.wouldEngageCustom
+        : null,
+    ":referral":
+      requestBody.referral !== undefined ? requestBody.referral : null
   };
 
   return ddb
@@ -74,13 +79,14 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
       TableName: tableName,
       Key: { cognitoId: userId },
       UpdateExpression: `set pledge.engagementLevel = :engagementLevel, 
-      pledge.groupMeetings = :groupMeetings, 
-      pledge.financialAid = :financialAid,
-      pledge.customOption = :customOption,
+      pledge.wouldVisitLocalGroup = :wouldVisitLocalGroup, 
+      pledge.wouldDonate = :wouldDonate,
+      pledge.wouldEngageCustom = :wouldEngageCustom,
       zipCode = :zipCode,
-      eligible = :eligible,
+      eligibleToVote = :eligibleToVote,
       username = :username,
-      createdAt = :createdAt`,
+      pledge.createdAt = :createdAt
+      referral = :referral`,
       ExpressionAttributeValues: data,
       ReturnValues: "UPDATED_NEW"
     })
@@ -99,9 +105,10 @@ const validateParams = requestBody => {
   return (
     requestBody.userId !== undefined &&
     requestBody.engagementLevel !== undefined &&
-    requestBody.financialAid !== undefined &&
+    requestBody.wouldDonate !== undefined &&
+    requestBody.wouldVisitLocalGroup !== undefined &&
     requestBody.zipCode !== undefined &&
-    requestBody.eligible !== undefined
+    requestBody.eligibleToVote !== undefined
   );
 };
 
@@ -132,7 +139,8 @@ const errorResponse = (statusCode, message, error) => {
     statusCode: statusCode,
     body: body,
     headers: {
-      "Access-Control-Allow-Origin": "*"
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json"
     },
     isBase64Encoded: false
   };
