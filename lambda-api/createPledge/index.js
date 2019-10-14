@@ -65,13 +65,13 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
     ":zipCode": requestBody.zipCode,
     ":eligibleToVote": requestBody.eligibleToVote,
     ":createdAt": timestamp,
-    ":username": requestBody.name,
+    ":username": requestBody.name !== undefined ? requestBody.name : "empty",
     ":wouldEngageCustom":
       requestBody.wouldEngageCustom !== undefined
         ? requestBody.wouldEngageCustom
-        : null,
+        : "empty",
     ":referral":
-      requestBody.referral !== undefined ? requestBody.referral : null
+      requestBody.referral !== undefined ? requestBody.referral : "empty"
   };
 
   return ddb
@@ -85,7 +85,7 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
       zipCode = :zipCode,
       eligibleToVote = :eligibleToVote,
       username = :username,
-      pledge.createdAt = :createdAt
+      pledge.createdAt = :createdAt,
       referral = :referral`,
       ExpressionAttributeValues: data,
       ReturnValues: "UPDATED_NEW"
