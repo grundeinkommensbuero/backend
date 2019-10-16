@@ -43,9 +43,11 @@ exports.handler = async event => {
           isBase64Encoded: false
         };
       } catch (error) {
+        console.log(error);
         return errorResponse(500, "Error saving pledge", error);
       }
     } catch (error) {
+      console.log(error);
       return errorResponse(
         500,
         "Error while getting user from users table",
@@ -53,17 +55,22 @@ exports.handler = async event => {
       );
     }
   } catch (error) {
+    console.log(error);
     return errorResponse(400, "JSON Parsing was not successful", error);
   }
 };
 
 const savePledge = (tableName, userId, timestamp, requestBody) => {
   const data = {
-    ":engagementLevel": requestBody.engagementLevel,
+    ":signatureCount": requestBody.signatureCount,
     ":wouldVisitLocalGroup": requestBody.wouldVisitLocalGroup,
     ":wouldDonate": requestBody.wouldDonate,
-    ":zipCode": requestBody.zipCode,
-    ":eligibleToVote": requestBody.eligibleToVote,
+    ":zipCode":
+      requestBody.zipCode !== undefined ? requestBody.zipCode : "empty",
+    ":eligibleToVote":
+      requestBody.eligibleToVote !== undefined
+        ? requestBody.eligibleToVote
+        : "empty",
     ":createdAt": timestamp,
     ":username": requestBody.name !== undefined ? requestBody.name : "empty",
     ":wouldEngageCustom":
@@ -78,7 +85,7 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
     .update({
       TableName: tableName,
       Key: { cognitoId: userId },
-      UpdateExpression: `set pledge.engagementLevel = :engagementLevel, 
+      UpdateExpression: `set pledge.signatureCount = :signatureCount, 
       pledge.wouldVisitLocalGroup = :wouldVisitLocalGroup, 
       pledge.wouldDonate = :wouldDonate,
       pledge.wouldEngageCustom = :wouldEngageCustom,
@@ -104,11 +111,9 @@ const toUrlString = buffer => {
 const validateParams = requestBody => {
   return (
     requestBody.userId !== undefined &&
-    requestBody.engagementLevel !== undefined &&
+    requestBody.signatureCount !== undefined &&
     requestBody.wouldDonate !== undefined &&
-    requestBody.wouldVisitLocalGroup !== undefined &&
-    requestBody.zipCode !== undefined &&
-    requestBody.eligibleToVote !== undefined
+    requestBody.wouldVisitLocalGroup !== undefined
   );
 };
 
