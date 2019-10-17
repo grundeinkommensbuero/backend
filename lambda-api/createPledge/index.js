@@ -113,7 +113,9 @@ const validateParams = requestBody => {
     requestBody.userId !== undefined &&
     requestBody.signatureCount !== undefined &&
     requestBody.wouldDonate !== undefined &&
-    requestBody.wouldVisitLocalGroup !== undefined
+    requestBody.wouldVisitLocalGroup !== undefined &&
+    requestBody.wouldPutAndCollectSignatureLists !== undefined &&
+    requestBody.wouldCollectSignaturesInPublicSpaces !== undefined
   );
 };
 
