@@ -37,7 +37,8 @@ exports.handler = async event => {
         //customize email
         const codeParameter = event.request.codeParameter;
         console.log("event response before", event.response);
-        event.response.emailSubject = "Dein Bestätigungslink";
+        event.response.emailSubject =
+          "Bitte bestätige deine E-Mail-Adresse für Expedition Grundeinkommen!";
         event.response.emailMessage = customEmail(email, codeParameter);
         console.log("event response after", event.response);
         return event;
