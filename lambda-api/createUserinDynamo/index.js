@@ -52,9 +52,13 @@ exports.handler = async event => {
 };
 
 const customEmail = (email, codeParameter) => {
-  return `<p>Drück den Button<p>
-      <a href="https://dev.xbge.de/verification/?email=${email}&code=${codeParameter}">
-        <button>Verifizierung<button>
-      </a>
+  return `<p>Hallo,</p> 
+          <p>fast geschafft – schön, dass du dabei bist! Ein letzter Schritt, und dann bist du an Board. 
+          Bitte bestätige deinen Account, damit wir dich in Zukunft über weitere Schritte kontaktieren können:</p> 
+          <p>
+              <a href="https://dev.xbge.de/verifizierung/?email=${email}&code=${codeParameter}">
+                 https://dev.xbge.de/verifizierung/?email=${email}&code=${codeParameter}
+              </a>
+          </p>
   `;
 };

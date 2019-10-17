@@ -65,12 +65,12 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
     ":signatureCount": requestBody.signatureCount,
     ":wouldVisitLocalGroup": requestBody.wouldVisitLocalGroup,
     ":wouldDonate": requestBody.wouldDonate,
+    ":wouldPutAndCollectSignatureLists":
+      requestBody.wouldPutAndCollectSignatureLists,
+    ":wouldCollectSignaturesInPublicSpaces":
+      requestBody.wouldCollectSignaturesInPublicSpaces,
     ":zipCode":
       requestBody.zipCode !== undefined ? requestBody.zipCode : "empty",
-    ":eligibleToVote":
-      requestBody.eligibleToVote !== undefined
-        ? requestBody.eligibleToVote
-        : "empty",
     ":createdAt": timestamp,
     ":username": requestBody.name !== undefined ? requestBody.name : "empty",
     ":wouldEngageCustom":
@@ -89,8 +89,9 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
       pledge.wouldVisitLocalGroup = :wouldVisitLocalGroup, 
       pledge.wouldDonate = :wouldDonate,
       pledge.wouldEngageCustom = :wouldEngageCustom,
+      pledge.wouldPutAndCollectSignatureLists = :wouldPutAndCollectSignatureLists,
+      pledge.wouldCollectSignaturesInPublicSpaces = :wouldCollectSignaturesInPublicSpaces,
       zipCode = :zipCode,
-      eligibleToVote = :eligibleToVote,
       username = :username,
       pledge.createdAt = :createdAt,
       referral = :referral`,
