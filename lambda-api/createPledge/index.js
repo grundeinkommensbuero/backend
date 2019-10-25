@@ -63,7 +63,8 @@ exports.handler = async event => {
 const savePledge = (tableName, userId, timestamp, requestBody) => {
   const data = {
     ":signatureCount": requestBody.signatureCount,
-    ":wouldVisitLocalGroup": requestBody.wouldVisitLocalGroup,
+    ":wouldPrintAndSendSignatureLists":
+      requestBody.wouldPrintAndSendSignatureLists,
     ":wouldDonate": requestBody.wouldDonate,
     ":wouldPutAndCollectSignatureLists":
       requestBody.wouldPutAndCollectSignatureLists,
@@ -78,7 +79,8 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
         ? requestBody.wouldEngageCustom
         : "empty",
     ":referral":
-      requestBody.referral !== undefined ? requestBody.referral : "empty"
+      requestBody.referral !== undefined ? requestBody.referral : "empty",
+    ":newsletterConsent": requestBody.newsletterConsent
   };
 
   return ddb
@@ -86,7 +88,7 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
       TableName: tableName,
       Key: { cognitoId: userId },
       UpdateExpression: `set pledge.signatureCount = :signatureCount, 
-      pledge.wouldVisitLocalGroup = :wouldVisitLocalGroup, 
+      pledge.wouldPrintAndSendSignatureLists = :wouldPrintAndSendSignatureLists, 
       pledge.wouldDonate = :wouldDonate,
       pledge.wouldEngageCustom = :wouldEngageCustom,
       pledge.wouldPutAndCollectSignatureLists = :wouldPutAndCollectSignatureLists,
@@ -94,7 +96,9 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
       zipCode = :zipCode,
       username = :username,
       pledge.createdAt = :createdAt,
-      referral = :referral`,
+      referral = :referral,
+      newsletterConsent = :newsletterConsent
+      `,
       ExpressionAttributeValues: data,
       ReturnValues: "UPDATED_NEW"
     })
@@ -114,9 +118,10 @@ const validateParams = requestBody => {
     requestBody.userId !== undefined &&
     requestBody.signatureCount !== undefined &&
     requestBody.wouldDonate !== undefined &&
-    requestBody.wouldVisitLocalGroup !== undefined &&
+    requestBody.wouldPrintAndSendSignatureLists !== undefined &&
     requestBody.wouldPutAndCollectSignatureLists !== undefined &&
-    requestBody.wouldCollectSignaturesInPublicSpaces !== undefined
+    requestBody.wouldCollectSignaturesInPublicSpaces !== undefined &&
+    requestBody.newsletterConsent !== undefined
   );
 };
 

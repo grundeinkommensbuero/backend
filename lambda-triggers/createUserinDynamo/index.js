@@ -38,7 +38,7 @@ exports.handler = async event => {
         const codeParameter = event.request.codeParameter;
         console.log("event response before", event.response);
         event.response.emailSubject =
-          "Bitte bestätige deine E-Mail-Adresse für Expedition Grundeinkommen!";
+          "Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!";
         event.response.emailMessage = customEmail(email, codeParameter);
         console.log("event response after", event.response);
         return event;
@@ -54,12 +54,20 @@ exports.handler = async event => {
 
 const customEmail = (email, codeParameter) => {
   return `<p>Hallo,</p> 
-          <p>fast geschafft – schön, dass du dabei bist! Ein letzter Schritt, und dann bist du an Board. 
-          Bitte bestätige deinen Account, damit wir dich in Zukunft über weitere Schritte kontaktieren können:</p> 
           <p>
-              <a href="https://dev.xbge.de/verifizierung/?email=${email}&code=${codeParameter}">
-                 https://dev.xbge.de/verifizierung/?email=${email}&code=${codeParameter}
+            fast geschafft – schön, dass du dabei bist! Ein letzter Schritt, und dann bist du an Bord. Bitte bestätige noch deine E-Mail-Adresse:
+          </p>
+              <a href="https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}">
+                 https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}
               </a>
+          </p>
+          <br>
+          <br>
+          <br>
+          <p>
+          Vertrauensgesellschaft e.V. <br>
+          Isarstr. 11 <br>
+          12053 Berlin  
           </p>
   `;
 };
