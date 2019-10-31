@@ -1,9 +1,6 @@
 // import { CognitoIdentityServiceProvider } from "aws-sdk";
 const AWS = require('aws-sdk');
 const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
-const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.TABLE_NAME;
-const userPoolId = process.env.POOL_ID;
 
 exports.handler = async event => {
   try {
@@ -12,9 +9,9 @@ exports.handler = async event => {
     //filter users to check if the creation of the user was more than
     //24 hours agp
     const date = new Date();
-    const twoDays = 48 * 60 * 60 * 1000;
+    const oneDay = 24 * 60 * 60 * 1000;
     const filteredUsers = notVerifiedCognitoUsers.filter(
-      user => date - user.UserCreateDate > twoDays
+      user => date - user.UserCreateDate > oneDay
     );
     console.log(
       'not verified and it has been a day count:',
@@ -22,14 +19,17 @@ exports.handler = async event => {
     );
 
     //resend confirmation code
+    let resendCount = 0;
     for (let user of filteredUsers) {
       try {
-        await deleteUserInCognito(user);
-        await deleteUserInDynamo(user);
+        await resendConfirmationCode(user);
+        console.log('sent mail to', user.Username);
+        resendCount++;
       } catch (error) {
-        console.log('error deleting user', error);
+        console.log('error resending code', error);
       }
     }
+    console.log(`Resent mail to ${resendCount} users`);
   } catch (error) {
     console.log('error', error);
   }
@@ -59,22 +59,12 @@ const getNotVerifiedCognitoUsers = paginationToken => {
   return CognitoIdentityServiceProvider.listUsers(params).promise();
 };
 
-const deleteUserInCognito = user => {
-  console.log('deleting user in cognito');
-  var params = {
-    UserPoolId: userPoolId,
-    Username: user.Username, //Username is the id of cognito
-  };
-  return CognitoIdentityServiceProvider.adminDeleteUser(params).promise();
-};
-
-const deleteUserInDynamo = user => {
-  console.log('deleting user in dynamo');
+const resendConfirmationCode = user => {
   const params = {
-    TableName: tableName,
-    Key: {
-      cognitoId: user.Username, //Username is the id of cognito
-    },
+    ClientId: 'ci822dda02qdhkju7mnd3kh8v',
+    Username: user.Username,
   };
-  return ddb.delete(params).promise();
+  return CognitoIdentityServiceProvider.resendConfirmationCode(
+    params
+  ).promise();
 };

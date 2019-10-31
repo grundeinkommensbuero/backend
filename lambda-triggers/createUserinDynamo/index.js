@@ -1,10 +1,10 @@
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async event => {
   // Identify why was this function invoked
-  if (event.triggerSource === "CustomMessage_SignUp") {
+  if (event.triggerSource === 'CustomMessage_SignUp') {
     const tableName = process.env.TABLE_NAME;
 
     //sub is the unique id Cognito assigns to each new user
@@ -27,39 +27,111 @@ exports.handler = async event => {
               cognitoId: cognitoId,
               email: email,
               createdAt: timestamp,
-              pledge: {}
-            }
+              pledge: {},
+            },
           })
           .promise();
 
-        console.log("Success writing to dynamo");
+        console.log('Success writing to dynamo');
 
         //customize email
         const codeParameter = event.request.codeParameter;
-        console.log("event response before", event.response);
         event.response.emailSubject =
-          "Bitte bestätige deine E-Mail-Adresse für Expedition Grundeinkommen!";
+          'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
         event.response.emailMessage = customEmail(email, codeParameter);
-        console.log("event response after", event.response);
         return event;
       } catch (error) {
-        console.log("Error while writing to dynamo", error);
+        console.log('Error while writing to dynamo', error);
         return event;
       }
     }
-    console.log("One or more parameters missing");
+    console.log('One or more parameters missing');
+    return event;
+  } else if (event.triggerSource === 'CustomMessage_ResendCode') {
+    const email = event.request.userAttributes.email;
+    //customize email
+    const codeParameter = event.request.codeParameter;
+    event.response.emailSubject =
+      'Volksabstimmung Grundeinkommensexperiment: Bitte bestätige deine Email-Adresse!';
+    event.response.emailMessage = customReminderEmail(email, codeParameter);
+    console.log('Sending verification reminder');
     return event;
   }
 };
 
 const customEmail = (email, codeParameter) => {
   return `<p>Hallo,</p> 
-          <p>fast geschafft – schön, dass du dabei bist! Ein letzter Schritt, und dann bist du an Board. 
-          Bitte bestätige deinen Account, damit wir dich in Zukunft über weitere Schritte kontaktieren können:</p> 
           <p>
-              <a href="https://dev.xbge.de/verifizierung/?email=${email}&code=${codeParameter}">
-                 https://dev.xbge.de/verifizierung/?email=${email}&code=${codeParameter}
+          fast geschafft – sch&#246;n, dass du dabei bist! Ein letzter Schritt, und dann bist du an Bord. 
+          Bitte best&#228;tige noch deine E-Mail-Adresse:
+          </p>
+          <p>
+              <a href="https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}">
+                 https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}
               </a>
+          </p>
+          <p>
+          Achtung! Dieser Link ist nur 24 Stunden g&#252;ltig.
+          Wenn der Link nicht mehr funktioniert, dann wende dich bitte an den Support, indem du auf diese E-Mail antwortest.
+          <br>
+          <br>
+          Danke!
+          </p>
+          Dein Support-Team von<br>
+          Expedition Grundeinkommen
+          <br>
+          <br>
+          <br>
+          <br>
+          --------------------------------------------
+          <br>
+          <p>
+            <a href="www.expedition-grundeinkommen.de">
+              www.expedition-grundeinkommen.de
+            </a>
+            <br>
+            <a href="mailto:support@expedition-grundeinkommen.de">
+              support@expedition-grundeinkommen.de
+            </a>
+          </p>
+  `;
+};
+
+const customReminderEmail = (email, codeParameter) => {
+  return `<p>Hallo,</p> 
+          <p>
+          Hallo, du hast deine E-Mail-Adresse f&#252;r die Volksabstimmung zum Grundeinkommen in Schleswig-Holstein noch nicht best&#228;tigt. 
+          Das ist besonders wichtig, da wir deine Daten ohne diese Best&#228;tigung leider wieder l&#246;schen m&#252;ssen. 
+          Nur noch ein Klick auf diesen Link und du bist wirklich dabei:
+          </p>
+          <p>
+              <a href="https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}">
+                 https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}
+              </a>
+          </p>
+          <p>
+          Achtung! Dieser Link ist nur 24 Stunden g&#252;ltig.
+          Wenn der Link nicht mehr funktioniert, dann wende dich bitte an den Support, indem du auf diese E-Mail antwortest.
+          <br>
+          <br>
+          Danke!
+          </p>
+          Dein Support-Team von<br>
+          Expedition Grundeinkommen
+          <br>
+          <br>
+          <br>
+          <br>
+          --------------------------------------------
+          <br>
+          <p>
+            <a href="www.expedition-grundeinkommen.de">
+              www.expedition-grundeinkommen.de
+            </a>
+            <br>
+            <a href="mailto:support@expedition-grundeinkommen.de">
+              support@expedition-grundeinkommen.de
+            </a>
           </p>
   `;
 };
