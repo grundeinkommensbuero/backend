@@ -1,12 +1,12 @@
-const randomBytes = require("crypto").randomBytes;
+//const randomBytes = require('crypto').randomBytes;
 
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async event => {
-  const tableName = process.env.TABLE_NAME;
+const tableName = process.env.TABLE_NAME;
 
+exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
@@ -14,79 +14,84 @@ exports.handler = async event => {
     try {
       const date = new Date();
       const timestamp = date.toISOString();
-      console.log("request body", requestBody);
+      console.log('request body', requestBody);
       if (!validateParams(requestBody)) {
-        return errorResponse(400, "One or more parameters are missing", null);
+        return errorResponse(400, 'One or more parameters are missing', null);
       }
 
       const userId = requestBody.userId;
-      const user = await getUser(tableName, requestBody.userId);
-      console.log("user", user);
+      const user = await getUser(requestBody.userId);
+      console.log('user', user);
       //if user does not have Item as property, there was no user found
       if (user.Item === undefined) {
         return errorResponse(
           400,
-          "No user found with the passed user id",
+          'No user found with the passed user id',
           null
         );
       }
 
       try {
-        await savePledge(tableName, userId, timestamp, requestBody);
+        await savePledge(userId, timestamp, requestBody);
         //saving pledge was successfull, return appropriate json
         return {
           statusCode: 204,
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
           },
-          isBase64Encoded: false
+          isBase64Encoded: false,
         };
       } catch (error) {
         console.log(error);
-        return errorResponse(500, "Error saving pledge", error);
+        return errorResponse(500, 'Error saving pledge', error);
       }
     } catch (error) {
       console.log(error);
       return errorResponse(
         500,
-        "Error while getting user from users table",
+        'Error while getting user from users table',
         error
       );
     }
   } catch (error) {
     console.log(error);
-    return errorResponse(400, "JSON Parsing was not successful", error);
+    return errorResponse(400, 'JSON Parsing was not successful', error);
   }
 };
 
-const savePledge = (tableName, userId, timestamp, requestBody) => {
+const savePledge = (userId, timestamp, requestBody) => {
   const data = {
-    ":signatureCount": requestBody.signatureCount,
-    ":wouldPrintAndSendSignatureLists":
+    ':signatureCount': requestBody.signatureCount,
+    /* not needed for slimmer form
+    ':wouldPrintAndSendSignatureLists':
       requestBody.wouldPrintAndSendSignatureLists,
-    ":wouldDonate": requestBody.wouldDonate,
-    ":wouldPutAndCollectSignatureLists":
+    ':wouldDonate': requestBody.wouldDonate,
+    ':wouldPutAndCollectSignatureLists':
       requestBody.wouldPutAndCollectSignatureLists,
-    ":wouldCollectSignaturesInPublicSpaces":
+    ':wouldCollectSignaturesInPublicSpaces':
       requestBody.wouldCollectSignaturesInPublicSpaces,
-    ":zipCode":
-      requestBody.zipCode !== undefined ? requestBody.zipCode : "empty",
-    ":createdAt": timestamp,
-    ":username": requestBody.name !== undefined ? requestBody.name : "empty",
-    ":wouldEngageCustom":
+      */
+    ':zipCode':
+      requestBody.zipCode !== undefined ? requestBody.zipCode : 'empty',
+    ':createdAt': timestamp,
+    ':username': requestBody.name !== undefined ? requestBody.name : 'empty',
+    /* not needed for slimmer form
+    ':wouldEngageCustom':
       requestBody.wouldEngageCustom !== undefined
         ? requestBody.wouldEngageCustom
-        : "empty",
-    ":referral":
-      requestBody.referral !== undefined ? requestBody.referral : "empty",
-    ":newsletterConsent": requestBody.newsletterConsent
+        : 'empty',
+        */
+    ':referral':
+      requestBody.referral !== undefined ? requestBody.referral : 'empty',
+    ':newsletterConsent': requestBody.newsletterConsent,
   };
 
   return ddb
     .update({
       TableName: tableName,
       Key: { cognitoId: userId },
+      /* not needed for slimmer form
       UpdateExpression: `set pledge.signatureCount = :signatureCount, 
       pledge.wouldPrintAndSendSignatureLists = :wouldPrintAndSendSignatureLists, 
       pledge.wouldDonate = :wouldDonate,
@@ -99,39 +104,49 @@ const savePledge = (tableName, userId, timestamp, requestBody) => {
       referral = :referral,
       newsletterConsent = :newsletterConsent
       `,
+      */
+      UpdateExpression: `set pledge.signatureCount = :signatureCount, 
+      zipCode = :zipCode,
+      username = :username,
+      pledge.createdAt = :createdAt,
+      referral = :referral,
+      newsletterConsent = :newsletterConsent
+      `,
       ExpressionAttributeValues: data,
-      ReturnValues: "UPDATED_NEW"
+      ReturnValues: 'UPDATED_NEW',
     })
     .promise();
 };
 
 const toUrlString = buffer => {
   return buffer
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 };
 
 const validateParams = requestBody => {
   return (
     requestBody.userId !== undefined &&
     requestBody.signatureCount !== undefined &&
+    /* not needed for slimmer form
     requestBody.wouldDonate !== undefined &&
     requestBody.wouldPrintAndSendSignatureLists !== undefined &&
     requestBody.wouldPutAndCollectSignatureLists !== undefined &&
     requestBody.wouldCollectSignaturesInPublicSpaces !== undefined &&
+    */
     requestBody.newsletterConsent !== undefined
   );
 };
 
-const getUser = (tableName, userId) => {
+const getUser = userId => {
   return ddb
     .get({
       TableName: tableName,
       Key: {
-        cognitoId: userId
-      }
+        cognitoId: userId,
+      },
     })
     .promise();
 };
@@ -141,20 +156,20 @@ const errorResponse = (statusCode, message, error) => {
   if (error !== null) {
     body = JSON.stringify({
       message: message,
-      error: error
+      error: error,
     });
   } else {
     body = JSON.stringify({
-      message: message
+      message: message,
     });
   }
   return {
     statusCode: statusCode,
     body: body,
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json"
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
     },
-    isBase64Encoded: false
+    isBase64Encoded: false,
   };
 };
