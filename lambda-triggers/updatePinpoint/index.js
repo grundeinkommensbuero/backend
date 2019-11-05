@@ -6,7 +6,7 @@ const projectId = 'b3f64d0245774296b5937e97b9bfc8c3';
 exports.handler = async (event, context) => {
   //console.log('Received event:', JSON.stringify(event, null, 2));
 
-  for (const record of event.Records) {
+  for (let record of event.Records) {
     if (record.eventName !== 'REMOVE') {
       //get id of the changed user
       console.log('Record: %j', record);
@@ -95,6 +95,22 @@ exports.handler = async (event, context) => {
         } catch (error) {
           console.log(error);
         }
+      }
+    } else {
+      //record was removed
+      //which is why we want to remove the endpoint as well
+      console.log('record was removed', record);
+      const userId = record.dynamodb.Keys.cognitoId.S;
+
+      var params = {
+        ApplicationId: projectId,
+        EndpointId: `email-endpoint-${userId}`,
+      };
+      try {
+        const result = await pinpoint.deleteEndpoint(params);
+        console.log('success deleting endpoint', result);
+      } catch (error) {
+        console.log('error deleting endpoint', error);
       }
     }
   }
