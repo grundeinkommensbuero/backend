@@ -61,6 +61,8 @@ exports.handler = async (event, context) => {
             Address: email,
             Attributes: {
               Referral: [referral],
+              Region: [region],
+              PostalCode: [zipCode],
               //Pledge: pledgeAttributes,
             },
             EffectiveDate: createdAt,
@@ -69,7 +71,7 @@ exports.handler = async (event, context) => {
               Region: region,
             },
             Metrics: {
-              SignatureCount: pledgeData.signatureCount.N,
+              SignatureCount: parseInt(pledgeData.signatureCount.N),
             },
             OptOut: newsletterConsent ? 'NONE' : 'ALL',
             User: {
