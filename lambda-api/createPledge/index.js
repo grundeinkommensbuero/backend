@@ -61,8 +61,19 @@ exports.handler = async event => {
 };
 
 const savePledge = (userId, timestamp, requestBody) => {
+  //check which pledge it is (e.g. pledgeId='brandenburg')
+  let pledgeKey;
+  if (requestBody.pledgeId === 'brandenburg') {
+    pledgeKey = 'pledge-brandenburg-1';
+  } else {
+    pledgeKey = 'pledge';
+  }
+
   const data = {
-    ':signatureCount': requestBody.signatureCount,
+    ':pledge': {
+      signatureCount: requestBody.signatureCount,
+      createdAt: timestamp,
+    },
     /* not needed for slimmer form
     ':wouldPrintAndSendSignatureLists':
       requestBody.wouldPrintAndSendSignatureLists,
@@ -72,19 +83,21 @@ const savePledge = (userId, timestamp, requestBody) => {
     ':wouldCollectSignaturesInPublicSpaces':
       requestBody.wouldCollectSignaturesInPublicSpaces,
       */
+    /* not needed for slimmer form
+     ':wouldEngageCustom':
+       requestBody.wouldEngageCustom !== undefined
+         ? requestBody.wouldEngageCustom
+         : 'empty',
+         */
     ':zipCode':
       requestBody.zipCode !== undefined ? requestBody.zipCode : 'empty',
-    ':createdAt': timestamp,
     ':username': requestBody.name !== undefined ? requestBody.name : 'empty',
-    /* not needed for slimmer form
-    ':wouldEngageCustom':
-      requestBody.wouldEngageCustom !== undefined
-        ? requestBody.wouldEngageCustom
-        : 'empty',
-        */
     ':referral':
       requestBody.referral !== undefined ? requestBody.referral : 'empty',
-    ':newsletterConsent': requestBody.newsletterConsent,
+    ':newsletterConsent': {
+      value: requestBody.newsletterConsent,
+      timestamp: timestamp,
+    },
   };
 
   return ddb
@@ -105,14 +118,17 @@ const savePledge = (userId, timestamp, requestBody) => {
       newsletterConsent = :newsletterConsent
       `,
       */
-      UpdateExpression: `set pledge.signatureCount = :signatureCount, 
+      UpdateExpression: `
+      set #pledgeKey = :pledge,
       zipCode = :zipCode,
       username = :username,
-      pledge.createdAt = :createdAt,
       referral = :referral,
       newsletterConsent = :newsletterConsent
       `,
       ExpressionAttributeValues: data,
+      ExpressionAttributeNames: {
+        '#pledgeKey': pledgeKey, //to work properly we need to use a placeholder (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html#ExpressionAttributeNames)
+      },
       ReturnValues: 'UPDATED_NEW',
     })
     .promise();

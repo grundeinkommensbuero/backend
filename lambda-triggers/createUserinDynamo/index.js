@@ -27,7 +27,6 @@ exports.handler = async event => {
               cognitoId: cognitoId,
               email: email,
               createdAt: timestamp,
-              pledge: {},
             },
           })
           .promise();

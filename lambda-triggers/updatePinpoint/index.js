@@ -12,9 +12,15 @@ exports.handler = async (event, context) => {
       console.log('Record: %j', record);
       //only update pinpoint, if the pledge changes
       const newData = record.dynamodb.NewImage;
-      const pledgeData = newData.pledge.M;
-      if (Object.keys(pledgeData).length !== 0) {
-        const newsletterConsent = newData.newsletterConsent.BOOL;
+      let pledgeData;
+      if ('pledge' in newData) {
+        pledgeData = newData.pledge.M;
+      } else if ('pledge-brandenburg-1' in newData) {
+        pledgeData = newData['pledge-brandenburg-1'].M;
+      }
+
+      if (pledgeData !== undefined && pledgeData !== null) {
+        const newsletterConsent = newData.newsletterConsent.M.value.BOOL;
         const userId = newData.cognitoId.S;
         const createdAt = newData.createdAt.S;
         const email = newData.email.S;
