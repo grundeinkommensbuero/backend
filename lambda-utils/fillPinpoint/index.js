@@ -3,6 +3,7 @@ const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
 const projectId = 'b3f64d0245774296b5937e97b9bfc8c3';
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.TABLE_NAME;
+const zipCodeMatcher = require('./zipCodeMatcher');
 
 exports.handler = async event => {
   try {
@@ -11,7 +12,6 @@ exports.handler = async event => {
     for (let user of users.Items) {
       const {
         pledge,
-        newsletterConsent,
         cognitoId: userId, //rename cognitoId to userId while destructuring
         createdAt,
         email,
@@ -19,39 +19,39 @@ exports.handler = async event => {
         username,
         referral,
       } = user;
+      let { newsletterConsent } = user;
 
       const pledgeAttributes = [];
-      if (pledge.wouldPrintAndSendSignatureLists) {
-        pledgeAttributes.push('wouldPrintAndSendSignatureLists');
-      }
-      if (pledge.wouldCollectSignaturesInPublicSpaces) {
-        pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
-      }
-      if (pledge.wouldPutAndCollectSignatureLists) {
-        pledgeAttributes.push('wouldPutAndCollectSignatureLists');
-      }
-      if (pledge.wouldDonate) {
-        pledgeAttributes.push('wouldDonate');
-      }
-      if (
-        pledge.wouldEngageCustom !== undefined &&
-        pledge.wouldEngageCustom !== 'empty'
-      ) {
-        pledgeAttributes.push(pledge.wouldEngageCustom);
+      if (pledge !== undefined && pledge !== null) {
+        if (pledge.wouldPrintAndSendSignatureLists) {
+          pledgeAttributes.push('wouldPrintAndSendSignatureLists');
+        }
+        if (pledge.wouldCollectSignaturesInPublicSpaces) {
+          pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
+        }
+        if (pledge.wouldPutAndCollectSignatureLists) {
+          pledgeAttributes.push('wouldPutAndCollectSignatureLists');
+        }
+        if (pledge.wouldDonate) {
+          pledgeAttributes.push('wouldDonate');
+        }
+        if (
+          pledge.wouldEngageCustom !== undefined &&
+          pledge.wouldEngageCustom !== 'empty'
+        ) {
+          pledgeAttributes.push(pledge.wouldEngageCustom);
+        }
       }
 
-      let region;
-      if (
-        zipCode.startsWith('25') ||
-        zipCode.startsWith('24') ||
-        zipCode.startsWith('23') ||
-        zipCode.startsWith('22') ||
-        zipCode.startsWith('21')
-      ) {
-        region = 'Schleswig-Holstein';
-      } else {
-        region = 'Nicht SH';
-      }
+      // Make use of utility function to match the state to a given zip code
+      const region = zipCodeMatcher.getStateByZipCode(zipCode);
+      console.log('matched region', region);
+      //workaround, while some newsletter consents may already have the new format {value, timestamp}
+      //old format is just boolean
+      newsletterConsent =
+        typeof newsletterConsent === 'boolean'
+          ? newsletterConsent
+          : newsletterConsent.value;
 
       const params = {
         ApplicationId: projectId,

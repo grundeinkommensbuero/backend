@@ -2,6 +2,7 @@ console.log('Loading function');
 const AWS = require('aws-sdk');
 const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
 const projectId = 'b3f64d0245774296b5937e97b9bfc8c3';
+const zipCodeMatcher = require('./zipCodeMatcher');
 
 exports.handler = async (event, context) => {
   //console.log('Received event:', JSON.stringify(event, null, 2));
@@ -46,18 +47,10 @@ exports.handler = async (event, context) => {
           pledgeAttributes.push(pledgeData.wouldEngageCustom.S);
         }
         */
-        let region;
-        if (
-          zipCode.startsWith('25') ||
-          zipCode.startsWith('24') ||
-          zipCode.startsWith('23') ||
-          zipCode.startsWith('22') ||
-          zipCode.startsWith('21')
-        ) {
-          region = 'Schleswig-Holstein';
-        } else {
-          region = 'Nicht SH';
-        }
+
+        // Make use of utility function to match the state to a given zip code
+        const region = zipCodeMatcher.getStateByZipCode(zipCode);
+        console.log('matched region', region);
 
         const params = {
           ApplicationId: projectId,
