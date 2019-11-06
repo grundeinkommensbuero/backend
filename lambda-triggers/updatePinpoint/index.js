@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
         pledgeData = newData['pledge-brandenburg-1'].M;
       }
 
-      if (pledgeData !== undefined && pledgeData !== null) {
+      if (typeof pledgeData !== 'undefined' && pledgeData !== null) {
         const newsletterConsent = newData.newsletterConsent.M.value.BOOL;
         const userId = newData.cognitoId.S;
         const createdAt = newData.createdAt.S;

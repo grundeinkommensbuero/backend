@@ -22,7 +22,7 @@ exports.handler = async event => {
       let { newsletterConsent } = user;
 
       const pledgeAttributes = [];
-      if (pledge !== undefined && pledge !== null) {
+      if (typeof pledge !== 'undefined' && pledge !== null) {
         if (pledge.wouldPrintAndSendSignatureLists) {
           pledgeAttributes.push('wouldPrintAndSendSignatureLists');
         }
@@ -36,7 +36,7 @@ exports.handler = async event => {
           pledgeAttributes.push('wouldDonate');
         }
         if (
-          pledge.wouldEngageCustom !== undefined &&
+          'wouldEngageCustom' in pledge.wouldEngageCustom &&
           pledge.wouldEngageCustom !== 'empty'
         ) {
           pledgeAttributes.push(pledge.wouldEngageCustom);

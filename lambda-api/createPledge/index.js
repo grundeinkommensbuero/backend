@@ -23,7 +23,7 @@ exports.handler = async event => {
       const user = await getUser(requestBody.userId);
       console.log('user', user);
       //if user does not have Item as property, there was no user found
-      if (user.Item === undefined) {
+      if ('Item' in user) {
         return errorResponse(
           400,
           'No user found with the passed user id',
@@ -89,11 +89,12 @@ const savePledge = (userId, timestamp, requestBody) => {
          ? requestBody.wouldEngageCustom
          : 'empty',
          */
-    ':zipCode':
-      requestBody.zipCode !== undefined ? requestBody.zipCode : 'empty',
-    ':username': requestBody.name !== undefined ? requestBody.name : 'empty',
-    ':referral':
-      requestBody.referral !== undefined ? requestBody.referral : 'empty',
+    ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
+    ':username':
+      'name' in requestBody && requestBody.name !== ''
+        ? requestBody.name
+        : 'empty',
+    ':referral': 'referral' in requestBody ? requestBody.referral : 'empty',
     ':newsletterConsent': {
       value: requestBody.newsletterConsent,
       timestamp: timestamp,
@@ -144,15 +145,15 @@ const toUrlString = buffer => {
 
 const validateParams = requestBody => {
   return (
-    requestBody.userId !== undefined &&
-    requestBody.signatureCount !== undefined &&
+    'userId' in requestBody &&
+    'signatureCount' in requestBody &&
     /* not needed for slimmer form
     requestBody.wouldDonate !== undefined &&
     requestBody.wouldPrintAndSendSignatureLists !== undefined &&
     requestBody.wouldPutAndCollectSignatureLists !== undefined &&
     requestBody.wouldCollectSignaturesInPublicSpaces !== undefined &&
     */
-    requestBody.newsletterConsent !== undefined
+    'newsletterConsent' in requestBody
   );
 };
 
