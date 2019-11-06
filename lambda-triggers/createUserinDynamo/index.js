@@ -51,7 +51,7 @@ exports.handler = async event => {
     //customize email
     const codeParameter = event.request.codeParameter;
     event.response.emailSubject =
-      'Volksabstimmung Grundeinkommensexperiment: Bitte bestätige deine Email-Adresse!';
+      'Volksabstimmung Grundeinkommensexperiment: Bitte bestätige deine E-Mail-Adresse!';
     event.response.emailMessage = customReminderEmail(email, codeParameter);
     console.log('Sending verification reminder');
     return event;
@@ -69,11 +69,8 @@ const customEmail = (email, codeParameter) => {
                  https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}
               </a>
           </p>
+          <br>
           <p>
-          Achtung! Dieser Link ist nur 24 Stunden g&#252;ltig.
-          Wenn der Link nicht mehr funktioniert, dann wende dich bitte an den Support, indem du auf diese E-Mail antwortest.
-          <br>
-          <br>
           Danke!
           </p>
           Dein Support-Team von<br>
@@ -99,7 +96,7 @@ const customEmail = (email, codeParameter) => {
 const customReminderEmail = (email, codeParameter) => {
   return `<p>Hallo,</p> 
           <p>
-          Hallo, du hast deine E-Mail-Adresse f&#252;r die Volksabstimmung zum Grundeinkommen in Schleswig-Holstein noch nicht best&#228;tigt. 
+          du hast deine E-Mail-Adresse f&#252;r die Volksabstimmung zum Grundeinkommen in Schleswig-Holstein noch nicht best&#228;tigt. 
           Das ist besonders wichtig, da wir deine Daten ohne diese Best&#228;tigung leider wieder l&#246;schen m&#252;ssen. 
           Nur noch ein Klick auf diesen Link und du bist wirklich dabei:
           </p>
@@ -108,11 +105,8 @@ const customReminderEmail = (email, codeParameter) => {
                  https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}
               </a>
           </p>
+          <br>
           <p>
-          Achtung! Dieser Link ist nur 24 Stunden g&#252;ltig.
-          Wenn der Link nicht mehr funktioniert, dann wende dich bitte an den Support, indem du auf diese E-Mail antwortest.
-          <br>
-          <br>
           Danke!
           </p>
           Dein Support-Team von<br>
