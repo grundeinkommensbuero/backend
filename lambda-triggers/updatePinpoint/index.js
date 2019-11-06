@@ -18,6 +18,8 @@ exports.handler = async (event, context) => {
         pledgeData = newData.pledge.M;
       } else if ('pledge-brandenburg-1' in newData) {
         pledgeData = newData['pledge-brandenburg-1'].M;
+      } else if ('pledge-schleswig-holstein-1' in newData) {
+        pledgeData = newData['pledge-schleswig-holstein-1'].M;
       }
 
       if (typeof pledgeData !== 'undefined' && pledgeData !== null) {
