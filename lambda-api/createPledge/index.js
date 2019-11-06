@@ -20,7 +20,7 @@ exports.handler = async event => {
       }
 
       const userId = requestBody.userId;
-      const user = await getUser(requestBody.userId);
+      const user = await getUser(userId);
       console.log('user', user);
       //if user does not have Item as property, there was no user found
       if (!('Item' in user) || typeof user.Item === 'undefined') {
