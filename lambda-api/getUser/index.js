@@ -23,7 +23,9 @@ exports.handler = async event => {
     // return user
     return {
       statusCode: 200,
-      body: JSON.stringify({ user: user.Item }),
+      body: JSON.stringify({
+        user: { email: user.Item.email, cognitoId: user.Item.cognitoId },
+      }),
       headers: responseHeaders,
       isBase64Encoded: false,
     };
