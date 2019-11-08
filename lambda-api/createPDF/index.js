@@ -1,19 +1,13 @@
 const pdfLib = require('pdf-lib');
 const bwipjs = require('bwip-js');
-const fs = require('fs');
 
-const existingPdfBytes = fs.readFileSync('./test-list.pdf');
-
-const CODE = '0123456789';
-const URL = 'https://expedition-grundeinkommen.de/scan?id=';
-
-async function generatePdf() {
-  const pdfDoc = await pdfLib.PDFDocument.load(existingPdfBytes);
+module.exports = async function generatePdf(url, code, inputPDF) {
+  const pdfDoc = await pdfLib.PDFDocument.load(inputPDF);
 
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
 
-  const barcode = await getBarcode(CODE);
+  const barcode = await getBarcode(code);
   const barcodeInDocument = await pdfDoc.embedPng(barcode);
   firstPage.drawImage(barcodeInDocument, {
     x: 500,
@@ -22,7 +16,7 @@ async function generatePdf() {
     height: 90,
   });
 
-  const qrCode = await getQrCode(URL + CODE);
+  const qrCode = await getQrCode(url + code);
   const qrCodeInDocument = await pdfDoc.embedPng(qrCode);
   firstPage.drawImage(qrCodeInDocument, {
     x: 400,
@@ -33,8 +27,8 @@ async function generatePdf() {
 
   const pdfBytes = await pdfDoc.save();
 
-  fs.writeFileSync('./test-list-out.pdf', pdfBytes);
-}
+  return pdfBytes;
+};
 
 function getBarcode(text) {
   return new Promise(resolve => {
@@ -75,5 +69,3 @@ function getQrCode(text) {
     );
   });
 }
-
-generatePdf();
