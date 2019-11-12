@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const generatePdf = require('./index');
+const generatePdf = require('./createPDF');
 
 const inputPDF = fs.readFileSync('./test-list.pdf');
 const CODE = '0123456789';

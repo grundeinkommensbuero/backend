@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "zip -r dist/createPDF.zip ../createPDF",
+    "deploy": "aws lambda update-function-code --function-name createPDF --zip-file fileb://dist/createPDF.zip",
+    "cleanUp": "rm dist/createPDF.zip",
+    "buildDeploy": "npm run build && npm run deploy && npm run cleanUp"
   },
   "author": "",
   "license": "ISC",
