@@ -1,0 +1,60 @@
+<mjml>
+
+  <mj-head>
+
+    <mj-attributes>
+      <mj-text align="left" color="#fc484c" font-weight="bold"/>
+      <mj-section full-width="full-width" />
+      <mj-class name="section-red" background-color="#fc484c" />
+      <mj-class name="section-red-text" color="#fef377" />
+      <mj-button 
+        border-radius="50px" 
+        background-color="transparent" 
+        color="#fc484c" 
+        font-weight="bold" 
+        border="1px solid #fc484c"/>
+    </mj-attributes>
+
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-section>
+      <mj-column>
+        <mj-image alt="Expedition Grundeinkommen" align="left" width="200px" src="https://expedition-grundeinkommen.de/mailgraphics/logo.png" />
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#fef377">
+      <mj-column>
+        <mj-text>
+          <h2>Brandenburg startet. Bist du dabei?</h2>
+        </mj-text>
+        <mj-text>
+          Unsere Expedition zur Erforschung des bedingungslosen Grundeinkommens geht im Norden los: Im ersten Schritt brauchen wir 25.000 Unterschriften auf Papier, um die Volksabstimmung zu beantragen. Die offiziellen Listen hierfür bereiten wir gerade vor. 
+        </mj-text>
+        <mj-text>
+          Bislang haben 1.700 Menschen schon über 15.000 der 25.000 Unterschriften versprochen. Wow!
+        </mj-text>
+        <mj-button href="https://expedition-grundeinkommen.de">Unterschriften Herunterladen!</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>hier ist eine weitere sektion</h2>
+        </mi-text>
+        <mj-text mj-class="section-red-text">
+          mehr text...
+        </mi-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text>
+          Expedition Grundeinkommen. Hier ist der Footer.
+        </mi-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
