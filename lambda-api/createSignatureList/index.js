@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const generatePdf = require('./createPDF');
+const fs = require('fs');
 const S3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 const usersTableName = process.env.TABLE_NAME_USERS;
@@ -15,11 +16,11 @@ const responseHeaders = {
 
   id: string (of 7 digits)
   userId: string
-  timestamp: timestamp
+  createdAt: timestamp (YYYY-MM-DD)
   campaign: object
   downloads: number
   received: number
-  url: string
+  pdfUrl: string
 
 */
 
@@ -33,7 +34,7 @@ exports.handler = async event => {
     };
     const date = new Date();
     //we only want the current day (YYYY-MM-DD), then it is also easier to filter
-    const timestamp = date.toISOString().substring;
+    const timestamp = date.toISOString().substring(0, 10);
     //get user id from request body (might not exist, in that case we go a different route)
     let userId;
     if ('userId' in requestBody) {
@@ -59,15 +60,16 @@ exports.handler = async event => {
       //if there was a signature list for this day found
       //we want to update the downloads counter and send the list id and the url to the pdf as response
       const signatureList = foundSignatureLists.Items[0]; //we definitely only have one value (per user/day)
+      console.log('signature list', signatureList);
       try {
         //update list entry to increment the download count
-        await incrementDownloads(id, signatureList.downloads);
+        await incrementDownloads(signatureList.id, signatureList.downloads);
         //after the signature list was successfully updated we return it (id and url to pdf)
         return {
           statusCode: 200,
           headers: responseHeaders,
           body: JSON.stringify({
-            signatureList: { id: signatureList.id, url: signatureList.url },
+            signatureList: { id: signatureList.id, url: signatureList.pdfUrl },
             message:
               'There was already an entry in signatures db and a pdf for this day and user (or anonymous)',
           }),
@@ -86,7 +88,7 @@ exports.handler = async event => {
       let pdfId;
       while (idExists) {
         pdfId = generateRandomId(7);
-        idExists = checkIfIdExists(pdfId);
+        idExists = await checkIfIdExists(pdfId);
         console.log('id already exists?', idExists);
       }
       try {
@@ -146,9 +148,9 @@ const getUser = userId => {
 const getSignatureList = (userId, timestamp) => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'userId = :userId AND timestamp = :timestamp',
+    FilterExpression: 'userId = :userId AND createdAt = :timestamp',
     ExpressionAttributeValues: { ':userId': userId, ':timestamp': timestamp },
-    ProjectionExpression: 'id, url, downloads',
+    ProjectionExpression: 'id, pdfUrl, downloads',
   };
   return ddb.scan(params).promise();
 };
@@ -162,7 +164,7 @@ const checkIfIdExists = async id => {
     ProjectionExpression: 'id',
   };
   const result = await ddb.scan(params).promise();
-  return result.Count === 0;
+  return result.Count !== 0;
 };
 
 //function to create new signature list, userId can be null (anonymous list)
@@ -171,11 +173,11 @@ const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
     TableName: signaturesTableName,
     Item: {
       id: id,
-      url: url,
+      pdfUrl: url,
       downloads: 1,
       received: 0,
       campaign: campaign,
-      timestamp: timestamp,
+      createdAt: timestamp,
     },
   };
 
@@ -192,11 +194,9 @@ const incrementDownloads = (id, downloads) => {
   downloads++;
   const params = {
     TableName: signaturesTableName,
-    Item: {
-      Key: { id: id },
-      UpdateExpression: 'SET downloads = :downloads',
-      ExpressionAttributeValues: { ':downloads': downloads },
-    },
+    Key: { id: id },
+    UpdateExpression: 'SET downloads = :downloads',
+    ExpressionAttributeValues: { ':downloads': downloads },
   };
   return ddb.update(params).promise();
 };
@@ -205,6 +205,7 @@ const incrementDownloads = (id, downloads) => {
 const uploadPDF = (id, pdf) => {
   return S3.upload({
     Bucket: 'signature-lists',
+    ACL: 'public-read',
     Key: `${id}.pdf`,
     Body: Buffer.from(pdf),
     ContentType: 'application/pdf',
@@ -232,7 +233,7 @@ const errorResponse = (statusCode, message, error = null) => {
 };
 
 const generateRandomId = length => {
-  const result = '';
+  let result = '';
   const characters = '0123456789';
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {

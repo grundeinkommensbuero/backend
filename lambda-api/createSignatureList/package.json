@@ -5,16 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "zip -r dist/createPDF.zip ../createPDF",
-    "deploy": "aws lambda update-function-code --function-name createPDF --zip-file fileb://dist/createPDF.zip",
-    "cleanUp": "rm dist/createPDF.zip",
+    "build": "bestzip dist/createSignatureList.zip *",
+    "deploy": "aws lambda update-function-code --function-name createSignatureList --zip-file fileb://dist/createSignatureList.zip",
+    "cleanUp": "rm dist/createSignatureList.zip",
     "buildDeploy": "npm run build && npm run deploy && npm run cleanUp"
   },
   "author": "Vali",
   "license": "ISC",
   "dependencies": {
-    "uuid": "^3.3.3",
     "bwip-js": "^1.7.4",
     "pdf-lib": "^1.2.1"
+  },
+  "devDependencies": {
+    "bestzip": "^2.1.5"
   }
 }
