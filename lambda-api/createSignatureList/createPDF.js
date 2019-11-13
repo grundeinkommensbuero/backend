@@ -10,19 +10,19 @@ module.exports = async function generatePdf(url, code, inputPDF) {
   const barcode = await getBarcode(code);
   const barcodeInDocument = await pdfDoc.embedPng(barcode);
   firstPage.drawImage(barcodeInDocument, {
-    x: 500,
-    y: 50,
-    width: 40,
-    height: 90,
+    x: 737,
+    y: 15,
+    width: 88,
+    height: 38,
   });
 
   const qrCode = await getQrCode(url + code);
   const qrCodeInDocument = await pdfDoc.embedPng(qrCode);
   firstPage.drawImage(qrCodeInDocument, {
-    x: 400,
-    y: 50,
-    width: 90,
-    height: 90,
+    x: 613,
+    y: 537,
+    width: 31,
+    height: 31,
   });
 
   const pdfBytes = await pdfDoc.save();
@@ -40,7 +40,6 @@ function getBarcode(text) {
         height: 10,
         includetext: true,
         textxalign: 'center',
-        rotate: 'R',
       },
       function(err, png) {
         if (!err) {

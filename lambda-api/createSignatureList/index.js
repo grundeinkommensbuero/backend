@@ -5,7 +5,7 @@ const S3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 const usersTableName = process.env.TABLE_NAME_USERS;
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
-const inputPDF = fs.readFileSync(__dirname + '/test-list.pdf');
+const inputPDF = fs.readFileSync(__dirname + '/list_sh.pdf');
 const URL = 'https://expedition-grundeinkommen.de/scan?id=';
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
