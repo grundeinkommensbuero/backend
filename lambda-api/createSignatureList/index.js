@@ -1,100 +1,127 @@
 const AWS = require('aws-sdk');
-
-const uuid = require('uuid/v4');
-
+const generatePdf = require('./createPDF');
+const S3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
-
 const usersTableName = process.env.TABLE_NAME_USERS;
-
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
-
+const inputPDF = fs.readFileSync(__dirname + '/test-list.pdf');
+const URL = 'https://expedition-grundeinkommen.de/scan?id=';
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 };
 
+/*  Model for signature lists in db
+
+  id: string (of 7 digits)
+  userId: string
+  timestamp: timestamp
+  campaign: object
+  downloads: number
+  received: number
+  url: string
+
+*/
+
 exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
+    const campaign = {
+      code: requestBody.campaignCode,
+      state: requestBody.state,
+      round: requestBody.round,
+    };
     const date = new Date();
-    const timestamp = date.toISOString();
-    //get user id from request body (might not exist)
+    //we only want the current day (YYYY-MM-DD), then it is also easier to filter
+    const timestamp = date.toISOString().substring;
+    //get user id from request body (might not exist, in that case we go a different route)
+    let userId;
     if ('userId' in requestBody) {
-      const userId = requestBody.userId;
+      userId = requestBody.userId;
+      //now we want to validate if the user actually exists
       try {
         const user = await getUser(userId);
         //if user does not have Item as property, there was no user found
         if (!('Item' in user) || typeof user.Item === 'undefined') {
           return errorResponse(400, 'No user found with the passed user id');
         }
-        //user was found, proceed by checking if signature list entry with userId already exists
-        const foundSignatureLists = await getSignatureListByUser(userId);
-        if (foundSignatureLists.Count !== 0) {
-          //if there was a signature list with the user as "owner" found
-          //we just want to send the list id as response
-          return {
-            statusCode: 200,
-            headers: responseHeaders,
-            body: JSON.stringify({
-              signatureList: foundSignatureLists.Items[0], //in the current setup user definitely only has one
-              message: 'User already had an entry in signatures db',
-            }),
-            isBase64Encoded: false,
-          };
-        } else {
-          //if there was no signature list with the user as "owner" found
-          //we are going to create a new one
-          const id = uuid();
-          try {
-            await createSignatureList(id, timestamp, userId);
-            //creation of new list was successful, which is why we are going to return the new id
-            return {
-              statusCode: 201,
-              headers: responseHeaders,
-              body: JSON.stringify({
-                signatureList: { id: id },
-                message:
-                  'There was no signature list of this user, created new one',
-              }),
-              isBase64Encoded: false,
-            };
-          } catch (error) {
-            console.log('error while creating new signature list', error);
-            return errorResponse(
-              500,
-              'error while creating new signature list',
-              error
-            );
-          }
-        }
       } catch (error) {
-        console.log('error while getting user or signature list', error);
-        return errorResponse(
-          500,
-          'error while getting user or signature list',
-          error
-        );
+        return errorResponse(500, 'Error while getting user', error);
       }
     } else {
-      //user id does not exist: create new list entry without userid
-      const id = uuid();
+      userId = 'anonymous';
+    }
+
+    //in does not matter, if the user is anonymous or not...
+    //now we check, if there already is an entry for the list for this day
+    const foundSignatureLists = await getSignatureList(userId, timestamp);
+    if (foundSignatureLists.Count !== 0) {
+      //if there was a signature list for this day found
+      //we want to update the downloads counter and send the list id and the url to the pdf as response
+      const signatureList = foundSignatureLists.Items[0]; //we definitely only have one value (per user/day)
       try {
-        await createSignatureList(id, timestamp);
-        //creation of new list was successful, which is why we are going to return the new id
+        //update list entry to increment the download count
+        await incrementDownloads(id, signatureList.downloads);
+        //after the signature list was successfully updated we return it (id and url to pdf)
         return {
-          statusCode: 201,
+          statusCode: 200,
           headers: responseHeaders,
           body: JSON.stringify({
-            signatureList: { id: id },
-            message: 'Created new anonymous signature list',
+            signatureList: { id: signatureList.id, url: signatureList.url },
+            message:
+              'There was already an entry in signatures db and a pdf for this day and user (or anonymous)',
           }),
           isBase64Encoded: false,
         };
       } catch (error) {
-        console.log('error while creating new signature list', error);
+        console.log('Error while updating list entry', error);
+        return errorResponse(500, 'Error while updating list entry', error);
+      }
+    } else {
+      //if there was no signature list with the user as "owner" found
+      //we are going to create a new one
+
+      //because the id is quite small we need to check if the newly created one already exists (unlikely)
+      let idExists = true;
+      let pdfId;
+      while (idExists) {
+        pdfId = generateRandomId(7);
+        idExists = checkIfIdExists(pdfId);
+        console.log('id already exists?', idExists);
+      }
+      try {
+        //we are going to generate the pdf
+        const generatedPDF = await generatePdf(URL, pdfId, inputPDF);
+        //upload pdf to s3 after generation was successful
+        const uploadResult = await uploadPDF(pdfId, generatedPDF);
+        console.log('success uploading pdf to bucket', uploadResult);
+        const url = uploadResult.Location;
+        try {
+          //if the upload process was successful, we create the list entry in the db
+          //userId might be 'anonymous'
+          await createSignatureList(pdfId, timestamp, url, campaign, userId);
+          return {
+            statusCode: 201,
+            headers: responseHeaders,
+            body: JSON.stringify({
+              signatureList: { id: pdfId, url: url },
+              message:
+                'There was no signature list of this user, created new pdf and uploaded it',
+            }),
+            isBase64Encoded: false,
+          };
+        } catch (error) {
+          console.log('error while creating new signature list in db', error);
+          return errorResponse(
+            500,
+            'Error while creating new signature list in db',
+            error
+          );
+        }
+      } catch (error) {
         return errorResponse(
           500,
-          'error while creating new signature list',
+          'Error while generating or uploading PDF',
           error
         );
       }
@@ -115,24 +142,40 @@ const getUser = userId => {
   return ddb.get(params).promise();
 };
 
-//function to check, if there already is a signature list owned by the user
-const getSignatureListByUser = userId => {
+//function to check, if there already is a signature list for this specific day (owned by user or anonymous)
+const getSignatureList = (userId, timestamp) => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'userId = :userId',
-    ExpressionAttributeValues: { ':userId': userId },
-    ProjectionExpression: 'id',
+    FilterExpression: 'userId = :userId AND timestamp = :timestamp',
+    ExpressionAttributeValues: { ':userId': userId, ':timestamp': timestamp },
+    ProjectionExpression: 'id, url, downloads',
   };
   return ddb.scan(params).promise();
 };
 
+//Checks, if the passed id already exists in the signatures table (returns true or false)
+const checkIfIdExists = async id => {
+  const params = {
+    TableName: signaturesTableName,
+    FilterExpression: 'id = :id',
+    ExpressionAttributeValues: { ':id': id },
+    ProjectionExpression: 'id',
+  };
+  const result = await ddb.scan(params).promise();
+  return result.Count === 0;
+};
+
 //function to create new signature list, userId can be null (anonymous list)
-const createSignatureList = (id, timestamp, userId = null) => {
+const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
   const params = {
     TableName: signaturesTableName,
     Item: {
       id: id,
-      createdAt: timestamp,
+      url: url,
+      downloads: 1,
+      received: 0,
+      campaign: campaign,
+      timestamp: timestamp,
     },
   };
 
@@ -142,6 +185,30 @@ const createSignatureList = (id, timestamp, userId = null) => {
   }
 
   return ddb.put(params).promise();
+};
+
+//updates entry in signature lists db to increment the download (the current download count is passed)
+const incrementDownloads = (id, downloads) => {
+  downloads++;
+  const params = {
+    TableName: signaturesTableName,
+    Item: {
+      Key: { id: id },
+      UpdateExpression: 'SET downloads = :downloads',
+      ExpressionAttributeValues: { ':downloads': downloads },
+    },
+  };
+  return ddb.update(params).promise();
+};
+
+//uploads pdf to s3 bucket
+const uploadPDF = (id, pdf) => {
+  return S3.upload({
+    Bucket: 'signature-lists',
+    Key: `${id}.pdf`,
+    Body: Buffer.from(pdf),
+    ContentType: 'application/pdf',
+  }).promise();
 };
 
 const errorResponse = (statusCode, message, error = null) => {
@@ -162,4 +229,14 @@ const errorResponse = (statusCode, message, error = null) => {
     headers: responseHeaders,
     isBase64Encoded: false,
   };
+};
+
+const generateRandomId = length => {
+  const result = '';
+  const characters = '0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };
