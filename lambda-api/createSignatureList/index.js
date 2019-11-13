@@ -149,22 +149,23 @@ const getUser = userId => {
 const getSignatureList = (userId, timestamp) => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'userId = :userId AND createdAt = :timestamp',
+    KeyConditionExpression: 'userId = :userId AND createdAt = :timestamp',
     ExpressionAttributeValues: { ':userId': userId, ':timestamp': timestamp },
     ProjectionExpression: 'id, pdfUrl, downloads',
   };
-  return ddb.scan(params).promise();
+  return ddb.query(params).promise();
 };
 
 //Checks, if the passed id already exists in the signatures table (returns true or false)
 const checkIfIdExists = async id => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'id = :id',
-    ExpressionAttributeValues: { ':id': id },
+    Key: {
+      id: id,
+    },
     ProjectionExpression: 'id',
   };
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.get(params).promise();
   return result.Count !== 0;
 };
 
