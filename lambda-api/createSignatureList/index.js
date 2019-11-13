@@ -27,6 +27,7 @@ const responseHeaders = {
 exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
+    //apparently dynamodb is filtering undefined values anyway, so no need to catch that
     const campaign = {
       code: requestBody.campaignCode,
       state: requestBody.state,
