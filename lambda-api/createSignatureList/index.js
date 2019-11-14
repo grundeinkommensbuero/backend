@@ -27,12 +27,22 @@ const responseHeaders = {
 exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
-    //apparently dynamodb is filtering undefined values anyway, so no need to catch that
-    const campaign = {
-      code: requestBody.campaignCode,
-      state: requestBody.state,
-      round: requestBody.round,
-    };
+    const campaign = {};
+    //create a (nice to later work with) object, which campaign it is
+    if (
+      'campaignCode' in requestBody &&
+      typeof requestBody.campaignCode !== undefined
+    ) {
+      const campaignCode = requestBody.campaignCode;
+      //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
+      campaign.state = campaignCode.substring(0, campaignCode.length - 2);
+      //...and take the last char and save it as number
+      campaign.round = parseInt(
+        campaignCode.substring(campaignCode.length - 1, campaignCode.length)
+      );
+      campaign.code = campaignCode;
+    }
+
     const date = new Date();
     //we only want the current day (YYYY-MM-DD), then it is also easier to filter
     const timestamp = date.toISOString().substring(0, 10);
