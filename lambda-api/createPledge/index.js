@@ -31,6 +31,14 @@ exports.handler = async event => {
         );
       }
 
+      //if user already has made a pledge, we do not want to save (overwrite) it
+      //we check if there is already a newsletterConsent (it is harder to check for pledge because of different keys)
+      if (
+        'newsletterConsent' in user.Item &&
+        typeof user.Item.newsletterConsent !== undefined
+      ) {
+        return errorResponse(401, 'No permission to override pledge', null);
+      }
       try {
         await savePledge(userId, timestamp, requestBody);
         //saving pledge was successfull, return appropriate json
