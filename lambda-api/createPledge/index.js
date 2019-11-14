@@ -66,7 +66,7 @@ const savePledge = (userId, timestamp, requestBody) => {
   if (requestBody.pledgeId === 'brandenburg') {
     pledgeKey = 'pledge-brandenburg-1';
   } else {
-    pledgeKey = 'pledge';
+    pledgeKey = 'pledge-schleswig-holstein-1';
   }
 
   const data = {
