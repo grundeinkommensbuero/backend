@@ -16,7 +16,7 @@ exports.handler = async event => {
 
       //if user is not verified we do not need to count the signatures
       if (verified) {
-        let count = user.pledge.signatureCount;
+        let count = user['pledge-schleswig-holstein-1'].signatureCount;
         if (typeof count !== 'undefined') {
           //signature count might have been saved as string
           if (typeof count !== 'number') {
@@ -52,7 +52,6 @@ exports.handler = async event => {
 const getAllUsers = () => {
   const params = {
     TableName: tableName,
-    ProjectionExpression: 'cognitoId, pledge',
   };
   return ddb.scan(params).promise();
 };

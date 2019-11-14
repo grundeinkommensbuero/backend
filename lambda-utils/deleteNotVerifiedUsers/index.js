@@ -12,9 +12,9 @@ exports.handler = async event => {
     //filter users to check if the creation of the user was more than
     //24 hours agp
     const date = new Date();
-    const twoDays = 48 * 60 * 60 * 1000;
+    const fiveDays = 5 * 24 * 60 * 60 * 1000;
     const filteredUsers = notVerifiedCognitoUsers.filter(
-      user => date - user.UserCreateDate > twoDays
+      user => date - user.UserCreateDate > fiveDays
     );
     console.log(
       'not verified and it has been a day count:',
