@@ -15,7 +15,7 @@ const responseHeaders = {
 /*  Model for signature lists in db
 
   id: string (of 7 digits)
-  userId: string
+  userId: string or email:string
   createdAt: timestamp (YYYY-MM-DD)
   campaign: object
   downloads: number
@@ -59,6 +59,18 @@ exports.handler = async event => {
         }
       } catch (error) {
         return errorResponse(500, 'Error while getting user', error);
+      }
+    } else if ('email' in requestBody) {
+      //in case the api only got the email instead of the id we need to get the user id from the db
+      try {
+        const result = await getUserByMail(requestBody.email);
+        if (result.Count === 0) {
+          return errorResponse(400, 'No user found with the passed email');
+        } else {
+          userId = result.Items[0].cognitoId;
+        }
+      } catch (error) {
+        return errorResponse(500, 'Error while getting user by email', error);
       }
     } else {
       userId = 'anonymous';
@@ -153,6 +165,16 @@ const getUser = userId => {
     },
   };
   return ddb.get(params).promise();
+};
+
+const getUserByMail = email => {
+  const params = {
+    TableName: usersTableName,
+    FilterExpression: 'email = :email',
+    ExpressionAttributeValues: { ':email': email },
+    ProjectionExpression: 'cognitoId',
+  };
+  return ddb.scan(params).promise();
 };
 
 //function to check, if there already is a signature list for this specific day (owned by user or anonymous)
