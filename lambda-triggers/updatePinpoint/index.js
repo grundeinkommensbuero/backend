@@ -27,7 +27,8 @@ exports.handler = async (event, context) => {
         const userId = newData.cognitoId.S;
         const createdAt = newData.createdAt.S;
         const email = newData.email.S;
-        const zipCode = newData.zipCode.S;
+        const zipCode =
+          'N' in newData.zipCode ? newData.zipCode.S : newData.zipCode.S;
         const username = newData.username.S;
         const referral = newData.referral.S;
         /* not needed for slimmer pledge
