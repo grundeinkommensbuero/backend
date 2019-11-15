@@ -31,14 +31,6 @@ exports.handler = async event => {
         );
       }
 
-      //if user already has made a pledge, we do not want to save (overwrite) it
-      //we check if there is already a newsletterConsent (it is harder to check for pledge because of different keys)
-      if (
-        'newsletterConsent' in user.Item &&
-        typeof user.Item.newsletterConsent !== undefined
-      ) {
-        return errorResponse(401, 'No permission to override pledge', null);
-      }
       try {
         await savePledge(userId, timestamp, requestBody);
         //saving pledge was successfull, return appropriate json
@@ -69,34 +61,19 @@ exports.handler = async event => {
 };
 
 const savePledge = (userId, timestamp, requestBody) => {
-  //check which pledge it is (e.g. pledgeId='brandenburg')
-  let pledgeKey;
-  if (requestBody.pledgeId === 'brandenburg') {
-    pledgeKey = 'pledge-brandenburg-1';
-  } else {
-    pledgeKey = 'pledge-schleswig-holstein-1';
-  }
+  //check which pledge it is (e.g. pledgeId='brandenburg-1')
+  //create a (nice to later work with) object, which campaign it is
+  const campaign = constructCampaignId(requestBody.pledgeId);
 
   const data = {
-    ':pledge': {
-      signatureCount: requestBody.signatureCount,
-      createdAt: timestamp,
-    },
-    /* not needed for slimmer form
-    ':wouldPrintAndSendSignatureLists':
-      requestBody.wouldPrintAndSendSignatureLists,
-    ':wouldDonate': requestBody.wouldDonate,
-    ':wouldPutAndCollectSignatureLists':
-      requestBody.wouldPutAndCollectSignatureLists,
-    ':wouldCollectSignaturesInPublicSpaces':
-      requestBody.wouldCollectSignaturesInPublicSpaces,
-      */
-    /* not needed for slimmer form
-     ':wouldEngageCustom':
-       requestBody.wouldEngageCustom !== undefined
-         ? requestBody.wouldEngageCustom
-         : 'empty',
-         */
+    //needs to be array because append_list works with an array
+    ':pledge': [
+      {
+        signatureCount: requestBody.signatureCount,
+        campaign: campaign,
+        createdAt: timestamp,
+      },
+    ],
     ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
     ':username':
       'name' in requestBody && requestBody.name !== ''
@@ -107,37 +84,24 @@ const savePledge = (userId, timestamp, requestBody) => {
       value: requestBody.newsletterConsent,
       timestamp: timestamp,
     },
+    ':emptyList': [],
   };
 
+  //if there is no pledges key yet we initiate it with an array,
+  //otherwise we add the pledge to the array
+  //also we do not want to overwrite everything else, if those keys already exist
   return ddb
     .update({
       TableName: tableName,
       Key: { cognitoId: userId },
-      /* not needed for slimmer form
-      UpdateExpression: `set pledge.signatureCount = :signatureCount, 
-      pledge.wouldPrintAndSendSignatureLists = :wouldPrintAndSendSignatureLists, 
-      pledge.wouldDonate = :wouldDonate,
-      pledge.wouldEngageCustom = :wouldEngageCustom,
-      pledge.wouldPutAndCollectSignatureLists = :wouldPutAndCollectSignatureLists,
-      pledge.wouldCollectSignaturesInPublicSpaces = :wouldCollectSignaturesInPublicSpaces,
-      zipCode = :zipCode,
-      username = :username,
-      pledge.createdAt = :createdAt,
-      referral = :referral,
-      newsletterConsent = :newsletterConsent
-      `,
-      */
       UpdateExpression: `
-      set #pledgeKey = :pledge,
-      zipCode = :zipCode,
-      username = :username,
-      referral = :referral,
-      newsletterConsent = :newsletterConsent
+      set pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),
+      zipCode = if_not_exists(zipCode, :zipCode),
+      username = if_not_exists(username, :username),
+      referral = if_not_exists(referral, :referral),
+      newsletterConsent = if_not_exists(newsletterConsent, :newsletterConsent)
       `,
       ExpressionAttributeValues: data,
-      ExpressionAttributeNames: {
-        '#pledgeKey': pledgeKey, //to work properly we need to use a placeholder (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html#ExpressionAttributeNames)
-      },
       ReturnValues: 'UPDATED_NEW',
     })
     .promise();
@@ -155,12 +119,6 @@ const validateParams = requestBody => {
   return (
     'userId' in requestBody &&
     'signatureCount' in requestBody &&
-    /* not needed for slimmer form
-    requestBody.wouldDonate !== undefined &&
-    requestBody.wouldPrintAndSendSignatureLists !== undefined &&
-    requestBody.wouldPutAndCollectSignatureLists !== undefined &&
-    requestBody.wouldCollectSignaturesInPublicSpaces !== undefined &&
-    */
     'newsletterConsent' in requestBody
   );
 };
@@ -197,4 +155,18 @@ const errorResponse = (statusCode, message, error) => {
     },
     isBase64Encoded: false,
   };
+};
+
+const constructCampaignId = campaignCode => {
+  const campaign = {};
+  if (typeof campaignCode !== 'undefined') {
+    //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
+    campaign.state = campaignCode.substring(0, campaignCode.length - 2);
+    //...and take the last char and save it as number
+    campaign.round = parseInt(
+      campaignCode.substring(campaignCode.length - 1, campaignCode.length)
+    );
+    campaign.code = campaignCode;
+  }
+  return campaign;
 };

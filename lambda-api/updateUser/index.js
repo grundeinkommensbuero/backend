@@ -69,7 +69,7 @@ const updateUser = (userId, referral, timestamp) => {
     value: true,
     timestamp: timestamp,
   };
-  //if referral is undefined, add don't add the key
+  //if referral is undefined, don't add the key
   let updateExpression;
   if (typeof referral !== 'undefined') {
     updateExpression =
