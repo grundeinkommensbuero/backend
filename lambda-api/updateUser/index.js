@@ -12,6 +12,7 @@ const responseHeaders = {
 exports.handler = async event => {
   //get user id from path parameter
   const userId = event.pathParameters.userId;
+  console.log('userId', userId);
   try {
     const requestBody = JSON.parse(event.body);
     const date = new Date();
@@ -68,13 +69,19 @@ const updateUser = (userId, referral, timestamp) => {
     value: true,
     timestamp: timestamp,
   };
-  //if referral is undefined, the key will not be added anyway
-  //so no need to process referral further
+  //if referral is undefined, add don't add the key
+  let updateExpression;
+  if (typeof referral !== 'undefined') {
+    updateExpression =
+      'SET newsletterConsent = :newsletterConsent, referral = :referral';
+  } else {
+    updateExpression = 'SET newsletterConsent = :newsletterConsent';
+  }
+
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
-    UpdateExpression:
-      'SET newsletterConsent = :newsletterConsent, referral = :referral',
+    UpdateExpression: updateExpression,
     ExpressionAttributeValues: {
       ':newsletterConsent': newsletterConsent,
       ':referral': referral,
