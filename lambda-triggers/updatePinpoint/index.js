@@ -1,7 +1,7 @@
 console.log('Loading function');
 const AWS = require('aws-sdk');
 const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
-const projectId = 'b3f64d0245774296b5937e97b9bfc8c3';
+const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const zipCodeMatcher = require('./zipCodeMatcher');
 
 exports.handler = async (event, context) => {
