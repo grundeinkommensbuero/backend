@@ -27,21 +27,8 @@ const responseHeaders = {
 exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
-    const campaign = {};
     //create a (nice to later work with) object, which campaign it is
-    if (
-      'campaignCode' in requestBody &&
-      typeof requestBody.campaignCode !== undefined
-    ) {
-      const campaignCode = requestBody.campaignCode;
-      //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
-      campaign.state = campaignCode.substring(0, campaignCode.length - 2);
-      //...and take the last char and save it as number
-      campaign.round = parseInt(
-        campaignCode.substring(campaignCode.length - 1, campaignCode.length)
-      );
-      campaign.code = campaignCode;
-    }
+    const campaign = constructCampaignId(requestBody.campaignCode);
 
     const date = new Date();
     //we only want the current day (YYYY-MM-DD), then it is also easier to filter
@@ -199,7 +186,7 @@ const checkIfIdExists = async id => {
   };
   const result = await ddb.get(params).promise();
   //if there is Item in result, there was an entry found
-  return 'Item' in result && typeof result.Item !== undefined;
+  return 'Item' in result && typeof result.Item !== 'undefined';
 };
 
 //function to create new signature list, userId can be null (anonymous list)
@@ -275,4 +262,18 @@ const generateRandomId = length => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+const constructCampaignId = campaignCode => {
+  const campaign = {};
+  if (typeof campaignCode !== 'undefined') {
+    //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
+    campaign.state = campaignCode.substring(0, campaignCode.length - 2);
+    //...and take the last char and save it as number
+    campaign.round = parseInt(
+      campaignCode.substring(campaignCode.length - 1, campaignCode.length)
+    );
+    campaign.code = campaignCode;
+  }
+  return campaign;
 };
