@@ -13,25 +13,33 @@ exports.handler = async (event, context) => {
       console.log('Record: %j', record);
       //only update pinpoint, if the pledge changes
       const newData = record.dynamodb.NewImage;
-      let pledgeData;
-      if ('pledge' in newData) {
-        pledgeData = newData.pledge.M;
-      } else if ('pledge-brandenburg-1' in newData) {
-        pledgeData = newData['pledge-brandenburg-1'].M;
-      } else if ('pledge-schleswig-holstein-1' in newData) {
-        pledgeData = newData['pledge-schleswig-holstein-1'].M;
-      }
 
-      if (typeof pledgeData !== 'undefined' && pledgeData !== null) {
-        const newsletterConsent = newData.newsletterConsent.M.value.BOOL;
-        const userId = newData.cognitoId.S;
-        const createdAt = newData.createdAt.S;
-        const email = newData.email.S;
-        const zipCode =
-          'N' in newData.zipCode ? newData.zipCode.S : newData.zipCode.S;
-        const username = newData.username.S;
-        const referral = newData.referral.S;
-        /* not needed for slimmer pledge
+      const newsletterConsent =
+        'newsletterConsent' in newData
+          ? newData.newsletterConsent.M.value.BOOL
+          : false;
+      const userId = newData.cognitoId.S;
+      const createdAt = newData.createdAt.S;
+      const email = newData.email.S;
+      let zipCode;
+      let region;
+      //zipCode might have been saved as number or string (TODO: need to check why)
+      if ('zipCode' in newData) {
+        if ('N' in newData.zipCode) {
+          zipCode = parseInt(newData.zipCode.N);
+        } else {
+          zipCode = newData.zipCode.S;
+        }
+        // Make use of utility function to match the state to a given zip code
+        region = zipCodeMatcher.getStateByZipCode(zipCode);
+        console.log('matched region', region);
+      } else {
+        zipCode = 'undefined';
+        region = 'undefined';
+      }
+      const username = 'username' in newData ? newData.username.S : 'empty';
+      const referral = 'referral' in newData ? newData.referral.S : 'empty';
+      /* not needed for slimmer pledge
         
         const pledgeAttributes = [];
         if (pledgeData.wouldPrintAndSendSignatureLists.BOOL) {
@@ -51,46 +59,54 @@ exports.handler = async (event, context) => {
         }
         */
 
-        // Make use of utility function to match the state to a given zip code
-        const region = zipCodeMatcher.getStateByZipCode(zipCode);
-        console.log('matched region', region);
-
-        const params = {
-          ApplicationId: projectId,
-          EndpointId: `email-endpoint-${userId}`,
-          EndpointRequest: {
-            ChannelType: 'EMAIL',
-            Address: email,
-            Attributes: {
-              Referral: [referral],
-              Region: [region],
-              PostalCode: [zipCode],
-              //Pledge: pledgeAttributes,
-            },
-            EffectiveDate: createdAt,
-            Location: {
-              PostalCode: zipCode,
-              Region: region,
-            },
-            Metrics: {
-              SignatureCount: parseInt(pledgeData.signatureCount.N),
-            },
-            OptOut: newsletterConsent ? 'NONE' : 'ALL',
-            User: {
-              UserId: userId,
-              UserAttributes: {
-                Username: [username],
-              },
+      const params = {
+        ApplicationId: projectId,
+        EndpointId: `email-endpoint-${userId}`,
+        EndpointRequest: {
+          ChannelType: 'EMAIL',
+          Address: email,
+          Attributes: {
+            Referral: [referral],
+            Region: [region],
+            PostalCode: [zipCode],
+            //Pledge: pledgeAttributes,
+          },
+          EffectiveDate: createdAt,
+          Location: {
+            PostalCode: zipCode,
+            Region: region,
+          },
+          Metrics: {},
+          OptOut: newsletterConsent ? 'NONE' : 'ALL',
+          User: {
+            UserId: userId,
+            UserAttributes: {
+              Username: [username],
             },
           },
-        };
-        console.log('trying to update the endpoint with params:', params);
-        try {
-          const result = await pinpoint.updateEndpoint(params).promise();
-          console.log('updated pinpoint', result);
-        } catch (error) {
-          console.log(error);
+        },
+      };
+
+      //go through the list of pledges and construct attributes for each campaign
+      let pledges;
+      if ('pledges' in newData) {
+        pledges = newData.pledges.L;
+        for (let pledge of pledges) {
+          let campaignCode = pledge.M.campaign.M.code.S;
+          //for now we just need the signature count
+          //TODO maybe refactor in the future
+          if ('signatureCount' in pledge.M) {
+            params.EndpointRequest.Metrics[`SignatureCount-${campaignCode}`] =
+              pledge.M.signatureCount.N;
+          }
         }
+      }
+      console.log('trying to update the endpoint with params:', params);
+      try {
+        const result = await pinpoint.updateEndpoint(params).promise();
+        console.log('updated pinpoint', result);
+      } catch (error) {
+        console.log(error);
       }
     } else {
       //record was removed
