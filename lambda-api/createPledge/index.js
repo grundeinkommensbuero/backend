@@ -52,12 +52,14 @@ exports.handler = async event => {
       }
     }
     //check if the same pledge was already made
-    for (let pledge of user.pledges) {
-      if (requestBody.pledgeId === pledge.campaign.code) {
-        return errorResponse(
-          401,
-          'A pledge for this campaign was already made'
-        );
+    if ('pledges' in user) {
+      for (let pledge of user.pledges) {
+        if (requestBody.pledgeId === pledge.campaign.code) {
+          return errorResponse(
+            401,
+            'A pledge for this campaign was already made'
+          );
+        }
       }
     }
 
