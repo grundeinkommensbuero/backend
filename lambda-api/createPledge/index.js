@@ -72,6 +72,7 @@ const savePledge = (userId, timestamp, requestBody) => {
         signatureCount: requestBody.signatureCount,
         campaign: campaign,
         createdAt: timestamp,
+        abTestId: requestBody.abTestId,
       },
     ],
     ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
