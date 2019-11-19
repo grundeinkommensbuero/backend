@@ -14,10 +14,6 @@ exports.handler = async (event, context) => {
       //only update pinpoint, if the pledge changes
       const newData = record.dynamodb.NewImage;
 
-      const newsletterConsent =
-        'newsletterConsent' in newData
-          ? newData.newsletterConsent.M.value.BOOL
-          : false;
       const userId = newData.cognitoId.S;
       const createdAt = newData.createdAt.S;
       const email = newData.email.S;
@@ -39,6 +35,24 @@ exports.handler = async (event, context) => {
       }
       const username = 'username' in newData ? newData.username.S : 'empty';
       const referral = 'referral' in newData ? newData.referral.S : 'empty';
+
+      //if the record was created within the last x minutes, we set the newsletter consent
+      //to false anyway, because we need to wait for the verification
+      let newsletterConsent;
+      //we have to bring the two dates into the same format (UNIX time)
+      const date = new Date().valueOf();
+      const createdAtDate = Date.parse(createdAt);
+      const fiveMinutes = 5 * 60 * 1000;
+      if (date - createdAtDate < fiveMinutes) {
+        newsletterConsent = false;
+      } else {
+        //make it depending on the newsletter consent value
+        newsletterConsent =
+          'newsletterConsent' in newData
+            ? newData.newsletterConsent.M.value.BOOL
+            : false;
+      }
+
       /* not needed for slimmer pledge
         
         const pledgeAttributes = [];
@@ -119,7 +133,7 @@ exports.handler = async (event, context) => {
         EndpointId: `email-endpoint-${userId}`,
       };
       try {
-        const result = await pinpoint.deleteEndpoint(params);
+        const result = await pinpoint.deleteEndpoint(params).promise();
         console.log('success deleting endpoint', result);
       } catch (error) {
         console.log('error deleting endpoint', error);
