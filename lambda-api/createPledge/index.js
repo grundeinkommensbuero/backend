@@ -11,55 +11,71 @@ exports.handler = async event => {
     const requestBody = JSON.parse(event.body);
 
     //check if there is a user with the passed user id
-    try {
-      const date = new Date();
-      const timestamp = date.toISOString();
-      console.log('request body', requestBody);
-      if (!validateParams(requestBody)) {
-        return errorResponse(400, 'One or more parameters are missing');
-      }
+    const date = new Date();
+    const timestamp = date.toISOString();
+    console.log('request body', requestBody);
+    if (!validateParams(requestBody)) {
+      return errorResponse(400, 'One or more parameters are missing');
+    }
 
-      const userId = requestBody.userId;
-      const user = await getUser(userId);
-      console.log('user', user);
-      //if user does not have Item as property, there was no user found
-      if (!('Item' in user) || typeof user.Item === 'undefined') {
-        return errorResponse(400, 'No user found with the passed user id');
-      }
-
-      //check if the same pledge was already made
-      for (let pledge of user.Item.pledges) {
-        if (requestBody.pledgeId === pledge.campaign.code) {
-          return errorResponse(
-            401,
-            'A pledge for this campaign was already made'
-          );
-        }
-      }
-
-      //if no pledge for this specific campaign was made, proceed...
+    //request body might have email or user id
+    let userId;
+    let user;
+    if ('userId' in requestBody) {
+      userId = requestBody.userId;
       try {
-        await savePledge(userId, timestamp, requestBody);
-        //saving pledge was successfull, return appropriate json
-        return {
-          statusCode: 204,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-          },
-          isBase64Encoded: false,
-        };
+        const result = await getUser(userId);
+
+        console.log('user', result);
+        //if user does not have Item as property, there was no user found
+        if (!('Item' in result) || typeof result.Item === 'undefined') {
+          return errorResponse(400, 'No user found with the passed user id');
+        }
+        //we later need the user object
+        user = result.Item;
       } catch (error) {
-        console.log(error);
-        return errorResponse(500, 'Error saving pledge', error);
+        return errorResponse(500, 'Error while getting user', error);
       }
+    } else if ('email' in requestBody) {
+      //in case the api only got the email instead of the id we need to get the user id from the db
+      try {
+        const result = await getUserByMail(requestBody.email);
+        if (result.Count === 0) {
+          return errorResponse(400, 'No user found with the passed email');
+        } else {
+          //we later need the user object and id
+          user = result.Items[0];
+          userId = user.cognitoId;
+        }
+      } catch (error) {
+        return errorResponse(500, 'Error while getting user by email', error);
+      }
+    }
+    //check if the same pledge was already made
+    for (let pledge of user.pledges) {
+      if (requestBody.pledgeId === pledge.campaign.code) {
+        return errorResponse(
+          401,
+          'A pledge for this campaign was already made'
+        );
+      }
+    }
+
+    //if no pledge for this specific campaign was made, proceed...
+    try {
+      await savePledge(userId, timestamp, requestBody);
+      //saving pledge was successfull, return appropriate json
+      return {
+        statusCode: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+        isBase64Encoded: false,
+      };
     } catch (error) {
       console.log(error);
-      return errorResponse(
-        500,
-        'Error while getting user from users table',
-        error
-      );
+      return errorResponse(500, 'Error saving pledge', error);
     }
   } catch (error) {
     console.log(error);
@@ -125,7 +141,7 @@ const toUrlString = buffer => {
 
 const validateParams = requestBody => {
   return (
-    'userId' in requestBody &&
+    ('userId' in requestBody || 'email' in requestBody) &&
     'signatureCount' in requestBody &&
     'newsletterConsent' in requestBody
   );
@@ -140,6 +156,15 @@ const getUser = userId => {
       },
     })
     .promise();
+};
+
+const getUserByMail = email => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'email = :email',
+    ExpressionAttributeValues: { ':email': email },
+  };
+  return ddb.scan(params).promise();
 };
 
 const errorResponse = (statusCode, message, error = null) => {
