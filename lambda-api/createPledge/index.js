@@ -16,7 +16,7 @@ exports.handler = async event => {
       const timestamp = date.toISOString();
       console.log('request body', requestBody);
       if (!validateParams(requestBody)) {
-        return errorResponse(400, 'One or more parameters are missing', null);
+        return errorResponse(400, 'One or more parameters are missing');
       }
 
       const userId = requestBody.userId;
@@ -24,13 +24,20 @@ exports.handler = async event => {
       console.log('user', user);
       //if user does not have Item as property, there was no user found
       if (!('Item' in user) || typeof user.Item === 'undefined') {
-        return errorResponse(
-          400,
-          'No user found with the passed user id',
-          null
-        );
+        return errorResponse(400, 'No user found with the passed user id');
       }
 
+      //check if the same pledge was already made
+      for (let pledge of user.Item.pledges) {
+        if (requestBody.pledgeId === pledge.campaign.code) {
+          return errorResponse(
+            401,
+            'A pledge for this campaign was already made'
+          );
+        }
+      }
+
+      //if no pledge for this specific campaign was made, proceed...
       try {
         await savePledge(userId, timestamp, requestBody);
         //saving pledge was successfull, return appropriate json
@@ -135,7 +142,7 @@ const getUser = userId => {
     .promise();
 };
 
-const errorResponse = (statusCode, message, error) => {
+const errorResponse = (statusCode, message, error = null) => {
   let body;
   if (error !== null) {
     body = JSON.stringify({
