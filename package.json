@@ -3,14 +3,7 @@
   "version": "1.0.0",
   "description": "This is a sample template for cognito-sam - Below is a brief explanation of what we have generated for you:",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "tsc && sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket ${S3_BUCKET_NAME}",
-    "deploy": "sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name ${STACK_NAME} --parameter-overrides SESFromAddress=${SES_FROM_ADDRESS} UserPoolName=${USER_POOL_NAME}",
-    "check-env": "if [ -e ${S3_BUCKET_NAME} ] || [ -e ${USER_POOL_NAME} ] || [ -e ${STACK_NAME} ] || [ -e ${SES_FROM_ADDRESS} ]; then exit 1; fi",
-    "bd": "npm run check-env && npm run package && npm run deploy",
-    "publish": "npm run package && sam publish -t packaged.yaml --region us-east-1"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "MIT",
@@ -22,8 +15,9 @@
     "typescript": "^3.2.2"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
     "babel-eslint": "^10.0.1",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2"
   }
 }

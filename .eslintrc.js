@@ -1,11 +1,12 @@
 module.exports = {
+  extends: ['prettier'],
   env: {
-    es6: true
+    es6: true,
   },
-  parser: "babel-eslint",
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {
-      experimentalObjectRestSpread: true
-    }
-  }
+      experimentalObjectRestSpread: true,
+    },
+  },
 };
