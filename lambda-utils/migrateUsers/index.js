@@ -2,7 +2,8 @@ const fs = require('fs');
 const randomBytes = require('crypto').randomBytes;
 const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
-const path = './change_users.csv';
+const changePath = './data/change_users.csv';
+const mailerlitePath = './data/mailerlite_users.csv';
 const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
@@ -15,18 +16,21 @@ const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 const dynamoLimiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
 
 const tableName = 'Users';
-let counter = 0;
 
 const migrateUsers = async () => {
   try {
-    const allUsers = await readCsv();
+    const changeUsers = await readCsv('change');
+    const mailerliteUsers = await readCsv('mailerlite');
+    console.log('user', mailerliteUsers[1]);
+
+    //merge both arrays into one
+    const allUsers = changeUsers.concat(mailerliteUsers);
     //filter duplicates
     const newUsers = await filterDuplicates(allUsers);
     // console.log('about to create user: ', allUsers[1]);
     for (let user of newUsers) {
       await createUser(user);
     }
-    console.log('count all users', allUsers.length);
   } catch (error) {
     console.log('error while migrating users', error);
   }
@@ -34,18 +38,31 @@ const migrateUsers = async () => {
 
 //reads and parses the csv file and returns a promise containing
 //an array of the users
-const readCsv = () => {
+const readCsv = source => {
+  const path = source === 'change' ? changePath : mailerlitePath;
   const users = [];
   return new Promise(resolve => {
     fs.createReadStream(path)
       .pipe(parse({ delimiter: ',' }))
       .on('data', row => {
-        const user = {
-          email: row[0],
-          username: row[1],
-          zipCode: zipCodeMatcher.getZipCodeByCity(row[3]),
-          optInDate: row[6],
-        };
+        let user;
+        if (source === 'change') {
+          user = {
+            email: row[0],
+            username: row[1],
+            zipCode: zipCodeMatcher.getZipCodeByCity(row[3]),
+            createdAt: row[6],
+          };
+        } else {
+          user = {
+            email: row[0],
+            //TODO: parse date to make it same as others
+            createdAt: row[4],
+            timestampConfirmation: row[9],
+            username: 'empty',
+            zipCode: 'empty', //TODO: maybe leave it undefined instead?
+          };
+        }
         users.push(user);
       })
       .on('end', () => {
@@ -159,8 +176,8 @@ const createUserInDynamo = (userId, user) => {
       username: user.username,
       zipCode: user.zipCode.toString(),
       //the timestamp of the newsletter consent depends on the change data
-      newsletterConsent: { value: true, timestamp: user.optInDate },
-      migrated: { source: 'change', createdAtSource: user.optInDate },
+      newsletterConsent: { value: true, timestamp: user.createdAt },
+      migrated: { source: 'change', createdAtSource: user.createdAt },
     },
   };
   return ddb.put(params).promise();
@@ -171,4 +188,4 @@ const getRandomString = length => {
   return randomBytes(length).toString('hex');
 };
 
-migrateUsers();
+//migrateUsers();
