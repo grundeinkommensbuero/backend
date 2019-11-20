@@ -96,7 +96,7 @@ const customEmail = (email, codeParameter) => {
 const customReminderEmail = (email, codeParameter) => {
   return `<p>Hallo,</p> 
           <p>
-          du hast deine E-Mail-Adresse f&#252;r die Volksabstimmung zum Grundeinkommen in Schleswig-Holstein noch nicht best&#228;tigt. 
+          du hast deine E-Mail-Adresse f&#252;r die Expedition Grundeinkommen noch nicht best&#228;tigt. 
           Das ist besonders wichtig, da wir deine Daten ohne diese Best&#228;tigung leider wieder l&#246;schen m&#252;ssen. 
           Nur noch ein Klick auf diesen Link und du bist wirklich dabei:
           </p>
