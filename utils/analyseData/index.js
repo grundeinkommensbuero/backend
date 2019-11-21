@@ -1,49 +1,56 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
-const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
-const tableName = process.env.TABLE_NAME;
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const tableName = 'Users';
 
-exports.handler = async event => {
+const analyseData = async () => {
   try {
     const users = await getAllUsers();
     const notVerifiedCognitoUsers = await getAllNotVerifiedCognitoUsers();
     console.log('not verified count', notVerifiedCognitoUsers.length);
     //go through users to sum up pledged signatures
-    let signatureCount = 0;
+    const campaignStats = {};
     for (let user of users.Items) {
       //check if the user is verified
       let verified = isVerified(user, notVerifiedCognitoUsers);
 
       //if user is not verified we do not need to count the signatures
-      if (verified) {
-        let count = user['pledge-schleswig-holstein-1'].signatureCount;
-        if (typeof count !== 'undefined') {
-          //signature count might have been saved as string
-          if (typeof count !== 'number') {
-            count = parseInt(count, 10);
+      if ('pledges' in user) {
+        //go through pledges of this users
+        for (let pledge of user.pledges) {
+          //initialize object for this pledge;
+          if (!(pledge.campaign.code in campaignStats)) {
+            campaignStats[pledge.campaign.code] = {
+              verifiedUsers: 0,
+              unverifiedUsers: 0,
+              signatures: 0,
+              newsletterConsents: 0,
+            };
           }
-          //only add the number, if it was parsed correctly
-          if (isNaN(count) === false) {
-            signatureCount += count;
+
+          if (verified) {
+            campaignStats[pledge.campaign.code].verifiedUsers++;
           } else {
-            console.log('not number', count);
+            campaignStats[pledge.campaign.code].unverifiedUsers++;
+          }
+
+          if ('newsletterConsent' in user && user.newsletterConsent.value) {
+            campaignStats[pledge.campaign.code].newsletterConsents++;
+          }
+
+          if ('signatureCount' in pledge) {
+            const signatureCount = parseInt(pledge.signatureCount);
+            if (!isNaN(signatureCount)) {
+              campaignStats[pledge.campaign.code].signatures += signatureCount;
+            }
           }
         }
       }
     }
-    const average =
-      signatureCount / (users.Count - notVerifiedCognitoUsers.length);
-    const notVerifiedPercentage =
-      (notVerifiedCognitoUsers.length / users.Count) * 100;
-    console.log(
-      `There were ${signatureCount} pledged signatures of ${users.Count} verified users, 
-      which means that the average pledge is ${average}`
-    );
-    console.log(
-      `${notVerifiedCognitoUsers.length} users are not verified, 
-      which means that ${notVerifiedPercentage}% of users are not verified`
-    );
-    return signatureCount;
+
+    console.log('Campaign stats', campaignStats);
+    return campaignStats;
   } catch (error) {
     console.log('error while fetching users from db', error);
   }
@@ -80,7 +87,7 @@ const getNotVerifiedCognitoUsers = paginationToken => {
     PaginationToken: paginationToken,
   };
   //get all users, which are not verified from user pool
-  return CognitoIdentityServiceProvider.listUsers(params).promise();
+  return cognito.listUsers(params).promise();
 };
 
 const isVerified = (user, notVerifiedCognitoUsers) => {
@@ -93,3 +100,5 @@ const isVerified = (user, notVerifiedCognitoUsers) => {
   }
   return verified;
 };
+
+analyseData();
