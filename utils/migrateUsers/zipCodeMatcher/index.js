@@ -12,9 +12,9 @@ const getStateByZipCode = zipCode => {
 const getZipCodeByCity = city => {
   const item = data.find(entry => city === entry.ort);
   if (typeof item !== 'undefined') {
-    return item.plz;
+    return item.plz.toString();
   } else {
-    return null;
+    return undefined;
   }
 };
 module.exports = { getStateByZipCode, getZipCodeByCity };
