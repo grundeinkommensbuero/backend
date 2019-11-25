@@ -62,7 +62,7 @@ const customEmail = (email, codeParameter) => {
   return `<p>Hallo,</p> 
           <p>
           fast geschafft – sch&#246;n, dass du dabei bist! Ein letzter Schritt, und dann bist du an Bord. 
-          Bitte best&#228;tige noch deine E-Mail-Adresse:
+          Bitte best&#228;tige noch deine E-Mail-Adresse, indem du auf den folgenden Link klickst:
           </p>
           <p>
               <a href="https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}">
