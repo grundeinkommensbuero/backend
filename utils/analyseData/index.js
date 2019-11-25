@@ -1,8 +1,30 @@
 const AWS = require('aws-sdk');
+const fs = require('fs');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
+
+const runScript = async () => {
+  const stats = await analyseData();
+  generateCsv(stats, 'schleswig-holstein-1');
+};
+
+//Parses the users array to a string and saves it as csv file
+const generateCsv = (stats, campaign) => {
+  let dataString =
+    'Email, Name, Anzahl Unterschriften, Auf Strasse sammeln, PLZ\n';
+  const powerUsers = stats[campaign].powerUsers;
+  for (let user of powerUsers) {
+    //for now we just expect a user to only have one pledge
+    dataString += `${user.email},${user.username},${
+      user.pledges[0].signatureCount
+    },${user.pledges[0].wouldCollectSignaturesInPublicSpaces ? 'Ja' : 'Nein'},${
+      user.zipCode
+    }\n`;
+  }
+  fs.writeFileSync('powerusers.csv', dataString);
+};
 
 const analyseData = async () => {
   try {
@@ -19,31 +41,45 @@ const analyseData = async () => {
       if ('pledges' in user) {
         //go through pledges of this users
         for (let pledge of user.pledges) {
+          const campaign = pledge.campaign.code;
+
           //initialize object for this pledge;
-          if (!(pledge.campaign.code in campaignStats)) {
-            campaignStats[pledge.campaign.code] = {
+          if (!(campaign in campaignStats)) {
+            campaignStats[campaign] = {
               verifiedUsers: 0,
               unverifiedUsers: 0,
               signatures: 0,
               newsletterConsents: 0,
+              powerUsers: [],
             };
           }
 
           if (verified) {
-            campaignStats[pledge.campaign.code].verifiedUsers++;
-          } else {
-            campaignStats[pledge.campaign.code].unverifiedUsers++;
-          }
+            campaignStats[campaign].verifiedUsers++;
 
-          if ('newsletterConsent' in user && user.newsletterConsent.value) {
-            campaignStats[pledge.campaign.code].newsletterConsents++;
-          }
-
-          if ('signatureCount' in pledge) {
-            const signatureCount = parseInt(pledge.signatureCount);
-            if (!isNaN(signatureCount)) {
-              campaignStats[pledge.campaign.code].signatures += signatureCount;
+            //count the newsletter consents for all verified users
+            if ('newsletterConsent' in user && user.newsletterConsent.value) {
+              campaignStats[campaign].newsletterConsents++;
             }
+
+            //count the pledged signatures for all verified users
+            if ('signatureCount' in pledge) {
+              const signatureCount = parseInt(pledge.signatureCount);
+              if (!isNaN(signatureCount)) {
+                campaignStats[campaign].signatures += signatureCount;
+
+                //generate a list of power users
+                //(20+ pledged signatures or wants to collect in public spaces)
+                if (
+                  signatureCount >= 20 ||
+                  pledge.wouldCollectSignaturesInPublicSpaces
+                ) {
+                  campaignStats[campaign].powerUsers.push(user);
+                }
+              }
+            }
+          } else {
+            campaignStats[campaign].unverifiedUsers++;
           }
         }
       }
@@ -101,4 +137,4 @@ const isVerified = (user, notVerifiedCognitoUsers) => {
   return verified;
 };
 
-analyseData();
+runScript();
