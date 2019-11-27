@@ -8,7 +8,7 @@
       <mj-social-element name="instagram" href="https://www.instagram.com/expedition.bge/" src="https://expedition-grundeinkommen.de/mailgraphics/instagram.png" background-color="transparent">
       </mj-social-element>
     </mj-social>
-    <mj-text color="#3423f6">
+    <mj-text color="#3423f6" font-size="13px">
       <a href="https://expedition-grundeinkommen.de/impressum/" class="link">Impressum</a>
       <a href="https://expedition-grundeinkommen.de/datenschutz/" class="link">Datenschutz</a>
       <br><br>
