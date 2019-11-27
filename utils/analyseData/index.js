@@ -4,10 +4,12 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
+const tableNameBackup = 'UsersWithoutConsent-14-11';
 
 const runScript = async () => {
   const stats = await analyseData();
   generateCsv(stats, 'schleswig-holstein-1');
+  generateCsv(stats, 'brandenburg-1');
 };
 
 //Parses the users array to a string and saves it as csv file
@@ -23,17 +25,20 @@ const generateCsv = (stats, campaign) => {
       user.zipCode
     }\n`;
   }
-  fs.writeFileSync('powerusers.csv', dataString);
+  fs.writeFileSync(`powerusers-${campaign}.csv`, dataString);
 };
 
 const analyseData = async () => {
   try {
-    const users = await getAllUsers();
+    const result = await getAllUsers();
+    //loop through backup users and add all the users who are not already in users
+    const users = await migrateUsersFromBackup(result.Items);
+
     const notVerifiedCognitoUsers = await getAllNotVerifiedCognitoUsers();
     console.log('not verified count', notVerifiedCognitoUsers.length);
     //go through users to sum up pledged signatures
     const campaignStats = {};
-    for (let user of users.Items) {
+    for (let user of users) {
       //check if the user is verified
       let verified = isVerified(user, notVerifiedCognitoUsers);
 
@@ -61,7 +66,6 @@ const analyseData = async () => {
             if ('newsletterConsent' in user && user.newsletterConsent.value) {
               campaignStats[campaign].newsletterConsents++;
             }
-
             //count the pledged signatures for all verified users
             if ('signatureCount' in pledge) {
               const signatureCount = parseInt(pledge.signatureCount);
@@ -99,6 +103,13 @@ const getAllUsers = () => {
   return ddb.scan(params).promise();
 };
 
+const getAllUsersFromBackup = () => {
+  const params = {
+    TableName: tableNameBackup,
+  };
+  return ddb.scan(params).promise();
+};
+
 const getAllNotVerifiedCognitoUsers = async () => {
   let notVerifiedCognitoUsers = [];
   let data = await getNotVerifiedCognitoUsers(null);
@@ -124,6 +135,22 @@ const getNotVerifiedCognitoUsers = paginationToken => {
   };
   //get all users, which are not verified from user pool
   return cognito.listUsers(params).promise();
+};
+
+const migrateUsersFromBackup = async users => {
+  let added = 0;
+  const backupUsers = await getAllUsersFromBackup();
+  console.log('Backup users count', backupUsers.Count);
+  for (let backupUser of backupUsers.Items) {
+    //check if the user is already in users
+    if (users.findIndex(user => user.email === backupUser.email) === -1) {
+      //backup user is not already in there
+      users.push(backupUser);
+      added++;
+    }
+  }
+  console.log(`Added ${added} users from backup`);
+  return users;
 };
 
 const isVerified = (user, notVerifiedCognitoUsers) => {

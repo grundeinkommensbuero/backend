@@ -1,7 +1,8 @@
 const AWS = require('aws-sdk');
 const generatePdf = require('./createPDF');
+const sendMail = require('./sendMail');
 const fs = require('fs');
-const S3 = new AWS.S3();
+const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 const usersTableName = process.env.TABLE_NAME_USERS;
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
@@ -35,6 +36,8 @@ exports.handler = async event => {
     const timestamp = date.toISOString().substring(0, 10);
     //get user id from request body (might not exist, in that case we go a different route)
     let userId;
+    //we need the email to later send the pdf
+    let email;
     if ('userId' in requestBody) {
       userId = requestBody.userId;
       //now we want to validate if the user actually exists
@@ -44,13 +47,16 @@ exports.handler = async event => {
         if (!('Item' in user) || typeof user.Item === 'undefined') {
           return errorResponse(400, 'No user found with the passed user id');
         }
+
+        email = user.Item.email;
       } catch (error) {
         return errorResponse(500, 'Error while getting user', error);
       }
     } else if ('email' in requestBody) {
+      email = requestBody.email;
       //in case the api only got the email instead of the id we need to get the user id from the db
       try {
-        const result = await getUserByMail(requestBody.email);
+        const result = await getUserByMail(email);
         if (result.Count === 0) {
           return errorResponse(400, 'No user found with the passed email');
         } else {
@@ -103,25 +109,45 @@ exports.handler = async event => {
       }
       try {
         //we are going to generate the pdf
-        const generatedPDF = await generatePdf(URL, pdfId, inputPDF);
+        let currentMillis = new Date().getTime();
+        const generatedPdf = await generatePdf(URL, pdfId, inputPDF);
+        console.log(
+          'generating pdf takes',
+          new Date().getTime() - currentMillis
+        );
         //upload pdf to s3 after generation was successful
-        const uploadResult = await uploadPDF(pdfId, generatedPDF);
+        const uploadResult = await uploadPDF(pdfId, generatedPdf);
         console.log('success uploading pdf to bucket', uploadResult);
         const url = uploadResult.Location;
         try {
           //if the upload process was successful, we create the list entry in the db
           //userId might be 'anonymous'
           await createSignatureList(pdfId, timestamp, url, campaign, userId);
-          return {
-            statusCode: 201,
-            headers: responseHeaders,
-            body: JSON.stringify({
-              signatureList: { id: pdfId, url: url },
-              message:
-                'There was no signature list of this user, created new pdf and uploaded it',
-            }),
-            isBase64Encoded: false,
-          };
+
+          try {
+            //if the download was not anonymous send a mail with the attached pdf
+            if (userId !== 'anonymous') {
+              let currentMillis = new Date().getTime();
+              await sendMail(email, generatedPdf);
+              console.log(
+                'sending mail takes',
+                new Date().getTime() - currentMillis
+              );
+            }
+            return {
+              statusCode: 201,
+              headers: responseHeaders,
+              body: JSON.stringify({
+                signatureList: { id: pdfId, url: url },
+                message:
+                  'There was no signature list of this user, created new pdf and uploaded it',
+              }),
+              isBase64Encoded: false,
+            };
+          } catch (error) {
+            console.log('Error while sending email', error);
+            return errorResponse(500, 'Error while sending email', error);
+          }
         } catch (error) {
           console.log('error while creating new signature list in db', error);
           return errorResponse(
@@ -225,13 +251,15 @@ const incrementDownloads = (id, downloads) => {
 
 //uploads pdf to s3 bucket
 const uploadPDF = (id, pdf) => {
-  return S3.upload({
-    Bucket: 'signature-lists',
-    ACL: 'public-read',
-    Key: `${id}.pdf`,
-    Body: Buffer.from(pdf),
-    ContentType: 'application/pdf',
-  }).promise();
+  return s3
+    .upload({
+      Bucket: 'signature-lists',
+      ACL: 'public-read',
+      Key: `${id}.pdf`,
+      Body: Buffer.from(pdf),
+      ContentType: 'application/pdf',
+    })
+    .promise();
 };
 
 const errorResponse = (statusCode, message, error = null) => {

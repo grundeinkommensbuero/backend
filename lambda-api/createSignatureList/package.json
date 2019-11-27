@@ -14,7 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "bwip-js": "^1.7.4",
-    "pdf-lib": "^1.2.1"
+    "pdf-lib": "^1.2.1",
+    "nodemailer": "^6.3.1"
   },
   "devDependencies": {
     "bestzip": "^2.1.5"
