@@ -9,6 +9,11 @@
       <mj-class name="section-red-text" color="#fef377" />
       <mj-button border-radius="50px" background-color="transparent" color="#fc484c" font-weight="bold" border="1px solid #fc484c" />
     </mj-attributes>
+    <mj-style inline="inline">
+      .link {
+        color: inherit;
+      }
+    </mj-style>
 
   </mj-head>
 
@@ -46,7 +51,7 @@
       </mj-column>
     </mj-section>
 
-    <mj-section padding-top="40px" padding-bottom="0">
+    <mj-section padding-top="40px">
       <mj-column>
         <mj-social font-size="15px" icon-size="40px" mode="horizontal" align="left">
           <mj-social-element name="facebook" href="https://www.facebook.com/expeditionbge/" src="https://expedition-grundeinkommen.de/mailgraphics/facebook.png" background-color="transparent">
@@ -57,7 +62,17 @@
           </mj-social-element>
         </mj-social>
         <mj-text color="#3423f6">
-          Bitte auf diese Mail antworten zum Abbestellen.
+          <a href="https://expedition-grundeinkommen.de/impressum/" class="link">Impressum</a>
+          <a href="https://expedition-grundeinkommen.de/datenschutz/" class="link">Datenschutz</a>
+          <br><br>
+          Bitte antworte auf diese Mail zum Abbestellen.
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          c/o Expedition Grundeinkommen<br>
+          Karl-Marx-Strasse 50<br>
+          12043 Berlin
+          <br><br>
+          <a href="https://expedition-grundeinkommen.de/" class="link">expedition-grundeinkommen.de</a>
         </mj-text>
       </mj-column>
     </mj-section>
