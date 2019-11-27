@@ -1,0 +1,13 @@
+{
+  "name": "createsignaturelist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Vali",
+  "license": "ISC",
+  "dependencies": {
+    "bwip-js": "^1.7.4",
+    "pdf-lib": "^1.2.1",
+    "nodemailer": "^6.3.1"
+  }
+}

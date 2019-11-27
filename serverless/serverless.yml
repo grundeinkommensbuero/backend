@@ -1,0 +1,129 @@
+service: ubi-backend
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-central-1
+
+plugins:
+  - serverless-iam-roles-per-function
+
+# no global iam policies, because we want to follow the least privilege princilpe
+# therefore we use a plugin to define roles per function
+
+functions:
+  createPledge:
+    handler: src/api/createPledge/index.handler
+    events:
+      - http:
+          path: pledges
+          method: post
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:UpdateItem
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users'
+
+  createSignatureList:
+    handler: src/api/createSignatureList/index.handler
+    events:
+      - http:
+          path: signatures
+          method: post
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Signatures'
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::signature-lists/*'
+
+  updateUser:
+    handler: src/api/updateUser/index.handler
+    events:
+      - http:
+          path: users/{userId}
+          method: patch
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users'
+#  hello:
+#    handler: handler.hello
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#      - websocket: $connect
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
+#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
+#      - iot:
+#          sql: "SELECT * FROM 'some_topic'"
+#      - cloudwatchEvent:
+#          event:
+#            source:
+#              - "aws.ec2"
+#            detail-type:
+#              - "EC2 Instance State-change Notification"
+#            detail:
+#              state:
+#                - pending
+#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cognitoUserPool:
+#          pool: MyUserPool
+#          trigger: PreSignUp
+#      - alb:
+#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
+#          priority: 1
+#          conditions:
+#            host: example.com
+#            path: /hello
+
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
