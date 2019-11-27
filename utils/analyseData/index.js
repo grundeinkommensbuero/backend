@@ -30,10 +30,9 @@ const generateCsv = (stats, campaign) => {
 
 const analyseData = async () => {
   try {
-    const result = await getAllUsers();
+    let users = await getAllUsers();
     //loop through backup users and add all the users who are not already in users
-    const users = await migrateUsersFromBackup(result.Items);
-
+    users = await migrateUsersFromBackup(users);
     const notVerifiedCognitoUsers = await getAllNotVerifiedCognitoUsers();
     console.log('not verified count', notVerifiedCognitoUsers.length);
     //go through users to sum up pledged signatures
@@ -51,26 +50,36 @@ const analyseData = async () => {
           //initialize object for this pledge;
           if (!(campaign in campaignStats)) {
             campaignStats[campaign] = {
-              verifiedUsers: 0,
-              unverifiedUsers: 0,
-              signatures: 0,
-              newsletterConsents: 0,
+              verifiedUsers: { count: 0, signatures: 0 },
+              unverifiedUsers: { count: 0 },
+              usersWithNewsletterConsent: { count: 0, signatures: 0 },
               powerUsers: [],
             };
           }
 
-          if (verified) {
-            campaignStats[campaign].verifiedUsers++;
-
+          //the users, wo were migrated are not in cognito
+          if (verified || user.migrated) {
+            campaignStats[campaign].verifiedUsers.count++;
+            let newsletterConsent = false;
             //count the newsletter consents for all verified users
             if ('newsletterConsent' in user && user.newsletterConsent.value) {
-              campaignStats[campaign].newsletterConsents++;
+              campaignStats[campaign].usersWithNewsletterConsent.count++;
+              newsletterConsent = true;
             }
             //count the pledged signatures for all verified users
             if ('signatureCount' in pledge) {
               const signatureCount = parseInt(pledge.signatureCount);
               if (!isNaN(signatureCount)) {
-                campaignStats[campaign].signatures += signatureCount;
+                //if the newsletter consent was given, also add it up for those users
+                if (newsletterConsent) {
+                  campaignStats[
+                    campaign
+                  ].usersWithNewsletterConsent.signatures += signatureCount;
+                }
+                //otherwise only add it for the (only) verified users
+                campaignStats[
+                  campaign
+                ].verifiedUsers.signatures += signatureCount;
 
                 //generate a list of power users
                 //(20+ pledged signatures or wants to collect in public spaces)
@@ -78,12 +87,12 @@ const analyseData = async () => {
                   signatureCount >= 20 ||
                   pledge.wouldCollectSignaturesInPublicSpaces
                 ) {
-                  campaignStats[campaign].powerUsers.push(user);
+                  // campaignStats[campaign].powerUsers.push(user);
                 }
               }
             }
           } else {
-            campaignStats[campaign].unverifiedUsers++;
+            campaignStats[campaign].unverifiedUsers.count++;
           }
         }
       }
@@ -96,10 +105,28 @@ const analyseData = async () => {
   }
 };
 
-const getAllUsers = () => {
+//functions which gets all users and uses the lastEvaluatedKey
+//to make multiple requests
+const getAllUsers = async () => {
+  const users = [];
+  let result = await getUsers();
+  //add elements to existing array
+  users.push(...result.Items);
+  while ('LastEvaluatedKey' in result) {
+    console.log('another request to db', result.LastEvaluatedKey);
+    result = await getUsers(result.LastEvaluatedKey);
+    users.push(...result.Items);
+  }
+  return users;
+};
+
+const getUsers = (startKey = null) => {
   const params = {
     TableName: tableName,
   };
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
   return ddb.scan(params).promise();
 };
 
@@ -115,7 +142,7 @@ const getAllNotVerifiedCognitoUsers = async () => {
   let data = await getNotVerifiedCognitoUsers(null);
   //add elements of user array
   notVerifiedCognitoUsers.push(...data.Users);
-  while (data.PaginationToken) {
+  while ('PaginationToken' in data) {
     data = await getNotVerifiedCognitoUsers(data.PaginationToken);
     //add elements of user array
     notVerifiedCognitoUsers.push(...data.Users);
@@ -145,6 +172,7 @@ const migrateUsersFromBackup = async users => {
     //check if the user is already in users
     if (users.findIndex(user => user.email === backupUser.email) === -1) {
       //backup user is not already in there
+      backupUser.migrated = true;
       users.push(backupUser);
       added++;
     }
