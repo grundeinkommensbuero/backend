@@ -6,10 +6,12 @@
  */
 
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.TABLE_NAME;
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+// const tableName = process.env.TABLE_NAME;
+const tableName = 'UsersWithoutConsent-14-11';
 
-exports.handler = async event => {
+const refactorDynamo = async () => {
   try {
     const users = await getAllUsers();
     for (let user of users.Items) {
@@ -46,7 +48,7 @@ exports.handler = async event => {
   } catch (error) {
     console.log('error while fetching users from db', error);
   }
-  return event;
+  return;
 };
 
 const getAllUsers = () => {
@@ -125,3 +127,5 @@ const constructCampaignId = campaignCode => {
   }
   return campaign;
 };
+
+refactorDynamo();
