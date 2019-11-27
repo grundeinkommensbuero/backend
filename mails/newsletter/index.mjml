@@ -1,11 +1,11 @@
 <mjml>
 
   <mj-head>
-    <mj-include path="./head.mjml" />
+    <mj-include path="../includes/head.mjml" />
   </mj-head>
 
   <mj-body background-color="#f0f0f0">
-    <mj-include path="./header.mjml" />
+    <mj-include path="../includes/header.mjml" />
     <mj-section background-color="#fef377">
       <mj-column>
         <mj-text>
@@ -34,6 +34,6 @@
       </mj-column>
     </mj-section>
 
-    <mj-include path="./footer.mjml" />
+    <mj-include path="../includes/footer.mjml" />
   </mj-body>
 </mjml>
