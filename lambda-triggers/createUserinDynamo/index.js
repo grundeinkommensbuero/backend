@@ -1,4 +1,7 @@
 const AWS = require('aws-sdk');
+const fs = require('fs');
+
+const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
@@ -59,45 +62,15 @@ exports.handler = async event => {
 };
 
 const customEmail = (email, codeParameter) => {
-  return `<p>Hallo,</p> 
-          <p>
-          fast geschafft – sch&#246;n, dass du dabei bist! Ein letzter Schritt, und dann bist du an Bord. 
-          Bitte best&#228;tige noch deine E-Mail-Adresse, indem du auf den folgenden Link klickst:
-          </p>
-          <p>
-              <a href="https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}">
-                 https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}
-              </a>
-          </p>
-          <br>
-          <p>
-          Danke!
-          </p>
-          Dein Support-Team von<br>
-          Expedition Grundeinkommen
-          <br>
-          <br>
-          <br>
-          <br>
-          --------------------------------------------
-          <br>
-          <p>
-            <a href="www.expedition-grundeinkommen.de">
-              www.expedition-grundeinkommen.de
-            </a>
-            <br>
-            <a href="mailto:support@expedition-grundeinkommen.de">
-              support@expedition-grundeinkommen.de
-            </a>
-          </p>
-  `;
+  const link = `https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}`;
+  return htmlMail.replace(/\[\[VERIFICATION_LINK\]\]/gi, link);
 };
 
 const customReminderEmail = (email, codeParameter) => {
-  return `<p>Hallo,</p> 
+  return `<p>Hallo,</p>
           <p>
-          du hast deine E-Mail-Adresse f&#252;r die Expedition Grundeinkommen noch nicht best&#228;tigt. 
-          Das ist besonders wichtig, da wir deine Daten ohne diese Best&#228;tigung leider wieder l&#246;schen m&#252;ssen. 
+          du hast deine E-Mail-Adresse f&#252;r die Expedition Grundeinkommen noch nicht best&#228;tigt.
+          Das ist besonders wichtig, da wir deine Daten ohne diese Best&#228;tigung leider wieder l&#246;schen m&#252;ssen.
           Nur noch ein Klick auf diesen Link und du bist wirklich dabei:
           </p>
           <p>
