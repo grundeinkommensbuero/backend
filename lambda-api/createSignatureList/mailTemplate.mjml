@@ -1,0 +1,47 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../../mails/includes/head.mjml" />
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../../mails/includes/header.mjml" />
+    <mj-section background-color="#fef377">
+      <mj-column>
+        <mj-text>
+          <h2>Hallo, hier ist deine Unterschriftenliste im Anhang. </h2>
+        </mj-text>
+        <mj-text>
+          Und jetzt: sammeln, schicken, sammeln, schicken!.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Du magst uns vielleicht auch mit Geld helfen?</h2>
+          Mit deiner Unterstützung für unsere Expedition bringst du das Thema Grundeinkommen voran.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)<br>
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen. Sende dazu das Kennwort expedition5 oder expedition10 an die 81190. Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../../mails/includes/footer.mjml" />
+  </mj-body>
+</mjml>

@@ -1,13 +1,16 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 const ses = new AWS.SES();
+const fs = require('fs');
+
+const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
 
 //Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, pdf) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
     subject: 'Deine Unterschriftenliste',
-    html: `<p>Hallo, hier ist deine Unterschriftenliste`,
+    html: htmlMail,
     to: email,
     attachments: [
       {
