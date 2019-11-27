@@ -1,0 +1,18 @@
+{
+    "name": "createuserindynamo",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "bestzip dist/createUserInDynamo.zip *",
+        "deploy": "aws lambda update-function-code --function-name createUserInDynamo --zip-file fileb://dist/createUserInDynamo.zip",
+        "cleanUp": "rm dist/createUserInDynamo.zip",
+        "buildDeploy": "npm run build && npm run deploy && npm run cleanUp"
+    },
+    "author": "Vali",
+    "license": "ISC",
+    "dependencies": {
+        "bestzip": "^2.1.5"
+    }
+}
