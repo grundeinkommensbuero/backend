@@ -18,7 +18,7 @@
         </mj-text>
 
         <mj-button align="left" padding-top="0px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=schleswig-holstein-1">
-          Unterschriften Herunterladen!
+          Liste herunterladen
         </mj-button>
 
         <mj-text>
@@ -51,7 +51,7 @@
         </mj-text>
 
         <mj-button align="left" padding-top="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=schleswig-holstein-1" color="#fef377" border="1px solid #fef377">
-          Unterschriften Herunterladen!
+          Liste herunterladen
         </mj-button>
       </mj-column>
     </mj-section>
