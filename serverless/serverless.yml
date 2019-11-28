@@ -1,4 +1,4 @@
-service: ubi-backend
+service: ubi-serverless
 
 provider:
   name: aws
@@ -74,6 +74,50 @@ functions:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
         Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users'
+
+  sendVerificationMail:
+    handler: src/triggers/sendVerificationMail/index.handler
+    events:
+      - cognitoUserPool:
+          pool: UbiUserPool
+          trigger: CustomMessage
+    iamRoleStatments:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users'
+
+  pinpointOptIn:
+    handler: src/triggers/pinpointOptIn/index.handler
+    events:
+      - cognitoUserPool:
+          pool: UbiUserPool
+          trigger: PostConfirmation
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users'
+      - Effect: 'Allow'
+        Action:
+          - mobiletargeting:*
+        Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
+
+  updatePinpoint:
+    handler: src/triggers/updatePinpoint/index.handler
+    events: # dynamodb trigger through a dynamo stream
+      - stream: arn:aws:dynamodb:eu-central-1:550953582247:table/Users/stream/2019-10-22T14:32:54.240
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetShardIterator
+          - dynamodb:DescribeStream
+          - dynamodb:GetRecords
+        Resource: 'arn:aws:dynamodb:eu-central-1:550953582247:table/Users/stream/2019-10-22T14:32:54.240'
+      - Effect: 'Allow'
+        Action:
+          - mobiletargeting:*
+        Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
 #  hello:
 #    handler: handler.hello
 #    The following are a few example events you can configure
