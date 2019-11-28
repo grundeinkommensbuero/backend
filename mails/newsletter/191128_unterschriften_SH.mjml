@@ -17,7 +17,7 @@
           <br><br>
         </mj-text>
 
-        <mj-button align="left" padding-top="0px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste?userId={{User.UserId}}&campaignCode=schleswig-holstein-1">
+        <mj-button align="left" padding-top="0px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=schleswig-holstein-1">
           Unterschriften Herunterladen!
         </mj-button>
 
@@ -50,7 +50,7 @@
           Grundeinkommen dort offiziell getestet.
         </mj-text>
 
-        <mj-button align="left" padding-top="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste?userId={{User.UserId}}&campaignCode=schleswig-holstein-1" color="#fef377" border="1px solid #fef377">
+        <mj-button align="left" padding-top="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=schleswig-holstein-1" color="#fef377" border="1px solid #fef377">
           Unterschriften Herunterladen!
         </mj-button>
       </mj-column>
