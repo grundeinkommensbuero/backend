@@ -9,15 +9,21 @@
     <mj-section background-color="#fef377">
       <mj-column>
         <mj-text>
-          <h2>Brandenburg startet. Bist du dabei?</h2>
+          <h2>
+            Willkommen auf der Expedition!
+            Du bist jetzt Teil der Crew.
+          </h2>
         </mj-text>
         <mj-text>
-          Unsere Expedition zur Erforschung des bedingungslosen Grundeinkommens geht im Norden los: Im ersten Schritt brauchen wir 25.000 Unterschriften auf Papier, um die Volksabstimmung zu beantragen. Die offiziellen Listen hierfür bereiten wir gerade vor.
+          Wir erkunden gemeinsam die Möglichkeiten eines bedingungslosen Grundeinkommens (bGE)
+          und fordern dazu vom Land einen wissenschaftlichen Modellversuch!
         </mj-text>
         <mj-text>
-          Bislang haben 1.700 Menschen schon über 15.000 der 25.000 Unterschriften versprochen. Wow!
+          Vor Kurzem hast du dich für unseren Newsletter eingetragen, damit du nichts verpasst. Hier
+          berichten wir über das Vorankommen der Volksinitiative, feiern gemeinsam unsere Erfolge und
+          sammeln Neuigkeiten über die Erforschung des bGE.
         </mj-text>
-        <mj-button align="left" padding-top="40px" href="https://expedition-grundeinkommen.de">
+        <mj-button align="left" padding-top="40px" href="http://localhost:8000/unterschriftenliste?userId={{User.UserId}}&campaignCode=schleswig-holstein-1">
           Unterschriften Herunterladen!
         </mj-button>
       </mj-column>
