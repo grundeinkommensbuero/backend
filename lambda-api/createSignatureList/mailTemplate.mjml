@@ -6,13 +6,30 @@
 
   <mj-body background-color="#f0f0f0">
     <mj-include path="../../mails/includes/header.mjml" />
-    <mj-section background-color="#fef377">
+    <mj-section background-color="#fef377" padding-top="40px">
       <mj-column>
         <mj-text>
-          <h2>Hallo, hier ist deine Unterschriftenliste im Anhang. </h2>
-        </mj-text>
-        <mj-text>
-          Und jetzt: sammeln, schicken, sammeln, schicken!.
+          Hallo,
+          <br><br>
+          danke, dass du dir die Unterschriftsliste heruntergeladen hast.
+          um einfacheren Weiterleiten schicken wir dir die Liste noch einmal
+          per E-Mail zu.
+          <br><br>
+          Bitte druck die Liste aus, unterschreibe sie und schicke sie an uns zurück.
+          Kennst du noch Menschen in deinem Umfeld, die mit dir unterschreiben
+          können? Prima: Je mehr Freund*innen und Kolleg*innen von dir mit unterschreiben,
+          um so besser!
+          <br><br>
+          Bitte schick die Listen dann möglichst bald an uns zurück.
+          Die Adresse zum Zurücksenden steht auf jeder Liste.
+          <br><br>
+          Du willst auch auf der Straße Unterschriften sammeln? Perfekt! Antworte gern
+          auf diese E-Mail, und sag uns, wie wir dich unterstützen können.
+          <br><br>
+          Schön, dass du dabei bist!
+          <br><br>
+          Joy und Laura
+
         </mj-text>
       </mj-column>
     </mj-section>
@@ -20,14 +37,15 @@
     <mj-section mj-class="section-red">
       <mj-column>
         <mj-text mj-class="section-red-text">
-          <h2>Du magst uns vielleicht auch mit Geld helfen?</h2>
+          <h2>Du magst uns auch mit Geld helfen?</h2>
+
           Mit deiner Unterstützung für unsere Expedition bringst du das Thema Grundeinkommen voran.
           <br><br>
           Bankverbindung:
           <br><br>
           Vertrauensgesellschaft e.V.<br>
           IBAN: DE74 4306 0967 1218 1056 01<br>
-          BIC: GENODEM1GLS (GLS-Bank)<br>
+          BIC: GENODEM1GLS (GLS-Bank)
           <br><br>
           Charity-SMS:
           <br><br>
