@@ -118,6 +118,7 @@ functions:
         Action:
           - mobiletargeting:*
         Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
+
 #  hello:
 #    handler: handler.hello
 #    The following are a few example events you can configure
@@ -161,13 +162,7 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
