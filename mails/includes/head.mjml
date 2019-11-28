@@ -9,4 +9,7 @@
   .link {
     color: inherit;
   }
+  h2 {
+    line-height: 35px;
+  }
 </mj-style>
