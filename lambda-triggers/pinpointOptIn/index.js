@@ -13,7 +13,7 @@ exports.handler = async event => {
     console.log('result', result);
     if ('Item' in result) {
       //if the newsletter consent is true, we opt in in pinpoint
-      if (result.Item.newsletterConsent) {
+      if (result.Item.newsletterConsent.value) {
         try {
           const updatedPinpoint = await updatePinpoint(result.Item);
           console.log('success updating pinpoint', updatedPinpoint);
