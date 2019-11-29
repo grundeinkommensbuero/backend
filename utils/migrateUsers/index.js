@@ -2,8 +2,11 @@ const fs = require('fs');
 const randomBytes = require('crypto').randomBytes;
 const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
-const changePath = './data/change_users.csv';
-const mailerlitePath = './data/mailerlite_users.csv';
+const paths = {
+  mailerlite: './data/mailerlite_users.csv',
+  change: './data/change_users.csv',
+  signaturesTest: './data/signatures_test_users.csv',
+};
 const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
@@ -16,6 +19,16 @@ const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 const dynamoLimiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
 
 const tableName = 'Users';
+
+const addTestUsers = async () => {
+  const allUsers = await readCsv('signaturesTest');
+  //filter duplicates with already existing users in our db
+  const newUsers = await filterDuplicates(allUsers);
+
+  for (let user of newUsers) {
+    await createUser(user);
+  }
+};
 
 const migrateUsers = async () => {
   try {
@@ -54,7 +67,7 @@ const migrateUsers = async () => {
 const readCsv = source => {
   return new Promise(resolve => {
     const users = [];
-    const path = source === 'change' ? changePath : mailerlitePath;
+    const path = paths[source];
     let count = 0;
     fs.createReadStream(path)
       .pipe(parse({ delimiter: ',' }))
@@ -70,12 +83,19 @@ const readCsv = source => {
               createdAt: new Date(row[6]).toISOString(),
               source: source,
             };
-          } else {
+          } else if (source === 'mailerlite') {
             user = {
               email: row[0],
               //TODO: parse date to make it same as others
               createdAt: new Date(row[4]).toISOString(),
               timestampConfirmation: new Date(row[9]).toISOString(),
+              source: source,
+            };
+          } else {
+            user = {
+              email: row[0],
+              username: 'Test-Unterschriftenliste',
+              createdAt: new Date().toISOString(),
               source: source,
             };
           }
@@ -111,7 +131,6 @@ const userExists = async user => {
     console.log('checking user ', user.email);
     const result = await getUserByMail(user.email);
     //return false if no user was found, true otherwise
-    console.log('possible duplicate', result);
     if (result.Count === 0) {
       return false;
     }
@@ -200,7 +219,7 @@ const createUserInDynamo = (userId, user, source) => {
       newsletterConsent: {
         value: true,
         timestamp:
-          user.source === 'change'
+          user.source !== 'mailerlite'
             ? user.createdAt
             : user.timestampConfirmation,
       },
@@ -215,4 +234,5 @@ const getRandomString = length => {
   return randomBytes(length).toString('hex');
 };
 
-migrateUsers();
+//migrateUsers();
+addTestUsers();
