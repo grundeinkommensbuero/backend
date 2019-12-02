@@ -3,12 +3,14 @@ const config = { region: 'eu-central-1' };
 const pinpoint = new AWS.Pinpoint(config);
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const ddb = new AWS.DynamoDB.DocumentClient(config);
+const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
 const zipCodeMatcher = require('../zipCodeMatcher');
 
 const fillPinpoint = async () => {
   try {
     const users = await getAllUsers();
+    const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
     let count = 0;
     for (let user of users) {
       const {
@@ -55,13 +57,23 @@ const fillPinpoint = async () => {
         region = zipCodeMatcher.getStateByZipCode(zipCode);
       }
       console.log('matched region', region);
+
+      //check if the user is verified
+      let verified = isVerified(user, unverifiedCognitoUsers);
       //workaround, while some newsletter consents may already have the new format {value, timestamp}
       //old format is just boolean
+      let countUnverified = 0;
       if (typeof newsletterConsent !== 'undefined') {
-        newsletterConsent =
-          typeof newsletterConsent === 'boolean'
-            ? newsletterConsent
-            : newsletterConsent.value;
+        //if user is not yet verified opt out in pinpoint
+        if (verified) {
+          newsletterConsent =
+            typeof newsletterConsent === 'boolean'
+              ? newsletterConsent
+              : newsletterConsent.value;
+        } else {
+          countUnverified++;
+          newsletterConsent = false;
+        }
       } else {
         newsletterConsent = false;
       }
@@ -117,6 +129,7 @@ const fillPinpoint = async () => {
       }
     }
     console.log('updated count', count);
+    console.log('unverified count', countUnverified);
   } catch (error) {
     console.log('error', error);
   }
@@ -145,6 +158,44 @@ const getUsers = (startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
   return ddb.scan(params).promise();
+};
+
+const getAllUnverifiedCognitoUsers = async () => {
+  let unverifiedCognitoUsers = [];
+  let data = await getUnverifiedCognitoUsers(null);
+  //add elements of user array
+  unverifiedCognitoUsers.push(...data.Users);
+  while ('PaginationToken' in data) {
+    data = await getUnverifiedCognitoUsers(data.PaginationToken);
+    //add elements of user array
+    unverifiedCognitoUsers.push(...data.Users);
+  }
+  return unverifiedCognitoUsers;
+};
+
+//This functions only fetches the maximum of 60 users
+const getUnverifiedCognitoUsers = paginationToken => {
+  const params = {
+    UserPoolId: 'eu-central-1_74vNy5Iw0',
+    Filter: 'cognito:user_status = "UNCONFIRMED"',
+    AttributesToGet: [
+      'sub', //sub is the id
+    ],
+    PaginationToken: paginationToken,
+  };
+  //get all users, which are not verified from user pool
+  return cognito.listUsers(params).promise();
+};
+
+const isVerified = (user, unverifiedCognitoUsers) => {
+  let verified = true;
+  for (let cognitoUser of unverifiedCognitoUsers) {
+    //sub is the only attribute
+    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
+      verified = false;
+    }
+  }
+  return verified;
 };
 
 fillPinpoint();

@@ -33,13 +33,13 @@ const analyseData = async () => {
     let users = await getAllUsers();
     //loop through backup users and add all the users who are not already in users
     users = await migrateUsersFromBackup(users);
-    const notVerifiedCognitoUsers = await getAllNotVerifiedCognitoUsers();
-    console.log('not verified count', notVerifiedCognitoUsers.length);
+    const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
+    console.log('not verified count', unverifiedCognitoUsers.length);
     //go through users to sum up pledged signatures
     const campaignStats = {};
     for (let user of users) {
       //check if the user is verified
-      let verified = isVerified(user, notVerifiedCognitoUsers);
+      let verified = isVerified(user, unverifiedCognitoUsers);
 
       //if user is not verified we do not need to count the signatures
       if ('pledges' in user) {
@@ -137,21 +137,21 @@ const getAllUsersFromBackup = () => {
   return ddb.scan(params).promise();
 };
 
-const getAllNotVerifiedCognitoUsers = async () => {
-  let notVerifiedCognitoUsers = [];
-  let data = await getNotVerifiedCognitoUsers(null);
+const getAllUnverifiedCognitoUsers = async () => {
+  let unverifiedCognitoUsers = [];
+  let data = await getUnverifiedCognitoUsers(null);
   //add elements of user array
-  notVerifiedCognitoUsers.push(...data.Users);
+  unverifiedCognitoUsers.push(...data.Users);
   while ('PaginationToken' in data) {
-    data = await getNotVerifiedCognitoUsers(data.PaginationToken);
+    data = await getUnverifiedCognitoUsers(data.PaginationToken);
     //add elements of user array
-    notVerifiedCognitoUsers.push(...data.Users);
+    unverifiedCognitoUsers.push(...data.Users);
   }
-  return notVerifiedCognitoUsers;
+  return unverifiedCognitoUsers;
 };
 
 //This functions only fetches the maximum of 60 users
-const getNotVerifiedCognitoUsers = paginationToken => {
+const getUnverifiedCognitoUsers = paginationToken => {
   const params = {
     UserPoolId: 'eu-central-1_74vNy5Iw0',
     Filter: 'cognito:user_status = "UNCONFIRMED"',
@@ -181,9 +181,9 @@ const migrateUsersFromBackup = async users => {
   return users;
 };
 
-const isVerified = (user, notVerifiedCognitoUsers) => {
+const isVerified = (user, unverifiedCognitoUsers) => {
   let verified = true;
-  for (let cognitoUser of notVerifiedCognitoUsers) {
+  for (let cognitoUser of unverifiedCognitoUsers) {
     //sub is the only attribute
     if (user.cognitoId === cognitoUser.Attributes[0].Value) {
       verified = false;
