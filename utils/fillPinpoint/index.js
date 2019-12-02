@@ -1,15 +1,16 @@
 const AWS = require('aws-sdk');
-const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
+const config = { region: 'eu-central-1' };
+const pinpoint = new AWS.Pinpoint(config);
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
-const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.TABLE_NAME;
-const zipCodeMatcher = require('./zipCodeMatcher');
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const tableName = 'Users';
+const zipCodeMatcher = require('../zipCodeMatcher');
 
-exports.handler = async event => {
+const fillPinpoint = async () => {
   try {
     const users = await getAllUsers();
     let count = 0;
-    for (let user of users.Items) {
+    for (let user of users) {
       const {
         cognitoId: userId, //rename cognitoId to userId while destructuring
         createdAt,
@@ -19,7 +20,11 @@ exports.handler = async event => {
         referral,
       } = user;
       let { newsletterConsent } = user;
-      const pledge = user['pledge-schleswig-holstein-1'];
+      //for now we just take the first pledge
+      let pledge;
+      if ('pledges' in user) {
+        pledge = user.pledges[0];
+      }
 
       const pledgeAttributes = [];
       if (typeof pledge !== 'undefined' && pledge !== null) {
@@ -61,6 +66,14 @@ exports.handler = async event => {
         newsletterConsent = false;
       }
 
+      //construct username with space before
+      let pinpointName;
+      if (typeof username !== 'undefined' && username !== 'empty') {
+        pinpointName = ` ${username}`;
+      } else {
+        pinpointName = '';
+      }
+
       const params = {
         ApplicationId: projectId,
         EndpointId: `email-endpoint-${userId}`,
@@ -79,13 +92,16 @@ exports.handler = async event => {
             Region: region,
           },
           Metrics: {
-            SignatureCount: parseInt(pledge.signatureCount),
+            SignatureCount:
+              typeof pledge !== 'undefined'
+                ? parseInt(pledge.signatureCount)
+                : 0,
           },
           OptOut: newsletterConsent ? 'NONE' : 'ALL',
           User: {
             UserId: userId,
             UserAttributes: {
-              Username: [username],
+              Username: [pinpointName],
             },
           },
         },
@@ -106,9 +122,29 @@ exports.handler = async event => {
   }
 };
 
-const getAllUsers = () => {
+//functions which gets all users and uses the lastEvaluatedKey
+//to make multiple requests
+const getAllUsers = async () => {
+  const users = [];
+  let result = await getUsers();
+  //add elements to existing array
+  users.push(...result.Items);
+  while ('LastEvaluatedKey' in result) {
+    console.log('another request to db', result.LastEvaluatedKey);
+    result = await getUsers(result.LastEvaluatedKey);
+    users.push(...result.Items);
+  }
+  return users;
+};
+
+const getUsers = (startKey = null) => {
   const params = {
     TableName: tableName,
   };
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
   return ddb.scan(params).promise();
 };
+
+fillPinpoint();

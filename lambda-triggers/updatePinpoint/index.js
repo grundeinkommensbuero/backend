@@ -54,25 +54,13 @@ exports.handler = async (event, context) => {
               : false;
         }
 
-        /* not needed for slimmer pledge
-        
-        const pledgeAttributes = [];
-        if (pledgeData.wouldPrintAndSendSignatureLists.BOOL) {
-          pledgeAttributes.push('wouldPrintAndSendSignatureLists');
+        //construct username with space before
+        let pinpointName;
+        if (typeof username !== 'undefined' && username !== 'empty') {
+          pinpointName = ` ${username}`;
+        } else {
+          pinpointName = '';
         }
-        if (pledgeData.wouldCollectSignaturesInPublicSpaces.BOOL) {
-          pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
-        }
-        if (pledgeData.wouldPutAndCollectSignatureLists.BOOL) {
-          pledgeAttributes.push('wouldPutAndCollectSignatureLists');
-        }
-        if (pledgeData.wouldDonate.BOOL) {
-          pledgeAttributes.push('wouldDonate');
-        }
-        if (pledgeData.wouldEngageCustom.S !== 'empty') {
-          pledgeAttributes.push(pledgeData.wouldEngageCustom.S);
-        }
-        */
 
         const params = {
           ApplicationId: projectId,
@@ -96,7 +84,7 @@ exports.handler = async (event, context) => {
             User: {
               UserId: userId,
               UserAttributes: {
-                Username: [username],
+                Username: [pinpointName],
               },
             },
           },
