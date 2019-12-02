@@ -8,7 +8,13 @@ const config = require('./../../../config');
 const usersTableName = config.tableNameUsers;
 const signaturesTableName = config.signaturesTableName;
 const inputPDF = fs.readFileSync(__dirname + '/list_sh.pdf');
-const URL = 'https://expedition-grundeinkommen.de/scan?id=';
+
+const qrCodeUrls = {
+  'schleswig-holstein': 'https://xbge.de/qr/sh/?listId=',
+  brandenburg: 'https://xbge.de/qr/bb/?listId=',
+  default: 'https://xbge.de/qr/default/?listId=',
+};
+
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -111,7 +117,10 @@ module.exports.handler = async event => {
       try {
         //we are going to generate the pdf
         let currentMillis = new Date().getTime();
-        const generatedPdf = await generatePdf(URL, pdfId, inputPDF);
+        const qrCodeUrl = qrCodeUrls[campaign.state]
+          ? qrCodeUrls[campaign.state]
+          : qrCodeUrls.default;
+        const generatedPdf = await generatePdf(qrCodeUrl, pdfId, inputPDF);
         console.log(
           'generating pdf takes',
           new Date().getTime() - currentMillis
