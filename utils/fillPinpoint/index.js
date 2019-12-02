@@ -79,10 +79,16 @@ const fillPinpoint = async () => {
       //construct username with space before
       let pinpointName;
       if (typeof username !== 'undefined' && username !== 'empty') {
-        pinpointName = ` ${username}`;
+        pinpointName = `\u00A0${username}`;
       } else {
         pinpointName = '';
       }
+
+      //some signatureCounts were saved as string (need to refactor in db),
+      //which is why we need to parse them
+      let signatureCount =
+        typeof pledge !== 'undefined' ? parseInt(pledge.signatureCount) : 0;
+      signatureCount = isNaN(signatureCount) ? 0 : signatureCount;
 
       const params = {
         ApplicationId: projectId,
@@ -102,10 +108,7 @@ const fillPinpoint = async () => {
             Region: region,
           },
           Metrics: {
-            SignatureCount:
-              typeof pledge !== 'undefined'
-                ? parseInt(pledge.signatureCount)
-                : 0,
+            SignatureCount: signatureCount,
           },
           OptOut: newsletterConsent ? 'NONE' : 'ALL',
           User: {

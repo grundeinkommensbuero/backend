@@ -57,7 +57,7 @@ exports.handler = async (event, context) => {
         //construct username with space before
         let pinpointName;
         if (typeof username !== 'undefined' && username !== 'empty') {
-          pinpointName = ` ${username}`;
+          pinpointName = `\u00A0${username}`;
         } else {
           pinpointName = '';
         }
