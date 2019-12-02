@@ -62,7 +62,6 @@ const fillPinpoint = async () => {
       let verified = isVerified(user, unverifiedCognitoUsers);
       //workaround, while some newsletter consents may already have the new format {value, timestamp}
       //old format is just boolean
-      let countUnverified = 0;
       if (typeof newsletterConsent !== 'undefined') {
         //if user is not yet verified opt out in pinpoint
         if (verified) {
@@ -71,7 +70,6 @@ const fillPinpoint = async () => {
               ? newsletterConsent
               : newsletterConsent.value;
         } else {
-          countUnverified++;
           newsletterConsent = false;
         }
       } else {
@@ -129,7 +127,6 @@ const fillPinpoint = async () => {
       }
     }
     console.log('updated count', count);
-    console.log('unverified count', countUnverified);
   } catch (error) {
     console.log('error', error);
   }
