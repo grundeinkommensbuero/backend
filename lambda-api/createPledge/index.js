@@ -160,13 +160,24 @@ const getUser = userId => {
     .promise();
 };
 
-const getUserByMail = email => {
+const getUserByMail = async (email, startKey = null) => {
   const params = {
     TableName: tableName,
     FilterExpression: 'email = :email',
     ExpressionAttributeValues: { ':email': email },
   };
-  return ddb.scan(params).promise();
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+  const result = await ddb.scan(params).promise();
+  //call same function again, if there is no user found, but not
+  //the whole db has been scanned
+  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
+    console.log('call getUserByMail recursively');
+    return getUserByMail(email, result.LastEvaluatedKey);
+  } else {
+    return result;
+  }
 };
 
 const errorResponse = (statusCode, message, error = null) => {

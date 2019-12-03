@@ -55,6 +55,7 @@ exports.handler = async event => {
 
         email = user.Item.email;
       } catch (error) {
+        console.log('error', error);
         return errorResponse(500, 'Error while getting user', error);
       }
     } else if ('email' in requestBody) {
@@ -62,12 +63,15 @@ exports.handler = async event => {
       //in case the api only got the email instead of the id we need to get the user id from the db
       try {
         const result = await getUserByMail(email);
+        console.log('result after getting user by mail', result);
         if (result.Count === 0) {
+          console.log('error', 'no user found', result);
           return errorResponse(400, 'No user found with the passed email');
         } else {
           userId = result.Items[0].cognitoId;
         }
       } catch (error) {
+        console.log('error', error);
         return errorResponse(500, 'Error while getting user by email', error);
       }
     } else {
@@ -165,6 +169,7 @@ exports.handler = async event => {
           );
         }
       } catch (error) {
+        console.log('Error while generating or uploading PDF', error);
         return errorResponse(
           500,
           'Error while generating or uploading PDF',
@@ -188,25 +193,48 @@ const getUser = userId => {
   return ddb.get(params).promise();
 };
 
-const getUserByMail = email => {
+const getUserByMail = async (email, startKey = null) => {
   const params = {
     TableName: usersTableName,
     FilterExpression: 'email = :email',
     ExpressionAttributeValues: { ':email': email },
     ProjectionExpression: 'cognitoId',
   };
-  return ddb.scan(params).promise();
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+  const result = await ddb.scan(params).promise();
+  console.log('result', result);
+  //call same function again, if there is no user found, but not
+  //the whole db has been scanned
+  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
+    console.log('call getUserByMail recursively');
+    return getUserByMail(email, result.LastEvaluatedKey);
+  } else {
+    return result;
+  }
 };
 
 //function to check, if there already is a signature list for this specific day (owned by user or anonymous)
-const getSignatureList = (userId, timestamp) => {
+const getSignatureList = async (userId, timestamp, startKey = null) => {
   const params = {
     TableName: signaturesTableName,
     FilterExpression: 'userId = :userId AND createdAt = :timestamp',
     ExpressionAttributeValues: { ':userId': userId, ':timestamp': timestamp },
     ProjectionExpression: 'id, pdfUrl, downloads',
   };
-  return ddb.scan(params).promise();
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+  const result = await ddb.scan(params).promise();
+  //call same function again, if there is no user found, but not
+  //the whole db has been scanned
+  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
+    console.log('call getUserByMail recursively');
+    return getSignatureList(userId, timestamp, result.LastEvaluatedKey);
+  } else {
+    return result;
+  }
 };
 
 //Checks, if the passed id already exists in the signatures table (returns true or false)
