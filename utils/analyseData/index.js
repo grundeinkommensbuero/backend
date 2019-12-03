@@ -5,6 +5,11 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
 const tableNameBackup = 'UsersWithoutConsent-14-11';
+const {
+  getAllUnverifiedCognitoUsers,
+  getAllUsers,
+  isVerified,
+} = require('../getUsers');
 
 const runScript = async () => {
   const stats = await analyseData();
@@ -105,63 +110,11 @@ const analyseData = async () => {
   }
 };
 
-//functions which gets all users and uses the lastEvaluatedKey
-//to make multiple requests
-const getAllUsers = async () => {
-  const users = [];
-  let result = await getUsers();
-  //add elements to existing array
-  users.push(...result.Items);
-  while ('LastEvaluatedKey' in result) {
-    console.log('another request to db', result.LastEvaluatedKey);
-    result = await getUsers(result.LastEvaluatedKey);
-    users.push(...result.Items);
-  }
-  return users;
-};
-
-const getUsers = (startKey = null) => {
-  const params = {
-    TableName: tableName,
-  };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-  return ddb.scan(params).promise();
-};
-
 const getAllUsersFromBackup = () => {
   const params = {
     TableName: tableNameBackup,
   };
   return ddb.scan(params).promise();
-};
-
-const getAllUnverifiedCognitoUsers = async () => {
-  let unverifiedCognitoUsers = [];
-  let data = await getUnverifiedCognitoUsers(null);
-  //add elements of user array
-  unverifiedCognitoUsers.push(...data.Users);
-  while ('PaginationToken' in data) {
-    data = await getUnverifiedCognitoUsers(data.PaginationToken);
-    //add elements of user array
-    unverifiedCognitoUsers.push(...data.Users);
-  }
-  return unverifiedCognitoUsers;
-};
-
-//This functions only fetches the maximum of 60 users
-const getUnverifiedCognitoUsers = paginationToken => {
-  const params = {
-    UserPoolId: 'eu-central-1_74vNy5Iw0',
-    Filter: 'cognito:user_status = "UNCONFIRMED"',
-    AttributesToGet: [
-      'sub', //sub is the id
-    ],
-    PaginationToken: paginationToken,
-  };
-  //get all users, which are not verified from user pool
-  return cognito.listUsers(params).promise();
 };
 
 const migrateUsersFromBackup = async users => {
@@ -179,17 +132,6 @@ const migrateUsersFromBackup = async users => {
   }
   console.log(`Added ${added} users from backup`);
   return users;
-};
-
-const isVerified = (user, unverifiedCognitoUsers) => {
-  let verified = true;
-  for (let cognitoUser of unverifiedCognitoUsers) {
-    //sub is the only attribute
-    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
-      verified = false;
-    }
-  }
-  return verified;
 };
 
 runScript();

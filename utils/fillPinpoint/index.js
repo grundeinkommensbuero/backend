@@ -5,129 +5,139 @@ const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
+const tableNameBackup = 'UsersWithoutConsent-14-11';
+
 const zipCodeMatcher = require('../zipCodeMatcher');
+const {
+  getAllUnverifiedCognitoUsers,
+  getAllUsers,
+  isVerified,
+} = require('../getUsers');
+
+const updateEndpoint = async (user, verified = true) => {
+  const {
+    cognitoId: userId, //rename cognitoId to userId while destructuring
+    createdAt,
+    email,
+    zipCode,
+    username,
+    referral,
+    migrated,
+  } = user;
+  let { newsletterConsent } = user;
+  //for now we just take the first pledge
+  let pledge;
+  if ('pledges' in user) {
+    pledge = user.pledges[0];
+  }
+
+  const pledgeAttributes = [];
+  if (typeof pledge !== 'undefined' && pledge !== null) {
+    if (pledge.wouldPrintAndSendSignatureLists) {
+      pledgeAttributes.push('wouldPrintAndSendSignatureLists');
+    }
+    if (pledge.wouldCollectSignaturesInPublicSpaces) {
+      pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
+    }
+    if (pledge.wouldPutAndCollectSignatureLists) {
+      pledgeAttributes.push('wouldPutAndCollectSignatureLists');
+    }
+    if (pledge.wouldDonate) {
+      pledgeAttributes.push('wouldDonate');
+    }
+    if (
+      'wouldEngageCustom' in pledge &&
+      pledge.wouldEngageCustom !== 'empty' &&
+      pledge.wouldEngageCustom.length < 50
+    ) {
+      pledgeAttributes.push(pledge.wouldEngageCustom);
+    }
+  }
+
+  // Make use of utility function to match the state to a given zip code
+  let region = 'undefined';
+  if (typeof zipCode !== 'undefined') {
+    region = zipCodeMatcher.getStateByZipCode(zipCode);
+  }
+  console.log('matched region', region);
+
+  //workaround, while some newsletter consents may already have the new format {value, timestamp}
+  //old format is just boolean
+  if (typeof newsletterConsent !== 'undefined') {
+    newsletterConsent =
+      typeof newsletterConsent === 'boolean'
+        ? newsletterConsent
+        : newsletterConsent.value;
+  } else {
+    newsletterConsent = false;
+  }
+
+  //construct name with space before
+  let pinpointName;
+  if (typeof username !== 'undefined' && username !== 'empty') {
+    pinpointName = `&#160;${username}`;
+  } else {
+    pinpointName = '';
+  }
+
+  //some signatureCounts were saved as string (need to refactor in db),
+  //which is why we need to parse them
+  let signatureCount =
+    typeof pledge !== 'undefined' ? parseInt(pledge.signatureCount) : 0;
+  signatureCount = isNaN(signatureCount) ? 0 : signatureCount;
+
+  const params = {
+    ApplicationId: projectId,
+    EndpointId: `email-endpoint-${userId}`,
+    EndpointRequest: {
+      ChannelType: 'EMAIL',
+      Address: email,
+      Attributes: {
+        Referral: [referral],
+        Region: [region],
+        Pledge: pledgeAttributes,
+        PledgeCampaignCode: [
+          typeof pledge !== 'undefined' ? pledge.campaign.code : 'undefined',
+        ],
+        PostalCode: [typeof zipCode !== 'undefined' ? zipCode : 'undefined'],
+        Username: [username],
+        UsernameWithSpace: [pinpointName],
+        Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
+        Migrated: [typeof migrated !== 'undefined' ? migrated.source : 'Nein'],
+      },
+      EffectiveDate: createdAt,
+      Location: {
+        PostalCode: typeof zipCode !== 'undefined' ? zipCode : 'undefined',
+        Region: region,
+      },
+      Metrics: {
+        SignatureCount: signatureCount,
+      },
+      //if user is not yet verified opt out in pinpoint
+      OptOut: verified ? 'NONE' : 'ALL',
+      User: {
+        UserId: userId,
+      },
+    },
+  };
+  console.log('trying to update the endpoint with params:', params);
+  const result = await pinpoint.updateEndpoint(params).promise();
+  console.log('updated pinpoint', result);
+};
 
 const fillPinpoint = async () => {
   try {
-    const users = await getAllUsers();
+    let users = await getAllUsers();
     const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
+    //loop through backup users and add all the users who are not already in users
+    users = await migrateUsersFromBackup(users);
     let count = 0;
     for (let user of users) {
-      const {
-        cognitoId: userId, //rename cognitoId to userId while destructuring
-        createdAt,
-        email,
-        zipCode,
-        username,
-        referral,
-      } = user;
-      let { newsletterConsent } = user;
-      //for now we just take the first pledge
-      let pledge;
-      if ('pledges' in user) {
-        pledge = user.pledges[0];
-      }
-
-      const pledgeAttributes = [];
-      if (typeof pledge !== 'undefined' && pledge !== null) {
-        if (pledge.wouldPrintAndSendSignatureLists) {
-          pledgeAttributes.push('wouldPrintAndSendSignatureLists');
-        }
-        if (pledge.wouldCollectSignaturesInPublicSpaces) {
-          pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
-        }
-        if (pledge.wouldPutAndCollectSignatureLists) {
-          pledgeAttributes.push('wouldPutAndCollectSignatureLists');
-        }
-        if (pledge.wouldDonate) {
-          pledgeAttributes.push('wouldDonate');
-        }
-        if (
-          'wouldEngageCustom' in pledge &&
-          pledge.wouldEngageCustom !== 'empty' &&
-          pledge.wouldEngageCustom.length < 50
-        ) {
-          pledgeAttributes.push(pledge.wouldEngageCustom);
-        }
-      }
-
-      // Make use of utility function to match the state to a given zip code
-      let region = 'undefined';
-      if (typeof zipCode !== 'undefined') {
-        region = zipCodeMatcher.getStateByZipCode(zipCode);
-      }
-      console.log('matched region', region);
-
       //check if the user is verified
-      let verified = isVerified(user, unverifiedCognitoUsers);
-      //workaround, while some newsletter consents may already have the new format {value, timestamp}
-      //old format is just boolean
-      if (typeof newsletterConsent !== 'undefined') {
-        //if user is not yet verified opt out in pinpoint
-        if (verified) {
-          newsletterConsent =
-            typeof newsletterConsent === 'boolean'
-              ? newsletterConsent
-              : newsletterConsent.value;
-        } else {
-          newsletterConsent = false;
-        }
-      } else {
-        newsletterConsent = false;
-      }
-
-      //construct username with space before
-      let pinpointName;
-      if (typeof username !== 'undefined' && username !== 'empty') {
-        pinpointName = `\u00A0${username}`;
-      } else {
-        pinpointName = '';
-      }
-
-      //some signatureCounts were saved as string (need to refactor in db),
-      //which is why we need to parse them
-      let signatureCount =
-        typeof pledge !== 'undefined' ? parseInt(pledge.signatureCount) : 0;
-      signatureCount = isNaN(signatureCount) ? 0 : signatureCount;
-
-      const params = {
-        ApplicationId: projectId,
-        EndpointId: `email-endpoint-${userId}`,
-        EndpointRequest: {
-          ChannelType: 'EMAIL',
-          Address: email,
-          Attributes: {
-            Referral: [referral],
-            Region: [region],
-            Pledge: pledgeAttributes,
-            PostalCode: [zipCode],
-          },
-          EffectiveDate: createdAt,
-          Location: {
-            PostalCode: zipCode,
-            Region: region,
-          },
-          Metrics: {
-            SignatureCount: signatureCount,
-          },
-          OptOut: newsletterConsent ? 'NONE' : 'ALL',
-          User: {
-            UserId: userId,
-            UserAttributes: {
-              Username: [pinpointName],
-            },
-          },
-        },
-      };
-      console.log('trying to update the endpoint with params:', params);
-      try {
-        const result = await pinpoint.updateEndpoint(params).promise();
-        console.log('updated pinpoint', result);
-        count++;
-      } catch (error) {
-        console.log(error);
-        break;
-      }
+      const verified =
+        isVerified(user, unverifiedCognitoUsers) || user.migrated;
+      await updateEndpoint(user, verified);
+      count++;
     }
     console.log('updated count', count);
   } catch (error) {
@@ -135,67 +145,29 @@ const fillPinpoint = async () => {
   }
 };
 
-//functions which gets all users and uses the lastEvaluatedKey
-//to make multiple requests
-const getAllUsers = async () => {
-  const users = [];
-  let result = await getUsers();
-  //add elements to existing array
-  users.push(...result.Items);
-  while ('LastEvaluatedKey' in result) {
-    console.log('another request to db', result.LastEvaluatedKey);
-    result = await getUsers(result.LastEvaluatedKey);
-    users.push(...result.Items);
-  }
-  return users;
-};
-
-const getUsers = (startKey = null) => {
+const getAllUsersFromBackup = () => {
   const params = {
-    TableName: tableName,
+    TableName: tableNameBackup,
   };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
   return ddb.scan(params).promise();
 };
 
-const getAllUnverifiedCognitoUsers = async () => {
-  let unverifiedCognitoUsers = [];
-  let data = await getUnverifiedCognitoUsers(null);
-  //add elements of user array
-  unverifiedCognitoUsers.push(...data.Users);
-  while ('PaginationToken' in data) {
-    data = await getUnverifiedCognitoUsers(data.PaginationToken);
-    //add elements of user array
-    unverifiedCognitoUsers.push(...data.Users);
-  }
-  return unverifiedCognitoUsers;
-};
-
-//This functions only fetches the maximum of 60 users
-const getUnverifiedCognitoUsers = paginationToken => {
-  const params = {
-    UserPoolId: 'eu-central-1_74vNy5Iw0',
-    Filter: 'cognito:user_status = "UNCONFIRMED"',
-    AttributesToGet: [
-      'sub', //sub is the id
-    ],
-    PaginationToken: paginationToken,
-  };
-  //get all users, which are not verified from user pool
-  return cognito.listUsers(params).promise();
-};
-
-const isVerified = (user, unverifiedCognitoUsers) => {
-  let verified = true;
-  for (let cognitoUser of unverifiedCognitoUsers) {
-    //sub is the only attribute
-    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
-      verified = false;
+const migrateUsersFromBackup = async users => {
+  let added = 0;
+  const backupUsers = await getAllUsersFromBackup();
+  console.log('Backup users count', backupUsers.Count);
+  for (let backupUser of backupUsers.Items) {
+    //check if the user is already in users
+    if (users.findIndex(user => user.email === backupUser.email) === -1) {
+      //backup user is not already in there
+      backupUser.migrated = true;
+      users.push(backupUser);
+      added++;
     }
   }
-  return verified;
+  console.log(`Added ${added} users from backup`);
+  return users;
 };
 
 fillPinpoint();
+module.exports = { updateEndpoint };

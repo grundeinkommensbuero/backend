@@ -44,20 +44,20 @@ exports.handler = async (event, context) => {
         const createdAtDate = Date.parse(createdAt);
         const fiveMinutes = 5 * 60 * 1000;
         //if the user was migrated from somewhere we want to opt in immediately
+        let optOut = false;
         if (date - createdAtDate < fiveMinutes && !('migrated' in newData)) {
-          newsletterConsent = false;
-        } else {
-          //make it depending on the newsletter consent value
-          newsletterConsent =
-            'newsletterConsent' in newData
-              ? newData.newsletterConsent.M.value.BOOL
-              : false;
+          optOut = true;
         }
+        //make it depending on the newsletter consent value
+        newsletterConsent =
+          'newsletterConsent' in newData
+            ? newData.newsletterConsent.M.value.BOOL
+            : false;
 
-        //construct username with space before
+        //construct name with space before
         let pinpointName;
         if (typeof username !== 'undefined' && username !== 'empty') {
-          pinpointName = `\u00A0${username}`;
+          pinpointName = `&#160;${username}`;
         } else {
           pinpointName = '';
         }
@@ -73,6 +73,13 @@ exports.handler = async (event, context) => {
               Region: [region],
               PostalCode: [zipCode],
               //Pledge: pledgeAttributes,
+              Username: [username],
+              UsernameWithSpace: [pinpointName],
+              PledgeCampaignCode: [],
+              Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
+              Migrated: [
+                'migrated' in newData ? newData.migrated.source : 'Nein',
+              ],
             },
             EffectiveDate: createdAt,
             Location: {
@@ -80,12 +87,9 @@ exports.handler = async (event, context) => {
               Region: region,
             },
             Metrics: {},
-            OptOut: newsletterConsent ? 'NONE' : 'ALL',
+            OptOut: optOut ? 'ALL' : 'NONE',
             User: {
               UserId: userId,
-              UserAttributes: {
-                Username: [pinpointName],
-              },
             },
           },
         };
@@ -96,12 +100,15 @@ exports.handler = async (event, context) => {
           pledges = newData.pledges.L;
           for (let pledge of pledges) {
             let campaignCode = pledge.M.campaign.M.code.S;
-            //for now we just need the signature count
+            //for now we just need the signature count and the campaign code
             //TODO maybe refactor in the future
             if ('signatureCount' in pledge.M) {
               params.EndpointRequest.Metrics[`SignatureCount-${campaignCode}`] =
                 pledge.M.signatureCount.N;
             }
+            params.EndpointRequest.Attributes.PledgeCampaignCode.push(
+              campaignCode
+            );
           }
         }
         console.log('trying to update the endpoint with params:', params);

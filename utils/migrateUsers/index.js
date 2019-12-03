@@ -10,6 +10,7 @@ const paths = {
 const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
+const { updateEndpoint } = require('../fillPinpoint');
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
@@ -19,15 +20,74 @@ const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 const dynamoLimiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
 
 const tableName = 'Users';
+const tableNameBackup = 'UsersWithoutConsent-14-11';
+const tableNameBackup2 = 'UsersWithoutConsent-02-12';
 
 const addTestUsers = async () => {
-  const allUsers = await readCsv('signaturesTest');
-  //filter duplicates with already existing users in our db
-  const newUsers = await filterDuplicates(allUsers);
+  try {
+    const allUsers = await readCsv('signaturesTest');
+    //filter duplicates with already existing users in our db
+    const newUsers = await filterDuplicates(allUsers);
 
-  for (let user of newUsers) {
-    await createUser(user);
+    for (let user of newUsers) {
+      await createUser(user);
+    }
+  } catch (error) {
+    console.log('error', error);
   }
+};
+
+const addUsersFromBackupToPinpoint = async () => {
+  try {
+    const result = await getUsersFromBackup(tableNameBackup);
+    const backupUsers = result.Items;
+    //only get users without newsletter consent
+    const backupUsersWithoutConsent = backupUsers.filter(
+      user => 'newsletterConsent' in user && !user.newsletterConsent.value
+    );
+
+    //filter duplicates with already existing users in our db (unlikely)
+    const newUsers = await filterDuplicates(backupUsersWithoutConsent);
+    for (let user of newUsers) {
+      await updateEndpoint(user);
+    }
+    console.log(
+      'users length',
+      backupUsers.length,
+      backupUsersWithoutConsent.length,
+      newUsers.length
+    );
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+const addUserFromBackup = async email => {
+  try {
+    const result = await getUsersFromBackup(tableNameBackup2);
+    const backupUsers = result.Items;
+    const foundUser = backupUsers.find(
+      backupUser => email === backupUser.email
+    );
+    console.log('user to recreate', foundUser);
+    //true, because we want to recreate the old user
+    await createUser(foundUser, true);
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+//if we want to "manually" add a single user (e.g. after someone asks as via mail)
+const addUser = async email => {
+  const date = new Date();
+  const timestamp = date.toISOString();
+  const user = {
+    email: email,
+    username: 'Svenja',
+    source: 'manually',
+    createdAt: timestamp,
+  };
+  await createUser(user);
 };
 
 const migrateUsers = async () => {
@@ -36,6 +96,7 @@ const migrateUsers = async () => {
     const mailerliteUsers = await readCsv('mailerlite');
 
     //remove duplicates between mailerlite and change
+    //we want to keep change because of existing location
     const mailerliteUsersWithoutDuplicates = mailerliteUsers.filter(
       mailerliteUser =>
         changeUsers.findIndex(
@@ -49,9 +110,15 @@ const migrateUsers = async () => {
     //filter duplicates with already existing users in our db
     const newUsers = await filterDuplicates(allUsers);
 
-    // for (let user of newUsers) {
-    // await createUser(user);
-    // }
+    for (let user of newUsers) {
+      try {
+        await createUser(user);
+      } catch (error) {
+        if (error.code === 'UsernameExistsException') {
+          console.log('user exists', user.email, error);
+        }
+      }
+    }
 
     console.log('change users', changeUsers.length);
     console.log('mailerlite users', mailerliteUsersWithoutDuplicates.length);
@@ -75,6 +142,7 @@ const readCsv = source => {
         let user;
         //leave out headers
         if (count > 0) {
+          console.log('row', row);
           if (source === 'change') {
             user = {
               email: row[0],
@@ -114,14 +182,17 @@ const readCsv = source => {
 //goes through array of users and checks for duplicates
 const filterDuplicates = async users => {
   const withoutDuplicates = [];
+  const duplicates = [];
   for (let user of users) {
     if (await userExists(user)) {
       console.log('duplicate');
+      duplicates.push(user.email);
     } else {
       //push to array, because user does not exist
       withoutDuplicates.push(user);
     }
   }
+  console.log('duplicates', duplicates);
   return withoutDuplicates;
 };
 
@@ -154,7 +225,7 @@ const getUserByMail = async email => {
   return response;
 };
 
-const createUser = async user => {
+const createUser = async (user, recreate = false) => {
   // AWS Cognito limits to 10 per second, which is why we use limiter
   const response = await cognitoLimiter.schedule(async () => {
     const created = await createUserInCognito(user);
@@ -162,8 +233,12 @@ const createUser = async user => {
     const userId = created.User.Username;
     //confirm user (by setting fake password)
     await confirmUser(userId);
-    //create new entry in dynamo
-    return await createUserInDynamo(userId, user);
+    //create new entry in dynamo or recreate the old one
+    if (recreate) {
+      return await recreateUserInDynamo(userId, user);
+    } else {
+      return await createUserInDynamo(userId, user);
+    }
   });
   return response;
 };
@@ -202,7 +277,7 @@ const confirmUser = userId => {
   return cognito.adminSetUserPassword(setPasswordParams).promise();
 };
 
-const createUserInDynamo = (userId, user, source) => {
+const createUserInDynamo = (userId, user) => {
   const date = new Date();
   const timestamp = date.toISOString();
   const params = {
@@ -229,10 +304,37 @@ const createUserInDynamo = (userId, user, source) => {
   return ddb.put(params).promise();
 };
 
+const recreateUserInDynamo = (userId, user) => {
+  const params = {
+    TableName: tableName,
+    Item: {
+      cognitoId: userId,
+      email: user.email,
+      createdAt: user.createdAt,
+      username: user.username,
+      zipCode: user.zipCode,
+      newsletterConsent: user.newsletterConsent,
+      pledges: user.pledges,
+      referral: user.referral,
+    },
+  };
+  return ddb.put(params).promise();
+};
+
 // Generates a random string (e.g. for generating random password)
 const getRandomString = length => {
   return randomBytes(length).toString('hex');
 };
 
-//migrateUsers();
-addTestUsers();
+const getUsersFromBackup = tableName => {
+  const params = {
+    TableName: tableName,
+  };
+  return ddb.scan(params).promise();
+};
+
+// migrateUsers();
+// addTestUsers();
+// addUsersFromBackupToPinpoint();
+// addUserFromBackup('sonnenzeit22@web.de');
+addUser('Svenja.Gruber@gmx.net');
