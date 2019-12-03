@@ -9,7 +9,7 @@
     <mj-section background-color="#fef377" padding-top="40px">
       <mj-column>
         <mj-text>
-          Hallo,
+          Hallo{{Attributes.UsernameWithSpace}},
           <br><br>
           wir haben gute Neuigkeiten: unsere Unterschriftslisten sind freigegeben.
           Das heißt, wir können ab sofort gemeinsam Unterschriften auf Papier sammeln!
