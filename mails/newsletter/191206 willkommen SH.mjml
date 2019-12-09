@@ -1,0 +1,87 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Der Modellversuch zum Grundeinkommen rückt näher: Nächste Woche Samstag (14.12.)
+      ist offizieller Sammelstart für Schleswig-Holstein! Du willst dabei sein? Dann
+      trag dich jetzt mit unserer Umfrage für unsere Sammellandkarte ein!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>
+            Wir gehen in Riesenschritten los zum ersten Modellversuch
+          </h2>
+
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          schön, dass du Teil unserer Expedition bist, und wir zusammen dafür sorgen, dass es
+          bald einen Modellversuch zum Grundeinkommen gibt.
+          <br><br>
+          Heute schreiben wir dir das erste Mal und haben direkt Neuigkeiten im Gepäck: Nächste
+          Woche Samstag (14.12.) ist offizieller Sammelstart für Schleswig-Holstein!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/JjHR9G?user_email={{Address}}">
+          Ich bin dabei
+        </mj-button>
+
+        <mj-text>
+          Kick-off für die Unterschriftensammlung wird am 14. Dezember in ganz vielen
+          Orten in Schleswig-Holstein sein. Wir treffen uns und sammeln gemeinsam auf
+          der Straße Unterschriften. Du willst dabei sein? Super! Dann trag dich jetzt
+          mit unserer Umfrage für unsere Sammellandkarte ein! Wir freuen uns auf dich!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/JjHR9G?user_email={{Address}}">
+          Ich sammle mit
+        </mj-button>
+        <mj-text>
+
+          Nächste Woche verschicken wir die Unterschriftslisten. Zück schon einmal deinen
+          Stift und trag dir unseren Kick-off in den Kalender ein. 25.000 Unterschriften
+          lautet das erste Etappenziel!
+          <br><br>
+
+          Stay tuned!
+          <br><br>
+
+          Laura und Joy vom Expeditionsteam
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Du magst uns auch mit Geld helfen?</h2>
+          Mit deiner Unterstützung für unsere Expedition bringst du das Thema Grundeinkommen voran.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)<br>
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen. Sende dazu das Kennwort expedition5 oder expedition10 an die 81190. Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
