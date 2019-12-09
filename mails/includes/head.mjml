@@ -11,5 +11,6 @@
   }
   h2 {
     line-height: 35px;
+    margin-top: 0;
   }
 </mj-style>
