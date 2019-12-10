@@ -1,11 +1,10 @@
 const fs = require('fs');
 
-const generatePdf = require('./createPDF');
+const generatePdfCombined = require('./createPDF');
 
-const inputPDF = fs.readFileSync('./list_sh.pdf');
 const CODE = '0123456789';
 const URL = 'https://xbge.de/qr/sh/?listId=';
 
-generatePdf(URL, CODE, inputPDF).then(pdfBytes => {
+generatePdfCombined(URL, CODE).then(pdfBytes => {
   fs.writeFileSync('./list_sh-out.pdf', pdfBytes);
 });

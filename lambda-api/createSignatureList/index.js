@@ -1,12 +1,11 @@
 const AWS = require('aws-sdk');
-const generatePdf = require('./createPDF');
+const generatePdfCombined = require('./createPDF');
 const sendMail = require('./sendMail');
 const fs = require('fs');
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 const usersTableName = process.env.TABLE_NAME_USERS;
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
-const inputPDF = fs.readFileSync(__dirname + '/list_sh.pdf');
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -122,7 +121,7 @@ exports.handler = async event => {
         const qrCodeUrl = qrCodeUrls[campaign.state]
           ? qrCodeUrls[campaign.state]
           : qrCodeUrls.default;
-        const generatedPdf = await generatePdf(qrCodeUrl, pdfId, inputPDF);
+        const generatedPdf = await generatePdfCombined(qrCodeUrl, pdfId);
         console.log(
           'generating pdf takes',
           new Date().getTime() - currentMillis
