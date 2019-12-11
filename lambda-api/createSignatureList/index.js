@@ -143,9 +143,8 @@ exports.handler = async event => {
 
           try {
             //if the download was not anonymous send a mail with the attached pdf
-            if (userId !== 'anonymous') {
-              let currentMillis = new Date().getTime();
-
+            //only send the email to old users (because of opt in)
+            if (userId !== 'anonymous' && !requestBody.isNewUser) {
               const generatedPdfSingle = await generatePdf(
                 qrCodeUrl,
                 pdfId,
@@ -156,6 +155,7 @@ exports.handler = async event => {
                 pdfId,
                 'MULTI'
               );
+
               await sendMail(email, [
                 {
                   filename: 'Tipps_zum_Unterschriftensammeln.pdf',
@@ -173,10 +173,6 @@ exports.handler = async event => {
                   contentType: 'application/pdf',
                 },
               ]);
-              console.log(
-                'sending mail takes',
-                new Date().getTime() - currentMillis
-              );
             }
             return {
               statusCode: 201,
