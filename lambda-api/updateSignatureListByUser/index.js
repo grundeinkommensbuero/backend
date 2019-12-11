@@ -13,8 +13,12 @@ exports.handler = async event => {
     const { count } = JSON.parse(event.body);
 
     //if the listId is somehow undefined or null return error
-    if (typeof listId === 'undefined' || listId === null) {
-      return errorResponse(400, 'List id not provided in request');
+    if (
+      typeof listId === 'undefined' ||
+      listId === null ||
+      typeof count === 'undefined'
+    ) {
+      return errorResponse(400, 'List id or count not provided in request');
     }
 
     try {
