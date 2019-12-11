@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const generatePdfCombined = require('./createPDF');
+const generatePdf = require('./createPDF');
 const sendMail = require('./sendMail');
 const fs = require('fs');
 const s3 = new AWS.S3();
@@ -16,6 +16,8 @@ const qrCodeUrls = {
   brandenburg: 'https://xbge.de/qr/bb/?listId=',
   default: 'https://xbge.de/qr/default/?listId=',
 };
+
+const pdfGuide = fs.readFileSync(__dirname + '/pdf/sh-1/TIPPS.pdf');
 
 /*  Model for signature lists in db
 
@@ -121,13 +123,17 @@ exports.handler = async event => {
         const qrCodeUrl = qrCodeUrls[campaign.state]
           ? qrCodeUrls[campaign.state]
           : qrCodeUrls.default;
-        const generatedPdf = await generatePdfCombined(qrCodeUrl, pdfId);
+        const generatedPdfCombined = await generatePdf(
+          qrCodeUrl,
+          pdfId,
+          'COMBINED'
+        );
         console.log(
           'generating pdf takes',
           new Date().getTime() - currentMillis
         );
         //upload pdf to s3 after generation was successful
-        const uploadResult = await uploadPDF(pdfId, generatedPdf);
+        const uploadResult = await uploadPDF(pdfId, generatedPdfCombined);
         console.log('success uploading pdf to bucket', uploadResult);
         const url = uploadResult.Location;
         try {
@@ -139,7 +145,34 @@ exports.handler = async event => {
             //if the download was not anonymous send a mail with the attached pdf
             if (userId !== 'anonymous') {
               let currentMillis = new Date().getTime();
-              await sendMail(email, generatedPdf);
+
+              const generatedPdfSingle = await generatePdf(
+                qrCodeUrl,
+                pdfId,
+                'SINGLE'
+              );
+              const generatedPdfMulti = await generatePdf(
+                qrCodeUrl,
+                pdfId,
+                'MULTI'
+              );
+              await sendMail(email, [
+                {
+                  filename: 'Tipps_zum_Unterschriftensammeln.pdf',
+                  content: Buffer.from(pdfGuide, 'base64'),
+                  contentType: 'application/pdf',
+                },
+                {
+                  filename: 'Liste_1er.pdf',
+                  content: Buffer.from(generatedPdfSingle, 'base64'),
+                  contentType: 'application/pdf',
+                },
+                {
+                  filename: 'Liste_5er.pdf',
+                  content: Buffer.from(generatedPdfMulti, 'base64'),
+                  contentType: 'application/pdf',
+                },
+              ]);
               console.log(
                 'sending mail takes',
                 new Date().getTime() - currentMillis

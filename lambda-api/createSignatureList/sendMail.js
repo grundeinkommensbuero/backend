@@ -6,19 +6,13 @@ const fs = require('fs');
 const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
 
 //Functions which sends an email with the attached pdf and returns a promise
-const sendMail = (email, pdf) => {
+const sendMail = (email, attachments) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
     subject: 'Deine Unterschriftenliste',
     html: htmlMail,
     to: email,
-    attachments: [
-      {
-        filename: 'Unterschriftenliste.pdf',
-        content: Buffer.from(pdf, 'base64'),
-        contentType: 'application/pdf',
-      },
-    ],
+    attachments: attachments,
   };
 
   // create Nodemailer SES transporter

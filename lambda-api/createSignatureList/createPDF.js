@@ -2,7 +2,11 @@ const fs = require('fs');
 const pdfLib = require('pdf-lib');
 const bwipjs = require('bwip-js');
 
-const inputPdfCombined = fs.readFileSync(__dirname + '/pdf/sh-1/ALLES.pdf');
+const inputPdfs = {
+  COMBINED: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES.pdf'),
+  SINGLE: fs.readFileSync(__dirname + '/pdf/sh-1/1er.pdf'),
+  MULTI: fs.readFileSync(__dirname + '/pdf/sh-1/5er.pdf'),
+};
 
 const CODE_POSITIONS = {
   BARCODE_SINGLE: {
@@ -31,8 +35,8 @@ const CODE_POSITIONS = {
   },
 };
 
-module.exports = async function generatePdfCombined(url, code) {
-  const pdfDoc = await pdfLib.PDFDocument.load(inputPdfCombined);
+module.exports = async function generatePdf(url, code, type) {
+  const pdfDoc = await pdfLib.PDFDocument.load(inputPdfs[type]);
 
   const pages = pdfDoc.getPages();
 
@@ -42,11 +46,22 @@ module.exports = async function generatePdfCombined(url, code) {
   const qrCode = await getQrCode(url + code);
   const qrCodeInDocument = await pdfDoc.embedPng(qrCode);
 
-  pages[1].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_SINGLE);
-  pages[1].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_SINGLE);
+  if (type === 'COMBINED') {
+    pages[1].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_SINGLE);
+    pages[1].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_SINGLE);
+    pages[2].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_MULTI);
+    pages[2].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_MULTI);
+  }
 
-  pages[2].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_MULTI);
-  pages[2].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_MULTI);
+  if (type === 'SINGLE') {
+    pages[0].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_SINGLE);
+    pages[0].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_SINGLE);
+  }
+
+  if (type === 'MULTI') {
+    pages[0].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_MULTI);
+    pages[0].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_MULTI);
+  }
 
   const pdfBytes = await pdfDoc.save();
 
