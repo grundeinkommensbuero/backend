@@ -1,20 +1,24 @@
 // import { CognitoIdentityServiceProvider } from "aws-sdk";
 const AWS = require('aws-sdk');
-const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
-const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.TABLE_NAME;
-const userPoolId = process.env.POOL_ID;
+const config = { region: 'eu-central-1' };
+const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider(
+  config
+);
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const tableName = 'Users';
+const userPoolId = 'eu-central-1_74vNy5Iw0';
+const { getAllUnverifiedCognitoUsers } = require('../getUsers');
 
-exports.handler = async event => {
+const deleteUsers = async () => {
   try {
     //get all users, which are not verified from user pool
-    const notVerifiedCognitoUsers = await getAllNotVerifiedCognitoUsers();
+    const notVerifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
     //filter users to check if the creation of the user was more than
-    //24 hours agp
+    //x days ago
     const date = new Date();
-    const fiveDays = 5 * 24 * 60 * 60 * 1000;
+    const twoDays = 2 * 24 * 60 * 60 * 1000;
     const filteredUsers = notVerifiedCognitoUsers.filter(
-      user => date - user.UserCreateDate > fiveDays
+      user => date - user.UserCreateDate > twoDays
     );
     console.log(
       'not verified and it has been a day count:',
@@ -28,6 +32,7 @@ exports.handler = async event => {
         await deleteUserInDynamo(user);
       } catch (error) {
         console.log('error deleting user', error);
+        break;
       }
     }
   } catch (error) {
@@ -55,3 +60,5 @@ const deleteUserInDynamo = user => {
   };
   return ddb.delete(params).promise();
 };
+
+deleteUsers();
