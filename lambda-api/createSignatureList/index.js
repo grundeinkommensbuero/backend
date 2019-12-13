@@ -26,7 +26,6 @@ const pdfGuide = fs.readFileSync(__dirname + '/pdf/sh-1/TIPPS.pdf');
   createdAt: timestamp (YYYY-MM-DD)
   campaign: object
   downloads: number
-  received: number
   pdfUrl: string
 
 */
@@ -287,7 +286,6 @@ const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
       id: id,
       pdfUrl: url,
       downloads: 1,
-      received: 0,
       campaign: campaign,
       createdAt: timestamp,
     },
