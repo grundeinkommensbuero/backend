@@ -6,22 +6,47 @@ const paths = {
   mailerlite: './data/mailerlite_users.csv',
   change: './data/change_users.csv',
   signaturesTest: './data/signatures_test_users.csv',
+  typeform: './data/typeform_users.csv',
 };
 const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
-const { updateEndpoint } = require('../fillPinpoint');
+const { updateEndpoint, addKickOffToPinpoint } = require('../fillPinpoint');
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
 // AWS Cognito limits to 10 per second, so be safe and do 5 per second
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
 const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
-const dynamoLimiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
 
 const tableName = 'Users';
 const tableNameBackup = 'UsersWithoutConsent-14-11';
 const tableNameBackup2 = 'UsersWithoutConsent-02-12';
+
+const processTypeformUsers = async () => {
+  try {
+    const allUsers = await readCsv('typeform');
+
+    //add new users to database
+    for (let user of allUsers) {
+      const result = await getUserByMail(user.email);
+      // only update pinpoint for the users we already have in dynamo
+      if (result.Count !== 0) {
+        const userId = result.Items[0].cognitoId;
+        console.log('processing', userId);
+        await addKickOffToPinpoint(userId, user.kickOff);
+      } else {
+        //if the user is not in dynamo create new user
+        //if user wants to (newsletter flag)
+        if (user.newsletter) {
+          await createUser(user);
+        }
+      }
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
 
 const addTestUsers = async () => {
   try {
@@ -159,6 +184,19 @@ const readCsv = source => {
               timestampConfirmation: new Date(row[9]).toISOString(),
               source: source,
             };
+          } else if (source === 'typeform') {
+            //only add user if there is a mail
+            if (row[1] !== '' || row[2] !== '') {
+              const date = new Date(row[3]);
+              console.log('date', date);
+              user = {
+                email: row[1] !== '' ? row[1] : row[2],
+                newsletter: row[1] !== '' ? true : false,
+                createdAt: date.toISOString(),
+                source: source,
+                kickOff: row[0],
+              };
+            }
           } else {
             user = {
               email: row[0],
@@ -167,7 +205,9 @@ const readCsv = source => {
               source: source,
             };
           }
-          users.push(user);
+          if (typeof user !== 'undefined') {
+            users.push(user);
+          }
         }
 
         count++;
@@ -211,18 +251,23 @@ const userExists = async user => {
   }
 };
 
-const getUserByMail = async email => {
+const getUserByMail = async (email, startKey = null) => {
   const params = {
     TableName: tableName,
     FilterExpression: 'email = :email',
     ExpressionAttributeValues: { ':email': email },
   };
-  // we don't want to get in trouble with the provisioned throuput
-  // which is why we use the limiter here
-  const response = await dynamoLimiter.schedule(() =>
-    ddb.scan(params).promise()
-  );
-  return response;
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+  const result = await ddb.scan(params).promise();
+  //call same function again, if there is no user found, but not
+  //the whole db has been scanned
+  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
+    return getUserByMail(email, result.LastEvaluatedKey);
+  } else {
+    return result;
+  }
 };
 
 const createUser = async (user, recreate = false) => {
@@ -337,4 +382,6 @@ const getUsersFromBackup = tableName => {
 // addTestUsers();
 // addUsersFromBackupToPinpoint();
 // addUserFromBackup('sonnenzeit22@web.de');
-addUser('Svenja.Gruber@gmx.net');
+// addUser('Svenja.Gruber@gmx.net');
+
+processTypeformUsers();

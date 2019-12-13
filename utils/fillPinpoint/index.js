@@ -169,5 +169,20 @@ const migrateUsersFromBackup = async users => {
   return users;
 };
 
-fillPinpoint();
-module.exports = { updateEndpoint };
+const addKickOffToPinpoint = async (userId, kickOff) => {
+  const params = {
+    ApplicationId: projectId,
+    EndpointId: `email-endpoint-${userId}`,
+    EndpointRequest: {
+      ChannelType: 'EMAIL',
+      Attributes: {
+        KickOff: [kickOff],
+      },
+    },
+  };
+  const result = await pinpoint.updateEndpoint(params).promise();
+  console.log('updated pinpoint', result);
+};
+
+// fillPinpoint();
+module.exports = { updateEndpoint, addKickOffToPinpoint };
