@@ -169,14 +169,15 @@ const migrateUsersFromBackup = async users => {
   return users;
 };
 
-const addKickOffToPinpoint = async (userId, kickOff) => {
+const addKickOffToPinpoint = async user => {
   const params = {
     ApplicationId: projectId,
-    EndpointId: `email-endpoint-${userId}`,
+    EndpointId: `email-endpoint-${user.userId}`,
     EndpointRequest: {
       ChannelType: 'EMAIL',
       Attributes: {
-        KickOff: [kickOff],
+        KickOff: [user.kickOff],
+        PhoneNumber: [user.phoneNumber],
       },
     },
   };

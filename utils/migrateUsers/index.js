@@ -32,14 +32,14 @@ const processTypeformUsers = async () => {
       const result = await getUserByMail(user.email);
       // only update pinpoint for the users we already have in dynamo
       if (result.Count !== 0) {
-        const userId = result.Items[0].cognitoId;
-        console.log('processing', userId);
-        await addKickOffToPinpoint(userId, user.kickOff);
+        user.userId = result.Items[0].cognitoId;
+        console.log('processing', user.userId);
+        await addKickOffToPinpoint(user);
       } else {
         //if the user is not in dynamo create new user
         //if user wants to (newsletter flag)
         if (user.newsletter) {
-          await createUser(user);
+          // await createUser(user);
         }
       }
     }
@@ -195,6 +195,7 @@ const readCsv = source => {
                 createdAt: date.toISOString(),
                 source: source,
                 kickOff: row[0],
+                phoneNumber: row[4] !== '' ? row[4] : 'k.A.',
               };
             }
           } else {
