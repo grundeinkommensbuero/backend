@@ -30,7 +30,7 @@ exports.handler = async event => {
         return errorResponse(400, 'No list found with the passed id');
       }
 
-      //otherwise proceed by updating dynamo ressource
+      //otherwise proceed by updating dynamo resource
       try {
         await updateSignatureList(listId, count);
         // return message (no content)
@@ -66,11 +66,19 @@ const getSignatureList = id => {
 
 //function to set the count for the signature list
 const updateSignatureList = (id, count) => {
+  //needs to be array because append_list works with an array
+  const countObject = [
+    {
+      count: count,
+      timestamp: new Date().toISOString(),
+    },
+  ];
   const params = {
     TableName: signaturesTableName,
     Key: { id: id },
-    UpdateExpression: 'SET scannedByUser = :count',
-    ExpressionAttributeValues: { ':count': count },
+    UpdateExpression:
+      'SET scannedByUser = list_append(if_not_exists(scannedByUser, :emptyList), :count)',
+    ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
   return ddb.update(params).promise();
 };
