@@ -5,7 +5,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
 const tableNameBackup = 'UsersWithoutConsent-14-11';
 
-module.exports.analyseData = async () => {
+module.exports.analyseUsers = async () => {
   try {
     let users = await getAllUsers();
     //loop through backup users and add all the users who are not already in users
