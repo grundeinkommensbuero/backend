@@ -69,7 +69,7 @@ const updateSignatureList = (id, count) => {
   //needs to be array because append_list works with an array
   const countObject = [
     {
-      count: count,
+      count: parseInt(count),
       timestamp: new Date().toISOString(),
     },
   ];
