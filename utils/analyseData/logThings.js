@@ -4,9 +4,8 @@ const { generateCsv } = require('./generateCsv');
 var Table = require('cli-table3');
 
 const runScript = async () => {
+  //Users stats
   const statsUsers = await analyseUsers();
-
-  console.log('Unverfied Users not included in count');
 
   tableUsers = new Table({
     head: [
@@ -32,10 +31,8 @@ const runScript = async () => {
     });
   }
 
+  //Signature Lists Stats
   const statsLists = await analyseSignatureLists();
-
-  console.log('');
-  console.log('SIGNATURE LISTS STATISTICS 👩‍💼🙍‍♂️');
 
   const tableLists = new Table({
     head: [
@@ -63,7 +60,13 @@ const runScript = async () => {
     });
   }
 
+  console.log('');
+  console.log('USER STATISTICS 👩‍💼🙍‍♂️');
+  console.log('Unverfied Users not included in count');
   console.log(tableUsers.toString());
+
+  console.log('');
+  console.log('SIGNATURE LISTS STATISTICS 👩‍💼🙍‍♂️');
   console.log(tableLists.toString());
 
   //   generateCsv(stats, 'schleswig-holstein-1');
