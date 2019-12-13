@@ -10,6 +10,7 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 // const tableName = process.env.TABLE_NAME;
 const tableName = 'UsersWithoutConsent-14-11';
+const signaturesTableName = 'Signatures';
 
 const refactorDynamo = async () => {
   try {
@@ -128,4 +129,49 @@ const constructCampaignId = campaignCode => {
   return campaign;
 };
 
-refactorDynamo();
+const refactorSignatureLists = async () => {
+  try {
+    const signatureLists = await getSignatureLists();
+    for (let list of signatureLists) {
+      console.log('updating list', list.id);
+      await updateSignatureList(list.id);
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+const updateSignatureList = id => {
+  const params = {
+    TableName: signaturesTableName,
+    Key: { id: id },
+    UpdateExpression: 'REMOVE received',
+  };
+  return ddb.update(params).promise();
+};
+
+//function to get all signature lists
+const getSignatureLists = async (signatureLists = [], startKey = null) => {
+  const params = {
+    TableName: signaturesTableName,
+  };
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+  //add elements to existing array
+  signatureLists.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    console.log('call get lists recursively');
+    return getSignatureLists(signatureLists, result.LastEvaluatedKey);
+  } else {
+    //otherwise return the array
+    return signatureLists;
+  }
+};
+
+// refactorDynamo();
+refactorSignatureLists();
