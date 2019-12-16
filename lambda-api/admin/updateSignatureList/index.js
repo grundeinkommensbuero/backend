@@ -77,7 +77,7 @@ const updateSignatureList = (id, count) => {
     TableName: signaturesTableName,
     Key: { id: id },
     UpdateExpression:
-      'SET received = list_append(if_not_exists(scannedByUser, :emptyList), :count)',
+      'SET received = list_append(if_not_exists(received, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
   return ddb.update(params).promise();
