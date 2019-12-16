@@ -45,7 +45,7 @@ module.exports.analyseSignatureLists = async () => {
   return stats;
 };
 
-//function to check, if there already is a signature list for this specific day (owned by user or anonymous)
+//function to get all signature lists
 const getSignatureLists = async (signatureLists = [], startKey = null) => {
   const params = {
     TableName: tableName,
