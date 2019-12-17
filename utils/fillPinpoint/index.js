@@ -104,6 +104,13 @@ const updateEndpoint = async (user, verified = true) => {
         UsernameWithSpace: [pinpointName],
         Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
         Migrated: [typeof migrated !== 'undefined' ? migrated.source : 'Nein'],
+        //if user migrated from 'offline' (meaning subscribed to newsletter
+        //while singing the petition) we want to add the campaign
+        OfflineCampaignCode: [
+          typeof migrated !== 'undefined' && migrated.source === 'offline'
+            ? migrated.campaignCode
+            : 'undefined',
+        ],
       },
       EffectiveDate: createdAt,
       Location: {

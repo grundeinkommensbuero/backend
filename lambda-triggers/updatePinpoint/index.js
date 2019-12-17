@@ -80,6 +80,13 @@ exports.handler = async (event, context) => {
               Migrated: [
                 'migrated' in newData ? newData.migrated.source : 'Nein',
               ],
+              //if user migrated from 'offline' (meaning subscribed to newsletter
+              //while singing the petition) we want to add the campaign
+              OfflineCampaignCode: [
+                'migrated' in newData && newData.migrated.source === 'offline'
+                  ? newData.migrated.campaignCode
+                  : 'undefined',
+              ],
             },
             EffectiveDate: createdAt,
             Location: {

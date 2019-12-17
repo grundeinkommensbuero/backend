@@ -1,0 +1,24 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../../mails/includes/head.mjml" />
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../../mails/includes/header.mjml" />
+    <mj-section background-color="#fef377">
+      <mj-column>
+        <mj-text>
+          <p>[[CUSTOM_GREETING]]</p>
+          <p>
+            Yeeeah!
+            [[CUSTOM_SENTENCE]]
+          </p>
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../../mails/includes/footer.mjml" />
+  </mj-body>
+</mjml>
