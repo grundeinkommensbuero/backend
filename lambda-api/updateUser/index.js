@@ -25,10 +25,7 @@ exports.handler = async event => {
       }
       const user = result.Item;
       //if there already is a newsletter consent, then we do not want to overwrite
-      if (
-        'newsletterConsent' in user &&
-        typeof user.newsletterConsent !== undefined
-      ) {
+      if ('newsletterConsent' in user) {
         return errorResponse(401, 'No permission to override pledge', null);
       }
       try {
