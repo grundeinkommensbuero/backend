@@ -11,7 +11,7 @@ exports.handler = async event => {
   try {
     //user object will contain signature count for a specific user id
     const usersMap = {};
-    const signatureLists = await getSignatureLists();
+    const signatureLists = await getReceivedSignatureLists();
 
     for (let list of signatureLists) {
       //loop through the scan array and check if there were new
@@ -77,10 +77,14 @@ exports.handler = async event => {
   }
 };
 
-//function to get all signature lists
-const getSignatureLists = async (signatureLists = [], startKey = null) => {
+//function to get all signature lists, where there is a received key
+const getReceivedSignatureLists = async (
+  signatureLists = [],
+  startKey = null
+) => {
   const params = {
     TableName: signaturesTableName,
+    // FilterExpression: 'attribute_exists(received)',
   };
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
@@ -93,7 +97,7 @@ const getSignatureLists = async (signatureLists = [], startKey = null) => {
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     console.log('call get lists recursively');
-    return getSignatureLists(signatureLists, result.LastEvaluatedKey);
+    return getReceivedSignatureLists(signatureLists, result.LastEvaluatedKey);
   } else {
     //otherwise return the array
     return signatureLists;
