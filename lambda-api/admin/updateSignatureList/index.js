@@ -10,13 +10,14 @@ exports.handler = async event => {
   try {
     //get user id from path parameter
     const { listId } = event.pathParameters;
-    const { count } = JSON.parse(event.body);
+    const { count, mixed } = JSON.parse(event.body);
 
     //if the listId is somehow undefined or null return error
     if (
       typeof listId === 'undefined' ||
       listId === null ||
-      typeof count === 'undefined'
+      typeof count === 'undefined' ||
+      typeof mixed === 'undefined'
     ) {
       return errorResponse(400, 'List id or count not provided in request');
     }
@@ -32,7 +33,7 @@ exports.handler = async event => {
 
       //otherwise proceed by updating dynamo resource
       try {
-        await updateSignatureList(listId, count);
+        await updateSignatureList(listId, count, mixed);
         // return message (no content)
         return {
           statusCode: 204,
@@ -65,11 +66,12 @@ const getSignatureList = id => {
 };
 
 //function to set the count for the signature list
-const updateSignatureList = (id, count) => {
+const updateSignatureList = (id, count, mixed) => {
   //needs to be array because append_list works with an array
   const countObject = [
     {
       count: parseInt(count),
+      mixed,
       timestamp: new Date().toISOString(),
     },
   ];
