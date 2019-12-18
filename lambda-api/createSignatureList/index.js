@@ -154,6 +154,16 @@ exports.handler = async event => {
                 pdfId,
                 'MULTI'
               );
+              const generatedPdfSingleSw = await generatePdf(
+                qrCodeUrl,
+                pdfId,
+                'SINGLE_SW'
+              );
+              const generatedPdfMultiSw = await generatePdf(
+                qrCodeUrl,
+                pdfId,
+                'MULTI_SW'
+              );
 
               await sendMail(email, [
                 {
@@ -162,12 +172,22 @@ exports.handler = async event => {
                   contentType: 'application/pdf',
                 },
                 {
-                  filename: 'Liste_1er.pdf',
+                  filename: 'Liste_1er_SW.pdf',
+                  content: Buffer.from(generatedPdfSingleSw, 'base64'),
+                  contentType: 'application/pdf',
+                },
+                {
+                  filename: 'Liste_5er_SW.pdf',
+                  content: Buffer.from(generatedPdfMultiSw, 'base64'),
+                  contentType: 'application/pdf',
+                },
+                {
+                  filename: 'Liste_1er_Farbe.pdf',
                   content: Buffer.from(generatedPdfSingle, 'base64'),
                   contentType: 'application/pdf',
                 },
                 {
-                  filename: 'Liste_5er.pdf',
+                  filename: 'Liste_5er_Farbe.pdf',
                   content: Buffer.from(generatedPdfMulti, 'base64'),
                   contentType: 'application/pdf',
                 },

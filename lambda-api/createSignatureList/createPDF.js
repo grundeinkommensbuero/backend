@@ -3,7 +3,9 @@ const pdfLib = require('pdf-lib');
 const bwipjs = require('bwip-js');
 
 const inputPdfs = {
-  COMBINED: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES.pdf'),
+  COMBINED: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES_sw.pdf'),
+  SINGLE_SW: fs.readFileSync(__dirname + '/pdf/sh-1/1er_sw.pdf'),
+  MULTI_SW: fs.readFileSync(__dirname + '/pdf/sh-1/5er_sw.pdf'),
   SINGLE: fs.readFileSync(__dirname + '/pdf/sh-1/1er.pdf'),
   MULTI: fs.readFileSync(__dirname + '/pdf/sh-1/5er.pdf'),
 };
@@ -53,12 +55,12 @@ module.exports = async function generatePdf(url, code, type) {
     pages[2].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_MULTI);
   }
 
-  if (type === 'SINGLE') {
+  if (type === 'SINGLE' || type === 'SINGLE_SW') {
     pages[0].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_SINGLE);
     pages[0].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_SINGLE);
   }
 
-  if (type === 'MULTI') {
+  if (type === 'MULTI' || type === 'MULTI_SW') {
     pages[0].drawImage(barcodeInDocument, CODE_POSITIONS.BARCODE_MULTI);
     pages[0].drawImage(qrCodeInDocument, CODE_POSITIONS.QRCODE_MULTI);
   }
