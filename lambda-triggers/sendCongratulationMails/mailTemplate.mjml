@@ -9,11 +9,11 @@
     <mj-section background-color="#fef377">
       <mj-column>
         <mj-text>
-          <p>[[CUSTOM_GREETING]]</p>
-          <p>
-            Yeeeah!
-            [[CUSTOM_SENTENCE]]
-          </p>
+          [[CUSTOM_GREETING]]
+          <br><br>
+          [[CUSTOM_SENTENCE]]
+          <br><br>
+
         </mj-text>
 
       </mj-column>

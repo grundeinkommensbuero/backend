@@ -1,0 +1,21 @@
+{
+  "name": "createuser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bestzip dist/createUserByAdmin.zip *",
+    "deploy": "aws lambda update-function-code --function-name createUserByAdmin --zip-file fileb://dist/createUserByAdmin.zip",
+    "cleanUp": "rm dist/createUserByAdmin.zip",
+    "buildDeploy": "npm run build && npm run deploy && npm run cleanUp"
+  },
+  "author": "Vali",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^6.4.2"
+  },
+  "devDependencies": {
+    "bestzip": "^2.1.5"
+  }
+}

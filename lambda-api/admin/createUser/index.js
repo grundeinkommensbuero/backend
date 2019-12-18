@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const randomBytes = require('crypto').randomBytes;
+const sendMail = require('./sendMail');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const usersTableName = process.env.TABLE_NAME_USERS;
@@ -33,19 +34,32 @@ exports.handler = async event => {
       //now create dynamo resource
       await createUserInDynamo(userId, email, campaignCode);
 
-      // return message (created)
-      return {
-        statusCode: 201,
-        headers: responseHeaders,
-        isBase64Encoded: false,
-        body: JSON.stringify({ userId }),
-      };
+      try {
+        //send email to to user to welcome them
+        await sendMail(email);
+
+        // return message (created)
+        return {
+          statusCode: 201,
+          headers: responseHeaders,
+          isBase64Encoded: false,
+          body: JSON.stringify({ userId }),
+        };
+      } catch (error) {
+        console.log('Error while sending email', error);
+        return errorResponse(500, 'Error while sending email', error);
+      }
     } catch (error) {
       console.log('error', error);
 
       //user already exists
       if (error.code === 'UsernameExistsException') {
-        return errorResponse(200, 'User already exists');
+        return errorResponse(200, 'User already exists', error);
+      }
+
+      //invalid email
+      if (error.code === 'InvalidParameterException') {
+        return errorResponse(400, 'Invalid email', error);
       }
 
       return errorResponse(500, 'Error while creating user', error);

@@ -1,0 +1,27 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../../../mails/includes/head.mjml" />
+    <mj-preview>
+      Du hast dich bei uns auf einer Papierliste in den Newsletter eingetragen.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../../../mails/includes/header.mjml" />
+    <mj-section background-color="#fef377">
+      <mj-column>
+        <mj-text>
+          Liebe*r Unterstützer*in,
+          <br><br>
+          willkommen bei der Expedition Grundeinkommen. Du hast dich bei uns auf einer Papierliste in den Newsletter eingetragen.
+          <br><br>
+
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../../../mails/includes/footer.mjml" />
+  </mj-body>
+</mjml>
