@@ -3,7 +3,8 @@
   <mj-head>
     <mj-include path="../../../mails/includes/head.mjml" />
     <mj-preview>
-      Du hast dich bei uns auf einer Papierliste in den Newsletter eingetragen.
+      Danke, dass du für ein Grundeinkommensexperiment mit unterschrieben
+      hast. Wir haben dich in unseren E-Mail-Verteiler eingetragen.
     </mj-preview>
   </mj-head>
 
@@ -12,16 +13,78 @@
     <mj-section background-color="#fef377">
       <mj-column>
         <mj-text>
-          Liebe*r Unterstützer*in,
-          <br><br>
-          willkommen bei der Expedition Grundeinkommen. Du hast dich bei uns auf einer Papierliste in den Newsletter eingetragen.
-          <br><br>
+          Liebe Unterstützerin,<br>
+          lieber Unterstützer,
 
+          <br><br>
+          willkommen bei der Expedition Grundeinkommen. Danke, dass du
+          unsere Volksinitiative unterschrieben hast und per Mail von
+          uns Neuigkeiten erhalten willst. Wir werden dich wie versprochen
+          informieren, wenn es in die zweite Unterschriften-Phase geht.
+          <br><br>
+          Wenn du Lust hast auch selbst aktiv zu werden und in deinem Umfeld
+          Unterschriften zu sammeln, dann lad dir gern unsere Listen herunter.
+          Egal, ob du Listen beim Bäcker auslegst, einfach ein paar Freunde
+          fragst und uns die Liste zurückschickst - jede Unterschrift zählt!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId=[[USER_ID]]&campaignCode=[[CAMPAIGN_CODE]]">
+          Liste herunterladen
+        </mj-button>
+
+        <mj-text>
+          Schön, dass du dabei bist!
+          <br><br>
+          Joy, Laura und das Team der Expedition
+          <br><br>
+          PS: Falls du es dir anders überlegt hast und doch keine Nachrichten von uns möchtest, dann antworte einfach auf diese E-Mail.
         </mj-text>
 
       </mj-column>
     </mj-section>
 
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Du kannst dir vorstellen unsere Sammelteams zu verstärken?</h2>
+
+          In ganz Schleswig-Holstein sammeln Freiwillige gemeinsam Unterschriften
+          an öffentlichen Orten. Komm doch dazu! Öffne jetzt die Sammel-Landkarte
+          und schau nach, wo überall gesammelt wird – oder schlage deinen eigenen
+          Sammelort vor.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" href="https://expedition-grundeinkommen.de/schleswig-holstein/#karte" color="#fef377" border="1px solid #fef377">
+          Zur Sammel-Landkarte
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Deine Spende bringt die Expedition voran</h2>
+
+          Mit deiner Unterstützung für unsere Expedition bringst du das Thema Grundeinkommen voran.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen. Sende dazu das Kennwort expedition5 oder expedition10 an die 81190. Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+    </mj-section>
     <mj-include path="../../../mails/includes/footer.mjml" />
   </mj-body>
 </mjml>
