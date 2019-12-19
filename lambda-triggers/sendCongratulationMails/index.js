@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const sendMail = require('./sendMail');
+const { getSignatureCountFromContentful } = require('./contentfulApi');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
@@ -11,6 +12,7 @@ exports.handler = async event => {
   try {
     //user object will contain signature count for a specific user id
     const usersMap = {};
+    let totalCountForAllUsers = 0;
     const signatureLists = await getReceivedSignatureLists();
 
     for (let list of signatureLists) {
@@ -34,39 +36,52 @@ exports.handler = async event => {
         //we also want to compute the total count to check,
         //if it is different to the daily count
         totalCount += scan.count;
+
+        //if there were signatures on this list, which belong to
+        //different "Ämters" (mixed), we don't add the count
+        if (!scan.mixed) {
+          totalCountForAllUsers += scan.count;
+        }
       }
 
-      //if there were lists scanned during the last 24h
-      //we want to send a mail
-      if (dailyCount > 0) {
-        if (!(list.userId in usersMap)) {
-          //get user to get mail
-          const result = await getUser(list.userId);
+      if (!(list.userId in usersMap)) {
+        //get user to get mail
+        const result = await getUser(list.userId);
 
-          if (!('Item' in result)) {
-            throw new Error('No user found with the given id');
-          }
-
-          //initialize an object in the map
-          usersMap[list.userId] = {
-            dailyCount,
-            totalCount,
-            email: result.Item.email,
-            username: result.Item.username,
-          };
-        } else {
-          //if there already is an entry in the map, change the values
-          usersMap[list.userId].dailyCount += dailyCount;
-          usersMap[list.userId].totalCount += totalCount;
+        if (!('Item' in result)) {
+          throw new Error('No user found with the given id');
         }
+
+        //initialize an object in the map
+        usersMap[list.userId] = {
+          dailyCount,
+          totalCount,
+          email: result.Item.email,
+          username: result.Item.username,
+        };
+      } else {
+        //if there already is an entry in the map, change the values
+        usersMap[list.userId].dailyCount += dailyCount;
+        usersMap[list.userId].totalCount += totalCount;
       }
     }
 
     //go through the user map to send a mail to every user
     //of whom we have scanned a list during the last day
     for (let key in usersMap) {
-      await sendMail(usersMap[key]);
+      if (usersMap[key].dailyCount > 0) {
+        const contenfulCount = await getSignatureCountFromContentful();
+
+        //if the contentful signature count is more use that number
+        totalCountForAllUsers =
+          contenfulCount > totalCountForAllUsers
+            ? contenfulCount
+            : totalCountForAllUsers;
+
+        await sendMail(usersMap[key], totalCountForAllUsers);
+      }
     }
+
     return event;
   } catch (error) {
     console.log('error', error);
