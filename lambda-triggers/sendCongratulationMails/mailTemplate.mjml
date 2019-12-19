@@ -2,6 +2,9 @@
 
   <mj-head>
     <mj-include path="../../mails/includes/head.mjml" />
+    <mj-preview>
+      [[CUSTOM_PREHEADER]]
+    </mj-preview>
   </mj-head>
 
   <mj-body background-color="#f0f0f0">

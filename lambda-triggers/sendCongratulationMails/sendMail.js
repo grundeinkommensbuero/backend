@@ -7,11 +7,14 @@ const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
 
 //Function which sends an email to congratulate for the reception of list(s)
 //gets a user object, which is why we destructure the object
-const sendMail = ({ email, username, dailyCount, totalCount }) => {
+const sendMail = (
+  { email, username, dailyCount, totalCount },
+  totalCountForAllUsers
+) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
-    subject: 'Glückwunsch!',
-    html: customMail(dailyCount, totalCount, username),
+    subject: `${dailyCount} Unterschriften sind eingegangen!`,
+    html: customMail(dailyCount, totalCount, username, totalCountForAllUsers),
     to: email,
   };
 
@@ -24,9 +27,17 @@ const sendMail = ({ email, username, dailyCount, totalCount }) => {
 };
 
 //construct an email depending on the signature count
-const customMail = (dailyCount, totalCount, username) => {
-  let customSentence;
+const customMail = (
+  dailyCount,
+  totalCount,
+  username,
+  totalCountForAllUsers
+) => {
   let greeting;
+  let preheader =
+    dailyCount > 1
+      ? `Herzlichen Dank! Wir haben heute ${dailyCount} Unterschriften von dir erhalten.`
+      : `Herzlichen Dank! Wir haben heute ${dailyCount} Unterschrift von dir erhalten.`;
 
   //if there is a username we want to have a specific greeting
   //username might be in different forms, definitely need to refactor
@@ -38,16 +49,38 @@ const customMail = (dailyCount, totalCount, username) => {
 
   //if the total count is different than the daily count
   //we are going to send a different text in the mail
-  if (totalCount > dailyCount) {
-    customSentence = `Wir haben heute nochmal ${dailyCount} Unterschriften von dir erhalten. 
-    Also haben wir insgesamt schon ${totalCount} Unterschriften von dir.`;
-  } else {
-    customSentence = `Wir haben heute ${dailyCount} Unterschriften von dir erhalten.`;
-  }
+  const text = `vor einiger Zeit hast du Unterschriftslisten für die Expedition Grundeinkommen heruntergeladen. 
+  ${dailyCount} Unterschrift${dailyCount > 1 ? 'en' : ''} kam${
+    dailyCount > 1 ? 'en' : ''
+  } heute zu uns zurück. ${
+    totalCount > dailyCount
+      ? `Damit hast du insgesamt schon ${totalCount} Unterschriften beigetragen. `
+      : ''
+  } 
+  
+  Ein großes Danke dafür!
+
+  Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment ${totalCountForAllUsers} von 25.000 benötigten Unterschriften gesammelt. 
+  Wir haben also noch etwas vor uns.
+  `;
+
+  const ctaText =
+    totalCount > 1
+      ? `Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? Bitte lass sie auch mit unterschreiben! 
+      Du kannst auch Listen in der Bäckerei oder im Supermarkt um die Ecke auslegen. Trag dann bitte den neuen Sammelort in unsere Sammellandkarte ein.`
+      : 'Kennst du noch Menschen in deinem Umfeld, die auch für einen Modellversuch zum Grundeinkommen unterschreiben könnten? Bitte lass sie auch unterschreiben! ';
+
+  console.log('greeting', greeting);
+  console.log('pre', preheader);
+  console.log('text', text);
+  console.log('cta', ctaText);
 
   return htmlMail
     .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
-    .replace(/\[\[CUSTOM_SENTENCE\]\]/gi, customSentence);
+    .replace(/\[\[CUSTOM_PREHEADER\]\]/gi, preheader)
+    .replace(/\[\[CUSTOM_SENTENCE\]\]/gi, text);
 };
 
 module.exports = sendMail;
+
+customMail(1, 1, undefined, 1000);
