@@ -19,56 +19,52 @@ exports.handler = async event => {
       let dailyCount = 0;
       let totalCount = 0;
 
-      //key received might not be available if the list
-      //was not scanned yet
-      if ('received' in list) {
-        console.log('list', list);
-        for (let scan of list.received) {
-          //we have to bring the two dates into the same format (UNIX time)
-          const now = new Date().getTime();
-          const scannedAt = Date.parse(scan.timestamp);
-          const oneDay = 24 * 60 * 60 * 1000;
+      console.log('list', list);
+      for (let scan of list.received) {
+        //we have to bring the two dates into the same format (UNIX time)
+        const now = new Date().getTime();
+        const scannedAt = Date.parse(scan.timestamp);
+        const oneDay = 24 * 60 * 60 * 1000;
 
-          //if the scan was during the last day add it to the count
-          if (now - scannedAt < oneDay) {
-            dailyCount += scan.count;
-          }
-
-          //we also want to compute the total count to check,
-          //if it is different to the daily count
-          totalCount += scan.count;
+        //if the scan was during the last day add it to the count
+        if (now - scannedAt < oneDay) {
+          dailyCount += scan.count;
         }
 
-        //if there were lists scanned during the last 24h
-        //we want to send a mail
-        if (dailyCount > 0) {
-          if (!(list.userId in usersMap)) {
-            //get user to get mail
-            const result = await getUser(list.userId);
+        //we also want to compute the total count to check,
+        //if it is different to the daily count
+        totalCount += scan.count;
+      }
 
-            if (!('Item' in result)) {
-              throw new Error('No user found with the given id');
-            }
+      //if there were lists scanned during the last 24h
+      //we want to send a mail
+      if (dailyCount > 0) {
+        if (!(list.userId in usersMap)) {
+          //get user to get mail
+          const result = await getUser(list.userId);
 
-            //initialize an object in the map
-            usersMap[list.userId] = {
-              dailyCount,
-              totalCount,
-              email: result.Item.email,
-              username: result.Item.username,
-            };
-          } else {
-            //if there already is an entry in the map, change the values
-            usersMap[list.userId].dailyCount += dailyCount;
-            usersMap[list.userId].totalCount += totalCount;
+          if (!('Item' in result)) {
+            throw new Error('No user found with the given id');
           }
+
+          //initialize an object in the map
+          usersMap[list.userId] = {
+            dailyCount,
+            totalCount,
+            email: result.Item.email,
+            username: result.Item.username,
+          };
+        } else {
+          //if there already is an entry in the map, change the values
+          usersMap[list.userId].dailyCount += dailyCount;
+          usersMap[list.userId].totalCount += totalCount;
         }
       }
     }
 
     //go through the user map to send a mail to every user
     //of whom we have scanned a list during the last day
-    for (key in usersMap) {
+    for (let key in usersMap) {
       await sendMail(usersMap[key]);
     }
     return event;
@@ -84,7 +80,7 @@ const getReceivedSignatureLists = async (
 ) => {
   const params = {
     TableName: signaturesTableName,
-    // FilterExpression: 'attribute_exists(received)',
+    FilterExpression: 'attribute_exists(received)',
   };
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
