@@ -8,13 +8,19 @@ const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
 //Function which sends an email to congratulate for the reception of list(s)
 //gets a user object, which is why we destructure the object
 const sendMail = (
-  { email, username, dailyCount, totalCount },
+  { email, username, userId, dailyCount, totalCount },
   totalCountForAllUsers
 ) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
     subject: `${dailyCount} Unterschriften sind eingegangen!`,
-    html: customMail(dailyCount, totalCount, username, totalCountForAllUsers),
+    html: customMail(
+      dailyCount,
+      totalCount,
+      totalCountForAllUsers,
+      username,
+      userId
+    ),
     to: email,
   };
 
@@ -30,8 +36,9 @@ const sendMail = (
 const customMail = (
   dailyCount,
   totalCount,
+  totalCountForAllUsers,
   username,
-  totalCountForAllUsers
+  userId
 ) => {
   let greeting;
   let preheader =
@@ -59,28 +66,29 @@ const customMail = (
   } 
   
   Ein großes Danke dafür!
-
+  <br><br>
   Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment ${totalCountForAllUsers} von 25.000 benötigten Unterschriften gesammelt. 
   Wir haben also noch etwas vor uns.
   `;
 
-  const ctaText =
-    totalCount > 1
-      ? `Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? Bitte lass sie auch mit unterschreiben! 
-      Du kannst auch Listen in der Bäckerei oder im Supermarkt um die Ecke auslegen. Trag dann bitte den neuen Sammelort in unsere Sammellandkarte ein.`
-      : 'Kennst du noch Menschen in deinem Umfeld, die auch für einen Modellversuch zum Grundeinkommen unterschreiben könnten? Bitte lass sie auch unterschreiben! ';
-
-  console.log('greeting', greeting);
-  console.log('pre', preheader);
-  console.log('text', text);
-  console.log('cta', ctaText);
+  let ctaText;
+  if (totalCount > 5) {
+    ctaText =
+      'Wie können wir dich beim weiteren Sammeln unterstützen? Antworte gern auf diese E-Mail!';
+  } else if (totalCount > 1) {
+    ctaText = `Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? Bitte lass sie auch mit unterschreiben! 
+    Du kannst auch Listen in der Bäckerei oder im Supermarkt um die Ecke auslegen. Trag dann bitte den neuen Sammelort in unsere <a class="link" href="https://expedition-grundeinkommen.de/schleswig-holstein/#karte">Sammellandkarte</a> ein.`;
+  } else {
+    ctaText =
+      'Kennst du noch Menschen in deinem Umfeld, die auch für einen Modellversuch zum Grundeinkommen unterschreiben könnten? Bitte lass sie auch unterschreiben! ';
+  }
 
   return htmlMail
     .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
     .replace(/\[\[CUSTOM_PREHEADER\]\]/gi, preheader)
-    .replace(/\[\[CUSTOM_SENTENCE\]\]/gi, text);
+    .replace(/\[\[CUSTOM_TEXT\]\]/gi, text)
+    .replace(/\[\[CUSTOM_CTA_TEXT\]\]/gi, ctaText)
+    .replace(/\[\[USER_ID\]\]/gi, userId);
 };
 
 module.exports = sendMail;
-
-customMail(1, 1, undefined, 1000);

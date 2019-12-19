@@ -5,8 +5,6 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
 const usersTableName = process.env.TABLE_NAME_USERS;
-// const signaturesTableName = 'Signatures';
-// const usersTableName = 'Users';
 
 exports.handler = async event => {
   try {
@@ -58,6 +56,7 @@ exports.handler = async event => {
           totalCount,
           email: result.Item.email,
           username: result.Item.username,
+          userId: result.Item.cognitoId,
         };
       } else {
         //if there already is an entry in the map, change the values
