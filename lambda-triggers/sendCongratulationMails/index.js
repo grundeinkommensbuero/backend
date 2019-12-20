@@ -42,26 +42,29 @@ exports.handler = async event => {
         }
       }
 
-      if (!(list.userId in usersMap)) {
-        //get user to get mail
-        const result = await getUser(list.userId);
+      //check if user is not anonymous
+      if (list.userId !== 'anonymous') {
+        if (!(list.userId in usersMap)) {
+          //get user to get mail
+          const result = await getUser(list.userId);
 
-        if (!('Item' in result)) {
-          throw new Error('No user found with the given id');
+          if (!('Item' in result)) {
+            throw new Error('No user found with the given id');
+          }
+
+          //initialize an object in the map
+          usersMap[list.userId] = {
+            dailyCount,
+            totalCount,
+            email: result.Item.email,
+            username: result.Item.username,
+            userId: result.Item.cognitoId,
+          };
+        } else {
+          //if there already is an entry in the map, change the values
+          usersMap[list.userId].dailyCount += dailyCount;
+          usersMap[list.userId].totalCount += totalCount;
         }
-
-        //initialize an object in the map
-        usersMap[list.userId] = {
-          dailyCount,
-          totalCount,
-          email: result.Item.email,
-          username: result.Item.username,
-          userId: result.Item.cognitoId,
-        };
-      } else {
-        //if there already is an entry in the map, change the values
-        usersMap[list.userId].dailyCount += dailyCount;
-        usersMap[list.userId].totalCount += totalCount;
       }
     }
 
@@ -78,6 +81,7 @@ exports.handler = async event => {
             : totalCountForAllUsers;
 
         await sendMail(usersMap[key], totalCountForAllUsers);
+        console.log('success sending mail');
       }
     }
 
