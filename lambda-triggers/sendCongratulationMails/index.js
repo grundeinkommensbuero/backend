@@ -48,18 +48,17 @@ exports.handler = async event => {
           //get user to get mail
           const result = await getUser(list.userId);
 
-          if (!('Item' in result)) {
-            throw new Error('No user found with the given id');
+          //the user might have been deleted
+          if ('Item' in result) {
+            //initialize an object in the map
+            usersMap[list.userId] = {
+              dailyCount,
+              totalCount,
+              email: result.Item.email,
+              username: result.Item.username,
+              userId: result.Item.cognitoId,
+            };
           }
-
-          //initialize an object in the map
-          usersMap[list.userId] = {
-            dailyCount,
-            totalCount,
-            email: result.Item.email,
-            username: result.Item.username,
-            userId: result.Item.cognitoId,
-          };
         } else {
           //if there already is an entry in the map, change the values
           usersMap[list.userId].dailyCount += dailyCount;
