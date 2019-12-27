@@ -148,6 +148,57 @@ functions:
           - mobiletargeting:*
         Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
 
+  sendCongratulationMails:
+    handler: src/triggers/sendCongratulationMails/index.handler
+    events: # Call this function every day at 8 (via cloudwatch event)
+      - schedule: cron(0 19 * * ? *)
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+
+  # Admin cognito auth triggers
+
+  createAuthChallenge:
+    handler: src/triggers/auth/createAuthChallenge/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: CreateAuthChallenge
+
+  defineAuthChallenge:
+    handler: src/triggers/auth/defineAuthChallenge/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: DefineAuthChallenge
+
+  preSignUp:
+    handler: src/triggers/auth/preSignUp/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: PreSignUp
+
+  verifyAuthChallengeResponse:
+    handler: src/triggers/auth/verifyAuthChallengeResponse/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: VerifyAuthChallengeResponse
+
 # CloudFormation resource templates
 resources:
   Resources:

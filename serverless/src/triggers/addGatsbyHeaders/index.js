@@ -1,4 +1,4 @@
-exports.handler = async event => {
+module.exports.handler = async event => {
   const request = event.Records[0].cf.request;
   const response = event.Records[0].cf.response;
   const headers = response.headers;

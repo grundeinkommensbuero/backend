@@ -9,7 +9,7 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   //get user id from path parameter
   const userId = event.pathParameters.userId;
   console.log('userId', userId);
