@@ -10,14 +10,13 @@ exports.handler = async event => {
   try {
     //get user id from path parameter
     const { listId } = event.pathParameters;
-    const { count, mixed } = JSON.parse(event.body);
+    const { count } = JSON.parse(event.body);
 
     //if the listId is somehow undefined or null return error
     if (
       typeof listId === 'undefined' ||
       listId === null ||
-      typeof count === 'undefined' ||
-      typeof mixed === 'undefined'
+      typeof count === 'undefined'
     ) {
       return errorResponse(400, 'List id or count not provided in request');
     }
@@ -33,7 +32,7 @@ exports.handler = async event => {
 
       //otherwise proceed by updating dynamo resource
       try {
-        await updateSignatureList(listId, count, mixed);
+        await updateSignatureList(listId, count);
         // return message (no content)
         return {
           statusCode: 204,
@@ -66,12 +65,11 @@ const getSignatureList = id => {
 };
 
 //function to set the count for the signature list
-const updateSignatureList = (id, count, mixed) => {
+const updateSignatureList = (id, count) => {
   //needs to be array because append_list works with an array
   const countObject = [
     {
       count: parseInt(count),
-      mixed,
       timestamp: new Date().toISOString(),
     },
   ];
@@ -79,7 +77,7 @@ const updateSignatureList = (id, count, mixed) => {
     TableName: signaturesTableName,
     Key: { id: id },
     UpdateExpression:
-      'SET received = list_append(if_not_exists(received, :emptyList), :count)',
+      'SET scannedByUser = list_append(if_not_exists(scannedByUser, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
   return ddb.update(params).promise();
