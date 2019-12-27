@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-const tableName = process.env.TABLE_NAME;
+const tableName = process.env.usersTableName;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',

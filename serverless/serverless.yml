@@ -20,6 +20,8 @@ provider:
 environment:
   usersTableName: ${self:custom.usersTableName}
   signaturesTableName: ${self:custom.signaturesTableName}
+  userPoolId:
+    Ref: UserPool
 
 plugins:
   - serverless-iam-roles-per-function

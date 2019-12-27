@@ -8,7 +8,7 @@
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-// const tableName = process.env.TABLE_NAME;
+// const tableName = process.env.usersTableName;
 const tableName = 'UsersWithoutConsent-14-11';
 const signaturesTableName = 'Signatures';
 
