@@ -29,7 +29,7 @@ plugins:
 
 functions:
   createPledge:
-    handler: src/api/createPledge/index.handler
+    handler: src/api/pledges/createPledge/index.handler
     events:
       - http:
           path: pledges
@@ -45,7 +45,7 @@ functions:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
   createSignatureList:
-    handler: src/api/createSignatureList/index.handler
+    handler: src/api/signatures/createSignatureList/index.handler
     events:
       - http:
           path: signatures
@@ -79,7 +79,7 @@ functions:
         Resource: 'arn:aws:s3:::signature-lists/*'
 
   updateUser:
-    handler: src/api/updateUser/index.handler
+    handler: src/api/users/updateUser/index.handler
     events:
       - http:
           path: users/{userId}
@@ -101,7 +101,7 @@ functions:
     handler: src/triggers/sendVerificationMail/index.handler
     events:
       - cognitoUserPool:
-          pool: UbiUserPool
+          pool: UserPool
           trigger: CustomMessage
     iamRoleStatments:
       - Effect: 'Allow'
@@ -114,7 +114,7 @@ functions:
     handler: src/triggers/pinpointOptIn/index.handler
     events:
       - cognitoUserPool:
-          pool: UbiUserPool
+          pool: UserPool
           trigger: PostConfirmation
     iamRoleStatements:
       - Effect: 'Allow'
@@ -177,6 +177,7 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
+    # General user pool
     UserPool:
       Type: AWS::Cognito::UserPool
       # Generate a name based on the stage
@@ -188,3 +189,54 @@ resources:
       AutoVerifiedAttributes:
         - email
         - phone_number
+
+    UserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        # Generate an app client name based on the stage
+        ClientName: ${self:custom.stage}-user-pool-client
+        UserPoolId:
+          Ref: UserPool
+        GenerateSecret: false
+
+    # Admin user pool
+    AdminUserPool:
+      Type: AWS::Cognito::UserPool
+      # Generate a name based on the stage
+      UserPoolName: ${self:custom.stage}-admin-pool
+      # Set email as an alias
+      UsernameAttributes:
+        - email
+        - phone_number
+      AutoVerifiedAttributes:
+        - email
+        - phone_number
+
+    AdminUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        # Generate an app client name based on the stage
+        ClientName: ${self:custom.stage}-admin-pool-client
+        AdminUserPoolId:
+          Ref: AdminUserPool
+        ExplicitAuthFlows:
+          - ALLOW_CUSTOM_AUTH
+        GenerateSecret: false
+
+# Print out the Id of the User Pool that is created
+Outputs:
+  UserPoolId:
+    Value:
+      Ref: UserPool
+
+  UserPoolClientId:
+    Value:
+      Ref: UserPoolClient
+
+  AdminUserPoolId:
+    Value:
+      Ref: AdminUserPool
+
+  AdminUserPoolClientId:
+    Value:
+      Ref: AdminUserPoolClient
