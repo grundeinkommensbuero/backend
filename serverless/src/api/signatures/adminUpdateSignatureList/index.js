@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
+const signaturesTableName = process.env.signaturesTableName;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',

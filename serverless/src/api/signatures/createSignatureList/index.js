@@ -4,8 +4,8 @@ const sendMail = require('./sendMail');
 const fs = require('fs');
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
-const usersTableName = process.env.TABLE_NAME_USERS;
-const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
+const usersTableName = process.env.usersTableName;
+const signaturesTableName = process.env.signaturesTableName;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',

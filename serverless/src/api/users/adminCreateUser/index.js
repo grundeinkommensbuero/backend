@@ -3,8 +3,7 @@ const randomBytes = require('crypto').randomBytes;
 const sendMail = require('./sendMail');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
-const usersTableName = process.env.TABLE_NAME_USERS;
-const userPoolId = process.env.USER_POOL_ID;
+const { usersTableName, userPoolId } = process.env;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',

@@ -3,8 +3,8 @@ const sendMail = require('./sendMail');
 const { getSignatureCountFromContentful } = require('./contentfulApi');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
-const usersTableName = process.env.TABLE_NAME_USERS;
+const signaturesTableName = process.env.signaturesTableName;
+const usersTableName = process.env.usersTableName;
 
 module.exports.handler = async event => {
   try {

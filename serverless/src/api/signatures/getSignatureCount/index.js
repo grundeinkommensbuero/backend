@@ -1,12 +1,12 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
+const signaturesTableName = process.env.signaturesTableName;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 };
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   try {
     let stats = {};
 
