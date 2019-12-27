@@ -10,7 +10,7 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   try {
     //get email from body,
     const { email, campaignCode } = JSON.parse(event.body);

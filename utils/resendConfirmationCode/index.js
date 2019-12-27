@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk');
 const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   try {
     //get all users, which are not verified from user pool
     const notVerifiedCognitoUsers = await getAllNotVerifiedCognitoUsers();
