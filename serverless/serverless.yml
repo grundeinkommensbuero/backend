@@ -78,6 +78,58 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::signature-lists/*'
 
+  updateSignatureList:
+    handler: src/api/signatures/updateSignatureList/index.handler
+    events:
+      - http:
+          path: signatures/{listId}
+          method: patch
+          cors: true
+          request:
+            parameters:
+              paths:
+                listId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+
+  adminUpdateSignatureList:
+    handler: src/api/signatures/adminUpdateSignatureList/index.handler
+    events:
+      - http:
+          path: admin/signatures/{listId}
+          method: patch
+          cors: true
+          request:
+            parameters:
+              paths:
+                listId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+
+  getSignatureCount:
+    handler: src/api/getSignatureCount/index.handler
+    events:
+      - http:
+          path: analytics/signatures
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+
   updateUser:
     handler: src/api/users/updateUser/index.handler
     events:
@@ -96,6 +148,31 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+
+  adminCreateUser:
+    handler: src/api/users/adminCreateUser/index.handler
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminCreateUser
+          - cognito-idp:AdminSetUserPassword
+        Resource:
+          - 'Fn::GetAtt': [UserPool, Arn]
 
   sendVerificationMail:
     handler: src/triggers/sendVerificationMail/index.handler
@@ -231,15 +308,16 @@ resources:
     # General user pool
     UserPool:
       Type: AWS::Cognito::UserPool
-      # Generate a name based on the stage
-      UserPoolName: ${self:custom.stage}-user-pool
-      # Set email as an alias
-      UsernameAttributes:
-        - email
-        - phone_number
-      AutoVerifiedAttributes:
-        - email
-        - phone_number
+      Properties:
+        # Generate a name based on the stage
+        UserPoolName: ${self:custom.stage}-user-pool
+        # Set email as an alias
+        UsernameAttributes:
+          - email
+          - phone_number
+        AutoVerifiedAttributes:
+          - email
+          - phone_number
 
     UserPoolClient:
       Type: AWS::Cognito::UserPoolClient
@@ -253,22 +331,23 @@ resources:
     # Admin user pool
     AdminUserPool:
       Type: AWS::Cognito::UserPool
-      # Generate a name based on the stage
-      UserPoolName: ${self:custom.stage}-admin-pool
-      # Set email as an alias
-      UsernameAttributes:
-        - email
-        - phone_number
-      AutoVerifiedAttributes:
-        - email
-        - phone_number
+      Properties:
+        # Generate a name based on the stage
+        UserPoolName: ${self:custom.stage}-admin-pool
+        # Set email as an alias
+        UsernameAttributes:
+          - email
+          - phone_number
+        AutoVerifiedAttributes:
+          - email
+          - phone_number
 
     AdminUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         # Generate an app client name based on the stage
         ClientName: ${self:custom.stage}-admin-pool-client
-        AdminUserPoolId:
+        UserPoolId:
           Ref: AdminUserPool
         ExplicitAuthFlows:
           - ALLOW_CUSTOM_AUTH
