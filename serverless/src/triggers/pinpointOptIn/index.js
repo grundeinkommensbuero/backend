@@ -2,9 +2,9 @@ const AWS = require('aws-sdk');
 const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.TABLE_NAME;
+const tableName = require('./../../../config').usersTableName;
 
-exports.handler = async event => {
+module.module.exports.handler = async event => {
   //extract the cognito id from the request (userName is userId)
   console.log('event', event);
   const userId = event.userName;

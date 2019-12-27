@@ -4,7 +4,7 @@ const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const zipCodeMatcher = require('./zipCodeMatcher');
 
-exports.handler = async (event, context) => {
+module.exports.handler = async (event, context) => {
   //console.log('Received event:', JSON.stringify(event, null, 2));
   try {
     for (let record of event.Records) {
@@ -44,23 +44,35 @@ exports.handler = async (event, context) => {
         const createdAtDate = Date.parse(createdAt);
         const fiveMinutes = 5 * 60 * 1000;
         //if the user was migrated from somewhere we want to opt in immediately
-        let optOut = false;
         if (date - createdAtDate < fiveMinutes && !('migrated' in newData)) {
-          optOut = true;
-        }
-        //make it depending on the newsletter consent value
-        newsletterConsent =
-          'newsletterConsent' in newData
-            ? newData.newsletterConsent.M.value.BOOL
-            : false;
-
-        //construct name with space before
-        let pinpointName;
-        if (typeof username !== 'undefined' && username !== 'empty') {
-          pinpointName = `&#160;${username}`;
+          newsletterConsent = false;
         } else {
-          pinpointName = '';
+          //make it depending on the newsletter consent value
+          newsletterConsent =
+            'newsletterConsent' in newData
+              ? newData.newsletterConsent.M.value.BOOL
+              : false;
         }
+
+        /* not needed for slimmer pledge
+        
+        const pledgeAttributes = [];
+        if (pledgeData.wouldPrintAndSendSignatureLists.BOOL) {
+          pledgeAttributes.push('wouldPrintAndSendSignatureLists');
+        }
+        if (pledgeData.wouldCollectSignaturesInPublicSpaces.BOOL) {
+          pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
+        }
+        if (pledgeData.wouldPutAndCollectSignatureLists.BOOL) {
+          pledgeAttributes.push('wouldPutAndCollectSignatureLists');
+        }
+        if (pledgeData.wouldDonate.BOOL) {
+          pledgeAttributes.push('wouldDonate');
+        }
+        if (pledgeData.wouldEngageCustom.S !== 'empty') {
+          pledgeAttributes.push(pledgeData.wouldEngageCustom.S);
+        }
+        */
 
         const params = {
           ApplicationId: projectId,
@@ -73,20 +85,6 @@ exports.handler = async (event, context) => {
               Region: [region],
               PostalCode: [zipCode],
               //Pledge: pledgeAttributes,
-              Username: [username],
-              UsernameWithSpace: [pinpointName],
-              PledgeCampaignCode: [],
-              Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
-              Migrated: [
-                'migrated' in newData ? newData.migrated.source : 'Nein',
-              ],
-              //if user migrated from 'offline' (meaning subscribed to newsletter
-              //while singing the petition) we want to add the campaign
-              OfflineCampaignCode: [
-                'migrated' in newData && newData.migrated.source === 'offline'
-                  ? newData.migrated.campaignCode
-                  : 'undefined',
-              ],
             },
             EffectiveDate: createdAt,
             Location: {
@@ -94,9 +92,12 @@ exports.handler = async (event, context) => {
               Region: region,
             },
             Metrics: {},
-            OptOut: optOut ? 'ALL' : 'NONE',
+            OptOut: newsletterConsent ? 'NONE' : 'ALL',
             User: {
               UserId: userId,
+              UserAttributes: {
+                Username: [username],
+              },
             },
           },
         };
@@ -107,15 +108,12 @@ exports.handler = async (event, context) => {
           pledges = newData.pledges.L;
           for (let pledge of pledges) {
             let campaignCode = pledge.M.campaign.M.code.S;
-            //for now we just need the signature count and the campaign code
+            //for now we just need the signature count
             //TODO maybe refactor in the future
             if ('signatureCount' in pledge.M) {
               params.EndpointRequest.Metrics[`SignatureCount-${campaignCode}`] =
                 pledge.M.signatureCount.N;
             }
-            params.EndpointRequest.Attributes.PledgeCampaignCode.push(
-              campaignCode
-            );
           }
         }
         console.log('trying to update the endpoint with params:', params);

@@ -30,7 +30,7 @@ const pdfGuide = fs.readFileSync(__dirname + '/pdf/sh-1/TIPPS.pdf');
 
 */
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
     //create a (nice to later work with) object, which campaign it is

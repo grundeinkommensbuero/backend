@@ -1,15 +1,16 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const tableName = require('./../../../config').usersTableName;
 
 const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async event => {
+// this lambda not only sends the verification mail
+// but also creates a record for the user in dynamo
+module.module.exports.handler = async event => {
   // Identify why was this function invoked
   if (event.triggerSource === 'CustomMessage_SignUp') {
-    const tableName = process.env.TABLE_NAME;
-
     //sub is the unique id Cognito assigns to each new user
     const cognitoId = event.request.userAttributes.sub;
 
@@ -38,7 +39,6 @@ exports.handler = async event => {
 
         //customize email
         const codeParameter = event.request.codeParameter;
-        console.log('code', codeParameter);
         event.response.emailSubject =
           'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
         event.response.emailMessage = customEmail(email, codeParameter);

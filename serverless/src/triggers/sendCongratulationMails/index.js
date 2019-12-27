@@ -6,7 +6,7 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.TABLE_NAME_SIGNATURES;
 const usersTableName = process.env.TABLE_NAME_USERS;
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   try {
     //user object will contain signature count for a specific user id
     const usersMap = {};

@@ -6,7 +6,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 
 const tableName = process.env.TABLE_NAME;
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
