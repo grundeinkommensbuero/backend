@@ -1,11 +1,11 @@
 const AWS = require('aws-sdk');
 const sendMail = require('./sendMail');
 const { getSignatureCountFromContentful } = require('./contentfulApi');
-const { getUser } = require('../../../shared/users');
+const { getUser } = require('../../shared/users');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const signaturesTableName = process.env.signaturesTableName;
-const usersTableName = process.env.usersTableName;
+const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
+const usersTableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
   try {
