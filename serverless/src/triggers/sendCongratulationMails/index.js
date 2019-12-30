@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const sendMail = require('./sendMail');
 const { getSignatureCountFromContentful } = require('./contentfulApi');
+const { getUser } = require('../../../shared/users');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.signaturesTableName;
@@ -115,14 +116,4 @@ const getReceivedSignatureLists = async (
     //otherwise return the array
     return signatureLists;
   }
-};
-
-const getUser = userId => {
-  const params = {
-    TableName: usersTableName,
-    Key: {
-      cognitoId: userId,
-    },
-  };
-  return ddb.get(params).promise();
 };

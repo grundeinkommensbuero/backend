@@ -1,9 +1,13 @@
 const AWS = require('aws-sdk');
 const randomBytes = require('crypto').randomBytes;
 const sendMail = require('./sendMail');
+const { errorResponse } = require('../../../shared/apiResponse');
+const { constructCampaignId } = require('../../../shared/utils');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const { usersTableName, userPoolId } = process.env;
+
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -126,42 +130,7 @@ const confirmUser = userId => {
   return cognito.adminSetUserPassword(setPasswordParams).promise();
 };
 
-//Construct campaign identifier, so we know, from where the user comes
-const constructCampaignId = campaignCode => {
-  const campaign = {};
-  if (typeof campaignCode !== 'undefined') {
-    //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
-    campaign.state = campaignCode.substring(0, campaignCode.length - 2);
-    //...and take the last char and save it as number
-    campaign.round = parseInt(
-      campaignCode.substring(campaignCode.length - 1, campaignCode.length)
-    );
-    campaign.code = campaignCode;
-  }
-  return campaign;
-};
-
 // Generates a random string (e.g. for generating random password)
 const getRandomString = length => {
   return randomBytes(length).toString('hex');
-};
-
-const errorResponse = (statusCode, message, error = null) => {
-  let body;
-  if (error !== null) {
-    body = JSON.stringify({
-      message: message,
-      error: error,
-    });
-  } else {
-    body = JSON.stringify({
-      message: message,
-    });
-  }
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: responseHeaders,
-    isBase64Encoded: false,
-  };
 };
