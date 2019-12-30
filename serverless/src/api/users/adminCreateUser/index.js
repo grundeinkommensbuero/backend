@@ -6,7 +6,10 @@ const { constructCampaignId } = require('../../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
-const { usersTableName, userPoolId } = process.env;
+const {
+  USERS_TABLE_NAME: usersTableName,
+  ADMIN_POOL_ID: userPoolId,
+} = process.env;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',

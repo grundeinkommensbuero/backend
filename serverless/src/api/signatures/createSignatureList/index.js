@@ -8,7 +8,7 @@ const { constructCampaignId } = require('../../../shared/utils');
 
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
-const signaturesTableName = process.env.signaturesTableName;
+const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',

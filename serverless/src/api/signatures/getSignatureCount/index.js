@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { errorResponse } = require('../../../shared/apiResponse');
 
-const signaturesTableName = process.env.signaturesTableName;
+const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',

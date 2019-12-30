@@ -1,14 +1,14 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
-const tableName = require('./../../../config').usersTableName;
+const tableName = process.env.USERS_TABLE_NAME;
 
-const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
+const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo
-module.module.exports.handler = async event => {
+module.exports.handler = async event => {
   // Identify why was this function invoked
   if (event.triggerSource === 'CustomMessage_SignUp') {
     //sub is the unique id Cognito assigns to each new user

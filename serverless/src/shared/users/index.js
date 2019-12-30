@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.usersTableName;
+const tableName = process.env.USERS_TABLE_NAME;
 
 const getUser = userId => {
   return ddb

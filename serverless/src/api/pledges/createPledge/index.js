@@ -5,6 +5,8 @@ const { getUser, getUserByMail } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
 
+const tableName = process.env.USERS_TABLE_NAME;
+
 module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
