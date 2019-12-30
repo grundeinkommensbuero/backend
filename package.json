@@ -8,11 +8,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/aws-lambda": "^8.10.17",
-    "@types/node": "^10.12.18",
-    "aws-sdk": "^2.382.0",
-    "crypto-secure-random-digit": "^1.0.7",
-    "typescript": "^3.2.2"
+    "aws-sdk": "^2.382.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
