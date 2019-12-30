@@ -310,7 +310,8 @@ resources:
         BillingMode: PAY_PER_REQUEST
 
     # General user pool
-    UserPool:
+    # A Cognito User Pool created by an event can be overridden by using the logical resource name
+    CognitoUserPoolUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
         # Generate a name based on the stage
@@ -322,6 +323,11 @@ resources:
         AutoVerifiedAttributes:
           - email
           - phone_number
+        EmailConfiguration:
+          EmailSendingAccount: DEVELOPER
+        SmsConfiguration:
+          SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
+          ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
 
     UserPoolClient:
       Type: AWS::Cognito::UserPoolClient
@@ -333,7 +339,8 @@ resources:
         GenerateSecret: false
 
     # Admin user pool
-    AdminUserPool:
+    # A Cognito User Pool created by an event can be overridden by using the logical resource name
+    CognitoUserPoolAdminUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
         # Generate a name based on the stage
@@ -345,6 +352,11 @@ resources:
         AutoVerifiedAttributes:
           - email
           - phone_number
+        EmailConfiguration:
+          EmailSendingAccount: DEVELOPER
+        SmsConfiguration:
+          SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
+          ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
 
     AdminUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
