@@ -3,21 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bestzip dist/createSignatureList.zip *",
-    "deploy": "aws lambda update-function-code --function-name createSignatureList --zip-file fileb://dist/createSignatureList.zip",
-    "cleanUp": "rm dist/createSignatureList.zip",
-    "buildDeploy": "npm run build && npm run deploy && npm run cleanUp"
-  },
   "author": "Vali",
   "license": "ISC",
   "dependencies": {
     "bwip-js": "^1.7.4",
     "pdf-lib": "^1.2.1",
     "nodemailer": "^6.3.1"
-  },
-  "devDependencies": {
-    "bestzip": "^2.1.5"
   }
 }

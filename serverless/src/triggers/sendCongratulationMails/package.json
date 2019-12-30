@@ -3,20 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bestzip dist/sendCongratulationMails.zip *",
-    "deploy": "aws lambda update-function-code --function-name sendCongratulationMails --zip-file fileb://dist/sendCongratulationMails.zip",
-    "cleanUp": "rm dist/sendCongratulationMails.zip",
-    "buildDeploy": "npm run build && npm run deploy && npm run cleanUp"
-  },
   "author": "Vali",
   "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.0",
     "nodemailer": "^6.4.2"
-  },
-  "devDependencies": {
-    "bestzip": "^2.1.5"
   }
 }
