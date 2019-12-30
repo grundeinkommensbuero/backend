@@ -1,10 +1,9 @@
-//const randomBytes = require('crypto').randomBytes;
-
 const AWS = require('aws-sdk');
-
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-const tableName = process.env.usersTableName;
+const { getUser, getUserByMail } = require('../../../shared/users');
+const { errorResponse } = require('../../../shared/apiResponse');
+const { constructCampaignId } = require('../../../shared/utils');
 
 module.exports.handler = async event => {
   try {
@@ -133,86 +132,10 @@ const savePledge = (userId, timestamp, requestBody) => {
     .promise();
 };
 
-const toUrlString = buffer => {
-  return buffer
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
-};
-
 const validateParams = requestBody => {
   return (
     ('userId' in requestBody || 'email' in requestBody) &&
     'signatureCount' in requestBody &&
     'newsletterConsent' in requestBody
   );
-};
-
-const getUser = userId => {
-  return ddb
-    .get({
-      TableName: tableName,
-      Key: {
-        cognitoId: userId,
-      },
-    })
-    .promise();
-};
-
-const getUserByMail = async (email, startKey = null) => {
-  const params = {
-    TableName: tableName,
-    FilterExpression: 'email = :email',
-    ExpressionAttributeValues: { ':email': email },
-  };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-  const result = await ddb.scan(params).promise();
-  //call same function again, if there is no user found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    console.log('call getUserByMail recursively');
-    return getUserByMail(email, result.LastEvaluatedKey);
-  } else {
-    return result;
-  }
-};
-
-const errorResponse = (statusCode, message, error = null) => {
-  let body;
-  if (error !== null) {
-    body = JSON.stringify({
-      message: message,
-      error: error,
-    });
-  } else {
-    body = JSON.stringify({
-      message: message,
-    });
-  }
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-    isBase64Encoded: false,
-  };
-};
-
-const constructCampaignId = campaignCode => {
-  const campaign = {};
-  if (typeof campaignCode !== 'undefined') {
-    //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
-    campaign.state = campaignCode.substring(0, campaignCode.length - 2);
-    //...and take the last char and save it as number
-    campaign.round = parseInt(
-      campaignCode.substring(campaignCode.length - 1, campaignCode.length)
-    );
-    campaign.code = campaignCode;
-  }
-  return campaign;
 };

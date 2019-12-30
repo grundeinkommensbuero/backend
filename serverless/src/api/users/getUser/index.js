@@ -1,8 +1,6 @@
 const AWS = require('aws-sdk');
-
-const ddb = new AWS.DynamoDB.DocumentClient();
-
-const tableName = process.env.usersTableName;
+const { getUser } = require('../../../shared/users');
+const { errorResponse } = require('../../../shared/apiResponse');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,35 +30,4 @@ module.exports.handler = async event => {
   } catch (error) {
     return errorResponse(500, 'Error while getting user from table', error);
   }
-};
-
-const getUser = userId => {
-  return ddb
-    .get({
-      TableName: tableName,
-      Key: {
-        cognitoId: userId,
-      },
-    })
-    .promise();
-};
-
-const errorResponse = (statusCode, message, error = null) => {
-  let body;
-  if (error !== null) {
-    body = JSON.stringify({
-      message: message,
-      error: error,
-    });
-  } else {
-    body = JSON.stringify({
-      message: message,
-    });
-  }
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: responseHeaders,
-    isBase64Encoded: false,
-  };
 };

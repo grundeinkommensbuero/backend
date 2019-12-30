@@ -1,5 +1,7 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
+const { errorResponse } = require('../../../shared/apiResponse');
+
 const signaturesTableName = process.env.signaturesTableName;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -78,24 +80,4 @@ const getReceivedSignatureLists = async (
     //otherwise return the array
     return signatureLists;
   }
-};
-
-const errorResponse = (statusCode, message, error = null) => {
-  let body;
-  if (error !== null) {
-    body = JSON.stringify({
-      message: message,
-      error: error,
-    });
-  } else {
-    body = JSON.stringify({
-      message: message,
-    });
-  }
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: responseHeaders,
-    isBase64Encoded: false,
-  };
 };

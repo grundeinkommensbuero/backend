@@ -2,9 +2,12 @@ const AWS = require('aws-sdk');
 const generatePdf = require('./createPDF');
 const sendMail = require('./sendMail');
 const fs = require('fs');
+const { getUser, getUserByMail } = require('../../../shared/users');
+const { errorResponse } = require('../../../shared/apiResponse');
+const { constructCampaignId } = require('../../../shared/utils');
+
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
-const usersTableName = process.env.usersTableName;
 const signaturesTableName = process.env.signaturesTableName;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -230,38 +233,6 @@ module.exports.handler = async event => {
   }
 };
 
-const getUser = userId => {
-  const params = {
-    TableName: usersTableName,
-    Key: {
-      cognitoId: userId,
-    },
-  };
-  return ddb.get(params).promise();
-};
-
-const getUserByMail = async (email, startKey = null) => {
-  const params = {
-    TableName: usersTableName,
-    FilterExpression: 'email = :email',
-    ExpressionAttributeValues: { ':email': email },
-    ProjectionExpression: 'cognitoId',
-  };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-  const result = await ddb.scan(params).promise();
-  console.log('result', result);
-  //call same function again, if there is no user found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    console.log('call getUserByMail recursively');
-    return getUserByMail(email, result.LastEvaluatedKey);
-  } else {
-    return result;
-  }
-};
-
 //function to check, if there already is a signature list for this specific day (owned by user or anonymous)
 const getSignatureList = async (userId, timestamp, startKey = null) => {
   const params = {
@@ -344,26 +315,6 @@ const uploadPDF = (id, pdf) => {
     .promise();
 };
 
-const errorResponse = (statusCode, message, error = null) => {
-  let body;
-  if (error !== null) {
-    body = JSON.stringify({
-      message: message,
-      error: error,
-    });
-  } else {
-    body = JSON.stringify({
-      message: message,
-    });
-  }
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: responseHeaders,
-    isBase64Encoded: false,
-  };
-};
-
 const generateRandomId = length => {
   let result = '';
   const characters = '0123456789';
@@ -372,18 +323,4 @@ const generateRandomId = length => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-};
-
-const constructCampaignId = campaignCode => {
-  const campaign = {};
-  if (typeof campaignCode !== 'undefined') {
-    //we want to remove the last characters from the string (brandenburg-2 -> brandenburg)
-    campaign.state = campaignCode.substring(0, campaignCode.length - 2);
-    //...and take the last char and save it as number
-    campaign.round = parseInt(
-      campaignCode.substring(campaignCode.length - 1, campaignCode.length)
-    );
-    campaign.code = campaignCode;
-  }
-  return campaign;
 };

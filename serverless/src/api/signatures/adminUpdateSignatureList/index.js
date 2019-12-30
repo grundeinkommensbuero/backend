@@ -1,5 +1,8 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
+const { getSignatureList } = require('../../../shared/signatures');
+const { errorResponse } = require('../../../shared/apiResponse');
+
 const signaturesTableName = process.env.signaturesTableName;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -54,17 +57,6 @@ module.exports.handler = async event => {
   }
 };
 
-//function to get a list by id
-const getSignatureList = id => {
-  const params = {
-    TableName: signaturesTableName,
-    Key: {
-      id: id,
-    },
-  };
-  return ddb.get(params).promise();
-};
-
 //function to set the count for the signature list
 const updateSignatureList = (id, count, mixed) => {
   //needs to be array because append_list works with an array
@@ -83,24 +75,4 @@ const updateSignatureList = (id, count, mixed) => {
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
   return ddb.update(params).promise();
-};
-
-const errorResponse = (statusCode, message, error = null) => {
-  let body;
-  if (error !== null) {
-    body = JSON.stringify({
-      message: message,
-      error: error,
-    });
-  } else {
-    body = JSON.stringify({
-      message: message,
-    });
-  }
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: responseHeaders,
-    isBase64Encoded: false,
-  };
 };

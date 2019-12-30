@@ -61,7 +61,7 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
         Data: `Dein geheimer Login-Code: ${secretLoginCode}`,
       },
     },
-    Source: process.env.SES_FROM_ADDRESS!,
+    Source: process.env.fromAddress!,
   };
   await ses.sendEmail(params).promise();
 }

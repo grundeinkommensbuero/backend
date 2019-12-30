@@ -256,6 +256,8 @@ functions:
       - cognitoUserPool:
           pool: AdminUserPool
           trigger: CreateAuthChallenge
+    environment:
+      fromAddress: support@expedition-grundeinkommen.de
 
   defineAuthChallenge:
     handler: src/triggers/auth/defineAuthChallenge/index.handler
