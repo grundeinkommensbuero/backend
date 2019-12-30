@@ -8,6 +8,11 @@
   },
   "author": "Vali",
   "license": "ISC",
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.17",
+    "@types/node": "^10.12.18",
+    "typescript": "^3.2.2"
+  },
   "devDependencies": {
     "serverless-iam-roles-per-function": "^2.0.2"
   }

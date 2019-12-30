@@ -325,6 +325,8 @@ resources:
           - phone_number
         EmailConfiguration:
           EmailSendingAccount: DEVELOPER
+          SourceArn: arn:aws:ses:eu-west-1:550953582247:identity/support@expedition-grundeinkommen.de
+          From: Expedition Grundeinkommen <support@expedition-grundeinkommen.de>
         SmsConfiguration:
           SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
           ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
@@ -354,6 +356,8 @@ resources:
           - phone_number
         EmailConfiguration:
           EmailSendingAccount: DEVELOPER
+          SourceArn: arn:aws:ses:eu-west-1:550953582247:identity/support@expedition-grundeinkommen.de
+          From: Expedition Grundeinkommen <support@expedition-grundeinkommen.de>
         SmsConfiguration:
           SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
           ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
@@ -366,7 +370,7 @@ resources:
         UserPoolId:
           Ref: CognitoUserPoolAdminUserPool
         ExplicitAuthFlows:
-          - ALLOW_CUSTOM_AUTH
+          - CUSTOM_AUTH_FLOW_ONLY
         GenerateSecret: false
 
 # Print out the Id of the User Pool that is created
