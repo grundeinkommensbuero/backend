@@ -330,6 +330,13 @@ resources:
         SmsConfiguration:
           SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
           ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
+        Policies:
+          PasswordPolicy: # We generate a fake password anyway (passwordless)
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
 
     UserPoolClient:
       Type: AWS::Cognito::UserPoolClient
@@ -361,6 +368,13 @@ resources:
         SmsConfiguration:
           SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
           ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
+        Policies:
+          PasswordPolicy: # We generate a fake password anyway (passwordless)
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
 
     AdminUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
