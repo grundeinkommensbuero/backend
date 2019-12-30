@@ -174,7 +174,7 @@ functions:
           - cognito-idp:AdminCreateUser
           - cognito-idp:AdminSetUserPassword
         Resource:
-          - 'Fn::GetAtt': [UserPool, Arn]
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
   sendVerificationMail:
     handler: src/triggers/sendVerificationMail/index.handler
@@ -335,7 +335,7 @@ resources:
         # Generate an app client name based on the stage
         ClientName: ${self:custom.stage}-user-pool-client
         UserPoolId:
-          Ref: UserPool
+          Ref: CognitoUserPoolUserPool
         GenerateSecret: false
 
     # Admin user pool
@@ -364,7 +364,7 @@ resources:
         # Generate an app client name based on the stage
         ClientName: ${self:custom.stage}-admin-pool-client
         UserPoolId:
-          Ref: AdminUserPool
+          Ref: CognitoUserPoolAdminUserPool
         ExplicitAuthFlows:
           - ALLOW_CUSTOM_AUTH
         GenerateSecret: false
@@ -373,7 +373,7 @@ resources:
 Outputs:
   UserPoolId:
     Value:
-      Ref: UserPool
+      Ref: CognitoUserPoolUserPool
 
   UserPoolClientId:
     Value:
@@ -381,7 +381,7 @@ Outputs:
 
   AdminUserPoolId:
     Value:
-      Ref: AdminUserPool
+      Ref: CognitoUserPoolAdminUserPool
 
   AdminUserPoolClientId:
     Value:
