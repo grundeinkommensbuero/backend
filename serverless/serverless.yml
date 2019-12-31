@@ -262,7 +262,7 @@ functions:
           pool: AdminUserPool
           trigger: CreateAuthChallenge
     environment:
-      fromAddress: support@expedition-grundeinkommen.de
+      SES_FROM_ADDRESS: support@expedition-grundeinkommen.de
 
   defineAuthChallenge:
     handler: src/triggers/auth/defineAuthChallenge/index.handler

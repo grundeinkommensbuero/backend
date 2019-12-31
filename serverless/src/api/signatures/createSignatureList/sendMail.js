@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const ses = new AWS.SES();
 const fs = require('fs');
 
-const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
+const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
 
 //Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, attachments) => {
