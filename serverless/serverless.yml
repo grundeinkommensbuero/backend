@@ -1,5 +1,8 @@
 service: ubi-serverless
 
+package:
+  individually: true
+
 # custom variables
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -22,6 +25,7 @@ provider:
 
 plugins:
   - serverless-iam-roles-per-function
+  - serverless-webpack
 
 # no global iam policies, because we want to follow the least privilege princilpe
 # therefore we use a plugin to define roles per function
@@ -116,7 +120,7 @@ functions:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
 
   getSignatureCount:
-    handler: src/api/getSignatureCount/index.handler
+    handler: src/api/signatures/getSignatureCount/index.handler
     events:
       - http:
           path: analytics/signatures

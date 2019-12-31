@@ -1,3 +1,2 @@
 node_modules/
 *.csv
-lambda-triggers/sendCongratulationMails/contentfulConfig.js
