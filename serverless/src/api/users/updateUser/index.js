@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const tableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',

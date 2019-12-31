@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const ses = new AWS.SES({ region: 'eu-central-1' });
 const fs = require('fs');
 
-const htmlMail = fs.readFileSync('./mailTemplate.html', 'utf8');
+const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
 
 //Function which sends an email to congratulate for the reception of list(s)
 //gets a user object, which is why we destructure the object
