@@ -72,46 +72,22 @@ module.exports = async function generatePdf(url, code, type) {
 };
 
 function getBarcode(text) {
-  return new Promise((resolve, reject) => {
-    bwipjs.toBuffer(
-      {
-        bcid: 'code128',
-        text: text,
-        scale: 3,
-        height: 10,
-        includetext: true,
-        textxalign: 'center',
-      },
-      function(err, png) {
-        if (!err) {
-          resolve(png);
-        } else {
-          console.log('error', error);
-          reject(error);
-        }
-      }
-    );
+  return bwipjs.toBuffer({
+    bcid: 'code128',
+    text: text,
+    scale: 3,
+    height: 10,
+    includetext: true,
+    textxalign: 'center',
   });
 }
 
 function getQrCode(text) {
-  return new Promise((resolve, reject) => {
-    bwipjs.toBuffer(
-      {
-        bcid: 'qrcode',
-        text: text,
-        scale: 3,
-        height: 100,
-        width: 100,
-      },
-      function(err, png) {
-        if (!err) {
-          resolve(png);
-        } else {
-          console.log('error', error);
-          reject(error);
-        }
-      }
-    );
+  return bwipjs.toBuffer({
+    bcid: 'qrcode',
+    text: text,
+    scale: 3,
+    height: 100,
+    width: 100,
   });
 }
