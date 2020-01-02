@@ -38,11 +38,13 @@ const CODE_POSITIONS = {
 };
 
 module.exports = async function generatePdf(url, code, type) {
+  console.log('generating pdf...');
   const pdfDoc = await pdfLib.PDFDocument.load(inputPdfs[type]);
 
   const pages = pdfDoc.getPages();
 
   const barcode = await getBarcode(code);
+
   const barcodeInDocument = await pdfDoc.embedPng(barcode);
 
   const qrCode = await getQrCode(url + code);
@@ -66,12 +68,11 @@ module.exports = async function generatePdf(url, code, type) {
   }
 
   const pdfBytes = await pdfDoc.save();
-
   return pdfBytes;
 };
 
 function getBarcode(text) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     bwipjs.toBuffer(
       {
         bcid: 'code128',
@@ -84,6 +85,9 @@ function getBarcode(text) {
       function(err, png) {
         if (!err) {
           resolve(png);
+        } else {
+          console.log('error', error);
+          reject(error);
         }
       }
     );
@@ -91,7 +95,7 @@ function getBarcode(text) {
 }
 
 function getQrCode(text) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     bwipjs.toBuffer(
       {
         bcid: 'qrcode',
@@ -103,6 +107,9 @@ function getQrCode(text) {
       function(err, png) {
         if (!err) {
           resolve(png);
+        } else {
+          console.log('error', error);
+          reject(error);
         }
       }
     );
