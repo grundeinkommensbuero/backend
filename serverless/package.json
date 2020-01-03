@@ -4,7 +4,7 @@
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose --testTimeout 15000",
     "deployDev": "serverless deploy",
     "deployProd": "serverless deploy --stage prod"
   },
@@ -19,9 +19,17 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
+    "jest": "^24.9.0",
+    "random-words": "^1.1.0",
     "serverless": "^1.60.4",
     "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-webpack": "^5.3.1",
     "webpack": "^4.41.5"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "src/",
+      "testConfig.js"
+    ]
   }
 }
