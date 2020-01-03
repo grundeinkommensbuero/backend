@@ -1,4 +1,6 @@
-const fetch = require('node-fetch');
+// Get .default because of problems with webpack
+// https://github.com/bitinn/node-fetch/issues/450
+const fetch = require('node-fetch').default;
 const { accessToken, spaceId } = require('./contentfulConfig');
 const campaign = 'JH4OhoEW7AMcnrL6zLhXu';
 
