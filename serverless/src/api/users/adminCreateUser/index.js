@@ -8,7 +8,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const {
   USERS_TABLE_NAME: usersTableName,
-  ADMIN_POOL_ID: userPoolId,
+  USER_POOL_ID: userPoolId,
 } = process.env;
 
 const responseHeaders = {

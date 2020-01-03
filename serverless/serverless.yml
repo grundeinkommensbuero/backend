@@ -114,6 +114,10 @@ functions:
             parameters:
               paths:
                 listId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -161,12 +165,16 @@ functions:
     handler: src/api/users/adminCreateUser/index.handler
     events:
       - http:
-          path: users
+          path: admin/users
           method: post
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
     environment:
-      ADMIN_POOL_ID:
-        Ref: CognitoUserPoolAdminUserPool
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -270,6 +278,12 @@ functions:
           trigger: CreateAuthChallenge
     environment:
       SES_FROM_ADDRESS: support@expedition-grundeinkommen.de
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
 
   defineAuthChallenge:
     handler: src/triggers/auth/defineAuthChallenge/index.handler
@@ -398,6 +412,21 @@ resources:
         ExplicitAuthFlows:
           - CUSTOM_AUTH_FLOW_ONLY
         GenerateSecret: false
+
+    # Authorizer for admin user pool
+    # https://stackoverflow.com/questions/41664708/cognito-user-pool-authorizer-with-serverless-framework
+    AdminApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: AdminUserPool
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ProviderARNs:
+          - Fn::GetAtt:
+              - CognitoUserPoolAdminUserPool
+              - Arn
 
 # Print out the Id of the User Pool that is created
 Outputs:
