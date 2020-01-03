@@ -4,7 +4,9 @@
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deployDev": "serverless deploy",
+    "deployProd": "serverless deploy --stage prod"
   },
   "author": "Vali",
   "license": "ISC",
