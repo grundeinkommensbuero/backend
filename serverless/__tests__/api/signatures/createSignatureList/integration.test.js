@@ -32,7 +32,7 @@ describe('createSignatureList api test', () => {
     const response = await fetch(`${INVOKE_URL}/signatures`, request);
     const json = await response.json();
 
-    expect(response.status).toBeLessThan(201);
+    expect(response.status).toBeLessThan(202);
     expect(json).toHaveProperty('signatureList');
   });
 
