@@ -1,5 +1,6 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
+const listId = '1280305';
 
 describe('updateSignatureList by user api test', () => {
   it('should update signature list', async () => {
@@ -11,7 +12,6 @@ describe('updateSignatureList by user api test', () => {
       }),
     };
 
-    const listId = '7831715';
     const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(204);

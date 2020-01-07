@@ -1,6 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
+const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
 
 describe('createPledge api test', () => {
   it('should create a new pledge via userId', async () => {
@@ -8,7 +9,7 @@ describe('createPledge api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: 'dd34ebe3-71cd-445b-b651-bd88ebebf459',
+        userId: userId,
         pledgeId: `${randomWords()}-${randomWords()}-1`,
         signatureCount: 6,
         newsletterConsent: true,
@@ -42,7 +43,7 @@ describe('createPledge api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: 'dd34ebe3-71cd-445b-b651-bd88ebebf459',
+        userId: userId,
         pledgeId: `schleswig-holstein-1`,
         signatureCount: 6,
         newsletterConsent: true,

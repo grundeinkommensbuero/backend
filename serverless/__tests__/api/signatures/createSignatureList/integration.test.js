@@ -1,5 +1,6 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
+const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
 
 describe('createSignatureList api test', () => {
   it('should create a new signature list via userId', async () => {
@@ -7,7 +8,7 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: 'dd34ebe3-71cd-445b-b651-bd88ebebf459',
+        userId: userId,
         campaignCode: `schleswig-holstein-1`,
       }),
     };
