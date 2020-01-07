@@ -5,8 +5,6 @@ const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider(
   config
 );
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const tableName = 'Users';
-const userPoolId = 'eu-central-1_74vNy5Iw0';
 const { getAllUnverifiedCognitoUsers } = require('../getUsers');
 
 const deleteUsers = async () => {
@@ -16,20 +14,26 @@ const deleteUsers = async () => {
     //filter users to check if the creation of the user was more than
     //x days ago
     const date = new Date();
-    const twoDays = 2 * 24 * 60 * 60 * 1000;
+    const tenDays = 10 * 24 * 60 * 60 * 1000;
     const filteredUsers = notVerifiedCognitoUsers.filter(
-      user => date - user.UserCreateDate > twoDays
+      user => date - user.UserCreateDate > tenDays
     );
+
     console.log(
-      'not verified and it has been a day count:',
+      'not verified and it has been x days count:',
       filteredUsers.length
     );
 
-    //resend confirmation code
     for (let user of filteredUsers) {
       try {
-        await deleteUserInCognito(user);
-        await deleteUserInDynamo(user);
+        const result = await getNewCognitoId(user);
+        const newCognitoId = result.Items[0].cognitoId;
+
+        console.log('old id', user.Username);
+        console.log('new id', newCognitoId);
+
+        await deleteUserInCognito(newCognitoId);
+        await deleteUserInDynamo(newCognitoId);
       } catch (error) {
         console.log('error deleting user', error);
         break;
@@ -41,24 +45,50 @@ const deleteUsers = async () => {
   return;
 };
 
-const deleteUserInCognito = user => {
+const deleteUserInCognito = userId => {
   console.log('deleting user in cognito');
   var params = {
-    UserPoolId: userPoolId,
-    Username: user.Username, //Username is the id of cognito
+    UserPoolId: 'eu-central-1_xx4VmPPdF',
+    Username: userId,
   };
+
   return CognitoIdentityServiceProvider.adminDeleteUser(params).promise();
 };
 
-const deleteUserInDynamo = user => {
+const deleteUserInDynamo = userId => {
   console.log('deleting user in dynamo');
   const params = {
-    TableName: tableName,
+    TableName: 'prod-users',
     Key: {
-      cognitoId: user.Username, //Username is the id of cognito
+      cognitoId: userId,
     },
   };
+
   return ddb.delete(params).promise();
+};
+
+const getNewCognitoId = async (user, startKey = null) => {
+  const email = user.Attributes[2].Value;
+
+  const params = {
+    TableName: 'prod-users',
+    FilterExpression: 'email = :email',
+    ExpressionAttributeValues: { ':email': email },
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  //call same function again, if there is no user found, but not
+  //the whole db has been scanned
+  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
+    return getNewCognitoId(user, result.LastEvaluatedKey);
+  } else {
+    return result;
+  }
 };
 
 deleteUsers();
