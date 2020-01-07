@@ -3,6 +3,7 @@ const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const tableName = 'Users';
+const userPoolId = 'eu-central-1_74vNy5Iw0';
 
 const getAllUnverifiedCognitoUsers = async () => {
   let unverifiedCognitoUsers = [];
@@ -22,6 +23,29 @@ const getUnverifiedCognitoUsers = paginationToken => {
   const params = {
     UserPoolId: 'eu-central-1_74vNy5Iw0',
     Filter: 'cognito:user_status = "UNCONFIRMED"',
+    PaginationToken: paginationToken,
+  };
+  //get all users, which are not verified from user pool
+  return cognito.listUsers(params).promise();
+};
+
+const getAllCognitoUsers = async () => {
+  let cognitoUsers = [];
+  let data = await getCognitoUsers(null);
+  //add elements of user array
+  cognitoUsers.push(...data.Users);
+  while ('PaginationToken' in data) {
+    data = await getCognitoUsers(data.PaginationToken);
+    //add elements of user array
+    cognitoUsers.push(...data.Users);
+  }
+  return cognitoUsers;
+};
+
+//This functions only fetches the maximum of 60 users
+const getCognitoUsers = paginationToken => {
+  const params = {
+    UserPoolId: userPoolId,
     PaginationToken: paginationToken,
   };
   //get all users, which are not verified from user pool
@@ -81,6 +105,17 @@ const getUsers = (startKey = null) => {
   return ddb.scan(params).promise();
 };
 
+const getUser = id => {
+  const params = {
+    TableName: tableName,
+    Key: {
+      cognitoId: id,
+    },
+  };
+
+  return ddb.get(params).promise();
+};
+
 const isVerified = (user, unverifiedCognitoUsers) => {
   let verified = true;
   for (let cognitoUser of unverifiedCognitoUsers) {
@@ -98,4 +133,6 @@ module.exports = {
   getUsersFromSh,
   isVerified,
   getUsersWithoutNewsletterFromSh,
+  getAllCognitoUsers,
+  getUser,
 };
