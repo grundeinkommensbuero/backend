@@ -4,10 +4,10 @@ copy(
   {
     config: { region: 'eu-central-1' },
     source: {
-      tableName: 'Users', // required
+      tableName: 'Signatures', // required
     },
     destination: {
-      tableName: 'prod-users', // required
+      tableName: 'prod-signatures', // required
     },
     log: true, // default false
   },

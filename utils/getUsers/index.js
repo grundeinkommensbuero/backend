@@ -31,6 +31,29 @@ const getUnverifiedCognitoUsers = paginationToken => {
   return cognito.listUsers(params).promise();
 };
 
+const getAllCognitoUsers = async () => {
+  let cognitoUsers = [];
+  let data = await getCognitoUsers(null);
+  //add elements of user array
+  cognitoUsers.push(...data.Users);
+  while ('PaginationToken' in data) {
+    data = await getCognitoUsers(data.PaginationToken);
+    //add elements of user array
+    cognitoUsers.push(...data.Users);
+  }
+  return cognitoUsers;
+};
+
+//This functions only fetches the maximum of 60 users
+const getCognitoUsers = paginationToken => {
+  const params = {
+    UserPoolId: userPoolId,
+    PaginationToken: paginationToken,
+  };
+  //get all users, which are not verified from user pool
+  return cognito.listUsers(params).promise();
+};
+
 const getUsersFromSh = async () => {
   const users = await getAllUsers();
   return users.filter(user => {
@@ -84,6 +107,17 @@ const getUsers = (startKey = null) => {
   return ddb.scan(params).promise();
 };
 
+const getUser = id => {
+  const params = {
+    TableName: tableName,
+    Key: {
+      cognitoId: id,
+    },
+  };
+
+  return ddb.get(params).promise();
+};
+
 const isVerified = (user, unverifiedCognitoUsers) => {
   let verified = true;
   for (let cognitoUser of unverifiedCognitoUsers) {
@@ -101,4 +135,6 @@ module.exports = {
   getUsersFromSh,
   isVerified,
   getUsersWithoutNewsletterFromSh,
+  getAllCognitoUsers,
+  getUser,
 };

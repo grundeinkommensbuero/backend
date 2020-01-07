@@ -60,6 +60,9 @@ module.exports.handler = async event => {
     console.log('Sending verification reminder');
     return event;
   }
+
+  console.log('neither of the defined events');
+  return event;
 };
 
 const customEmail = (email, codeParameter) => {
