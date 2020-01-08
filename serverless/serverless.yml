@@ -99,6 +99,11 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   adminUpdateSignatureList:
     handler: src/api/signatures/adminUpdateSignatureList/index.handler

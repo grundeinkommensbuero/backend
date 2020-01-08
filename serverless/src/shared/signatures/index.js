@@ -13,27 +13,4 @@ const getSignatureList = id => {
   return ddb.get(params).promise();
 };
 
-// Function to get the first list of the user
-const getOneSignatureListOfUser = async (userId, startKey = null) => {
-  const params = {
-    TableName: tableName,
-    FilterExpression: 'userId = :userId',
-    ExpressionAttributeValues: { ':userId': userId },
-  };
-
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-
-  //call same function again, if there is no list found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    return getOneSignatureListOfUser(userId, result.LastEvaluatedKey);
-  } else {
-    return result;
-  }
-};
-
-module.exports = { getSignatureList, getOneSignatureListOfUser };
+module.exports = { getSignatureList };
