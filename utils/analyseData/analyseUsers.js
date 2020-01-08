@@ -2,8 +2,9 @@ const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
-const tableName = 'Users';
+const tableName = 'prod-users';
 const tableNameBackup = 'UsersWithoutConsent-14-11';
+const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 module.exports.analyseUsers = async () => {
   try {
@@ -35,7 +36,7 @@ module.exports.analyseUsers = async () => {
           }
 
           //the users, wo were migrated are not in cognito
-          if (verified || user.migrated) {
+          if (verified || user.fromBackup) {
             campaignStats[campaign].verifiedUsers.count++;
             let newsletterConsent = false;
             //count the newsletter consents for all verified users
@@ -129,7 +130,7 @@ const getAllUnverifiedCognitoUsers = async () => {
 //This functions only fetches the maximum of 60 users
 const getUnverifiedCognitoUsers = paginationToken => {
   const params = {
-    UserPoolId: 'eu-central-1_74vNy5Iw0',
+    UserPoolId: userPoolId,
     Filter: 'cognito:user_status = "UNCONFIRMED"',
     AttributesToGet: [
       'sub', //sub is the id
@@ -148,7 +149,7 @@ const migrateUsersFromBackup = async users => {
     //check if the user is already in users
     if (users.findIndex(user => user.email === backupUser.email) === -1) {
       //backup user is not already in there
-      backupUser.migrated = true;
+      backupUser.fromBackup = true;
       users.push(backupUser);
       added++;
     }

@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const tableName = 'Signatures';
+const tableName = 'prod-signatures';
 
 module.exports.analyseSignatureLists = async () => {
   const signatureLists = await getSignatureLists();
