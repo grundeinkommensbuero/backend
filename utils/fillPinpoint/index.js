@@ -5,7 +5,7 @@ const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'Users';
-const tableNameBackup = 'UsersWithoutConsent-14-11';
+// const tableNameBackup = 'UsersWithoutConsent-14-11';
 
 const zipCodeMatcher = require('../zipCodeMatcher');
 const {
@@ -24,7 +24,9 @@ const updateEndpoint = async (user, verified = true) => {
     referral,
     migrated,
   } = user;
+
   let { newsletterConsent } = user;
+
   //for now we just take the first pledge
   let pledge;
   if ('pledges' in user) {
@@ -137,7 +139,7 @@ const fillPinpoint = async () => {
     let users = await getAllUsers();
     const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
     //loop through backup users and add all the users who are not already in users
-    users = await migrateUsersFromBackup(users);
+
     let count = 0;
     for (let user of users) {
       //check if the user is verified
@@ -192,5 +194,5 @@ const addKickOffToPinpoint = async user => {
   console.log('updated pinpoint', result);
 };
 
-// fillPinpoint();
+fillPinpoint();
 module.exports = { updateEndpoint, addKickOffToPinpoint };

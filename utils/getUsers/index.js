@@ -2,7 +2,10 @@ const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const tableName = 'Users';
+const oldTableName = 'Users';
+const tableName = 'prod-users';
+const oldUserPoolId = 'eu-central-1_74vNy5Iw0';
+const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 const getAllUnverifiedCognitoUsers = async () => {
   let unverifiedCognitoUsers = [];
@@ -20,7 +23,7 @@ const getAllUnverifiedCognitoUsers = async () => {
 //This functions only fetches the maximum of 60 users
 const getUnverifiedCognitoUsers = paginationToken => {
   const params = {
-    UserPoolId: 'eu-central-1_74vNy5Iw0',
+    UserPoolId: userPoolId,
     Filter: 'cognito:user_status = "UNCONFIRMED"',
     PaginationToken: paginationToken,
   };
