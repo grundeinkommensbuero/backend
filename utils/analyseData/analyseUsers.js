@@ -3,14 +3,14 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = 'prod-users';
-const tableNameBackup = 'UsersWithoutConsent-14-11';
+const tableNameWithoutConsent = 'users-without-consent';
 const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 module.exports.analyseUsers = async () => {
   try {
     let users = await getAllUsers();
     //loop through backup users and add all the users who are not already in users
-    users = await migrateUsersFromBackup(users);
+    users = await migrateUsersWithoutNewsletterConsent(users);
     const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
     console.log('not verified count', unverifiedCognitoUsers.length);
     //go through users to sum up pledged signatures
@@ -107,9 +107,9 @@ const getUsers = (startKey = null) => {
   return ddb.scan(params).promise();
 };
 
-const getAllUsersFromBackup = () => {
+const getAllUsersWithoutNewsletterConsent = () => {
   const params = {
-    TableName: tableNameBackup,
+    TableName: tableNameWithoutConsent,
   };
   return ddb.scan(params).promise();
 };
@@ -141,9 +141,9 @@ const getUnverifiedCognitoUsers = paginationToken => {
   return cognito.listUsers(params).promise();
 };
 
-const migrateUsersFromBackup = async users => {
+const migrateUsersWithoutNewsletterConsent = async users => {
   let added = 0;
-  const backupUsers = await getAllUsersFromBackup();
+  const backupUsers = await getAllUsersWithoutNewsletterConsent();
   console.log('Backup users count', backupUsers.Count);
   for (let backupUser of backupUsers.Items) {
     //check if the user is already in users
