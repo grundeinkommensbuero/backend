@@ -141,6 +141,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:Scan
+          - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
 
