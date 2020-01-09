@@ -214,25 +214,8 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  pinpointOptIn:
-    handler: src/triggers/pinpointOptIn/index.handler
-    events:
-      - cognitoUserPool:
-          pool: UserPool
-          trigger: PostConfirmation
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - dynamodb:GetItem
-        Resource:
-          - 'Fn::GetAtt': [UsersTable, Arn]
-      - Effect: 'Allow'
-        Action:
-          - mobiletargeting:*
-        Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
-
-  updatePinpoint:
-    handler: src/triggers/updatePinpoint/index.handler
+  deletePinpointEndpoint:
+    handler: src/triggers/deletePinpointEndpoint/index.handler
     events: # dynamodb trigger through a dynamo stream
       - stream:
           type: dynamodb
@@ -248,6 +231,17 @@ functions:
           - dynamodb:ListStreams
         Resource:
           - 'Fn::GetAtt': [UsersTable, StreamArn]
+      - Effect: 'Allow'
+        Action:
+          - mobiletargeting:*
+        Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
+
+  fillPinpoint: 
+    handler: src/triggers/fillPinpoint/index.handler
+        events: # Call this function every day at 10 pm (via cloudwatch event)
+          - schedule: cron(0 21 * * ? *)
+    timeout: 1200 # Timeout for this specific function. Takes a while...
+    iamRoleStatements:
       - Effect: 'Allow'
         Action:
           - mobiletargeting:*
