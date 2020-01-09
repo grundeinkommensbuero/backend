@@ -14,42 +14,55 @@ const pinpointProjectId = '83c543b1094c4a91bf31731cd3f2f005';
 // user pool and table
 const copyData = async () => {
   try {
+    console.log('fetching cognito users...');
     const cognitoUsers = await getAllCognitoUsers();
+
     console.log('fetched cognito users');
 
     let copied = 0;
     for (let cognitoUser of cognitoUsers) {
       await limiter.schedule(async () => {
+        const oldId = cognitoUser.Username;
         try {
-          const oldId = cognitoUser.Username;
-          const created = await createUserInCognito(cognitoUser);
-          const newId = created.User.Username;
+          if (cognitoUser.UserStatus === 'CONFIRMED') {
+            const created = await createUserInCognito(cognitoUser);
+            const newId = created.User.Username;
 
-          await confirmUser(newId);
+            console.log('old id', oldId);
+            console.log('new id', newId);
 
-          //get old dynamo entry
-          const dynamoUser = await getUser(oldId);
+            await confirmUser(newId);
 
-          createUserInDynamo(newId, dynamoUser.Item);
+            //get old dynamo entry
+            const dynamoUser = await getUser(oldId);
 
-          const signatureLists = await getSignatureListsByUser(oldId);
+            createUserInDynamo(newId, dynamoUser.Item);
 
-          for (let list of signatureLists) {
-            await changeUserInList(list.id, newId);
-          }
+            const signatureLists = await getSignatureListsByUser(oldId);
 
-          //delete old pinpoint entry
-          deleteEndpoint(oldId);
+            for (let list of signatureLists) {
+              await changeUserInList(list.id, newId);
+            }
 
-          copied++;
-          if (copied % 20 === 0) {
-            console.log('Copied', copied);
+            //delete old pinpoint entry
+            deleteEndpoint(oldId);
+
+            copied++;
+            if (copied % 20 === 0) {
+              console.log('Copied', copied);
+            }
           }
         } catch (error) {
-          console.log('error', error);
+          if (error.code === 'UsernameExistsException') {
+            console.log('User already exists', oldId);
+          } else {
+            console.log('error', error);
+          }
         }
       });
     }
+
+    console.log('finished, copied ', copied);
   } catch (error) {
     console.log('error', error);
   }

@@ -3,7 +3,7 @@ const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const oldTableName = 'Users';
-const tableName = 'prod-users';
+const tableName = 'users-without-consent';
 const oldUserPoolId = 'eu-central-1_74vNy5Iw0';
 const userPoolId = 'eu-central-1_xx4VmPPdF';
 
@@ -23,7 +23,7 @@ const getAllUnverifiedCognitoUsers = async () => {
 //This functions only fetches the maximum of 60 users
 const getUnverifiedCognitoUsers = paginationToken => {
   const params = {
-    UserPoolId: userPoolId,
+    UserPoolId: oldUserPoolId,
     Filter: 'cognito:user_status = "UNCONFIRMED"',
     PaginationToken: paginationToken,
   };
@@ -47,19 +47,19 @@ const getAllCognitoUsers = async () => {
 //This functions only fetches the maximum of 60 users
 const getCognitoUsers = paginationToken => {
   const params = {
-    UserPoolId: userPoolId,
+    UserPoolId: oldUserPoolId,
     PaginationToken: paginationToken,
   };
   //get all users, which are not verified from user pool
   return cognito.listUsers(params).promise();
 };
 
-const getUsersFromSh = async () => {
+const getUsersFromState = async state => {
   const users = await getAllUsers();
   return users.filter(user => {
     if ('pledges' in user) {
       for (let pledge of user.pledges) {
-        return pledge.campaign.state === 'schleswig-holstein';
+        return pledge.campaign.state === state;
       }
     }
     return false;
@@ -132,7 +132,7 @@ const isVerified = (user, unverifiedCognitoUsers) => {
 module.exports = {
   getAllUnverifiedCognitoUsers,
   getAllUsers,
-  getUsersFromSh,
+  getUsersFromState,
   isVerified,
   getUsersWithoutNewsletterFromSh,
   getAllCognitoUsers,
