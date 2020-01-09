@@ -67,18 +67,27 @@ module.exports.handler = async event => {
       }
     }
 
+    // Make api call to contentful to compute the total number of signatures
+    const {
+      minimum,
+      addToSignatureCount,
+    } = await getSignatureCountFromContentful();
+
+    // addToSignatureCount is a sort of a base number
+    // which is defined in contentful
+    if (addToSignatureCount) {
+      totalCountForAllUsers += addToSignatureCount;
+    }
+
+    //if the minimum contentful signature count is more, use that number
+    if (minimum) {
+      totalCountForAllUsers = Math.max(totalCountForAllUsers, minimum);
+    }
+
     //go through the user map to send a mail to every user
     //of whom we have scanned a list during the last day
     for (let key in usersMap) {
       if (usersMap[key].dailyCount > 0) {
-        const contenfulCount = await getSignatureCountFromContentful();
-
-        //if the contentful signature count is more use that number
-        totalCountForAllUsers =
-          contenfulCount > totalCountForAllUsers
-            ? contenfulCount
-            : totalCountForAllUsers;
-
         await sendMail(usersMap[key], totalCountForAllUsers);
         console.log('success sending mail');
       }

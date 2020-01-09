@@ -20,5 +20,8 @@ module.exports.getSignatureCountFromContentful = async () => {
   //parse result to json
   const json = await result.json();
 
-  return json.fields.minimum;
+  return {
+    minimum: json.fields.minimum,
+    addToSignatureCount: json.fields.addToSignatureCount,
+  };
 };
