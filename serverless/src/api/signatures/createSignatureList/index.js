@@ -128,7 +128,8 @@ module.exports.handler = async event => {
         const generatedPdfCombined = await generatePdf(
           qrCodeUrl,
           pdfId,
-          'COMBINED'
+          'COMBINED',
+          requestBody.campaignCode
         );
         console.log(
           'generating pdf takes',
@@ -150,22 +151,26 @@ module.exports.handler = async event => {
               const generatedPdfSingle = await generatePdf(
                 qrCodeUrl,
                 pdfId,
-                'SINGLE'
+                'SINGLE',
+                requestBody.campaignCode
               );
               const generatedPdfMulti = await generatePdf(
                 qrCodeUrl,
                 pdfId,
-                'MULTI'
+                'MULTI',
+                requestBody.campaignCode
               );
               const generatedPdfSingleSw = await generatePdf(
                 qrCodeUrl,
                 pdfId,
-                'SINGLE_SW'
+                'SINGLE_SW',
+                requestBody.campaignCode
               );
               const generatedPdfMultiSw = await generatePdf(
                 qrCodeUrl,
                 pdfId,
-                'MULTI_SW'
+                'MULTI_SW',
+                requestBody.campaignCode
               );
 
               await sendMail(email, [
