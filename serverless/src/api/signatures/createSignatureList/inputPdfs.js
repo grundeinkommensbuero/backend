@@ -28,6 +28,23 @@ const CODE_POSITIONS = {
 };
 
 module.exports = {
+  'brandenburg-1': {
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/ALLES.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.QRCODE_MULTI,
+        },
+      ],
+    },
+  },
   'schleswig-holstein-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES_sw.pdf'),
