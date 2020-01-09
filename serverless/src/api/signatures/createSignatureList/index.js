@@ -21,6 +21,16 @@ const qrCodeUrls = {
 };
 
 const MAIL_ATTACHMENTS = {
+  'brandenburg-1': [
+    {
+      filename: 'Tipps_zum_Unterschriftensammeln.pdf',
+      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/TIPPS.pdf'),
+    },
+    {
+      filename: 'Liste.pdf',
+      type: 'MULTI',
+    },
+  ],
   'schleswig-holstein-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
