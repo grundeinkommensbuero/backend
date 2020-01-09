@@ -172,7 +172,10 @@ module.exports.handler = async event => {
             //only send the email to old users (because of opt in)
             if (userId !== 'anonymous' && !requestBody.isNewUser) {
               const attachments = await generateAttachments(
-                MAIL_ATTACHMENTS[requestBody.campaignCode]
+                MAIL_ATTACHMENTS[requestBody.campaignCode],
+                qrCodeUrl,
+                pdfId,
+                requestBody.campaignCode
               );
 
               await sendMail(email, attachments);
@@ -312,11 +315,12 @@ const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {
   if (!file) {
     file = await generatePdf(qrCodeUrl, pdfId, attachment.type, campaignCode);
   }
-  return {
+
+  return Promise.resolve({
     filename: attachment.filename,
     content: Buffer.from(file, 'base64'),
     contentType: 'application/pdf',
-  };
+  });
 };
 
 const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
