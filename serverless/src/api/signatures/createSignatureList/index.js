@@ -20,7 +20,30 @@ const qrCodeUrls = {
   default: 'https://xbge.de/qr/default/?listId=',
 };
 
-const pdfGuide = fs.readFileSync(__dirname + '/pdf/sh-1/TIPPS.pdf');
+const MAIL_ATTACHMENTS = {
+  'schleswig-holstein-1': [
+    {
+      filename: 'Tipps_zum_Unterschriftensammeln.pdf',
+      file: fs.readFileSync(__dirname + '/pdf/sh-1/TIPPS.pdf'),
+    },
+    {
+      filename: 'Liste_1er_SW.pdf',
+      type: 'SINGLE_SW',
+    },
+    {
+      filename: 'Liste_5er_SW.pdf',
+      type: 'MULTI_SW',
+    },
+    {
+      filename: 'Liste_1er_Farbe.pdf',
+      type: 'SINGLE',
+    },
+    {
+      filename: 'Liste_5er_Farbe.pdf',
+      type: 'MULTI',
+    },
+  ],
+};
 
 /*  Model for signature lists in db
 
@@ -148,58 +171,11 @@ module.exports.handler = async event => {
             //if the download was not anonymous send a mail with the attached pdf
             //only send the email to old users (because of opt in)
             if (userId !== 'anonymous' && !requestBody.isNewUser) {
-              const generatedPdfSingle = await generatePdf(
-                qrCodeUrl,
-                pdfId,
-                'SINGLE',
-                requestBody.campaignCode
-              );
-              const generatedPdfMulti = await generatePdf(
-                qrCodeUrl,
-                pdfId,
-                'MULTI',
-                requestBody.campaignCode
-              );
-              const generatedPdfSingleSw = await generatePdf(
-                qrCodeUrl,
-                pdfId,
-                'SINGLE_SW',
-                requestBody.campaignCode
-              );
-              const generatedPdfMultiSw = await generatePdf(
-                qrCodeUrl,
-                pdfId,
-                'MULTI_SW',
-                requestBody.campaignCode
+              const attachments = await generateAttachments(
+                MAIL_ATTACHMENTS[requestBody.campaignCode]
               );
 
-              await sendMail(email, [
-                {
-                  filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-                  content: Buffer.from(pdfGuide, 'base64'),
-                  contentType: 'application/pdf',
-                },
-                {
-                  filename: 'Liste_1er_SW.pdf',
-                  content: Buffer.from(generatedPdfSingleSw, 'base64'),
-                  contentType: 'application/pdf',
-                },
-                {
-                  filename: 'Liste_5er_SW.pdf',
-                  content: Buffer.from(generatedPdfMultiSw, 'base64'),
-                  contentType: 'application/pdf',
-                },
-                {
-                  filename: 'Liste_1er_Farbe.pdf',
-                  content: Buffer.from(generatedPdfSingle, 'base64'),
-                  contentType: 'application/pdf',
-                },
-                {
-                  filename: 'Liste_5er_Farbe.pdf',
-                  content: Buffer.from(generatedPdfMulti, 'base64'),
-                  contentType: 'application/pdf',
-                },
-              ]);
+              await sendMail(email, attachments);
             }
             return {
               statusCode: 201,
@@ -328,4 +304,25 @@ const generateRandomId = length => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {
+  let file = attachment.file;
+
+  if (!file) {
+    file = await generatePdf(qrCodeUrl, pdfId, attachment.type, campaignCode);
+  }
+  return {
+    filename: attachment.filename,
+    content: Buffer.from(file, 'base64'),
+    contentType: 'application/pdf',
+  };
+};
+
+const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
+  return Promise.all(
+    attachments.map(attachment =>
+      getAttachment(attachment, qrCodeUrl, pdfId, campaignCode)
+    )
+  );
 };
