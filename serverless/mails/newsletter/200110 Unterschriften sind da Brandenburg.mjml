@@ -3,9 +3,8 @@
   <mj-head>
     <mj-include path="../includes/head.mjml" />
     <mj-preview>
-      Ab sofort können wir gemeinsam Unterschriften auf Papier sammeln.
-      Offizieller Sammelstart ist kommenden Samstag (14. Dezember).
-      Heute gibt es die Listen.
+      Ab sofort können wir gemeinsam Unterschriften auf Papier sammeln. Unser
+      Ziel für die erste Woche sind 10.000 Unterschriften. Gemeinsam schaffen wir das!
     </mj-preview>
   </mj-head>
 
@@ -15,34 +14,37 @@
       <mj-column>
         <mj-text>
           <h2>
-            Die Unterschriftslisten sind da!
+            Die Unterschriftenlisten sind da!
           </h2>
           Hallo{{Attributes.UsernameWithSpace}},
           <br><br>
-          wir haben gute Neuigkeiten: unsere Unterschriftslisten sind da!
-          Das heißt, wir können ab sofort gemeinsam Unterschriften auf
-          Papier sammeln.
+          wir haben gute Neuigkeiten: unsere Unterschriftenlisten sind da! Das heißt:
+          Ab sofort können wir die digital versprochenen Unterschriften auf Papier
+          bringen und sie dadurch gültig machen. So kommen wir einem Modellversuch
+          zum Grundeinkommen in Brandenburg einen Schritt näher.
         </mj-text>
 
-        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=schleswig-holstein-1">
-          Her mit den Listen
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=brandenburg-1">
+          Listen herunterladen
         </mj-button>
 
         <mj-text>
-          Gemeinsam mit vielen weiteren Menschen hast du 17.100 Unterschriften
-          für die Volksinitiative versprochen – wow! Nun müssen wir diese
-          Unterschriften auf Papier bringen. So erreichen wir, dass es möglichst
-          bald ein Grundeinkommensexperiment in Schleswig-Holstein gibt.
+          Gemeinsam mit vielen weiteren Menschen hast du Unterschriften für die
+          Volksinitiative versprochen – insgesamt 14.250 – wow! Das sind schon 60%
+          der benötigten Unterschriften für die erste Hürde.
           <br><br>
-          Bitte drucke die <a href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=schleswig-holstein-1">Unterschriftsliste</a>
-          aus, unterschreibe sie und schicke
-          sie per Post an uns zurück. Frage gern auch andere Menschen, ob sie mit
-          unterschreiben – oder bringe sie dazu, selber Unterschriften mit uns zu
-          sammeln. Je mehr Unterschriften, desto besser!
+          Nun müssen wir diese versprochenen Unterschriften Wirklichkeit werden lassen.
+          Bitte drucke dazu die <a href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=brandenburg-1">Unterschriftenliste</a>
+          aus, unterschreibe sie, frag
+          noch ein paar Menschen aus deinem Umfeld und schicke sie in den nächsten 7
+          Tagen per Post an uns zurück.
+          <br><br>
+          So schaffen wir in der ersten Woche gemeinsam einen wichtigen Meilenstein
+          und gehen motiviert in die nächsten Sammelwochen.
           <br><br>
           Schön, dass du an Bord bist!
           <br><br>
-          Joy und Laura
+          Joy, Laura und das Team der Expedition
         </mj-text>
       </mj-column>
     </mj-section>
@@ -50,19 +52,21 @@
     <mj-section mj-class="section-red" padding-top="40px">
       <mj-column>
         <mj-text mj-class="section-red-text">
-          Offizieller Sammelstart ist der kommende Samstag (14. Dezember): Am
-          ersten Wochenende wollen wir so weit kommen wie möglich! Schick uns daher
-          deine ersten Unterschriften bitte  schnell zurück. Du und vier Freund*innen –
-          und schon ist eine Liste voll.
+          <h2>So geht es weiter</h2>
+          Sobald wir genug Unterschriften zusammen haben, reichen wir ein. Damit der
+          anvisierte Volksentscheid parallel zur Bundestagswahl 2021 stattfinden kann,
+          wollen wir die erste Hürde (25.000 Unterschriften) bis zum 20. März 2020
+          schaffen.
           <br><br>
-          Du willst vor Ort dabei sein? Zum Auftakt sammeln Freiwillige in ganz
-          Schleswig-Holstein gemeinsam Unterschriften an öffentlichen Orten.
-          Öffne jetzt die Sammel-Landkarte und schau nach, wo überall gesammelt
-          wird – oder nenne uns deinen eigenen zusätzlichen Sammelort.
+          Um die Kampagne in Schwung zu bringen, ist es wichtig, dass wir in der
+          ersten Woche so viele Unterschriften wie möglich sammeln. Schick daher
+          die ersten Listen bitte auf jeden Fall bis zum 17. Januar zu uns zurück!
+          So motivieren wir uns gegenseitig, finden einfacher neue Unterstützer*innen
+          und kommen hoffentlich in die Presse.
         </mj-text>
 
-        <mj-button align="left" padding-top="40px" href="https://expedition-grundeinkommen.de/schleswig-holstein/#karte" color="#fef377" border="1px solid #fef377">
-          Zur Sammel-Landkarte
+        <mj-button align="left" padding-top="40px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=brandenburg-1" color="#fef377" border="1px solid #fef377">
+          Listen herunterladen
         </mj-button>
       </mj-column>
 
