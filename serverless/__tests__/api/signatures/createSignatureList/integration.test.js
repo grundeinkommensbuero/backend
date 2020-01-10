@@ -26,6 +26,22 @@ describe('createSignatureList api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         email: 'vali_schagerl@web.de',
+        campaignCode: `brandenburg-1`,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should create a new anonymous signature list', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
         campaignCode: `schleswig-holstein-1`,
       }),
     };

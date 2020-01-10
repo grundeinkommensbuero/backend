@@ -75,15 +75,18 @@ module.exports.handler = async event => {
     const date = new Date();
     //we only want the current day (YYYY-MM-DD), then it is also easier to filter
     const timestamp = date.toISOString().substring(0, 10);
+
     //get user id from request body (might not exist, in that case we go a different route)
     let userId;
     //we need the email to later send the pdf
     let email;
     if ('userId' in requestBody) {
       userId = requestBody.userId;
+
       //now we want to validate if the user actually exists
       try {
         const user = await getUser(userId);
+
         //if user does not have Item as property, there was no user found
         if (!('Item' in user) || typeof user.Item === 'undefined') {
           return errorResponse(400, 'No user found with the passed user id');
@@ -100,6 +103,7 @@ module.exports.handler = async event => {
       try {
         const result = await getUserByMail(email);
         console.log('result after getting user by mail', result);
+
         if (result.Count === 0) {
           console.log('error', 'no user found', result);
           return errorResponse(400, 'No user found with the passed email');
@@ -116,7 +120,12 @@ module.exports.handler = async event => {
 
     //in does not matter, if the user is anonymous or not...
     //now we check, if there already is an entry for the list for this day
-    const foundSignatureLists = await getSignatureList(userId, timestamp);
+    const foundSignatureLists = await getSignatureList(
+      userId,
+      timestamp,
+      campaign.code
+    );
+
     if (foundSignatureLists.Count !== 0) {
       //if there was a signature list for this day found
       //we want to update the downloads counter and send the list id and the url to the pdf as response
@@ -125,6 +134,7 @@ module.exports.handler = async event => {
       try {
         //update list entry to increment the download count
         await incrementDownloads(signatureList.id, signatureList.downloads);
+
         //after the signature list was successfully updated we return it (id and url to pdf)
         return {
           statusCode: 200,
@@ -147,14 +157,17 @@ module.exports.handler = async event => {
       //because the id is quite small we need to check if the newly created one already exists (unlikely)
       let idExists = true;
       let pdfId;
+
       while (idExists) {
         pdfId = generateRandomId(7);
         idExists = await checkIfIdExists(pdfId);
         console.log('id already exists?', idExists);
       }
+
       try {
         //we are going to generate the pdf
         let currentMillis = new Date().getTime();
+
         const qrCodeUrl = qrCodeUrls[campaign.state]
           ? qrCodeUrls[campaign.state]
           : qrCodeUrls.default;
@@ -164,14 +177,17 @@ module.exports.handler = async event => {
           'COMBINED',
           requestBody.campaignCode
         );
+
         console.log(
           'generating pdf takes',
           new Date().getTime() - currentMillis
         );
+
         //upload pdf to s3 after generation was successful
         const uploadResult = await uploadPDF(pdfId, generatedPdfCombined);
         console.log('success uploading pdf to bucket', uploadResult);
         const url = uploadResult.Location;
+
         try {
           //if the upload process was successful, we create the list entry in the db
           //userId might be 'anonymous'
@@ -228,22 +244,40 @@ module.exports.handler = async event => {
 };
 
 //function to check, if there already is a signature list for this specific day (owned by user or anonymous)
-const getSignatureList = async (userId, timestamp, startKey = null) => {
+const getSignatureList = async (
+  userId,
+  timestamp,
+  campaignCode,
+  startKey = null
+) => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'userId = :userId AND createdAt = :timestamp',
-    ExpressionAttributeValues: { ':userId': userId, ':timestamp': timestamp },
+    FilterExpression:
+      'userId = :userId AND createdAt = :timestamp AND campaign.code = :campaignCode',
+    ExpressionAttributeValues: {
+      ':userId': userId,
+      ':timestamp': timestamp,
+      ':campaignCode': campaignCode,
+    },
     ProjectionExpression: 'id, pdfUrl, downloads',
   };
+
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
   }
+
   const result = await ddb.scan(params).promise();
+
   //call same function again, if there is no user found, but not
   //the whole db has been scanned
   if (result.Count === 0 && 'LastEvaluatedKey' in result) {
     console.log('call getUserByMail recursively');
-    return getSignatureList(userId, timestamp, result.LastEvaluatedKey);
+    return getSignatureList(
+      userId,
+      timestamp,
+      campaignCode,
+      result.LastEvaluatedKey
+    );
   } else {
     return result;
   }
