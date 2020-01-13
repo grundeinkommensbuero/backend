@@ -243,6 +243,7 @@ functions:
     events: # Call this function every day at 0 am (via cloudwatch event)
       - schedule: cron(0 23 * * ? *)
     timeout: 900 # Timeout for this specific function. Takes a while...
+    memorySize: 2028 # memorySize for this specific function.
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -256,6 +257,11 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
       - Effect: 'Allow'
         Action:
           - cognito-idp:ListUsers
