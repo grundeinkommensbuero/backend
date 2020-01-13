@@ -23,6 +23,7 @@ provider:
   environment:
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
+    STAGE: ${self:custom.stage}
 
 plugins:
   - serverless-iam-roles-per-function
