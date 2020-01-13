@@ -243,6 +243,9 @@ functions:
     events: # Call this function every day at 10 pm (via cloudwatch event)
       - schedule: cron(0 21 * * ? *)
     timeout: 900 # Timeout for this specific function. Takes a while...
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
     iamRoleStatements:
       - Effect: 'Allow'
         Action:

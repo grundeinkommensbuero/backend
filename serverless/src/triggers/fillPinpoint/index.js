@@ -5,7 +5,7 @@ const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
-const tableName = process.env.USERS_TABLE_NAME;
+const { USERS_TABLE_NAME: tableName, USER_POOL_ID: userPoolId } = process.env;
 
 const zipCodeMatcher = require('./zipCodeMatcher');
 
@@ -32,6 +32,7 @@ const fillPinpoint = async () => {
       await updateEndpoint(user, verified);
       count++;
     }
+
     console.log('updated count', count);
   } catch (error) {
     console.log('error', error);
@@ -153,6 +154,7 @@ const updateEndpoint = async (user, verified) => {
       },
     },
   };
+
   console.log('trying to update the endpoint with params:', params);
   const result = await pinpoint.updateEndpoint(params).promise();
   console.log('updated pinpoint', result);
@@ -175,11 +177,10 @@ const getAllUsers = async (users = [], startKey = null) => {
 
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    console.log('call get lists recursively');
-    return getAllUsers(signatureLists, result.LastEvaluatedKey);
+    return getAllUsers(users, result.LastEvaluatedKey);
   } else {
     //otherwise return the array
-    return signatureLists;
+    return users;
   }
 };
 
@@ -188,12 +189,12 @@ const getAllUnverifiedCognitoUsers = async (
   paginationToken = null
 ) => {
   const params = {
-    UserPoolId: oldUserPoolId,
+    UserPoolId: userPoolId,
     Filter: 'cognito:user_status = "UNCONFIRMED"',
     PaginationToken: paginationToken,
   };
 
-  let data = cognito.listUsers(params).promise();
+  let data = await cognito.listUsers(params).promise();
 
   //add elements of user array
   unverifiedCognitoUsers.push(...data.Users);
