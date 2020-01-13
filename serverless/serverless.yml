@@ -236,10 +236,10 @@ functions:
           - mobiletargeting:*
         Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
 
-  fillPinpoint: 
+  fillPinpoint:
     handler: src/triggers/fillPinpoint/index.handler
-        events: # Call this function every day at 10 pm (via cloudwatch event)
-          - schedule: cron(0 21 * * ? *)
+    events: # Call this function every day at 10 pm (via cloudwatch event)
+      - schedule: cron(0 21 * * ? *)
     timeout: 1200 # Timeout for this specific function. Takes a while...
     iamRoleStatements:
       - Effect: 'Allow'
