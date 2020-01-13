@@ -246,6 +246,16 @@ functions:
         Action:
           - mobiletargeting:*
         Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:ListUsers
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
