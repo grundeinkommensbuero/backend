@@ -8,9 +8,39 @@ const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = process.env.USERS_TABLE_NAME;
 // const tableNameBackup = 'UsersWithoutConsent-14-11';
 
-const zipCodeMatcher = require('../zipCodeMatcher');
+const zipCodeMatcher = require('./zipCodeMatcher');
 
-const updateEndpoint = async (user, verified = true) => {
+module.exports.handler = async event => {
+  // Only run the script if the environment is prod
+  console.log('environment', process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'prod') {
+    await fillPinpoint();
+  }
+
+  return event;
+};
+
+// Loops through all users to update the corrsesponding pinpoint endpoint
+const fillPinpoint = async () => {
+  try {
+    let users = await getAllUsers();
+    const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
+    //loop through backup users and add all the users who are not already in users
+
+    let count = 0;
+    for (let user of users) {
+      //check if the user is verified
+      const verified = isVerified(user, unverifiedCognitoUsers);
+      await updateEndpoint(user, verified);
+      count++;
+    }
+    console.log('updated count', count);
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+const updateEndpoint = async (user, verified) => {
   const {
     cognitoId: userId, //rename cognitoId to userId while destructuring
     createdAt,
@@ -130,27 +160,7 @@ const updateEndpoint = async (user, verified = true) => {
   console.log('updated pinpoint', result);
 };
 
-const fillPinpoint = async () => {
-  try {
-    let users = await getAllUsers();
-    const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
-    //loop through backup users and add all the users who are not already in users
-
-    let count = 0;
-    for (let user of users) {
-      //check if the user is verified
-      const verified =
-        isVerified(user, unverifiedCognitoUsers) || user.migrated;
-      await updateEndpoint(user, verified);
-      count++;
-    }
-    console.log('updated count', count);
-  } catch (error) {
-    console.log('error', error);
-  }
-};
-
-//function to get all users
+//function to get all users from dynamo
 const getAllUsers = async (users = [], startKey = null) => {
   const params = {
     TableName: tableName,
@@ -173,4 +183,44 @@ const getAllUsers = async (users = [], startKey = null) => {
     //otherwise return the array
     return signatureLists;
   }
+};
+
+const getAllUnverifiedCognitoUsers = async (
+  unverifiedCognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: oldUserPoolId,
+    Filter: 'cognito:user_status = "UNCONFIRMED"',
+    PaginationToken: paginationToken,
+  };
+
+  let data = cognito.listUsers(params).promise();
+
+  //add elements of user array
+  unverifiedCognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return getAllUnverifiedCognitoUsers(
+      unverifiedCognitoUsers,
+      data.PaginationToken
+    );
+  } else {
+    return unverifiedCognitoUsers;
+  }
+};
+
+// Checks, if the user is part of the unverified cognito users
+// array, returns true if user is verified
+const isVerified = (user, unverifiedCognitoUsers) => {
+  let verified = true;
+
+  for (let cognitoUser of unverifiedCognitoUsers) {
+    //sub is the first attribute
+    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
+      verified = false;
+    }
+  }
+
+  return verified;
 };

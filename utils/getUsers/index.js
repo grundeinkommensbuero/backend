@@ -7,28 +7,29 @@ const tableName = 'users-without-consent';
 const oldUserPoolId = 'eu-central-1_74vNy5Iw0';
 const userPoolId = 'eu-central-1_xx4VmPPdF';
 
-const getAllUnverifiedCognitoUsers = async () => {
-  let unverifiedCognitoUsers = [];
-  let data = await getUnverifiedCognitoUsers(null);
-  //add elements of user array
-  unverifiedCognitoUsers.push(...data.Users);
-  while ('PaginationToken' in data) {
-    data = await getUnverifiedCognitoUsers(data.PaginationToken);
-    //add elements of user array
-    unverifiedCognitoUsers.push(...data.Users);
-  }
-  return unverifiedCognitoUsers;
-};
-
-//This functions only fetches the maximum of 60 users
-const getUnverifiedCognitoUsers = paginationToken => {
+const getAllUnverifiedCognitoUsers = async (
+  unverifiedCognitoUsers = [],
+  paginationToken = null
+) => {
   const params = {
     UserPoolId: oldUserPoolId,
     Filter: 'cognito:user_status = "UNCONFIRMED"',
     PaginationToken: paginationToken,
   };
-  //get all users, which are not verified from user pool
-  return cognito.listUsers(params).promise();
+
+  let data = cognito.listUsers(params).promise();
+
+  //add elements of user array
+  unverifiedCognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return getAllUnverifiedCognitoUsers(
+      unverifiedCognitoUsers,
+      data.PaginationToken
+    );
+  } else {
+    return unverifiedCognitoUsers;
+  }
 };
 
 const getAllCognitoUsers = async () => {
@@ -120,12 +121,14 @@ const getUser = id => {
 
 const isVerified = (user, unverifiedCognitoUsers) => {
   let verified = true;
+
   for (let cognitoUser of unverifiedCognitoUsers) {
-    //sub is the only attribute
+    //sub is the first attribute
     if (user.cognitoId === cognitoUser.Attributes[0].Value) {
       verified = false;
     }
   }
+
   return verified;
 };
 
