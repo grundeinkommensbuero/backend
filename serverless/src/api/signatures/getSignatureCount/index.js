@@ -58,16 +58,20 @@ const getSignatureCountOfUser = async userId => {
   let stats = { received: 0, scannedByUser: 0 };
 
   //get all lists of this user with received attribute
-  const signatureLists = await getReceivedSignatureListsOfUser(userId);
+  const signatureLists = await getScannedSignatureListsOfUser(userId);
 
   // For each list sum up the received and the self scanned count
   for (let list of signatureLists) {
-    for (let scan of list.received) {
-      stats.received += scan.count;
+    if ('received' in list) {
+      for (let scan of list.received) {
+        stats.received += scan.count;
+      }
     }
 
-    for (let scan of list.scannedByUser) {
-      stats.scannedByUser += scan.count;
+    if ('scannedByUser' in list) {
+      for (let scan of list.scannedByUser) {
+        stats.scannedByUser += scan.count;
+      }
     }
   }
 
@@ -139,15 +143,17 @@ const getReceivedSignatureLists = async (
   }
 };
 
-//function to get all signature lists of a specific user, where there is a received key
-const getReceivedSignatureListsOfUser = async (
+// function to get all signature lists of a specific user, where there is a received
+// or scannedByUser key
+const getScannedSignatureListsOfUser = async (
   userId,
   signatureLists = [],
   startKey = null
 ) => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'attribute_exists(received) AND userId = :userId',
+    FilterExpression:
+      '(attribute_exists(received) OR attribute_exists(scannedByUser)) AND userId = :userId',
     ExpressionAttributeValues: { ':userId': userId },
   };
 
@@ -162,7 +168,7 @@ const getReceivedSignatureListsOfUser = async (
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     console.log('call get lists recursively');
-    return getReceivedSignatureListsOfUser(
+    return getScannedSignatureListsOfUser(
       userId,
       signatureLists,
       result.LastEvaluatedKey
