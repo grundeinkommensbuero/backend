@@ -86,7 +86,6 @@ const updateEndpoint = async (user, verified) => {
   if (typeof zipCode !== 'undefined') {
     region = zipCodeMatcher.getStateByZipCode(zipCode);
   }
-  console.log('matched region', region);
 
   //workaround, while some newsletter consents may already have the new format {value, timestamp}
   //old format is just boolean
@@ -155,9 +154,7 @@ const updateEndpoint = async (user, verified) => {
     },
   };
 
-  console.log('trying to update the endpoint with params:', params);
   const result = await pinpoint.updateEndpoint(params).promise();
-  console.log('updated pinpoint', result);
 };
 
 //function to get all users from dynamo
