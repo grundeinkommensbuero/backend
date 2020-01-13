@@ -12,8 +12,8 @@ const zipCodeMatcher = require('./zipCodeMatcher');
 
 module.exports.handler = async event => {
   // Only run the script if the environment is prod
-  console.log('environment', process.env.NODE_ENV);
-  if (process.env.NODE_ENV === 'prod') {
+  console.log('stage', process.env.STAGE);
+  if (process.env.STAGE === 'prod') {
     await fillPinpoint();
   }
 
