@@ -5,6 +5,7 @@ const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
+const { getSignatureListsOfUser } = require('../../shared/signatures');
 const { USERS_TABLE_NAME: tableName, USER_POOL_ID: userPoolId } = process.env;
 
 const zipCodeMatcher = require('./zipCodeMatcher');
@@ -29,6 +30,10 @@ const fillPinpoint = async () => {
     for (let user of users) {
       //check if the user is verified
       const verified = isVerified(user, unverifiedCognitoUsers);
+
+      // Get signature lists of this user and add it to user object
+      user.signatureLists = await getSignatureListsOfUser(user.cognitoId);
+
       await updateEndpoint(user, verified);
       count++;
     }
@@ -125,6 +130,10 @@ const updateEndpoint = async (user, verified) => {
         PledgeCampaignCode: [
           typeof pledge !== 'undefined' ? pledge.campaign.code : 'undefined',
         ],
+        SignaturesCampaignCode:
+          user.signatureLists.length > 0
+            ? user.signatureLists.map(list => list.campaign.code)
+            : [],
         PostalCode: [typeof zipCode !== 'undefined' ? zipCode : 'undefined'],
         Username: [username],
         UsernameWithSpace: [pinpointName],
