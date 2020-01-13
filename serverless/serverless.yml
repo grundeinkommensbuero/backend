@@ -144,6 +144,11 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   updateUser:
     handler: src/api/users/updateUser/index.handler

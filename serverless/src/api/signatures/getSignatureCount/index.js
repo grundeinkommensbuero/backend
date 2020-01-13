@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getSignatureList } = require('../../../shared/signatures');
+const { getUserByMail } = require('../../../shared/users');
 
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const responseHeaders = {
@@ -17,7 +18,7 @@ module.exports.handler = async event => {
     if (event.queryStringParameters) {
       // If there is a list id or user id we want to count
       // the signatures for just one user
-      const { listId } = event.queryStringParameters;
+      const { listId, email } = event.queryStringParameters;
       let { userId } = event.queryStringParameters;
 
       if (typeof listId !== 'undefined') {
@@ -32,6 +33,15 @@ module.exports.handler = async event => {
         }
 
         userId = result.Item.userId;
+      } else if (typeof email !== 'undefined') {
+        // If email is provided we need to get the user by mail to get id
+        const result = await getUserByMail(email);
+
+        if (result.Count === 0) {
+          return errorResponse(404, 'No user with that email found');
+        }
+
+        userId = result.Items[0].cognitoId;
       }
 
       // if list id was not provided, the user id was provided in query params

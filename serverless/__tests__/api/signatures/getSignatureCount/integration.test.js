@@ -2,6 +2,7 @@ const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const listId = '1280305';
 const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
+const email = 'vali_schagerl@web.de';
 
 describe('getSignatureCount api test', () => {
   it('should get signature count of all lists', async () => {
@@ -53,14 +54,14 @@ describe('getSignatureCount api test', () => {
     expect(json).toHaveProperty('scannedByUser');
   });
 
-  it('should get signature count of user by list id', async () => {
+  it('should get signature count of user by email', async () => {
     const request = {
       method: 'GET',
       mode: 'cors',
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/analytics/signatures?listId=${listId}`,
+      `${INVOKE_URL}/analytics/signatures?email=${email}`,
       request
     );
     const json = await response.json();
@@ -76,10 +77,10 @@ describe('getSignatureCount api test', () => {
       mode: 'cors',
     };
 
-    const listId = '123456';
+    const wrongListId = '123456';
 
     const response = await fetch(
-      `${INVOKE_URL}/analytics/signatures?listId=${listId}`,
+      `${INVOKE_URL}/analytics/signatures?listId=${wrongListId}`,
       request
     );
 
@@ -92,10 +93,10 @@ describe('getSignatureCount api test', () => {
       mode: 'cors',
     };
 
-    const userId = '123456';
+    const wrongUserId = '123456';
 
     const response = await fetch(
-      `${INVOKE_URL}/analytics/signatures?userId=${userId}`,
+      `${INVOKE_URL}/analytics/signatures?userId=${wrongUserId}`,
       request
     );
     const json = await response.json();
@@ -107,5 +108,21 @@ describe('getSignatureCount api test', () => {
 
     expect(json.received).toEqual(0);
     expect(json.scannedByUser).toEqual(0);
+  });
+
+  it('should not find user by email', async () => {
+    const request = {
+      method: 'GET',
+      mode: 'cors',
+    };
+
+    const wrongEmail = 'wrongEmail@web.de';
+
+    const response = await fetch(
+      `${INVOKE_URL}/analytics/signatures?email=${wrongEmail}`,
+      request
+    );
+
+    expect(response.status).toEqual(404);
   });
 });
