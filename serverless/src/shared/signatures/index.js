@@ -20,7 +20,7 @@ const getSignatureListsOfUser = async (
   startKey = null
 ) => {
   const params = {
-    TableName: signaturesTableName,
+    TableName: tableName,
     FilterExpression: 'userId = :userId',
     ExpressionAttributeValues: { ':userId': userId },
   };

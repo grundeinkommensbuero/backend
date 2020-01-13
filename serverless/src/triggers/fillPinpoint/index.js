@@ -35,6 +35,7 @@ const fillPinpoint = async () => {
       user.signatureLists = await getSignatureListsOfUser(user.cognitoId);
 
       await updateEndpoint(user, verified);
+
       count++;
     }
 
@@ -135,7 +136,7 @@ const updateEndpoint = async (user, verified) => {
             ? user.signatureLists.map(list => list.campaign.code)
             : [],
         PostalCode: [typeof zipCode !== 'undefined' ? zipCode : 'undefined'],
-        Username: [username],
+        // Username: [username], -> not eneeded anymore, and there's a limit to attributes
         UsernameWithSpace: [pinpointName],
         Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
         Migrated: [typeof migrated !== 'undefined' ? migrated.source : 'Nein'],
@@ -163,7 +164,7 @@ const updateEndpoint = async (user, verified) => {
     },
   };
 
-  const result = await pinpoint.updateEndpoint(params).promise();
+  return pinpoint.updateEndpoint(params).promise();
 };
 
 //function to get all users from dynamo
