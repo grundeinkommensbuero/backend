@@ -6,13 +6,11 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
 const tableName = process.env.USERS_TABLE_NAME;
-// const tableNameBackup = 'UsersWithoutConsent-14-11';
 
 const zipCodeMatcher = require('./zipCodeMatcher');
 
 module.exports.handler = async event => {
   // Only run the script if the environment is prod
-  console.log('stage', process.env.STAGE);
   if (process.env.STAGE === 'prod') {
     await fillPinpoint();
   }
