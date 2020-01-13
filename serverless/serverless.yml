@@ -214,7 +214,8 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  deletePinpointEndpoint:
+  # Endpoint refers to pinpoint user endpoint
+  deleteEndpoint:
     handler: src/triggers/deletePinpointEndpoint/index.handler
     events: # dynamodb trigger through a dynamo stream
       - stream:
@@ -240,7 +241,7 @@ functions:
     handler: src/triggers/fillPinpoint/index.handler
     events: # Call this function every day at 10 pm (via cloudwatch event)
       - schedule: cron(0 21 * * ? *)
-    timeout: 1200 # Timeout for this specific function. Takes a while...
+    timeout: 900 # Timeout for this specific function. Takes a while...
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
