@@ -74,13 +74,13 @@ const getSignatureCountOfUser = async userId => {
   for (let list of signatureLists) {
     if ('received' in list) {
       for (let scan of list.received) {
-        stats.received += scan.count;
+        stats.received += parseInt(scan.count);
       }
     }
 
     if ('scannedByUser' in list) {
       for (let scan of list.scannedByUser) {
-        stats.scannedByUser += scan.count;
+        stats.scannedByUser += parseInt(scan.count);
       }
     }
   }
@@ -114,10 +114,10 @@ const getSignatureCountOfAllLists = async () => {
         //if there were signatures on this list, which belong to
         //different "Ämters" (mixed), only add the count to withMixed
         if (!scan.mixed) {
-          stats[campaign].withoutMixed += scan.count;
+          stats[campaign].withoutMixed += parseInt(scan.count);
         }
 
-        stats[campaign].withMixed += scan.count;
+        stats[campaign].withMixed += parseInt(scan.count);
       }
     }
   }
