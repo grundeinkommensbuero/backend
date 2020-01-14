@@ -44,6 +44,19 @@ module.exports = {
   node: {
     __dirname: false,
   },
+  module: {
+    rules: [
+      {
+        test: /\.html$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'raw-loader',
+          },
+        ],
+      },
+    ],
+  },
   stats: 'errors-warnings', // less logging
   plugins: [CopyStaticFilesPlugin()],
 };
