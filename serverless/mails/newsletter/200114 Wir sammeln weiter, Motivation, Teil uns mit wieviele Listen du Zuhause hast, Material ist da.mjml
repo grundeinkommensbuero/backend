@@ -39,7 +39,7 @@
           Erinnerungen und E-Mails, Kampagnenmaterial und zudem etwas mehr Zeit und Geduld.
           <br><br>
           Das bedeutet: Es sind noch viele Unterschriften unterwegs und die Mehrheit
-          will noch weiter sammeln.
+          will noch weiter sammeln. Ja!
           <br><br>
           Wir haben uns darum folgendes überlegt:
 
@@ -66,22 +66,35 @@
         <mj-text mj-class="section-red-text">
           <h2>
             2. Lass den Sammelbalken steigen und schaue nach, wie viele Unterschriften
-            von dir bereits angekommen sind:
+            von dir bereits angekommen sind
           </h2>
           Auf unserer Website zeigen wir immer den aktuellen Sammelstand. Neu ist: Du
           kannst nun auch eintragen, wie viele Unterschriften du bereits zu Hause
           liegen hast.
           <br><br>
-          Dazu folgst du diesem LINK oder scannst den QR-Code auf deiner Unterschriftenliste.
-          Dann gibst du an, wie viele neue Unterschriften du gesammelt hast.
+          Dazu folgst du <a href="https://expedition-grundeinkommen.de/qr/sh/?userId={{User.UserId}}">diesem Link</a>
+          oder scannst den QR-Code auf deiner Unterschriftenliste. Dann gibst du an,
+          wie viele neue Unterschriften du gesammelt hast.
           <br><br>
           Bitte nutze diese Möglichkeit, damit wir alle unseren Fortschritt sehen und uns
           gegenseitig motivieren!
-
         </mj-text>
 
         <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/qr/sh/?userId={{User.UserId}}" color="#fef377" border="1px solid #fef377">
           Jetzt mitteilen wie viele Unterschriften zu Hause liegen
+        </mj-button>
+        <mj-text mj-class="section-red-text">
+          <h2>
+            3. Material
+          </h2>
+          Wir haben einige Druckvorlagen für Kampagnenmaterial online gestellt. Noch
+          haben wir keine fertig gedruckten Materialien – da wollen wir hin. Ihr müsst
+          euch diese also zunächst selbst ausdrucken. Wenn ihr Kosten für Ausdrucke
+          erstattet braucht, meldet euch bitte in der Kampagnenzentrale.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/downloads/" color="#fef377" border="1px solid #fef377">
+          Kampagnenmaterial herunterladen
         </mj-button>
       </mj-column>
 
