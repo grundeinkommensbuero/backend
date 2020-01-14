@@ -13,7 +13,7 @@ const GOALS = {
 //Function which sends an email to congratulate for the reception of list(s)
 //gets a user object, which is why we destructure the object
 const sendMail = (
-  { email, username, userId, dailyCount, totalCount, campaignCode },
+  { email, username, userId, dailyCount, totalCount, campaign },
   totalCountForAllUsers
 ) => {
   const mailOptions = {
