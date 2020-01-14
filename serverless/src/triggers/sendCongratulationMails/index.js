@@ -57,6 +57,7 @@ module.exports.handler = async event => {
               email: result.Item.email,
               username: result.Item.username,
               userId: result.Item.cognitoId,
+              campaign: list.campaign,
             };
           }
         } else {

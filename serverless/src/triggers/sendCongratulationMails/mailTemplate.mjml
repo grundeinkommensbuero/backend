@@ -30,7 +30,7 @@
           Also: Bitte weitermachen!
 
         </mj-text>
-        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId=[[USER_ID]]&campaignCode=schleswig-holstein-1">
+        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId=[[USER_ID]]&campaignCode=[[CAMPAIGN_CODE]]">
           Liste herunterladen
         </mj-button>
       </mj-column>
