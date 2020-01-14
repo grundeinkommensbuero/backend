@@ -42,4 +42,18 @@ const getSignatureListsOfUser = async (
   }
 };
 
-module.exports = { getSignatureList, getSignatureListsOfUser };
+//Checks, if the passed id already exists in the signatures table (returns true or false)
+const checkIfIdExists = async id => {
+  const params = {
+    TableName: tableName,
+    Key: {
+      id: id,
+    },
+    ProjectionExpression: 'id',
+  };
+  const result = await ddb.get(params).promise();
+  //if there is Item in result, there was an entry found
+  return 'Item' in result && typeof result.Item !== 'undefined';
+};
+
+module.exports = { getSignatureList, getSignatureListsOfUser, checkIfIdExists };

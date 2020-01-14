@@ -3,9 +3,15 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const {
   getSignatureList,
   getSignatureListsOfUser,
+  checkIfIdExists,
 } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUserByMail } = require('../../../shared/users');
+const {
+  constructCampaignId,
+  generateRandomId,
+} = require('../../../shared/utils');
+
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,8 +22,12 @@ module.exports.handler = async event => {
   try {
     //get user id from path parameter
     const body = JSON.parse(event.body);
-    const { count, listId, email } = body;
+    const { count, listId, email, campaignCode } = body;
     let { userId } = body;
+
+    //check which pledge it is (e.g. pledgeId='brandenburg-1')
+    //create a (nice to later work with) object, which campaign it is
+    const campaign = constructCampaignId(campaignCode);
 
     //if the one of the needed params is somehow undefined return error
     if (
@@ -66,10 +76,11 @@ module.exports.handler = async event => {
 
         // if function returned null, there was no list found
         if (!list) {
-          return errorResponse(404, 'No list found for this user');
+          // If no lists were found we want to create a new list for this user
+          listToUpdateId = await createSignatureList(userId, campaign);
+        } else {
+          listToUpdateId = list.id;
         }
-
-        listToUpdateId = list.id;
       }
 
       // Proceed by updating dynamo resource
@@ -114,6 +125,38 @@ const updateSignatureList = (id, count) => {
   return ddb.update(params).promise();
 };
 
+// Creates a new "fake" signature list and returns the id
+const createSignatureList = async (userId, campaign) => {
+  //because the id is quite small we need to check if the newly created one already exists (unlikely)
+  let idExists = true;
+  let id;
+
+  while (idExists) {
+    id = generateRandomId(7);
+    idExists = await checkIfIdExists(id);
+    console.log('id already exists?', idExists);
+  }
+
+  const date = new Date();
+  //we only want the current day (YYYY-MM-DD), then it is also easier to filter
+  const timestamp = date.toISOString().substring(0, 10);
+
+  const params = {
+    TableName: signaturesTableName,
+    Item: {
+      id: id,
+      campaign: campaign,
+      createdAt: timestamp,
+      userId: userId,
+      fakeScannedByUser: true,
+    },
+  };
+
+  await ddb.put(params).promise();
+
+  return id;
+};
+
 // Function to get the first list of the user
 const getFirstSignatureListOfUser = async userId => {
   // First get all lists for this user
@@ -130,7 +173,7 @@ const getFirstSignatureListOfUser = async userId => {
   for (let list of signatureLists) {
     // Check if this list was created earlier than the current firstList
     if (new Date(list.createdAt) < new Date(firstList.createdAt)) {
-      console.log(`${list.createdAt} is earler than ${firstList.createdAt}`);
+      console.log(`${list.createdAt} is earlier than ${firstList.createdAt}`);
       firstList = list;
     }
   }

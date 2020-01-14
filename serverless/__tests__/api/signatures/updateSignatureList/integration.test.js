@@ -12,6 +12,7 @@ describe('updateSignatureList by user api test', () => {
       body: JSON.stringify({
         count: 6,
         listId: listId,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -27,6 +28,7 @@ describe('updateSignatureList by user api test', () => {
       body: JSON.stringify({
         count: 6,
         listId: '123456',
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -42,6 +44,7 @@ describe('updateSignatureList by user api test', () => {
       body: JSON.stringify({
         count: 11,
         userId: userId,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -50,19 +53,20 @@ describe('updateSignatureList by user api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should not find signature list by user id ', async () => {
+  it('should not find signature list by user id and create new one', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({
         count: 6,
         userId: '123456',
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
     const response = await fetch(`${INVOKE_URL}/signatures`, request);
 
-    expect(response.status).toEqual(404);
+    expect(response.status).toEqual(204);
   });
 
   it('should update signature list by email', async () => {
@@ -72,6 +76,7 @@ describe('updateSignatureList by user api test', () => {
       body: JSON.stringify({
         count: 11,
         email: email,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -87,6 +92,7 @@ describe('updateSignatureList by user api test', () => {
       body: JSON.stringify({
         count: 6,
         email: 'wrongEmail@web.de',
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -101,6 +107,7 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: 6,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 

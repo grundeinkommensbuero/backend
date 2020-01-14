@@ -98,6 +98,7 @@ functions:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
           - dynamodb:Scan
+          - dynamodb:PutItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
       - Effect: 'Allow'

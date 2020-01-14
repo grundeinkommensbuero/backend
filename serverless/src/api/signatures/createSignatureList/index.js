@@ -3,8 +3,12 @@ const generatePdf = require('./createPDF');
 const sendMail = require('./sendMail');
 const fs = require('fs');
 const { getUser, getUserByMail } = require('../../../shared/users');
+const { checkIfIdExists } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
-const { constructCampaignId } = require('../../../shared/utils');
+const {
+  constructCampaignId,
+  generateRandomId,
+} = require('../../../shared/utils');
 
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
@@ -283,20 +287,6 @@ const getSignatureList = async (
   }
 };
 
-//Checks, if the passed id already exists in the signatures table (returns true or false)
-const checkIfIdExists = async id => {
-  const params = {
-    TableName: signaturesTableName,
-    Key: {
-      id: id,
-    },
-    ProjectionExpression: 'id',
-  };
-  const result = await ddb.get(params).promise();
-  //if there is Item in result, there was an entry found
-  return 'Item' in result && typeof result.Item !== 'undefined';
-};
-
 //function to create new signature list, userId can be null (anonymous list)
 const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
   const params = {
@@ -341,16 +331,6 @@ const uploadPDF = (id, pdf) => {
       ContentType: 'application/pdf',
     })
     .promise();
-};
-
-const generateRandomId = length => {
-  let result = '';
-  const characters = '0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
 };
 
 const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {

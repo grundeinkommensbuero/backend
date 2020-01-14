@@ -93,7 +93,7 @@ describe('getSignatureCount api test', () => {
       mode: 'cors',
     };
 
-    const wrongUserId = '123456';
+    const wrongUserId = '212123456';
 
     const response = await fetch(
       `${INVOKE_URL}/analytics/signatures?userId=${wrongUserId}`,
