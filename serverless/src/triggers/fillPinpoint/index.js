@@ -144,7 +144,7 @@ const updateEndpoint = async (user, verified) => {
         //while singing the petition) we want to add the campaign
         OfflineCampaignCode: [
           typeof migrated !== 'undefined' && migrated.source === 'offline'
-            ? migrated.campaignCode
+            ? migrated.campaign.code
             : 'undefined',
         ],
       },
