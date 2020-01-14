@@ -1,8 +1,7 @@
 const AWS = require('aws-sdk');
-const fs = require('fs');
 const tableName = process.env.USERS_TABLE_NAME;
 
-const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
+const htmlMail = require('./mailTemplate.html').default;
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
