@@ -1,14 +1,14 @@
 <mjml>
 
   <mj-head>
-    <mj-include path="../../mails/includes/head.mjml" />
+    <mj-include path="../../../mails/includes/head.mjml" />
     <mj-preview>
       [[CUSTOM_PREHEADER]]
     </mj-preview>
   </mj-head>
 
   <mj-body background-color="#f0f0f0">
-    <mj-include path="../../mails/includes/header.mjml" />
+    <mj-include path="../../../mails/includes/header.mjml" />
     <mj-section background-color="#fef377">
       <mj-column>
         <mj-text>
@@ -61,6 +61,6 @@
         </mj-button>
       </mj-column>
     </mj-section>
-    <mj-include path="../../mails/includes/footer.mjml" />
+    <mj-include path="../../../mails/includes/footer.mjml" />
   </mj-body>
 </mjml>
