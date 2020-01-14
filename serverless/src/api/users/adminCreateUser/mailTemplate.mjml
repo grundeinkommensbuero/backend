@@ -48,13 +48,13 @@
         <mj-text mj-class="section-red-text">
           <h2>Du kannst dir vorstellen unsere Sammelteams zu verstärken?</h2>
 
-          In ganz Schleswig-Holstein sammeln Freiwillige gemeinsam Unterschriften
+          In ganz [[STATE]] sammeln Freiwillige gemeinsam Unterschriften
           an öffentlichen Orten. Komm doch dazu! Öffne jetzt die Sammel-Landkarte
           und schau nach, wo überall gesammelt wird – oder schlage deinen eigenen
           Sammelort vor.
         </mj-text>
 
-        <mj-button align="left" padding-top="20px" href="https://expedition-grundeinkommen.de/schleswig-holstein/#karte" color="#fef377" border="1px solid #fef377">
+        <mj-button align="left" padding-top="20px" href="https://expedition-grundeinkommen.de/[[CAMPAIGN_SLUG]]/#karte" color="#fef377" border="1px solid #fef377">
           Zur Sammel-Landkarte
         </mj-button>
       </mj-column>
