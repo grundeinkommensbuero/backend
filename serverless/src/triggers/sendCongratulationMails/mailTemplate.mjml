@@ -27,7 +27,7 @@
         <mj-text mj-class="section-red-text">
           [[CUSTOM_CTA_TEXT]]
           <br><br>
-          Also: Bitte weitermachen! Es gibt die Listen auf vielfachen Wunsch jetzt übrigens auch in Schwarz-Weiß!
+          Also: Bitte weitermachen!
 
         </mj-text>
         <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId=[[USER_ID]]&campaignCode=schleswig-holstein-1">
