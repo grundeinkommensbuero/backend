@@ -203,6 +203,29 @@ functions:
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
+  getPowerUsers:
+    handler: src/api/users/getPowerUsers/index.handler
+    events:
+      - http:
+          path: admin/users
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+
   sendVerificationMail:
     handler: src/triggers/sendVerificationMail/index.handler
     events:

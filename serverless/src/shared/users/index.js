@@ -36,4 +36,28 @@ const getUserByMail = async (email, startKey = null) => {
   }
 };
 
-module.exports = { getUser, getUserByMail };
+//function to get all users from dynamo
+const getAllUsers = async (users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  //add elements to existing array
+  users.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return getAllUsers(users, result.LastEvaluatedKey);
+  } else {
+    //otherwise return the array
+    return users;
+  }
+};
+
+module.exports = { getUser, getUserByMail, getAllUsers };

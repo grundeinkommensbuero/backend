@@ -6,6 +6,8 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
 const { getSignatureListsOfUser } = require('../../shared/signatures');
+const { getAllUsers } = require('../../shared/users');
+
 const { USERS_TABLE_NAME: tableName, USER_POOL_ID: userPoolId } = process.env;
 
 const zipCodeMatcher = require('./zipCodeMatcher');
@@ -165,30 +167,6 @@ const updateEndpoint = async (user, verified) => {
   };
 
   return pinpoint.updateEndpoint(params).promise();
-};
-
-//function to get all users from dynamo
-const getAllUsers = async (users = [], startKey = null) => {
-  const params = {
-    TableName: tableName,
-  };
-
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-
-  //add elements to existing array
-  users.push(...result.Items);
-
-  //call same function again, if the whole table has not been scanned yet
-  if ('LastEvaluatedKey' in result) {
-    return getAllUsers(users, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return users;
-  }
 };
 
 const getAllUnverifiedCognitoUsers = async (
