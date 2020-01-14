@@ -5,10 +5,15 @@ const fs = require('fs');
 
 const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
 
+const GOALS = {
+  'schleswig-holstein-1': '25.000',
+  'brandenburg-1': '25.000',
+};
+
 //Function which sends an email to congratulate for the reception of list(s)
 //gets a user object, which is why we destructure the object
 const sendMail = (
-  { email, username, userId, dailyCount, totalCount },
+  { email, username, userId, dailyCount, totalCount, campaignCode },
   totalCountForAllUsers
 ) => {
   const mailOptions = {
@@ -19,7 +24,8 @@ const sendMail = (
       totalCount,
       totalCountForAllUsers,
       username,
-      userId
+      userId,
+      campaign
     ),
     to: email,
   };
@@ -38,7 +44,8 @@ const customMail = (
   totalCount,
   totalCountForAllUsers,
   username,
-  userId
+  userId,
+  campaign
 ) => {
   let greeting;
   let preheader =
@@ -56,18 +63,20 @@ const customMail = (
 
   //if the total count is different than the daily count
   //we are going to send a different text in the mail
-  const text = `vor einiger Zeit hast du Unterschriftslisten für die Expedition Grundeinkommen heruntergeladen. 
+  const text = `vor einiger Zeit hast du Unterschriftslisten für die Expedition Grundeinkommen heruntergeladen.
   ${dailyCount} Unterschrift${dailyCount > 1 ? 'en' : ''} kam${
     dailyCount > 1 ? 'en' : ''
   } heute zu uns zurück. ${
     totalCount > dailyCount
       ? `Damit hast du insgesamt schon ${totalCount} Unterschriften beigetragen. `
       : ''
-  } 
-  
+  }
+
   Ein großes Danke dafür!
   <br><br>
-  Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment ${totalCountForAllUsers} von 25.000 benötigten Unterschriften gesammelt. 
+  Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment ${totalCountForAllUsers} von ${
+    GOALS[campaign.code]
+  } benötigten Unterschriften gesammelt.
   Wir haben also noch etwas vor uns.
   `;
 
@@ -76,8 +85,8 @@ const customMail = (
     ctaText =
       'Wie können wir dich beim weiteren Sammeln unterstützen? Antworte gern auf diese E-Mail!';
   } else if (totalCount > 1) {
-    ctaText = `Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? Bitte lass sie auch mit unterschreiben! 
-    Du kannst auch Listen in der Bäckerei oder im Supermarkt um die Ecke auslegen. Trag dann bitte den neuen Sammelort in unsere <a class="link" href="https://expedition-grundeinkommen.de/schleswig-holstein/#karte">Sammellandkarte</a> ein.`;
+    ctaText = `Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? Bitte lass sie auch mit unterschreiben!
+    Du kannst auch Listen in der Bäckerei oder im Supermarkt um die Ecke auslegen. Trag dann bitte den neuen Sammelort in unsere <a class="link" href="https://expedition-grundeinkommen.de/${campaign.region}/#karte">Sammellandkarte</a> ein.`;
   } else {
     ctaText =
       'Kennst du noch Menschen in deinem Umfeld, die auch für einen Modellversuch zum Grundeinkommen unterschreiben könnten? Bitte lass sie auch unterschreiben! ';
@@ -88,7 +97,8 @@ const customMail = (
     .replace(/\[\[CUSTOM_PREHEADER\]\]/gi, preheader)
     .replace(/\[\[CUSTOM_TEXT\]\]/gi, text)
     .replace(/\[\[CUSTOM_CTA_TEXT\]\]/gi, ctaText)
-    .replace(/\[\[USER_ID\]\]/gi, userId);
+    .replace(/\[\[USER_ID\]\]/gi, userId)
+    .replace(/\[\[CAMPAIGN_CODE\]\]/gi, campaign.code);
 };
 
 module.exports = sendMail;
