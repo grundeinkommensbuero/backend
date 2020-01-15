@@ -93,7 +93,7 @@ const getSignatureCountOfAllLists = async () => {
   let stats = {};
 
   //get all lists with received attribute
-  const signatureLists = await getReceivedSignatureLists();
+  const signatureLists = await getScannedSignatureLists();
 
   //loop through lists to compute the stats for each campaign
   for (let list of signatureLists) {
@@ -102,22 +102,32 @@ const getSignatureCountOfAllLists = async () => {
     //check if campaign is already in stats
     if (!(campaign in stats)) {
       //initialize object for this campaign
+      // TODO: maybe refactor into received { withoutMixed, withMixed},
+      // but would require frontend changes
       stats[campaign] = {
         withoutMixed: 0,
         withMixed: 0,
+        scannedByUser: 0,
       };
     }
 
-    if (list.received !== 0) {
-      //loop through scans for this list and add the count
+    if ('received' in list && list.received !== 0) {
+      // loop through scans for this list and add the count
       for (let scan of list.received) {
-        //if there were signatures on this list, which belong to
-        //different "Ämters" (mixed), only add the count to withMixed
+        // if there were signatures on this list, which belong to
+        // different "Ämters" (mixed), only add the count to withMixed
         if (!scan.mixed) {
           stats[campaign].withoutMixed += parseInt(scan.count);
         }
 
         stats[campaign].withMixed += parseInt(scan.count);
+      }
+    }
+
+    // same for scannedByUser
+    if ('scannedByUser' in list) {
+      for (let scan of list.scannedByUser) {
+        stats[campaign].scannedByUser += parseInt(scan.count);
       }
     }
   }
@@ -126,13 +136,14 @@ const getSignatureCountOfAllLists = async () => {
 };
 
 //function to get all signature lists, where there is a received key
-const getReceivedSignatureLists = async (
+const getScannedSignatureLists = async (
   signatureLists = [],
   startKey = null
 ) => {
   const params = {
     TableName: signaturesTableName,
-    FilterExpression: 'attribute_exists(received)',
+    FilterExpression:
+      'attribute_exists(received) OR attribute_exists(scannedByUser)',
   };
 
   if (startKey !== null) {
@@ -146,7 +157,7 @@ const getReceivedSignatureLists = async (
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     console.log('call get lists recursively');
-    return getReceivedSignatureLists(signatureLists, result.LastEvaluatedKey);
+    return getScannedSignatureLists(signatureLists, result.LastEvaluatedKey);
   } else {
     //otherwise return the array
     return signatureLists;
