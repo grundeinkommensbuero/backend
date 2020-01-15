@@ -17,7 +17,7 @@ const CODE_POSITIONS = {
   },
   SH: {
     BARCODE_SINGLE: {
-      x: 752,
+      x: 720,
       y: 28,
       width: 85,
       height: 37,
@@ -29,14 +29,14 @@ const CODE_POSITIONS = {
       height: 39,
     },
     BARCODE_MULTI: {
-      x: 535,
-      y: 20,
-      width: 90,
-      height: 40,
+      x: 517,
+      y: 15,
+      width: 110,
+      height: 55,
     },
     QRCODE_MULTI: {
-      x: 685,
-      y: 464,
+      x: 685.5,
+      y: 464.5,
       width: 39,
       height: 39,
     },
