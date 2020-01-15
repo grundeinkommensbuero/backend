@@ -214,6 +214,7 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: AdminApiGatewayAuthorizer
+    timeout: 20 # Timeout for this specific function.
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
