@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk');
 const { getAllUsers } = require('../../../shared/users');
-const { getSignatureListsOfUser } = require('../../../shared/signatures');
+const {
+  getScannedSignatureListsOfUser,
+} = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
 
 const responseHeaders = {
@@ -19,12 +21,15 @@ module.exports.handler = async event => {
         : defaultSignaturesMininmum;
 
     const powerUsers = [];
-
+    console.log('getting all users');
     const users = await getAllUsers();
 
+    console.log('got all users');
     // Loop through users to compute the received signatures
     for (let user of users) {
-      const signatureLists = await getSignatureListsOfUser(user.cognitoId);
+      const signatureLists = await getScannedSignatureListsOfUser(
+        user.cognitoId
+      );
 
       // For each list sum up the received and scanned by user signatures
       // We want to have object (e.g. { campaign1: { received, scannedByUser }, campaign2: ...})
@@ -79,7 +84,7 @@ module.exports.handler = async event => {
     };
   } catch (error) {
     console.log('error while getting power users', error);
-    errorResponse('error while getting power users');
+    return errorResponse('error while getting power users');
   }
 };
 

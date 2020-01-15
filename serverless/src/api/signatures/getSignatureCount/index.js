@@ -1,7 +1,10 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getSignatureList } = require('../../../shared/signatures');
+const {
+  getSignatureList,
+  getScannedSignatureListsOfUser,
+} = require('../../../shared/signatures');
 const { getUserByMail } = require('../../../shared/users');
 
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
@@ -158,42 +161,6 @@ const getScannedSignatureLists = async (
   if ('LastEvaluatedKey' in result) {
     console.log('call get lists recursively');
     return getScannedSignatureLists(signatureLists, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return signatureLists;
-  }
-};
-
-// function to get all signature lists of a specific user, where there is a received
-// or scannedByUser key
-const getScannedSignatureListsOfUser = async (
-  userId,
-  signatureLists = [],
-  startKey = null
-) => {
-  const params = {
-    TableName: signaturesTableName,
-    FilterExpression:
-      '(attribute_exists(received) OR attribute_exists(scannedByUser)) AND userId = :userId',
-    ExpressionAttributeValues: { ':userId': userId },
-  };
-
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-  //add elements to existing array
-  signatureLists.push(...result.Items);
-
-  //call same function again, if the whole table has not been scanned yet
-  if ('LastEvaluatedKey' in result) {
-    console.log('call get lists recursively');
-    return getScannedSignatureListsOfUser(
-      userId,
-      signatureLists,
-      result.LastEvaluatedKey
-    );
   } else {
     //otherwise return the array
     return signatureLists;
