@@ -26,15 +26,22 @@ module.exports.handler = async event => {
     for (let user of users) {
       const signatureLists = await getSignatureListsOfUser(user.cognitoId);
 
-      // For each list sum up the received signatures
+      // For each list sum up the received and scanned by user signatures
       let received = 0;
+      let scannedByUser = 0;
 
       user.campaigns = [];
 
       for (let list of signatureLists) {
         if ('received' in list) {
           for (let scan of list.received) {
-            received += scan.count;
+            received += parseInt(scan.count);
+          }
+        }
+
+        if ('scannedByUser' in list) {
+          for (let scan of list.scannedByUser) {
+            scannedByUser += parseInt(scan.count);
           }
         }
 
@@ -45,9 +52,10 @@ module.exports.handler = async event => {
       }
 
       user.received = received;
+      user.scannedByUser = scannedByUser;
 
-      // Only add user to power users if he*she had at least x received signatures
-      if (received > signaturesMinimum) {
+      // Only add user to power users if he*she had at least x signatures
+      if (received > signaturesMinimum || scannedByUser > signaturesMinimum) {
         powerUsers.push(user);
       }
     }
