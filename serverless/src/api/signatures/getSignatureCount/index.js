@@ -4,6 +4,7 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getSignatureList,
   getScannedSignatureListsOfUser,
+  getScannedSignatureLists,
 } = require('../../../shared/signatures');
 const { getUserByMail } = require('../../../shared/users');
 
@@ -136,33 +137,4 @@ const getSignatureCountOfAllLists = async () => {
   }
 
   return stats;
-};
-
-//function to get all signature lists, where there is a received key
-const getScannedSignatureLists = async (
-  signatureLists = [],
-  startKey = null
-) => {
-  const params = {
-    TableName: signaturesTableName,
-    FilterExpression:
-      'attribute_exists(received) OR attribute_exists(scannedByUser)',
-  };
-
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-  //add elements to existing array
-  signatureLists.push(...result.Items);
-
-  //call same function again, if the whole table has not been scanned yet
-  if ('LastEvaluatedKey' in result) {
-    console.log('call get lists recursively');
-    return getScannedSignatureLists(signatureLists, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return signatureLists;
-  }
 };

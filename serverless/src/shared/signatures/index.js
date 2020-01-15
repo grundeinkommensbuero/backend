@@ -78,6 +78,35 @@ const getScannedSignatureListsOfUser = async (
   }
 };
 
+//function to get all signature lists, where there is a received key
+const getScannedSignatureLists = async (
+  signatureLists = [],
+  startKey = null
+) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression:
+      'attribute_exists(received) OR attribute_exists(scannedByUser)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+  //add elements to existing array
+  signatureLists.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    console.log('call get lists recursively');
+    return getScannedSignatureLists(signatureLists, result.LastEvaluatedKey);
+  } else {
+    //otherwise return the array
+    return signatureLists;
+  }
+};
+
 //Checks, if the passed id already exists in the signatures table (returns true or false)
 const checkIfIdExists = async id => {
   const params = {
@@ -96,5 +125,6 @@ module.exports = {
   getSignatureList,
   getSignatureListsOfUser,
   getScannedSignatureListsOfUser,
+  getScannedSignatureLists,
   checkIfIdExists,
 };

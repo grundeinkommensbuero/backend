@@ -215,11 +215,11 @@ functions:
             authorizerId:
               Ref: AdminApiGatewayAuthorizer
     memorySize: 1024 # memorySize for this specific function.
-    timeout: 30 # Timeout for this specific function.
+    timeout: 130 # Timeout for this specific function.
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
-          - dynamodb:Scan
+          - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
       - Effect: 'Allow'
