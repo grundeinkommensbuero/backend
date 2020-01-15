@@ -61,7 +61,7 @@ module.exports.handler = async event => {
     }
 
     // Sort power users array by received signatures
-    powerUsers.sort((user1, user2) => user1.received - user2.received);
+    powerUsers.sort((user1, user2) => user2.received - user1.received);
 
     return {
       statusCode: 200,
