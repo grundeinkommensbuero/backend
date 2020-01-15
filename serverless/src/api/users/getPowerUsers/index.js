@@ -26,32 +26,34 @@ module.exports.handler = async event => {
     // For each list sum up the received and scanned by user signatures
 
     for (let list of signatureLists) {
-      // Intiailize object in map
-      if (!(list.userId in usersMap)) {
-        usersMap[list.userId] = { signatureCount: {} };
-      }
-
-      // Initialize signature count object for this user
-      if (!(list.campaign.code in usersMap[list.userId].signatureCount)) {
-        usersMap[list.userId].signatureCount[list.campaign.code] = {
-          received: 0,
-          scannedByUser: 0,
-        };
-      }
-
-      if ('received' in list) {
-        for (let scan of list.received) {
-          usersMap[list.userId].signatureCount[
-            list.campaign.code
-          ].received += parseInt(scan.count);
+      if (list.userId !== 'anonymous') {
+        // Intiailize object in map
+        if (!(list.userId in usersMap)) {
+          usersMap[list.userId] = { signatureCount: {} };
         }
-      }
 
-      if ('scannedByUser' in list) {
-        for (let scan of list.scannedByUser) {
-          usersMap[list.userId].signatureCount[
-            list.campaign.code
-          ].scannedByUser += parseInt(scan.count);
+        // Initialize signature count object for this user
+        if (!(list.campaign.code in usersMap[list.userId].signatureCount)) {
+          usersMap[list.userId].signatureCount[list.campaign.code] = {
+            received: 0,
+            scannedByUser: 0,
+          };
+        }
+
+        if ('received' in list) {
+          for (let scan of list.received) {
+            usersMap[list.userId].signatureCount[
+              list.campaign.code
+            ].received += parseInt(scan.count);
+          }
+        }
+
+        if ('scannedByUser' in list) {
+          for (let scan of list.scannedByUser) {
+            usersMap[list.userId].signatureCount[
+              list.campaign.code
+            ].scannedByUser += parseInt(scan.count);
+          }
         }
       }
     }
