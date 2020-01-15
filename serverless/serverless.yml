@@ -214,7 +214,8 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: AdminApiGatewayAuthorizer
-    timeout: 20 # Timeout for this specific function.
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
