@@ -93,9 +93,19 @@
           erstattet braucht, meldet euch bitte in der Kampagnenzentrale.
         </mj-text>
 
-        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/downloads/" color="#fef377" border="1px solid #fef377">
+        <mj-button align="left" padding-top="20px" padding-bottom="60px" href="https://expedition-grundeinkommen.de/downloads/" color="#fef377" border="1px solid #fef377">
           Kampagnenmaterial herunterladen
         </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Schön, dass wir diesen Weg zusammen gehen. Zusammen schaffen wir das!
+          <br><br>
+          Joy, Laura & das ganze Team der Expedition
+          <br><br>
+          <br><br>
+          Die Ergebnisse der Umfrage kannst du dir auch als pdf
+          <a href="https://assets.ctfassets.net/af08tobnb0cl/5Tpr1bQVlgFz9iylhFT6xq/376c675c6763749187eedd9ecea3af18/Umfrage_Unterschriftensammlung_Schleswig-Holstein.pdf">hier herunterladen</a>.
+        </mj-text>
       </mj-column>
 
     </mj-section>
