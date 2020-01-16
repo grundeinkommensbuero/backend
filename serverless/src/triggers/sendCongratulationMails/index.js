@@ -8,50 +8,51 @@ const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 
 module.exports.handler = async event => {
   try {
-    //user object will contain signature count for a specific user id
+    // user object will contain signature count for a specific user id
     const usersMap = {};
-    let totalCountForAllUsers = 0;
+    let totalCountForAllUsers = {}; // for each campaign
     const signatureLists = await getReceivedSignatureLists();
 
     for (let list of signatureLists) {
-      //loop through the scan array and check if there were new
-      //scans during the last 24h
+      // Maybe lists for multiple campaigns have been scanned today
+      if (!(list.campaign.code in totalCountForAllUsers)) {
+        totalCountForAllUsers[list.campaign.code] = 0;
+      }
+
+      // loop through the scan array and check if there were new
+      // scans during the last 24h
       let dailyCount = 0;
       let totalCount = 0;
 
       console.log('list', list);
       for (let scan of list.received) {
-        //we have to bring the two dates into the same format (UNIX time)
+        // we have to bring the two dates into the same format (UNIX time)
         const now = new Date().getTime();
         const scannedAt = Date.parse(scan.timestamp);
         const oneDay = 24 * 60 * 60 * 1000;
 
-        //if the scan was during the last day add it to the count
+        // if the scan was during the last day add it to the count
         if (now - scannedAt < oneDay) {
           dailyCount += scan.count;
         }
 
-        //we also want to compute the total count to check,
-        //if it is different to the daily count
+        // we also want to compute the total count to check,
+        // if it is different to the daily count
         totalCount += scan.count;
 
-        //if there were signatures on this list, which belong to
-        //different "Ämters" (mixed), we don't add the count
-        // !! for now we also count the ones with mixed
-        // if (!scan.mixed) {
-        totalCountForAllUsers += scan.count;
-        // }
+        // Add to the total count of this campaign
+        totalCountForAllUsers[list.campaign.code] += scan.count;
       }
 
-      //check if user is not anonymous
+      // check if user is not anonymous
       if (list.userId !== 'anonymous') {
         if (!(list.userId in usersMap)) {
-          //get user to get mail
+          // get user to get mail
           const result = await getUser(list.userId);
 
-          //the user might have been deleted
+          // the user might have been deleted
           if ('Item' in result) {
-            //initialize an object in the map
+            // initialize an object in the map
             usersMap[list.userId] = {
               dailyCount,
               totalCount,
@@ -62,7 +63,7 @@ module.exports.handler = async event => {
             };
           }
         } else {
-          //if there already is an entry in the map, change the values
+          // if there already is an entry in the map, change the values
           usersMap[list.userId].dailyCount += dailyCount;
           usersMap[list.userId].totalCount += totalCount;
         }
@@ -70,27 +71,41 @@ module.exports.handler = async event => {
     }
 
     // Make api call to contentful to compute the total number of signatures
-    const {
-      minimum,
-      addToSignatureCount,
-    } = await getSignatureCountFromContentful();
-
-    // addToSignatureCount is a sort of a base number
-    // which is defined in contentful
-    if (addToSignatureCount) {
-      totalCountForAllUsers += addToSignatureCount;
-    }
-
-    //if the minimum contentful signature count is more, use that number
-    if (minimum) {
-      totalCountForAllUsers = Math.max(totalCountForAllUsers, minimum);
-    }
+    const contentfulCounts = await getSignatureCountFromContentful();
 
     //go through the user map to send a mail to every user
     //of whom we have scanned a list during the last day
     for (let key in usersMap) {
       if (usersMap[key].dailyCount > 0) {
-        await sendMail(usersMap[key], totalCountForAllUsers);
+        let totalCountForThisCampaign =
+          totalCountForAllUsers[usersMap[key].campaign.code];
+        let contentfulCountForThisCampaign =
+          contentfulCounts[usersMap[key].campaign.code];
+
+        console.log('campaign', usersMap[key].campaign.code);
+
+        console.log('contetful count', contentfulCounts);
+        console.log(
+          'contetful count for this campaign',
+          contentfulCountForThisCampaign
+        );
+
+        // addToSignatureCount is a sort of a base number
+        // which is defined in contentful
+        if (contentfulCountForThisCampaign.addToSignatureCount) {
+          totalCountForThisCampaign +=
+            contentfulCountForThisCampaign.addToSignatureCount;
+        }
+
+        //if the minimum contentful signature count is more, use that number
+        if (contentfulCountForThisCampaign.minimum) {
+          totalCountForThisCampaign = Math.max(
+            totalCountForThisCampaign,
+            contentfulCountForThisCampaign.minimum
+          );
+        }
+
+        await sendMail(usersMap[key], totalCountForThisCampaign);
         console.log('success sending mail');
       }
     }
