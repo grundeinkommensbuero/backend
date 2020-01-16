@@ -1,5 +1,9 @@
-const { analyseUsers } = require('./analyseUsers');
-const { analyseSignatureLists } = require('./analyseSignatureLists');
+const {
+  analyseUsers,
+} = require('../../serverless/src/api/users/getUserCount/analyseUsers');
+const {
+  analyseSignatureLists,
+} = require('../../serverless/src/api/signatures/getSignatureListCount/analyseSignatureLists');
 const { generateCsv } = require('./generateCsv');
 var Table = require('cli-table3');
 

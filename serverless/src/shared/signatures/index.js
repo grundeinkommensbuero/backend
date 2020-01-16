@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.SIGNATURES_TABLE_NAME;
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 
 // function to get a list by id
 const getSignatureList = id => {

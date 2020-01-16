@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.USERS_TABLE_NAME;
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const tableName = process.env.USERS_TABLE_NAME || 'prod-users';
+const userPoolId = process.env.USER_POOL_ID || 'eu-central-1_xx4VmPPdF';
 
 const getUser = userId => {
   return ddb
@@ -60,4 +63,50 @@ const getAllUsers = async (users = [], startKey = null) => {
   }
 };
 
-module.exports = { getUser, getUserByMail, getAllUsers };
+// Checks, if the user is part of the unverified cognito users
+// array, returns true if user is verified
+const isVerified = (user, unverifiedCognitoUsers) => {
+  let verified = true;
+
+  for (let cognitoUser of unverifiedCognitoUsers) {
+    //sub is the first attribute
+    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
+      verified = false;
+    }
+  }
+
+  return verified;
+};
+
+const getAllUnverifiedCognitoUsers = async (
+  unverifiedCognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: userPoolId,
+    Filter: 'cognito:user_status = "UNCONFIRMED"',
+    PaginationToken: paginationToken,
+  };
+
+  let data = await cognito.listUsers(params).promise();
+
+  //add elements of user array
+  unverifiedCognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return getAllUnverifiedCognitoUsers(
+      unverifiedCognitoUsers,
+      data.PaginationToken
+    );
+  } else {
+    return unverifiedCognitoUsers;
+  }
+};
+
+module.exports = {
+  getUser,
+  getUserByMail,
+  getAllUsers,
+  isVerified,
+  getAllUnverifiedCognitoUsers,
+};

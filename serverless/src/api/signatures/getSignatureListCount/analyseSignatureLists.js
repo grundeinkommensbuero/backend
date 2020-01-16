@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const tableName = 'prod-signatures';
+const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 
 module.exports.analyseSignatureLists = async () => {
   const signatureLists = await getSignatureLists();
@@ -9,37 +9,39 @@ module.exports.analyseSignatureLists = async () => {
 
   //loop through lists to compute stats
   for (let list of signatureLists) {
-    const campaign = list.campaign.code;
+    if (!list.fakeScannedByUser) {
+      const campaign = list.campaign.code;
 
-    //check if campaign is already in stats
-    if (!(campaign in stats)) {
-      //initialize object for this campaign
-      stats[campaign] = {
-        total: {
-          lists: 0,
-          downloads: 0,
-        },
-        anonymous: {
-          lists: 0,
-          downloads: 0,
-        },
-        byUser: {
-          lists: 0,
-          downloads: 0,
-        },
-      };
+      //check if campaign is already in stats
+      if (!(campaign in stats)) {
+        //initialize object for this campaign
+        stats[campaign] = {
+          total: {
+            lists: 0,
+            downloads: 0,
+          },
+          anonymous: {
+            lists: 0,
+            downloads: 0,
+          },
+          byUser: {
+            lists: 0,
+            downloads: 0,
+          },
+        };
+      }
+
+      if (list.userId === 'anonymous') {
+        stats[campaign].anonymous.lists++;
+        stats[campaign].anonymous.downloads += list.downloads;
+      } else {
+        stats[campaign].byUser.lists++;
+        stats[campaign].byUser.downloads += list.downloads;
+      }
+
+      stats[campaign].total.lists++;
+      stats[campaign].total.downloads += list.downloads;
     }
-
-    if (list.userId === 'anonymous') {
-      stats[campaign].anonymous.lists++;
-      stats[campaign].anonymous.downloads += list.downloads;
-    } else {
-      stats[campaign].byUser.lists++;
-      stats[campaign].byUser.downloads += list.downloads;
-    }
-
-    stats[campaign].total.lists++;
-    stats[campaign].total.downloads += list.downloads;
   }
 
   return stats;

@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk');
 const { getScannedSignatureLists } = require('../../../shared/signatures');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
