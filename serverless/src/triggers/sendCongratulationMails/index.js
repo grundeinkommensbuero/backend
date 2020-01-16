@@ -37,9 +37,10 @@ module.exports.handler = async event => {
 
         //if there were signatures on this list, which belong to
         //different "Ämters" (mixed), we don't add the count
-        if (!scan.mixed) {
-          totalCountForAllUsers += scan.count;
-        }
+        // !! for now we also count the ones with mixed
+        // if (!scan.mixed) {
+        totalCountForAllUsers += scan.count;
+        // }
       }
 
       //check if user is not anonymous
