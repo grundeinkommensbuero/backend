@@ -11,7 +11,7 @@ const paths = {
 const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
-const { updateEndpoint, addKickOffToPinpoint } = require('../fillPinpoint');
+// const { updateEndpoint, addKickOffToPinpoint } = require('../fillPinpoint');
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
@@ -19,9 +19,11 @@ const cognito = new AWS.CognitoIdentityServiceProvider(config);
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
 const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 
-const tableName = 'Users';
+const tableName = 'prod-users';
 const tableNameBackup = 'UsersWithoutConsent-14-11';
 const tableNameBackup2 = 'UsersWithoutConsent-02-12';
+
+const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 const processTypeformUsers = async () => {
   try {
@@ -108,7 +110,7 @@ const addUser = async email => {
   const timestamp = date.toISOString();
   const user = {
     email: email,
-    username: 'Svenja',
+    username: 'Astrid',
     source: 'manually',
     createdAt: timestamp,
   };
@@ -292,7 +294,7 @@ const createUser = async (user, recreate = false) => {
 //Create a new cognito user in our user pool
 const createUserInCognito = user => {
   params = {
-    UserPoolId: 'eu-central-1_74vNy5Iw0',
+    UserPoolId: userPoolId,
     Username: user.email,
     UserAttributes: [
       {
@@ -314,7 +316,7 @@ const createUserInCognito = user => {
 const confirmUser = userId => {
   const password = getRandomString(20);
   const setPasswordParams = {
-    UserPoolId: 'eu-central-1_74vNy5Iw0',
+    UserPoolId: userPoolId,
     Username: userId,
     Password: password,
     Permanent: true,
@@ -383,6 +385,6 @@ const getUsersFromBackup = tableName => {
 // addTestUsers();
 // addUsersFromBackupToPinpoint();
 // addUserFromBackup('sonnenzeit22@web.de');
-// addUser('Svenja.Gruber@gmx.net');
+addUser('falksprotte@posteo.de');
 
-processTypeformUsers();
+// processTypeformUsers();
