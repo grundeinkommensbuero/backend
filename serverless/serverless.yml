@@ -153,6 +153,47 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  getUserCount:
+    handler: src/api/users/getUserCount/index.handler
+    events:
+      - http:
+          path: analytics/users
+          method: get
+          cors: true
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'arn:aws:dynamodb:eu-central-1:550953582247:table/users-without-consent'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:ListUsers
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+
+  getSignatureListCount:
+    handler: src/api/signatures/getSignatureListCount/index.handler
+    events:
+      - http:
+          path: analytics/signatures/lists
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+
   updateUser:
     handler: src/api/users/updateUser/index.handler
     events:

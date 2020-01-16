@@ -2,13 +2,13 @@ const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const pinpoint = new AWS.Pinpoint(config);
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
 const { getSignatureListsOfUser } = require('../../shared/signatures');
-const { getAllUsers } = require('../../shared/users');
-
-const { USERS_TABLE_NAME: tableName, USER_POOL_ID: userPoolId } = process.env;
+const {
+  getAllUsers,
+  getAllUnverifiedCognitoUsers,
+  isVerified,
+} = require('../../shared/users');
 
 const zipCodeMatcher = require('./zipCodeMatcher');
 
@@ -167,44 +167,4 @@ const updateEndpoint = async (user, verified) => {
   };
 
   return pinpoint.updateEndpoint(params).promise();
-};
-
-const getAllUnverifiedCognitoUsers = async (
-  unverifiedCognitoUsers = [],
-  paginationToken = null
-) => {
-  const params = {
-    UserPoolId: userPoolId,
-    Filter: 'cognito:user_status = "UNCONFIRMED"',
-    PaginationToken: paginationToken,
-  };
-
-  let data = await cognito.listUsers(params).promise();
-
-  //add elements of user array
-  unverifiedCognitoUsers.push(...data.Users);
-
-  if ('PaginationToken' in data) {
-    return getAllUnverifiedCognitoUsers(
-      unverifiedCognitoUsers,
-      data.PaginationToken
-    );
-  } else {
-    return unverifiedCognitoUsers;
-  }
-};
-
-// Checks, if the user is part of the unverified cognito users
-// array, returns true if user is verified
-const isVerified = (user, unverifiedCognitoUsers) => {
-  let verified = true;
-
-  for (let cognitoUser of unverifiedCognitoUsers) {
-    //sub is the first attribute
-    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
-      verified = false;
-    }
-  }
-
-  return verified;
 };
