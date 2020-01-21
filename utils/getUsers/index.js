@@ -3,8 +3,8 @@ const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const oldTableName = 'Users';
-const tableName = 'users-without-consent';
-const oldUserPoolId = 'eu-central-1_74vNy5Iw0';
+const tableName = 'users';
+// const oldUserPoolId = 'eu-central-1_74vNy5Iw0';
 const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 const getAllUnverifiedCognitoUsers = async (
@@ -12,12 +12,12 @@ const getAllUnverifiedCognitoUsers = async (
   paginationToken = null
 ) => {
   const params = {
-    UserPoolId: oldUserPoolId,
+    UserPoolId: userPoolId,
     Filter: 'cognito:user_status = "UNCONFIRMED"',
     PaginationToken: paginationToken,
   };
 
-  let data = cognito.listUsers(params).promise();
+  let data = await cognito.listUsers(params).promise();
 
   //add elements of user array
   unverifiedCognitoUsers.push(...data.Users);

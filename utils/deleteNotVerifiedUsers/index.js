@@ -6,6 +6,8 @@ const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider(
 );
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const { getAllUnverifiedCognitoUsers } = require('../getUsers');
+const tableName = 'prod-users';
+const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 const deleteUsers = async () => {
   try {
@@ -26,14 +28,8 @@ const deleteUsers = async () => {
 
     for (let user of filteredUsers) {
       try {
-        const result = await getNewCognitoId(user);
-        const newCognitoId = result.Items[0].cognitoId;
-
-        console.log('old id', user.Username);
-        console.log('new id', newCognitoId);
-
-        await deleteUserInCognito(newCognitoId);
-        await deleteUserInDynamo(newCognitoId);
+        await deleteUserInCognito(user);
+        await deleteUserInDynamo(user);
       } catch (error) {
         console.log('error deleting user', error);
         break;
@@ -45,22 +41,22 @@ const deleteUsers = async () => {
   return;
 };
 
-const deleteUserInCognito = userId => {
+const deleteUserInCognito = user => {
   console.log('deleting user in cognito');
   var params = {
-    UserPoolId: 'eu-central-1_xx4VmPPdF',
-    Username: userId,
+    UserPoolId: userPoolId,
+    Username: user.Username, //Username is the id of cognito
   };
 
   return CognitoIdentityServiceProvider.adminDeleteUser(params).promise();
 };
 
-const deleteUserInDynamo = userId => {
+const deleteUserInDynamo = user => {
   console.log('deleting user in dynamo');
   const params = {
-    TableName: 'prod-users',
+    TableName: tableName,
     Key: {
-      cognitoId: userId,
+      cognitoId: user.Username, //Username is the id of cognito
     },
   };
 
