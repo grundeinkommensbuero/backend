@@ -19,6 +19,7 @@
     "raw-loader": "^4.0.0"
   },
   "devDependencies": {
+    "@flood/element": "^1.0.8-stable.1",
     "copy-webpack-plugin": "^5.1.1",
     "jest": "^24.9.0",
     "random-words": "^1.1.0",
@@ -30,7 +31,8 @@
   "jest": {
     "modulePathIgnorePatterns": [
       "src/",
-      "testConfig.js"
+      "testConfig.js",
+      "load.test.js"
     ]
   }
 }
