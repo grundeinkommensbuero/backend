@@ -12,9 +12,7 @@ module.exports.handler = async event => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        stats: stats,
-      }),
+      body: JSON.stringify(stats),
       headers: responseHeaders,
       isBase64Encoded: false,
     };

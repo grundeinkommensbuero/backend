@@ -36,7 +36,7 @@ module.exports.analyseUsers = async () => {
             verifiedUsers: { count: 0, signatures: 0 },
             unverifiedUsers: { count: 0 },
             usersWithNewsletterConsent: { count: 0, signatures: 0 },
-            powerUsers: [],
+            // powerUsers: [],
           };
         }
 
@@ -67,12 +67,13 @@ module.exports.analyseUsers = async () => {
 
               //generate a list of power users
               //(20+ pledged signatures or wants to collect in public spaces)
-              if (
+              /*  don't really need it right now
+             if (
                 signatureCount >= 20 ||
                 pledge.wouldCollectSignaturesInPublicSpaces
               ) {
                 campaignStats[campaign].powerUsers.push(user);
-              }
+              } */
             }
           }
         } else {
@@ -96,6 +97,7 @@ const migrateUsersWithoutNewsletterConsent = async users => {
   let added = 0;
   const backupUsers = await getAllUsersWithoutNewsletterConsent();
   console.log('Backup users count', backupUsers.Count);
+
   for (let backupUser of backupUsers.Items) {
     //check if the user is already in users
     if (users.findIndex(user => user.email === backupUser.email) === -1) {
@@ -105,6 +107,7 @@ const migrateUsersWithoutNewsletterConsent = async users => {
       added++;
     }
   }
+
   console.log(`Added ${added} users from backup`);
   return users;
 };
