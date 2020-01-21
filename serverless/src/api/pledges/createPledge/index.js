@@ -15,6 +15,7 @@ module.exports.handler = async event => {
     const date = new Date();
     const timestamp = date.toISOString();
     console.log('request body', requestBody);
+
     if (!validateParams(requestBody)) {
       return errorResponse(400, 'One or more parameters are missing');
     }
@@ -32,6 +33,7 @@ module.exports.handler = async event => {
         if (!('Item' in result) || typeof result.Item === 'undefined') {
           return errorResponse(400, 'No user found with the passed user id');
         }
+
         //we later need the user object
         user = result.Item;
       } catch (error) {
@@ -41,6 +43,7 @@ module.exports.handler = async event => {
       //in case the api only got the email instead of the id we need to get the user id from the db
       try {
         const result = await getUserByMail(requestBody.email);
+
         if (result.Count === 0) {
           return errorResponse(400, 'No user found with the passed email');
         } else {
@@ -52,21 +55,35 @@ module.exports.handler = async event => {
         return errorResponse(500, 'Error while getting user by email', error);
       }
     }
-    //check if the same pledge was already made
+
+    let pledgeWasAlreadyMade = false;
+
+    // check if the same pledge was already made
     if ('pledges' in user) {
       for (let pledge of user.pledges) {
         if (requestBody.pledgeId === pledge.campaign.code) {
-          return errorResponse(
-            401,
-            'A pledge for this campaign was already made'
-          );
+          pledgeAlreadyMade = true;
         }
       }
     }
 
+    // Check if newsletter consent has changed (only from no to yes)
+    // if yes we want to save it in some kind of "fake" newsletter consent field
+    newsletterConsentHasChanged = false;
+    if (!user.newsletterConsent.value && requestBody.newsletterConsent) {
+      newsletterConsentHasChanged = true;
+    }
+
     //if no pledge for this specific campaign was made, proceed...
     try {
-      await savePledge(userId, timestamp, requestBody);
+      await savePledge(
+        userId,
+        timestamp,
+        requestBody,
+        pledgeWasAlreadyMade,
+        newsletterConsentHasChanged
+      );
+
       //saving pledge was successfull, return appropriate json
       return {
         statusCode: 204,
@@ -86,21 +103,35 @@ module.exports.handler = async event => {
   }
 };
 
-const savePledge = (userId, timestamp, requestBody) => {
+const savePledge = (
+  userId,
+  timestamp,
+  requestBody,
+  pledgeWasAlreadyMade,
+  newsletterConsentHasChanged
+) => {
   //check which pledge it is (e.g. pledgeId='brandenburg-1')
   //create a (nice to later work with) object, which campaign it is
   const campaign = constructCampaignId(requestBody.pledgeId);
 
+  const pledge = {
+    campaign: campaign,
+    createdAt: timestamp,
+    abTestId: requestBody.abTestId,
+  };
+  // For the state specific pledges a signature count was sent
+  if ('signatureCount' in requestBody) {
+    pledge.signatureCount = requestBody.signatureCount;
+  }
+
+  // For the general "pledge" (more like a newsletter sign up)
+  if ('message' in requestBody && requestBody.message !== '') {
+    pledge.message = requestBody.message;
+  }
+
   const data = {
     //needs to be array because append_list works with an array
-    ':pledge': [
-      {
-        signatureCount: requestBody.signatureCount,
-        campaign: campaign,
-        createdAt: timestamp,
-        abTestId: requestBody.abTestId,
-      },
-    ],
+    ':pledge': [pledge],
     ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
     ':username':
       'name' in requestBody && requestBody.name !== ''
@@ -114,20 +145,37 @@ const savePledge = (userId, timestamp, requestBody) => {
     ':emptyList': [],
   };
 
-  //if there is no pledges key yet we initiate it with an array,
-  //otherwise we add the pledge to the array
-  //also we do not want to overwrite everything else, if those keys already exist
+  // If city is the request body we add it (is the case for general pledge)
+  if ('city' in requestBody && requestBody.city !== '') {
+    data[':city'] = requestBody.city;
+  }
+
+  // if there is no pledges key yet we initiate it with an array,
+  // otherwise we add the pledge to the array (if the specific pledge does not yet exist).
+  // Also we do not want to overwrite everything else, if those keys already exist.
+  // If the newsletter consent changed from no to yes we want to save it
+  const updateExpression = `
+  ${
+    !pledgeWasAlreadyMade
+      ? 'set pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),'
+      : ''
+  }${
+    newsletterConsentHasChanged
+      ? 'changedNewsletterConsent = if_not_exists(changedNewsletterConsent, :newsletterConsent),'
+      : ''
+  }
+  ${':city' in data ? 'city = if_not_exists(city, :city),' : ''}
+  zipCode = if_not_exists(zipCode, :zipCode),
+  username = if_not_exists(username, :username),
+  referral = if_not_exists(referral, :referral),
+  newsletterConsent = if_not_exists(newsletterConsent, :newsletterConsent)
+  `;
+
   return ddb
     .update({
       TableName: tableName,
       Key: { cognitoId: userId },
-      UpdateExpression: `
-      set pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),
-      zipCode = if_not_exists(zipCode, :zipCode),
-      username = if_not_exists(username, :username),
-      referral = if_not_exists(referral, :referral),
-      newsletterConsent = if_not_exists(newsletterConsent, :newsletterConsent)
-      `,
+      UpdateExpression: updateExpression,
       ExpressionAttributeValues: data,
       ReturnValues: 'UPDATED_NEW',
     })
@@ -137,7 +185,6 @@ const savePledge = (userId, timestamp, requestBody) => {
 const validateParams = requestBody => {
   return (
     ('userId' in requestBody || 'email' in requestBody) &&
-    'signatureCount' in requestBody &&
     'newsletterConsent' in requestBody
   );
 };
