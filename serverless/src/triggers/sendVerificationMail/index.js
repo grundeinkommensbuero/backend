@@ -8,64 +8,59 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo
 module.exports.handler = async event => {
-  if (process.env.STAGE !== 'test') {
-    // Identify why was this function invoked
-    if (event.triggerSource === 'CustomMessage_SignUp') {
-      //sub is the unique id Cognito assigns to each new user
-      const cognitoId = event.request.userAttributes.sub;
+  // Identify why was this function invoked
+  if (event.triggerSource === 'CustomMessage_SignUp') {
+    //sub is the unique id Cognito assigns to each new user
+    const cognitoId = event.request.userAttributes.sub;
 
-      const email = event.request.userAttributes.email;
+    const email = event.request.userAttributes.email;
 
-      const date = new Date();
-      const timestamp = date.toISOString();
+    const date = new Date();
+    const timestamp = date.toISOString();
 
-      //check, if parameters exist
-      if (cognitoId && email) {
-        //if it is the case proceed in saving the user in the dynamo db
+    //check, if parameters exist
+    if (cognitoId && email) {
+      //if it is the case proceed in saving the user in the dynamo db
 
-        try {
-          await ddb
-            .put({
-              TableName: tableName,
-              Item: {
-                cognitoId: cognitoId,
-                email: email,
-                createdAt: timestamp,
-              },
-            })
-            .promise();
+      try {
+        await ddb
+          .put({
+            TableName: tableName,
+            Item: {
+              cognitoId: cognitoId,
+              email: email,
+              createdAt: timestamp,
+            },
+          })
+          .promise();
 
-          console.log('Success writing to dynamo');
+        console.log('Success writing to dynamo');
 
-          //customize email
-          const codeParameter = event.request.codeParameter;
-          event.response.emailSubject =
-            'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
-          event.response.emailMessage = customEmail(email, codeParameter);
-          return event;
-        } catch (error) {
-          console.log('Error while writing to dynamo', error);
-          return event;
-        }
+        //customize email
+        const codeParameter = event.request.codeParameter;
+        event.response.emailSubject =
+          'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
+        event.response.emailMessage = customEmail(email, codeParameter);
+        return event;
+      } catch (error) {
+        console.log('Error while writing to dynamo', error);
+        return event;
       }
-      console.log('One or more parameters missing');
-      return event;
-    } else if (event.triggerSource === 'CustomMessage_ResendCode') {
-      const email = event.request.userAttributes.email;
-      //customize email
-      const codeParameter = event.request.codeParameter;
-      event.response.emailSubject =
-        'Volksabstimmung Grundeinkommensexperiment: Bitte bestätige deine E-Mail-Adresse!';
-      event.response.emailMessage = customReminderEmail(email, codeParameter);
-      console.log('Sending verification reminder');
-      return event;
     }
-
-    console.log('neither of the defined events');
+    console.log('One or more parameters missing');
+    return event;
+  } else if (event.triggerSource === 'CustomMessage_ResendCode') {
+    const email = event.request.userAttributes.email;
+    //customize email
+    const codeParameter = event.request.codeParameter;
+    event.response.emailSubject =
+      'Volksabstimmung Grundeinkommensexperiment: Bitte bestätige deine E-Mail-Adresse!';
+    event.response.emailMessage = customReminderEmail(email, codeParameter);
+    console.log('Sending verification reminder');
     return event;
   }
 
-  console.log('did not send email because of test stage');
+  console.log('neither of the defined events');
   return event;
 };
 
