@@ -33,7 +33,7 @@
     "modulePathIgnorePatterns": [
       "src/",
       "testConfig.js",
-      "load.test.js"
+      "load.test.ts"
     ]
   }
 }

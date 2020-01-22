@@ -5,7 +5,7 @@ const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
 const userWithoutConsentId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
 describe('createPledge api test', () => {
-  it('should create a new pledge via userId', async () => {
+  it('should create a new pledge for existing user via userId', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
@@ -23,7 +23,7 @@ describe('createPledge api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should create a new pledge via email', async () => {
+  it('should create a new pledge for existing user via email', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',

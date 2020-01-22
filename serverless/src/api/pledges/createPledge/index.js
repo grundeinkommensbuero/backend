@@ -11,91 +11,100 @@ module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    //check if there is a user with the passed user id
-    const date = new Date();
-    const timestamp = date.toISOString();
-    console.log('request body', requestBody);
-
-    if (!validateParams(requestBody)) {
-      return errorResponse(400, 'One or more parameters are missing');
-    }
-
-    //request body might have email or user id
-    let userId;
-    let user;
-    if ('userId' in requestBody) {
-      userId = requestBody.userId;
-      try {
-        const result = await getUser(userId);
-
-        console.log('user', result);
-        //if user does not have Item as property, there was no user found
-        if (!('Item' in result) || typeof result.Item === 'undefined') {
-          return errorResponse(400, 'No user found with the passed user id');
-        }
-
-        //we later need the user object
-        user = result.Item;
-      } catch (error) {
-        return errorResponse(500, 'Error while getting user', error);
-      }
-    } else if ('email' in requestBody) {
-      //in case the api only got the email instead of the id we need to get the user id from the db
-      try {
-        const result = await getUserByMail(requestBody.email);
-
-        if (result.Count === 0) {
-          return errorResponse(400, 'No user found with the passed email');
-        } else {
-          //we later need the user object and id
-          user = result.Items[0];
-          userId = user.cognitoId;
-        }
-      } catch (error) {
-        return errorResponse(500, 'Error while getting user by email', error);
-      }
-    }
-
-    let pledgeWasAlreadyMade = false;
-
-    // check if the same pledge was already made
-    if ('pledges' in user) {
-      for (let pledge of user.pledges) {
-        if (requestBody.pledgeId === pledge.campaign.code) {
-          pledgeAlreadyMade = true;
-        }
-      }
-    }
-
-    // Check if newsletter consent has changed (only from no to yes)
-    // if yes we want to save it in some kind of "fake" newsletter consent field
-    newsletterConsentHasChanged = false;
-    if (!user.newsletterConsent.value && requestBody.newsletterConsent) {
-      newsletterConsentHasChanged = true;
-    }
-
-    //if no pledge for this specific campaign was made, proceed...
     try {
-      await savePledge(
-        userId,
-        timestamp,
-        requestBody,
-        pledgeWasAlreadyMade,
-        newsletterConsentHasChanged
-      );
+      //check if there is a user with the passed user id
+      const date = new Date();
+      const timestamp = date.toISOString();
+      console.log('request body', requestBody);
 
-      //saving pledge was successfull, return appropriate json
-      return {
-        statusCode: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        isBase64Encoded: false,
-      };
+      if (!validateParams(requestBody)) {
+        return errorResponse(400, 'One or more parameters are missing');
+      }
+
+      //request body might have email or user id
+      let userId;
+      let user;
+      if ('userId' in requestBody) {
+        userId = requestBody.userId;
+        try {
+          const result = await getUser(userId);
+
+          console.log('user', result);
+          //if user does not have Item as property, there was no user found
+          if (!('Item' in result) || typeof result.Item === 'undefined') {
+            return errorResponse(400, 'No user found with the passed user id');
+          }
+
+          //we later need the user object
+          user = result.Item;
+        } catch (error) {
+          return errorResponse(500, 'Error while getting user', error);
+        }
+      } else if ('email' in requestBody) {
+        //in case the api only got the email instead of the id we need to get the user id from the db
+        try {
+          const result = await getUserByMail(requestBody.email);
+
+          if (result.Count === 0) {
+            return errorResponse(400, 'No user found with the passed email');
+          } else {
+            //we later need the user object and id
+            user = result.Items[0];
+            userId = user.cognitoId;
+          }
+        } catch (error) {
+          return errorResponse(500, 'Error while getting user by email', error);
+        }
+      }
+
+      let pledgeWasAlreadyMade = false;
+
+      // check if the same pledge was already made
+      if ('pledges' in user) {
+        for (let pledge of user.pledges) {
+          if (requestBody.pledgeId === pledge.campaign.code) {
+            pledgeAlreadyMade = true;
+          }
+        }
+      }
+
+      // Check if newsletter consent has changed (only from no to yes)
+      // if yes we want to save it in some kind of "fake" newsletter consent field
+      newsletterConsentHasChanged = false;
+      if (
+        'newsletterConsent' in user &&
+        !user.newsletterConsent.value &&
+        requestBody.newsletterConsent
+      ) {
+        newsletterConsentHasChanged = true;
+      }
+
+      //if no pledge for this specific campaign was made, proceed...
+      try {
+        await savePledge(
+          userId,
+          timestamp,
+          requestBody,
+          pledgeWasAlreadyMade,
+          newsletterConsentHasChanged
+        );
+
+        //saving pledge was successfull, return appropriate json
+        return {
+          statusCode: 204,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
+          isBase64Encoded: false,
+        };
+      } catch (error) {
+        console.log(error);
+        return errorResponse(500, 'Error saving pledge', error);
+      }
     } catch (error) {
       console.log(error);
-      return errorResponse(500, 'Error saving pledge', error);
+      return errorResponse(500, 'Non-specific error', error);
     }
   } catch (error) {
     console.log(error);
