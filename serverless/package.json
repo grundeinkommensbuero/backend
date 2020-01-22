@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --verbose --testTimeout 15000",
     "deployDev": "serverless deploy",
-    "deployProd": "serverless deploy --stage prod"
+    "deployProd": "serverless deploy --stage prod",
+    "deployTest": "serverless deploy --stage test"
   },
   "author": "Vali",
   "license": "ISC",
