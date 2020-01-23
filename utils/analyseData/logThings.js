@@ -16,8 +16,8 @@ const runScript = async () => {
       '',
       'Users Count',
       'Users Signatures',
-      'Users Count (without NLc)',
-      'Users Signatures (without NLc)',
+      'Users Count (with NLc)',
+      'Users Signatures (with NLc)',
       'unverified Users',
     ],
   });
