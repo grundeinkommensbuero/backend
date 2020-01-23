@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
 const pinpoint = new AWS.Pinpoint(config);
 const lambda = new AWS.Lambda();
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
