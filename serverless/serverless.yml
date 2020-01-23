@@ -181,7 +181,7 @@ functions:
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
-  getSignatureListCount:
+  getListCount:
     handler: src/api/signatures/getSignatureListCount/index.handler
     events:
       - http:
