@@ -12,6 +12,8 @@ const {
 
 const zipCodeMatcher = require('./zipCodeMatcher');
 
+const tableName = process.env.USERS_TABLE_NAME;
+
 module.exports.handler = async (event, context) => {
   // Only run the script if the environment is prod
   if (process.env.STAGE === 'prod') {
