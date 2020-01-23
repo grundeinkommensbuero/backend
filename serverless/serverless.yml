@@ -163,7 +163,7 @@ functions:
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
-    timeout: 20 # Timeout for this specific function.
+    timeout: 40 # Timeout for this specific function.
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
