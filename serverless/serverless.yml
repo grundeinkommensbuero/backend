@@ -336,6 +336,11 @@ functions:
           - cognito-idp:ListUsers
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: Allow
+        Action:
+          - lambda:InvokeFunction
+          - lambda:InvokeAsync
+        Resource: 'arn:aws:lambda:eu-central-1:550953582247:function:ubi-serverless-prod-fillPinpoint'
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
