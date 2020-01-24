@@ -1,0 +1,77 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Wir kommen voran: 5.000 von 17.000 versprochenen Unterschriften sind in der Kampagnenzentrale eingegangen.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Wir haben 5.000 Unterschriften gesammelt – Neues Zwischenziel: 10.000!</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          letzte Woche haben wir dich darum gebeten, möglichst alle Unterschriften an die
+          Kampagnenzentrale in Nortorf zu schicken. Dort sind inzwischen über
+          5.000 Unterschriften eingegangen. Danke!
+          <br><br>
+          Damit haben wir in gut einem Monat ein Fünftel der notwendigen Unterschriften
+          zusammen bekommen. Wir kommen also voran!
+          <br><br>
+          Es ist allerdings auch immer noch eine Lücke zu den 17.000 Unterschriften,
+          die wir uns gegenseitig über die Website versprochen haben.
+          Viele von uns wollen nicht jede Woche Unterschriften zur Post bringen.
+          Deswegen gibt es seit kurzem die Möglichkeit, gesammelte Unterschriften
+          vorab online zu verbuchen.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/qr/sh/?userId={{User.UserId}}">
+          Unterschriften ankündigen
+        </mj-button>
+        <mj-text>
+          Bitte trag alle Unterschriften online ein, die du schon gesammelt,
+          aber noch nicht abgeschickt hast. Auch wenn du selbst schon unterschrieben hast,
+          dann trag deine eigene Unterschrift ein! Jede Unterschrift zählt!
+          <br><br>
+          Bitte nutze diese Möglichkeit, damit wir alle unseren Fortschritt sehen,
+          immer wissen wo wir stehen und uns gegenseitig motivieren.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/qr/sh/?userId={{User.UserId}}">
+          Unterschriften eintragen
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>
+            So organisieren wir uns noch besser
+          </h2>
+          Für die kommenden Sammelwochen wollen wir noch stärker auf regional
+          verteilte Sammelaktionen setzen. Ein paar von euch haben ja bereits angegeben,
+          dass sie sich vorstellen können, eine regionale Koordinationsaufgabe zu übernehmen.
+          <br><br>
+          Du kannst dir auch vorstellen, in deinem Kreis Menschen anzurufen oder Infomaterial
+          an Sammlerinnen und Sammler in deinem Umfeld weiterzuverteilen? Prima!
+          Bitte fülle eine kurze Umfrage zu deinen Kontaktdaten und deiner Erreichbarkeit aus.
+          Wir melden uns bei dir!
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expeditionbge.typeform.com/to/VqCOIR?user_email={{Address}}" color="#fef377" border="1px solid #fef377">
+          Ich will beim Koordinieren helfen
+        </mj-button>
+        <mj-text mj-class="section-red-text">
+          Herzliche Grüße aus dem Kampagnenbüro
+          <br><br>
+          Joy & Jomi
+        </mj-text>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>

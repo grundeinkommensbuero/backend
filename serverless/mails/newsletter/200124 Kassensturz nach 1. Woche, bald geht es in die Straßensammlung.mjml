@@ -1,0 +1,91 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Unterschriften, die ihr Zuhause liegen habt, kannst du ganz einfach selbst in den Sammelbalken eintragen.
+      Am 8. und 9.2. ist der offizielle Auftakt unserer Straßensammlung. Merk dir das Wochenende schon jetzt vor!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Trage ganz einfach selbst ein, wie viele Unterschriften du schon zu Hause hast</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          zum Start der Unterschriftensammlung haben wir dich gebeten, deine ersten Unterschriften
+          an die Kampagnenzentrale zu schicken. Es sind von 100 Personen Briefe mit insgesamt rund
+          350 Unterschriften angekommen. Danke an alle, die uns ihre Unterschriften
+          in der ersten Woche geschickt haben!
+          <br><br>
+          Einen Grundstein haben wir also. Aber da ist auch noch Luft nach oben!
+          Das nächste Sammelziel sind 1.000 Unterschriften.
+          Schaffen wir das bis Ende des Monats?
+          <br><br>
+          <h2>Trag die Unterschriften in den Sammelbalken ein, die du schon Zuhause hast</h2>
+          Du hast deine Unterschriften noch nicht abgeschickt oder willst nicht jede
+          Woche Unterschriften zur Post bringen? Kein Problem. Du kannst gesammelte
+          Unterschriften auch online ankündigen und sie dann später gesammelt in
+          die Kampagnenzentrale schicken.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/qr/bb/?userId={{User.UserId}}">
+          Unterschriften ankündigen
+        </mj-button>
+        <mj-text>
+          Bitte trag alle Unterschriften zeitnah online ein, die du schon gesammelt,
+          aber noch nicht abgeschickt hast. Auch wenn du selbst schon unterschrieben hast,
+          dann trag deine eigene Unterschrift ein!
+          <br><br>
+          Dazu folgst du <a href="https://expedition-grundeinkommen.de/qr/bb/?userId={{User.UserId}}">diesem Link</a> oder scannst den QR-Code auf deiner Unterschriftenliste.
+          Dann kannst du angeben, wie viele neue Unterschriften du gesammelt hast.
+          So kannst du immer deinen aktuellen Stand mitteilen. Und auf unserer Website können wir dann immer den aktuellen Sammelstand anzeigen.
+          <br><br>
+          Bitte nutze diese Möglichkeit, damit wir alle unseren Fortschritt sehen
+          und uns gegenseitig motivieren. Jede Unterschrift zählt!
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/qr/bb/?userId={{User.UserId}}">
+          Unterschriften eintragen
+        </mj-button>
+        <mj-text>
+          Auf zur eintausendsten Unterschrift!
+          <br><br>
+          Joy, Laura & das ganze Team der Expedition
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>
+            Wir starten gemeinsam in die Straßensammlung: Auftakt am 8. Februar
+          </h2>
+          Am <i>8. Februar</i> wollen wir an ganz vielen Orten in Brandenburg präsent
+          sein und gemeinsam Unterschriften sammeln. Das heißt: Wir treffen uns
+          und sammeln gemeinsam auf der Straße. Du willst dabei sein? Super!
+          Dann trag dir den Termin am besten schon im Kalender ein.
+          Die genauen Details dazu gibt es nächste Woche.
+          <br><br>
+          <h2>
+            Schau doch mal auf die Sammellandkarte:
+          </h2>
+          Du willst schon jetzt gemeinsam mit anderen sammeln und Mitstreitende finden?
+          Du willst einen Ort zum Unterschreiben finden oder anderen mitteilen
+          wo du eine Liste ausgelegt hast? Prima! Schau einfach in die Sammellandkarte,
+          finde Menschen und Orte und trag dich und deinen Sammelort ein.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/brandenburg/#karte" color="#fef377" border="1px solid #fef377">
+          Zur Sammellandkarte
+        </mj-button>
+
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
