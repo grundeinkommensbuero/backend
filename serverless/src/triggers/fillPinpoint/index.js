@@ -93,7 +93,9 @@ const processBatchOfUsers = async (
       } else {
         // Start new lambda function
         // First of all create a new event object with the start key
-        const newEvent = Object.assign(event, { startKey });
+        const newEvent = Object.assign(event, {
+          startKey: result.LastEvaluatedKey,
+        });
 
         const req = {
           FunctionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
