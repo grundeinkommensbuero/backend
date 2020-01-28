@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const sendMail = require('./sendMail');
 const { getSignatureCountFromContentful } = require('./contentfulApi');
 const { getUser } = require('../../shared/users');
+const { getSignatureCountOfAllLists } = require('../../shared/signatures');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
@@ -10,15 +11,9 @@ module.exports.handler = async event => {
   try {
     // user object will contain signature count for a specific user id
     const usersMap = {};
-    let totalCountForAllUsers = {}; // for each campaign
     const signatureLists = await getReceivedSignatureLists();
 
     for (let list of signatureLists) {
-      // Maybe lists for multiple campaigns have been scanned today
-      if (!(list.campaign.code in totalCountForAllUsers)) {
-        totalCountForAllUsers[list.campaign.code] = 0;
-      }
-
       // loop through the scan array and check if there were new
       // scans during the last 24h
       let dailyCount = 0;
@@ -39,9 +34,6 @@ module.exports.handler = async event => {
         // we also want to compute the total count to check,
         // if it is different to the daily count
         totalCount += scan.count;
-
-        // Add to the total count of this campaign
-        totalCountForAllUsers[list.campaign.code] += scan.count;
       }
 
       // check if user is not anonymous
@@ -73,12 +65,15 @@ module.exports.handler = async event => {
     // Make api call to contentful to compute the total number of signatures
     const contentfulCounts = await getSignatureCountFromContentful();
 
+    // Use the same function as in getSignatureCount to get total count
+    const totalCountForAllUsers = await getSignatureCountOfAllLists();
+
     //go through the user map to send a mail to every user
     //of whom we have scanned a list during the last day
     for (let key in usersMap) {
       if (usersMap[key].dailyCount > 0) {
         let totalCountForThisCampaign =
-          totalCountForAllUsers[usersMap[key].campaign.code];
+          totalCountForAllUsers[usersMap[key].campaign.code].computed;
         let contentfulCountForThisCampaign =
           contentfulCounts[usersMap[key].campaign.code];
 
