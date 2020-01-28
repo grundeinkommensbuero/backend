@@ -284,7 +284,7 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  deleteUnverifiedUsers:
+  deleteUnverified:
     handler: src/triggers/deleteUnverifiedUsers/index.handler
     events: # Call this function every day at 0 am (via cloudwatch event)
       - schedule: cron(0 23 * * ? *)
