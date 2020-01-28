@@ -104,7 +104,10 @@ const processBatchOfUsers = async (
         };
 
         await lambda.invoke(req).promise();
-        console.log('invoked new lambda with startKey', startKey);
+        console.log(
+          'invoked new lambda with startKey',
+          result.LastEvaluatedKey
+        );
       }
     }
   }
