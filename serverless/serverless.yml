@@ -284,6 +284,26 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  deleteUnverifiedUsers:
+    handler: src/triggers/deleteUnverifiedUsers/index.handler
+    events: # Call this function every day at 0 am (via cloudwatch event)
+      - schedule: cron(0 23 * * ? *)
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:ListUsers
+          - cognito-idp:AdminDeleteUser
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:DeleteItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   # Endpoint refers to pinpoint user endpoint
   deleteEndpoint:
     handler: src/triggers/deletePinpointEndpoint/index.handler
