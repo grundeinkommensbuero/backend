@@ -199,8 +199,7 @@ module.exports.handler = async event => {
 
           try {
             //if the download was not anonymous send a mail with the attached pdf
-            //only send the email to old users (because of opt in)
-            if (userId !== 'anonymous' && !requestBody.isNewUser) {
+            if (userId !== 'anonymous') {
               const attachments = await generateAttachments(
                 MAIL_ATTACHMENTS[requestBody.campaignCode],
                 qrCodeUrl,
