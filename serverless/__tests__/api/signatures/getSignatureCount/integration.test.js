@@ -19,6 +19,11 @@ describe('getSignatureCount api test', () => {
     expect(json['schleswig-holstein-1']).toHaveProperty('withMixed');
     expect(json['schleswig-holstein-1']).toHaveProperty('withoutMixed');
     expect(json['schleswig-holstein-1']).toHaveProperty('scannedByUser');
+    expect(json['schleswig-holstein-1']).toHaveProperty('computed');
+
+    expect(json['schleswig-holstein-1'].withMixed).toBeGreaterThan(0);
+    expect(json['schleswig-holstein-1'].computed).toBeGreaterThan(0);
+    expect(json['schleswig-holstein-1'].scannedByUser).toBeGreaterThan(0);
   });
 
   it('should get signature count of user by list id', async () => {
