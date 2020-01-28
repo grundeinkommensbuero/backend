@@ -533,6 +533,9 @@ functions:
       - cognitoUserPool:
           pool: AdminUserPool
           trigger: CreateAuthChallenge
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: CreateAuthChallenge
     environment:
       SES_FROM_ADDRESS: support@expedition-grundeinkommen.de
     iamRoleStatements:
@@ -548,6 +551,9 @@ functions:
       - cognitoUserPool:
           pool: AdminUserPool
           trigger: DefineAuthChallenge
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: DefineAuthChallenge
 
   preSignUp:
     handler: src/triggers/auth/preSignUp/index.handler
@@ -555,12 +561,18 @@ functions:
       - cognitoUserPool:
           pool: AdminUserPool
           trigger: PreSignUp
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PreSignUp
 
   verifyAuthChallengeResponse:
     handler: src/triggers/auth/verifyAuthChallengeResponse/index.handler
     events:
       - cognitoUserPool:
           pool: AdminUserPool
+          trigger: VerifyAuthChallengeResponse
+      - cognitoUserPool:
+          pool: UserPool
           trigger: VerifyAuthChallengeResponse
 
 # CloudFormation resource templates
