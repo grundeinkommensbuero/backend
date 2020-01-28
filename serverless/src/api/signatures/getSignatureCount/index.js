@@ -68,24 +68,21 @@ module.exports.handler = async event => {
   }
 };
 
+// Returns a list of all scans (received or byUser) for this user
 const getSignatureCountOfUser = async userId => {
-  let stats = { received: 0, scannedByUser: 0 };
+  let stats = { received: [], scannedByUser: [] };
 
   //get all lists of this user with received attribute
   const signatureLists = await getScannedSignatureListsOfUser(userId);
 
-  // For each list sum up the received and the self scanned count
+  // For each list push the arrays to the general array
   for (let list of signatureLists) {
     if ('received' in list) {
-      for (let scan of list.received) {
-        stats.received += parseInt(scan.count);
-      }
+      stats.received.push(...list.received);
     }
 
     if ('scannedByUser' in list) {
-      for (let scan of list.scannedByUser) {
-        stats.scannedByUser += parseInt(scan.count);
-      }
+      stats.scannedByUser.push(...list.scannedByUser);
     }
   }
 

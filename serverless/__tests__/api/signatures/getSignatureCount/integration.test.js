@@ -112,8 +112,8 @@ describe('getSignatureCount api test', () => {
     expect(json).toHaveProperty('received');
     expect(json).toHaveProperty('scannedByUser');
 
-    expect(json.received).toEqual(0);
-    expect(json.scannedByUser).toEqual(0);
+    expect(json.received).toEqual([]);
+    expect(json.scannedByUser).toEqual([]);
   });
 
   it('should not find user by email', async () => {
