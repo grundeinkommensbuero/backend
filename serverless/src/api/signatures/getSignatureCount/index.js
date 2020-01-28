@@ -99,16 +99,21 @@ const getSignatureCountOfAllLists = async () => {
   //get all lists with received attribute
   const signatureLists = await getScannedSignatureLists();
 
-  //loop through lists to compute the stats for each campaign
+  // loop through lists to compute the stats for each campaign
   for (let list of signatureLists) {
     const campaign = list.campaign.code;
+    const userId = list.userId;
 
-    //check if campaign is already in stats
+    // check if campaign  is already in stats
     if (!(campaign in stats)) {
-      //initialize object for this campaign
-      // TODO: maybe refactor into received { withoutMixed, withMixed},
-      // but would require frontend changes
-      stats[campaign] = {
+      // initialize object for this campaign
+      stats[campaign] = {};
+    }
+
+    // Check if user is already in the campaign
+    if (!(userId in stats[campaign])) {
+      // initialize object for this user in the campaign
+      stats[campaign][list.userId] = {
         withoutMixed: 0,
         withMixed: 0,
         scannedByUser: 0,
@@ -121,20 +126,46 @@ const getSignatureCountOfAllLists = async () => {
         // if there were signatures on this list, which belong to
         // different "Ämters" (mixed), only add the count to withMixed
         if (!scan.mixed) {
-          stats[campaign].withoutMixed += parseInt(scan.count);
+          stats[campaign][userId].withoutMixed += parseInt(scan.count);
         }
 
-        stats[campaign].withMixed += parseInt(scan.count);
+        stats[campaign][userId].withMixed += parseInt(scan.count);
       }
     }
 
     // same for scannedByUser
     if ('scannedByUser' in list) {
       for (let scan of list.scannedByUser) {
-        stats[campaign].scannedByUser += parseInt(scan.count);
+        stats[campaign][userId].scannedByUser += parseInt(scan.count);
       }
     }
   }
 
-  return stats;
+  const computedStats = {};
+
+  // Loop through map to check if the scannedByUser count is higher than the received count
+  for (let campaign in stats) {
+    computedStats[campaign] = {
+      withMixed: 0,
+      withoutMixed: 0,
+      scannedByUser: 0,
+      computed: 0,
+    };
+
+    for (let userId in stats[campaign]) {
+      // Computed always takes the higher number of scannedByUser or received
+      computedStats[campaign].computed += Math.max(
+        stats[campaign][userId].scannedByUser,
+        stats[campaign][userId].withMixed
+      );
+
+      computedStats[campaign].withMixed += stats[campaign][userId].withMixed;
+      computedStats[campaign].withoutMixed +=
+        stats[campaign][userId].withoutMixed;
+      computedStats[campaign].scannedByUser +=
+        stats[campaign][userId].scannedByUser;
+    }
+  }
+
+  return computedStats;
 };
