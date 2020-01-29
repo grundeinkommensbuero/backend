@@ -1,12 +1,17 @@
 const AWS = require('aws-sdk');
 const Bottleneck = require('bottleneck');
-const randomBytes = require('crypto').randomBytes;
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
-const tableName = 'dev-users';
-const userPoolId = 'eu-central-1_SYtDaO0qH';
+
+const {
+  confirmUser,
+  createUserInCognito,
+} = require('../shared/users/createUsers');
+
+const CONFIG = require('../config');
+const tableName = CONFIG.DEV_TABLE_NAME;
+const userPoolId = CONFIG.DEV_USER_POOL_ID;
 
 // AWS Cognito limits to 10 per second, so be safe and do leet per second
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
@@ -33,14 +38,14 @@ const seedDatabase = async () => {
 const createUser = async user => {
   // AWS Cognito limits to 10 per second, which is why we use limiter
   const response = await cognitoLimiter.schedule(async () => {
-    const created = await createUserInCognito(user);
+    const created = await createUserInCognito(userPoolId, user.email);
 
     console.log('new user', created);
     const userId = created.User.Username;
 
     //confirm user (by setting fake password)
 
-    await confirmUser(userId);
+    await confirmUser(userPoolId, userId);
     //create new entry in dynamo or recreate the old one
     return await createUserInDynamo(userId, user);
   });
@@ -50,6 +55,7 @@ const createUser = async user => {
 const createUserInDynamo = (userId, user) => {
   const date = new Date();
   const timestamp = date.toISOString();
+
   const params = {
     TableName: tableName,
     Item: {
@@ -75,45 +81,6 @@ const createUserInDynamo = (userId, user) => {
     },
   };
   return ddb.put(params).promise();
-};
-
-//Create a new cognito user in our user pool
-const createUserInCognito = user => {
-  params = {
-    UserPoolId: userPoolId,
-    Username: user.email,
-    UserAttributes: [
-      {
-        Name: 'email_verified',
-        Value: 'true',
-      },
-      {
-        Name: 'email',
-        Value: user.email,
-      },
-    ],
-    MessageAction: 'SUPPRESS', //we don't want to send an "invitation mail"
-  };
-  return cognito.adminCreateUser(params).promise();
-};
-
-//confirm user by setting a random password
-//(need to do it this way, because user is in state force_reset_password)
-const confirmUser = userId => {
-  const password = getRandomString(20);
-  const setPasswordParams = {
-    UserPoolId: userPoolId,
-    Username: userId,
-    Password: password,
-    Permanent: true,
-  };
-  //set fake password to confirm user
-  return cognito.adminSetUserPassword(setPasswordParams).promise();
-};
-
-// Generates a random string (e.g. for generating random password)
-const getRandomString = length => {
-  return randomBytes(length).toString('hex');
 };
 
 seedDatabase();

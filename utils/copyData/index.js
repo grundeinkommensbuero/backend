@@ -1,21 +1,28 @@
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const pinpoint = new AWS.Pinpoint(config);
 
-const { getAllCognitoUsers, getUser } = require('../getUsers');
+const { getAllCognitoUsers, getUser } = require('../shared/users/getUsers');
+const {
+  createUserInCognito,
+  createUserInDynamo,
+} = require('../shared/users/createUsers');
+
 const Bottleneck = require('bottleneck');
 const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
-const randomBytes = require('crypto').randomBytes;
 const pinpointProjectId = '83c543b1094c4a91bf31731cd3f2f005';
+
+const CONFIG = require('../config');
+const tableName = CONFIG.PROD_TABLE_NAME;
+const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
 // Copies cognito users and the dynamo data to new
 // user pool and table
 const copyData = async () => {
   try {
     console.log('fetching cognito users...');
-    const cognitoUsers = await getAllCognitoUsers();
+    const cognitoUsers = await getAllCognitoUsers(userPoolId);
 
     console.log('fetched cognito users');
 
@@ -25,18 +32,21 @@ const copyData = async () => {
         const oldId = cognitoUser.Username;
         try {
           if (cognitoUser.UserStatus === 'CONFIRMED') {
-            const created = await createUserInCognito(cognitoUser);
+            const created = await createUserInCognito(
+              userPoolId,
+              cognitoUser.Attributes[2].Value
+            );
             const newId = created.User.Username;
 
             console.log('old id', oldId);
             console.log('new id', newId);
 
-            await confirmUser(newId);
+            await confirmUser(userPoolId, newId);
 
             //get old dynamo entry
-            const dynamoUser = await getUser(oldId);
+            const dynamoUser = await getUser(tableName, oldId);
 
-            createUserInDynamo(newId, dynamoUser.Item);
+            await createUserInDynamo(tableName, newId, dynamoUser.Item);
 
             const signatureLists = await getSignatureListsByUser(oldId);
 
@@ -45,7 +55,7 @@ const copyData = async () => {
             }
 
             //delete old pinpoint entry
-            deleteEndpoint(oldId);
+            await deleteEndpoint(oldId);
 
             copied++;
             if (copied % 20 === 0) {
@@ -66,54 +76,6 @@ const copyData = async () => {
   } catch (error) {
     console.log('error', error);
   }
-};
-
-//Create a new cognito user in our user pool
-const createUserInCognito = user => {
-  params = {
-    UserPoolId: 'eu-central-1_xx4VmPPdF',
-    Username: user.Attributes[2].Value,
-    UserAttributes: [
-      {
-        Name: 'email_verified',
-        Value: 'true',
-      },
-      {
-        Name: 'email',
-        Value: user.Attributes[2].Value,
-      },
-    ],
-    MessageAction: 'SUPPRESS', //we don't want to send an "invitation mail"
-  };
-  return cognito.adminCreateUser(params).promise();
-};
-
-//confirm user by setting a random password
-//(need to do it this way, because user is in state force_reset_password)
-const confirmUser = userId => {
-  const password = getRandomString(20);
-  const setPasswordParams = {
-    UserPoolId: 'eu-central-1_xx4VmPPdF',
-    Username: userId,
-    Password: password,
-    Permanent: true,
-  };
-  //set fake password to confirm user
-  return cognito.adminSetUserPassword(setPasswordParams).promise();
-};
-
-const createUserInDynamo = (userId, user) => {
-  delete user.cognitoId;
-
-  const params = {
-    TableName: 'prod-users',
-    Item: {
-      cognitoId: userId,
-      ...user,
-    },
-  };
-
-  return ddb.put(params).promise();
 };
 
 //function to get signature lists for this particular user
@@ -164,11 +126,6 @@ const deleteEndpoint = async userId => {
   };
 
   return pinpoint.deleteEndpoint(params).promise();
-};
-
-// Generates a random string (e.g. for generating random password)
-const getRandomString = length => {
-  return randomBytes(length).toString('hex');
 };
 
 copyData().then(() => {

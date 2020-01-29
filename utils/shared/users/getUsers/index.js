@@ -1,0 +1,154 @@
+const AWS = require('aws-sdk');
+const config = { region: 'eu-central-1' };
+const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+
+module.exports.getAllUnverifiedCognitoUsers = async (
+  userPoolId,
+  unverifiedCognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: userPoolId,
+    Filter: 'cognito:user_status = "UNCONFIRMED"',
+    PaginationToken: paginationToken,
+  };
+
+  let data = await cognito.listUsers(params).promise();
+
+  //add elements of user array
+  unverifiedCognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return getAllUnverifiedCognitoUsers(
+      userPoolId,
+      unverifiedCognitoUsers,
+      data.PaginationToken
+    );
+  } else {
+    return unverifiedCognitoUsers;
+  }
+};
+
+module.exports.getAllCognitoUsers = async (
+  userPoolId,
+  cognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: userPoolId,
+    Filter: 'cognito:user_status = "UNCONFIRMED"',
+    PaginationToken: paginationToken,
+  };
+
+  let data = await cognito.listUsers(params).promise();
+
+  //add elements of user array
+  cognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return getAllCognitoUsers(userPoolId, cognitoUsers, data.PaginationToken);
+  } else {
+    return cognitoUsers;
+  }
+};
+
+module.exports.getUsersFromState = async (tableName, state) => {
+  const users = await getAllUsers();
+  return users.filter(user => {
+    if ('pledges' in user) {
+      for (let pledge of user.pledges) {
+        return pledge.campaign.state === state;
+      }
+    }
+    return false;
+  });
+};
+
+module.exports.getUsersWithoutNewsletterFromState = async (
+  tableName,
+  state
+) => {
+  const users = await getAllUsers(tableName);
+
+  return users.filter(user => {
+    if ('pledges' in user) {
+      for (let pledge of user.pledges) {
+        if (pledge.campaign.state === state) {
+          if ('newsletterConsent' in user) {
+            return !user.newsletterConsent.value;
+          }
+        }
+      }
+    }
+    return false;
+  });
+};
+
+//functions which gets all users and uses the lastEvaluatedKey
+//to make multiple requests
+module.exports.getAllUsers = async (tableName, users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  //add elements to existing array
+  users.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return getAllUsers(tableName, users, result.LastEvaluatedKey);
+  } else {
+    //otherwise return the array
+    return users;
+  }
+};
+
+module.exports.getUser = (tableName, id) => {
+  const params = {
+    TableName: tableName,
+    Key: {
+      cognitoId: id,
+    },
+  };
+
+  return ddb.get(params).promise();
+};
+
+module.exports.getUserByMail = async (tableName, email, startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'email = :email',
+    ExpressionAttributeValues: { ':email': email },
+  };
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+  const result = await ddb.scan(params).promise();
+  //call same function again, if there is no user found, but not
+  //the whole db has been scanned
+  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
+    return getUserByMail(tableName, email, result.LastEvaluatedKey);
+  } else {
+    return result;
+  }
+};
+
+module.exports.isVerified = (user, unverifiedCognitoUsers) => {
+  let verified = true;
+
+  for (let cognitoUser of unverifiedCognitoUsers) {
+    //sub is the first attribute
+    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
+      verified = false;
+    }
+  }
+
+  return verified;
+};
