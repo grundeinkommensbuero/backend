@@ -1,5 +1,4 @@
 const fs = require('fs');
-const randomBytes = require('crypto').randomBytes;
 const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
 const paths = {
@@ -11,19 +10,21 @@ const paths = {
 const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
-// const { updateEndpoint, addKickOffToPinpoint } = require('../fillPinpoint');
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const { getUserByMail } = require('../shared/users/getUsers');
+const {
+  confirmUser,
+  createUserInCognito,
+  createUserInDynamo: recreateUserInDynamo,
+} = require('../shared/users/createUsers');
+
+const CONFIG = require('../config');
+const tableName = CONFIG.PROD_TABLE_NAME;
+const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
 // AWS Cognito limits to 10 per second, so be safe and do 5 per second
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
 const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
-
-const tableName = 'prod-users';
-const tableNameBackup = 'UsersWithoutConsent-14-11';
-const tableNameBackup2 = 'UsersWithoutConsent-02-12';
-
-const userPoolId = 'eu-central-1_xx4VmPPdF';
 
 const processTypeformUsers = async () => {
   try {
@@ -31,7 +32,8 @@ const processTypeformUsers = async () => {
 
     //add new users to database
     for (let user of allUsers) {
-      const result = await getUserByMail(user.email);
+      const result = await getUserByMail(tableName, user.email);
+
       // only update pinpoint for the users we already have in dynamo
       if (result.Count !== 0) {
         user.userId = result.Items[0].cognitoId;
@@ -50,70 +52,17 @@ const processTypeformUsers = async () => {
   }
 };
 
-const addTestUsers = async () => {
-  try {
-    const allUsers = await readCsv('signaturesTest');
-    //filter duplicates with already existing users in our db
-    const newUsers = await filterDuplicates(allUsers);
-
-    for (let user of newUsers) {
-      await createUser(user);
-    }
-  } catch (error) {
-    console.log('error', error);
-  }
-};
-
-const addUsersFromBackupToPinpoint = async () => {
-  try {
-    const result = await getUsersFromBackup(tableNameBackup);
-    const backupUsers = result.Items;
-    //only get users without newsletter consent
-    const backupUsersWithoutConsent = backupUsers.filter(
-      user => 'newsletterConsent' in user && !user.newsletterConsent.value
-    );
-
-    //filter duplicates with already existing users in our db (unlikely)
-    const newUsers = await filterDuplicates(backupUsersWithoutConsent);
-    for (let user of newUsers) {
-      await updateEndpoint(user);
-    }
-    console.log(
-      'users length',
-      backupUsers.length,
-      backupUsersWithoutConsent.length,
-      newUsers.length
-    );
-  } catch (error) {
-    console.log('error', error);
-  }
-};
-
-const addUserFromBackup = async email => {
-  try {
-    const result = await getUsersFromBackup(tableNameBackup2);
-    const backupUsers = result.Items;
-    const foundUser = backupUsers.find(
-      backupUser => email === backupUser.email
-    );
-    console.log('user to recreate', foundUser);
-    //true, because we want to recreate the old user
-    await createUser(foundUser, true);
-  } catch (error) {
-    console.log('error', error);
-  }
-};
-
 //if we want to "manually" add a single user (e.g. after someone asks as via mail)
-const addUser = async email => {
+const addUser = async (email, username) => {
   const date = new Date();
   const timestamp = date.toISOString();
   const user = {
     email: email,
-    username: 'Astrid',
+    username: username,
     source: 'manually',
     createdAt: timestamp,
   };
+
   await createUser(user);
 };
 
@@ -254,75 +203,25 @@ const userExists = async user => {
   }
 };
 
-const getUserByMail = async (email, startKey = null) => {
-  const params = {
-    TableName: tableName,
-    FilterExpression: 'email = :email',
-    ExpressionAttributeValues: { ':email': email },
-  };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-  const result = await ddb.scan(params).promise();
-  //call same function again, if there is no user found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    return getUserByMail(email, result.LastEvaluatedKey);
-  } else {
-    return result;
-  }
-};
-
 const createUser = async (user, recreate = false) => {
   // AWS Cognito limits to 10 per second, which is why we use limiter
   const response = await cognitoLimiter.schedule(async () => {
-    const created = await createUserInCognito(user);
+    const created = await createUserInCognito(userPoolId, user.email);
     console.log('new user', created);
+
     const userId = created.User.Username;
+
     //confirm user (by setting fake password)
-    await confirmUser(userId);
+    await confirmUser(userPoolId, userId);
+
     //create new entry in dynamo or recreate the old one
     if (recreate) {
-      return await recreateUserInDynamo(userId, user);
+      return await recreateUserInDynamo(tableName, userId, user);
     } else {
       return await createUserInDynamo(userId, user);
     }
   });
   return response;
-};
-
-//Create a new cognito user in our user pool
-const createUserInCognito = user => {
-  params = {
-    UserPoolId: userPoolId,
-    Username: user.email,
-    UserAttributes: [
-      {
-        Name: 'email_verified',
-        Value: 'true',
-      },
-      {
-        Name: 'email',
-        Value: user.email,
-      },
-    ],
-    MessageAction: 'SUPPRESS', //we don't want to send an "invitation mail"
-  };
-  return cognito.adminCreateUser(params).promise();
-};
-
-//confirm user by setting a random password
-//(need to do it this way, because user is in state force_reset_password)
-const confirmUser = userId => {
-  const password = getRandomString(20);
-  const setPasswordParams = {
-    UserPoolId: userPoolId,
-    Username: userId,
-    Password: password,
-    Permanent: true,
-  };
-  //set fake password to confirm user
-  return cognito.adminSetUserPassword(setPasswordParams).promise();
 };
 
 const createUserInDynamo = (userId, user) => {
@@ -351,40 +250,3 @@ const createUserInDynamo = (userId, user) => {
   };
   return ddb.put(params).promise();
 };
-
-const recreateUserInDynamo = (userId, user) => {
-  const params = {
-    TableName: tableName,
-    Item: {
-      cognitoId: userId,
-      email: user.email,
-      createdAt: user.createdAt,
-      username: user.username,
-      zipCode: user.zipCode,
-      newsletterConsent: user.newsletterConsent,
-      pledges: user.pledges,
-      referral: user.referral,
-    },
-  };
-  return ddb.put(params).promise();
-};
-
-// Generates a random string (e.g. for generating random password)
-const getRandomString = length => {
-  return randomBytes(length).toString('hex');
-};
-
-const getUsersFromBackup = tableName => {
-  const params = {
-    TableName: tableName,
-  };
-  return ddb.scan(params).promise();
-};
-
-// migrateUsers();
-// addTestUsers();
-// addUsersFromBackupToPinpoint();
-// addUserFromBackup('sonnenzeit22@web.de');
-addUser('falksprotte@posteo.de');
-
-// processTypeformUsers();
