@@ -72,7 +72,7 @@ module.exports.handler = async event => {
           userId = result.Items[0].cognitoId;
         }
 
-        const list = await getFirstSignatureListOfUser(userId);
+        const list = await getFirstSignatureListOfUser(userId, campaignCode);
 
         // if function returned null, there was no list found
         if (!list) {
@@ -158,7 +158,7 @@ const createSignatureList = async (userId, campaign) => {
 };
 
 // Function to get the first list of the user
-const getFirstSignatureListOfUser = async userId => {
+const getFirstSignatureListOfUser = async (userId, campaignCode) => {
   // First get all lists for this user
   const signatureLists = await getSignatureListsOfUser(userId);
 
@@ -172,7 +172,11 @@ const getFirstSignatureListOfUser = async userId => {
 
   for (let list of signatureLists) {
     // Check if this list was created earlier than the current firstList
-    if (new Date(list.createdAt) < new Date(firstList.createdAt)) {
+    // and if the list is from the same campaign
+    if (
+      new Date(list.createdAt) < new Date(firstList.createdAt) &&
+      list.campaign.code === campaignCode
+    ) {
       console.log(`${list.createdAt} is earlier than ${firstList.createdAt}`);
       firstList = list;
     }
