@@ -20,6 +20,7 @@ describe('getUserCount api test', () => {
     expect(json['schleswig-holstein-1']).toHaveProperty(
       'usersWithNewsletterConsent'
     );
+    expect(json['schleswig-holstein-1']).toHaveProperty('pledgesMap');
 
     expect(json['schleswig-holstein-1'].verifiedUsers).toHaveProperty('count');
     expect(json['schleswig-holstein-1'].verifiedUsers).toHaveProperty(

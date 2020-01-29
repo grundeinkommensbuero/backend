@@ -36,6 +36,7 @@ module.exports.analyseUsers = async () => {
             verifiedUsers: { count: 0, signatures: 0 },
             unverifiedUsers: { count: 0 },
             usersWithNewsletterConsent: { count: 0, signatures: 0 },
+            pledgesMap: {}, // how many people have pledged x signatures
             // powerUsers: [],
           };
         }
@@ -64,6 +65,13 @@ module.exports.analyseUsers = async () => {
               campaignStats[
                 campaign
               ].verifiedUsers.signatures += signatureCount;
+
+              // Check if the signatureCount is already in the pledge map
+              if (!(signatureCount in campaignStats[campaign].pledgesMap)) {
+                campaignStats[campaign].pledgesMap[signatureCount] = 0;
+              }
+
+              campaignStats[campaign].pledgesMap[signatureCount]++;
 
               //generate a list of power users
               //(20+ pledged signatures or wants to collect in public spaces)
