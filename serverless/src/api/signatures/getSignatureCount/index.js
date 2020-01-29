@@ -22,7 +22,7 @@ module.exports.handler = async event => {
     if (event.queryStringParameters) {
       // If there is a list id or user id we want to count
       // the signatures for just one user
-      const { listId, email } = event.queryStringParameters;
+      const { listId, email, campaignCode } = event.queryStringParameters;
       let { userId } = event.queryStringParameters;
 
       if (typeof listId !== 'undefined') {
@@ -49,7 +49,7 @@ module.exports.handler = async event => {
       }
 
       // if list id was not provided, the user id was provided in query params
-      stats = await getSignatureCountOfUser(userId);
+      stats = await getScansOfUser(userId, campaignCode);
     } else {
       // No query param provided -> get count for all lists
       stats = await getSignatureCountOfAllLists();
@@ -69,7 +69,7 @@ module.exports.handler = async event => {
 };
 
 // Returns a list of all scans (received or byUser) for this user
-const getSignatureCountOfUser = async userId => {
+const getScansOfUser = async (userId, campaignCode) => {
   let stats = { received: [], scannedByUser: [] };
 
   //get all lists of this user with received attribute
@@ -77,12 +77,19 @@ const getSignatureCountOfUser = async userId => {
 
   // For each list push the arrays to the general array
   for (let list of signatureLists) {
-    if ('received' in list) {
-      stats.received.push(...list.received);
-    }
+    // Only add scans, if the list was from the campaign
+    // If no campaign is provided we want every scan
+    if (
+      list.campaign.code === campaignCode ||
+      typeof campaignCode === 'undefined'
+    ) {
+      if ('received' in list) {
+        stats.received.push(...list.received);
+      }
 
-    if ('scannedByUser' in list) {
-      stats.scannedByUser.push(...list.scannedByUser);
+      if ('scannedByUser' in list) {
+        stats.scannedByUser.push(...list.scannedByUser);
+      }
     }
   }
 
