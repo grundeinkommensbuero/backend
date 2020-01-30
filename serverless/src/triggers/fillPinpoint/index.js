@@ -186,6 +186,14 @@ const updateEndpoint = async (user, verified) => {
     typeof pledge !== 'undefined' ? parseInt(pledge.signatureCount) : 0;
   signatureCount = isNaN(signatureCount) ? 0 : signatureCount;
 
+  // Check if the user has already sent lists to us
+  let listsReceived = false;
+  for (let list of user.signatureLists) {
+    if ('received' in list && list.received.length > 0) {
+      listsReceived = true;
+    }
+  }
+
   const params = {
     ApplicationId: projectId,
     EndpointId: `email-endpoint-${userId}`,
@@ -193,7 +201,7 @@ const updateEndpoint = async (user, verified) => {
       ChannelType: 'EMAIL',
       Address: email,
       Attributes: {
-        Referral: [referral],
+        // Referral: [referral], -> never really needed, and there's a limit to attributes
         Region: [region],
         Pledge: pledgeAttributes,
         PledgeCampaignCode: [
@@ -215,6 +223,7 @@ const updateEndpoint = async (user, verified) => {
             ? migrated.campaign.code
             : 'undefined',
         ],
+        HasSentLists: [listsReceived ? 'Yes' : 'No'],
       },
       EffectiveDate: createdAt,
       Location: {
@@ -222,7 +231,7 @@ const updateEndpoint = async (user, verified) => {
         Region: region,
       },
       Metrics: {
-        SignatureCount: signatureCount,
+        // SignatureCount: signatureCount, -> never really needed, and there's a limit to attributes
       },
       //if user is not yet verified opt out in pinpoint
       OptOut: verified ? 'NONE' : 'ALL',
