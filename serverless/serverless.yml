@@ -232,6 +232,8 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:PutItem
+          - dynamodb:Scan
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
       - Effect: 'Allow'
