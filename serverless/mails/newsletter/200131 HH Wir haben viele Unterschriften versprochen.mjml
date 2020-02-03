@@ -1,0 +1,96 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Über 24.000 versprochene Unterschriften!
+      Gemeinsam beantragen wir nun die offizielle Volksinitiative beim Land.
+      Melde dich jetzt zum Initiator*innen-Treffen an.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Die Volksinitiative in Hamburg startet</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          danke, dass du Teil der Expedition Grundeinkommen bist!
+          <br><br>
+          Es ist überwältigend: Wir sind schon über 4.000 Menschen in Hamburg.
+          12.000 Unterschriften brauchen wir, um die Initiative auf den Weg zu bringen,
+          doppelt so viele trauen wir uns gemeinsam zu. Wow!
+          <br><br>
+          Ganz wichtig: die online Eintragung ist noch NICHT die Unterschrift zur Volksinitiative.
+          Die Gesetze für das Land Hamburg schreiben vor, dass die Unterschriften auf offiziellen
+          Listen von Hand geleistet werden müssen.
+          <br><br>
+          Das ist zwar viel Aufwand, dafür bringen wir tatsächlich ein Gesetz auf den Weg.
+          Und wenn wir erfolgreich sind, muss es ohne Wenn und Aber umgesetzt werden.
+          <br><br>
+          <h2>Sei beim Initiator*innen-Treffen dabei</h2>
+          Wie geht es weiter? Damit der Volksentscheid parallel zur Bundestagswahl 2021 stattfinden
+          kann (und nicht erst in 5 Jahren), haben wir einen ambitionierten Zeitplan für die erste Sammelphase:
+          Wir wollen bis Ende Februar fertig sein. Wir glauben, das ist machbar: Wir sind über 4000 Menschen,
+          von denen jeder im Schnitt 3 Unterschriften einsenden muss.
+          <br><br>
+          Als erstes müssen wir möglichst bald zu einem Initiator*innen-Treffen zusammenkommen,
+          um gemeinsam formell die Volksinitiative zu beantragen. Wir wollen diese Gelegenheit nutzen,
+          um uns als Aktive gegenseitig kennenzulernen, den Zeitplan zu besprechen und uns für die
+          anstehende Unterschriftensammlung zu organisieren.
+          <br><br>
+          Wir werden aus unserer Mitte drei Vertrauenspersonen benennen, die zukünftig für uns alle Erklärungen
+          abgeben dürfen und den Antrag beim Land einreichen: Ab dann kann gesammelt werden!
+          <br><br>
+          Du willst dabei sein? Dann fülle bitte bis zum Montag unsere Umfrage aus.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expeditionbge.typeform.com/to/eIhrqn?user_email={{Address}}">
+          Jetzt zum Treffen anmelden
+        </mj-button>
+        <mj-text>
+          Schön, dass wir diesen Weg zusammen gehen. <br>
+          Gemeinsam schaffen wir das!
+          <br><br>
+          Herzliche Grüße
+          <br><br>
+          Das gesamte Team der Expedition Grundeinkommen
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>
+            Wie geht es in den nächsten Wochen weiter?
+          </h2>
+          Für den Erfolg der Kampagne ist es enorm wichtig, dass die versprochenen Unterschriften
+          auch auf Papier im Kampagnenbüro eingehen. Nach unserem gemeinsamen Treffen beantragen
+          wir den Start der Unterschriftensammlung, und alle bekommen dann die Listen zugeschickt.
+          Die Listen müssen ausgedruckt, unterschrieben und ans Kampagnenbüro geschickt werden.
+          <br><br>
+          <h2>
+            Wie läuft eine Volksabstimmung ab?
+          </h2>
+          Die Volksgesetzgebung läuft in Hamburg in drei Stufen. Zwei Unterschriftensammlungen
+          und am Ende ein Volksentscheid. In der ersten Stufe brauchen wir 10.000 gültige Unterschriften,
+          mit Puffer 12.000. In der 2. Stufe brauchen wir 25.000 Unterschriften plus Puffer.
+          <br><br>
+          Nach jeder Stufe muss sich das Parlament mit unserem Gesetzesvorschlag befassen.
+          Nimmt das Parlament den Vorschlag nicht an, kommt es zum Volksentscheid,
+          und ganz Hamburg stimmt darüber ab, ob Grundeinkommen getestet wird – verbindlich.
+          Das soll nach unserem Zeitplan zeitgleich mit der nächsten Bundestagswahl 2021 stattfinden.
+          <br><br>
+          Mehr dazu findest du auch auf unserem Blog:
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expedition-grundeinkommen.de/blog/2020/01/16/uber-unseren-weg-wie-funktioniert-ein-volksbegehren/" color="#fef377" border="1px solid #fef377">
+          Zum Artikel
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
