@@ -552,9 +552,6 @@ functions:
       - cognitoUserPool:
           pool: AdminUserPool
           trigger: PreSignUp
-      - cognitoUserPool:
-          pool: UserPool
-          trigger: PreSignUp
 
   verifyAuthChallengeResponse:
     handler: src/triggers/auth/verifyAuthChallengeResponse/index.handler
