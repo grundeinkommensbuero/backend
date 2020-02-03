@@ -1,0 +1,68 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Der Modellversuch zum Grundeinkommen rückt näher: Diese Woche Samstag und Sonntag (08./09.02.)
+      ist offizieller Start für die Straßensammlung in Brandenburg! Du willst dabei sein?
+      Dann trag dich jetzt mit unserer Umfrage für die Sammellandkarte ein!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>
+            Wir starten die Unterschriftensammlung!
+          </h2>
+
+          Liebe BGE-Verbündete,
+          <br><br>
+          heute schreiben wir euch mit tollen Neuigkeiten im Gepäck:
+          Diese Woche Samstag (08.02.) und Sonntag (09.02.) ist
+          offizieller Start für die Straßensammlung in Brandenburg!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/LBhhIQ?user_email={{Address}}">
+          Ich bin dabei
+        </mj-button>
+
+        <mj-text>
+          <h2>Was ist bisher passiert?</h2>
+          Bundesweit sind wir in den letzten Wochen schon 28.000 Menschen geworden,
+          die gemeinsam das Grundeinkommen erforschen und entdecken wollen. Wir sind überwältigt!
+          <br><br>
+          <h2>Nun geht es richtig los:</h2>
+          Der Kick-off für die Unterschriftensammlung wird am 08. und 09. Februar an
+          verschiedenen Orten in Brandenburg stattfinden.
+          <br><br>
+          Ihr wollt dabei sein? Super! Wir sammeln gemeinsam! In unserer Umfrage könnt ihr angeben,
+          wo ihr sammeln möchtet. Die genannten Orte tragen wir in einer Landkarte ein -
+          So finden alle gut zueinander und können gemeinsam sammeln.
+          Bringen wir das Grundeinkommen zusammen einen Schritt voran!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/LBhhIQ?user_email={{Address}}">
+          Ich sammle mit
+        </mj-button>
+        <mj-text>
+          Die <a href="https://expedition-grundeinkommen.de/brandenburg/?pk_campaign=newsletter&pk_kwd=brandenburg_pledge&pk_source=bb_kickoff_bgenetzwerk&pk_medium=oben#Download">Unterschriftenlisten</a>
+          für Brandenburg gibt es bereits zum Download auf unserer Website.
+          Zückt schon einmal eure Stifte und tragt euch unseren Kick-off in den Kalender ein.
+          <br><br>
+          Ihr könnt nicht dabei sein? Kein Problem! Ihr unterstützt das bedingungslose Grundeinkommen auch,
+          indem ihr den Sammel-Kick-off in Brandenburg über eure Kanäle streut
+          (Social Media, E-Mail-Verteiler, Newsletter etc.). So sorgt ihr dafür,
+          dass so viele Menschen wie möglich aktiv werden!
+          <br><br>
+          Viele Grüße
+          <br><br>
+          Nina und Lucia vom Expeditionsteam
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
