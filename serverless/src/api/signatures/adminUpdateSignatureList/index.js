@@ -31,7 +31,7 @@ module.exports.handler = async event => {
       const result = await getSignatureList(listId);
       //if user does not have Item as property, there was no user found
       if (!('Item' in result)) {
-        return errorResponse(400, 'No list found with the passed id');
+        return errorResponse(404, 'No list found with the passed id');
       }
 
       //otherwise proceed by updating dynamo resource
