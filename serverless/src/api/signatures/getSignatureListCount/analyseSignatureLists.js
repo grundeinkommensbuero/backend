@@ -1,10 +1,7 @@
-const AWS = require('aws-sdk');
-const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
+const { getAllSignatureLists } = require('../../../shared/signatures');
 
 module.exports.analyseSignatureLists = async () => {
-  const signatureLists = await getSignatureLists();
+  const signatureLists = await getAllSignatureLists();
   const stats = {};
 
   //loop through lists to compute stats
@@ -45,26 +42,4 @@ module.exports.analyseSignatureLists = async () => {
   }
 
   return stats;
-};
-
-//function to get all signature lists
-const getSignatureLists = async (signatureLists = [], startKey = null) => {
-  const params = {
-    TableName: tableName,
-  };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-  //add elements to existing array
-  signatureLists.push(...result.Items);
-
-  //call same function again, if the whole table has not been scanned yet
-  if ('LastEvaluatedKey' in result) {
-    return getSignatureLists(signatureLists, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return signatureLists;
-  }
 };
