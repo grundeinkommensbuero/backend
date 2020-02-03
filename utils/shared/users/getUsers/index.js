@@ -3,7 +3,7 @@ const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
-module.exports.getAllUnverifiedCognitoUsers = async (
+const getAllUnverifiedCognitoUsers = async (
   userPoolId,
   unverifiedCognitoUsers = [],
   paginationToken = null
@@ -30,7 +30,7 @@ module.exports.getAllUnverifiedCognitoUsers = async (
   }
 };
 
-module.exports.getAllCognitoUsers = async (
+const getAllCognitoUsers = async (
   userPoolId,
   cognitoUsers = [],
   paginationToken = null
@@ -53,7 +53,7 @@ module.exports.getAllCognitoUsers = async (
   }
 };
 
-module.exports.getUsersFromState = async (tableName, state) => {
+const getUsersFromState = async (tableName, state) => {
   const users = await getAllUsers();
   return users.filter(user => {
     if ('pledges' in user) {
@@ -65,10 +65,7 @@ module.exports.getUsersFromState = async (tableName, state) => {
   });
 };
 
-module.exports.getUsersWithoutNewsletterFromState = async (
-  tableName,
-  state
-) => {
+const getUsersWithoutNewsletterFromState = async (tableName, state) => {
   const users = await getAllUsers(tableName);
 
   return users.filter(user => {
@@ -87,7 +84,7 @@ module.exports.getUsersWithoutNewsletterFromState = async (
 
 //functions which gets all users and uses the lastEvaluatedKey
 //to make multiple requests
-module.exports.getAllUsers = async (tableName, users = [], startKey = null) => {
+const getAllUsers = async (tableName, users = [], startKey = null) => {
   const params = {
     TableName: tableName,
   };
@@ -110,7 +107,7 @@ module.exports.getAllUsers = async (tableName, users = [], startKey = null) => {
   }
 };
 
-module.exports.getUser = (tableName, id) => {
+const getUser = (tableName, id) => {
   const params = {
     TableName: tableName,
     Key: {
@@ -121,7 +118,7 @@ module.exports.getUser = (tableName, id) => {
   return ddb.get(params).promise();
 };
 
-module.exports.getUserByMail = async (tableName, email, startKey = null) => {
+const getUserByMail = async (tableName, email, startKey = null) => {
   const params = {
     TableName: tableName,
     FilterExpression: 'email = :email',
@@ -140,7 +137,7 @@ module.exports.getUserByMail = async (tableName, email, startKey = null) => {
   }
 };
 
-module.exports.isVerified = (user, unverifiedCognitoUsers) => {
+const isVerified = (user, unverifiedCognitoUsers) => {
   let verified = true;
 
   for (let cognitoUser of unverifiedCognitoUsers) {
@@ -151,4 +148,15 @@ module.exports.isVerified = (user, unverifiedCognitoUsers) => {
   }
 
   return verified;
+};
+
+module.exports = {
+  getAllUsers,
+  getAllCognitoUsers,
+  getAllUnverifiedCognitoUsers,
+  getUser,
+  getUserByMail,
+  getUsersFromState,
+  getUsersWithoutNewsletterFromState,
+  isVerified,
 };
