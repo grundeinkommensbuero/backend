@@ -487,6 +487,26 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+    sendReminderMails:
+    handler: src/triggers/sendReminderMails/index.handler
+    timeout: 50 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+        
   # Admin cognito auth triggers
 
   createAuthChallenge:

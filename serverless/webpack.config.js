@@ -10,6 +10,7 @@ const functionsWithStaticFiles = [
   'adminCreateUser',
   'sendCongratulationMails',
   'sendVerificationMail',
+  'sendReminderMails',
 ];
 
 // We need this to only copy html and pdf files for the corresponding function.
