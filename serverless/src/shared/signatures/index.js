@@ -36,7 +36,11 @@ const getSignatureListsOfUser = async (
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     console.log('call get lists recursively');
-    return getSignatureLists(userId, signatureLists, result.LastEvaluatedKey);
+    return getSignatureListsOfUser(
+      userId,
+      signatureLists,
+      result.LastEvaluatedKey
+    );
   } else {
     //otherwise return the array
     return signatureLists;
