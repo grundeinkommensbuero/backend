@@ -1,0 +1,25 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../../../../mails/includes/head.mjml" />
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../../../../mails/includes/header.mjml" />
+    <mj-section background-color="#fef377">
+      <mj-column>
+        <mj-text>
+          <p>Hallo,</p>
+          <p>
+            fast geschafft – gib einfach den folgenden Code in das Feld auf unserer
+            Webseite ein und schon bist du eingeloggt:
+            <br>
+            <p class="code">[[SECRET_CODE]]</p>
+          </p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../../../../mails/includes/footer.mjml" />
+  </mj-body>
+</mjml>

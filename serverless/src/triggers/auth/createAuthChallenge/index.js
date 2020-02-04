@@ -1,6 +1,9 @@
 const crypto = require('crypto-secure-random-digit');
 const AWS = require('aws-sdk');
 const ses = new AWS.SES();
+
+const htmlMail = require('./loginEmail.html').default;
+
 exports.handler = async event => {
   let secretLoginCode;
   if (!event.request.session || !event.request.session.length) {
@@ -37,8 +40,7 @@ async function sendEmail(emailAddress, secretLoginCode) {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: `<html><body><p>Hier ist dein geheimer Login-Code:</p>
-                           <h3>${secretLoginCode}</h3></body></html>`,
+          Data: customEmail(secretLoginCode),
         },
         Text: {
           Charset: 'UTF-8',
@@ -54,3 +56,7 @@ async function sendEmail(emailAddress, secretLoginCode) {
   };
   await ses.sendEmail(params).promise();
 }
+
+const customEmail = code => {
+  return htmlMail.replace(/\[\[SECRET_CODE\]\]/gi, code);
+};
