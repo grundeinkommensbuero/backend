@@ -6,7 +6,6 @@ module.exports.handler = async event => {
     const requestBody = JSON.parse(event.body);
 
     try {
-      //check if there is a user with the passed user id
       console.log('request body', requestBody);
 
       if (!validateParams(requestBody)) {
@@ -19,17 +18,19 @@ module.exports.handler = async event => {
       if ('userId' in requestBody) {
         userId = requestBody.userId;
         try {
+          //check if there is a user with the passed user id
           const result = await getUser(userId);
 
           console.log('user', result);
           //if user does not have Item as property, there was no user found
           if (!('Item' in result) || typeof result.Item === 'undefined') {
-            return errorResponse(400, 'No user found with the passed user id');
+            return errorResponse(404, 'No user found with the passed user id');
           }
 
           //we later need the user object
           user = result.Item;
         } catch (error) {
+          console.log(error);
           return errorResponse(500, 'Error while getting user', error);
         }
       } else if ('email' in requestBody) {
@@ -38,13 +39,14 @@ module.exports.handler = async event => {
           const result = await getUserByMail(requestBody.email);
 
           if (result.Count === 0) {
-            return errorResponse(400, 'No user found with the passed email');
+            return errorResponse(404, 'No user found with the passed email');
           } else {
             //we later need the user object and id
             user = result.Items[0];
             userId = user.cognitoId;
           }
         } catch (error) {
+          console.log(error);
           return errorResponse(500, 'Error while getting user by email', error);
         }
       }
@@ -57,11 +59,11 @@ module.exports.handler = async event => {
         );
       }
 
-      //if no pledge for this specific campaign was made, proceed...
+      // if no pledge was made, proceed...
       try {
         await savePledge(userId, requestBody);
 
-        //saving pledge was successfull, return appropriate json
+        // saving pledge was successfull, return appropriate json
         return {
           statusCode: 204,
           headers: {
