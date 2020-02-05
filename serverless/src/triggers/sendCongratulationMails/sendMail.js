@@ -10,6 +10,14 @@ const GOALS = {
   'brandenburg-1': '25.000',
 };
 
+const STATES = {
+  'schleswig-holstein': 'Schleswig-Holstein',
+  brandenburg: 'Brandenburg',
+  hamburg: 'Schleswig-Holstein',
+  berlin: 'Berlin',
+  bremen: 'Bremen',
+};
+
 //Function which sends an email to congratulate for the reception of list(s)
 //gets a user object, which is why we destructure the object
 const sendMail = (
@@ -76,7 +84,7 @@ const customMail = (
   <br><br>
   Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment ${totalCountForAllUsers} von ${
     GOALS[campaign.code]
-  } benötigten Unterschriften gesammelt.
+  } benötigten Unterschriften in ${STATES[campaign.state]} gesammelt.
   Wir haben also noch etwas vor uns.
   `;
 
