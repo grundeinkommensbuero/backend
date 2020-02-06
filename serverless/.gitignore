@@ -6,3 +6,4 @@ jspm_packages
 .serverless
 .webpack
 src/triggers/sendCongratulationMails/contentfulConfig.js
+secretConfig.js
