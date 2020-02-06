@@ -92,7 +92,8 @@ const savePledge = requestBody => {
 
   const data = {
     cognitoId: requestBody.userId,
-    pledge: [pledge],
+    email: requestBody.email,
+    pledges: [pledge],
     newsletterConsent: {
       value: requestBody.newsletterConsent,
       timestamp: timestamp,
