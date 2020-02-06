@@ -226,17 +226,13 @@ functions:
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
 
-  updateUser:
-    handler: src/api/users/updateUser/index.handler
+  createUser:
+    handler: src/api/users/createUser/index.handler
     events:
       - http:
-          path: users/{userId}
-          method: patch
+          path: users
+          method: post
           cors: true
-          request:
-            parameters:
-              paths:
-                userId: true # not optional
     iamRoleStatements:
       - Effect: 'Allow'
         Action:

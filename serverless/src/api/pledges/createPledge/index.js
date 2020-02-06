@@ -119,10 +119,10 @@ const savePledge = requestBody => {
     data.city = requestBody.city;
   }
 
-  return ddb
-    .put({
-      TableName: tableName,
-      Item: data,
-    })
-    .promise();
+  const params = {
+    TableName: tableName,
+    Item: data,
+  };
+
+  return ddb.put(params).promise();
 };
