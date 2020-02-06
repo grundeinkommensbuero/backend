@@ -10,9 +10,11 @@ const {
   generateRandomId,
 } = require('../../../shared/utils');
 
-const s3 = new AWS.S3();
-const ddb = new AWS.DynamoDB.DocumentClient();
-const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
+const config = { region: 'eu-central-1' };
+const s3 = new AWS.S3(config);
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const signaturesTableName =
+  process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -352,4 +354,9 @@ const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
       getAttachment(attachment, qrCodeUrl, pdfId, campaignCode)
     )
   );
+};
+
+module.exports = {
+  createSignatureList,
+  uploadPDF,
 };
