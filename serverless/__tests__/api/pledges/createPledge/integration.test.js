@@ -22,8 +22,10 @@ describe('createPledge api test', () => {
     };
 
     const response = await fetch(`${INVOKE_URL}/pledges`, request);
+    const json = await response.json();
 
     expect(response.status).toEqual(201);
+    expect(json).toHaveProperty('user');
   });
 
   it('should not be able to create a new pledge', async () => {
@@ -63,7 +65,9 @@ describe('createPledge api test', () => {
     };
 
     const response = await fetch(`${INVOKE_URL}/pledges`, request);
+    const json = await response.json();
 
     expect(response.status).toEqual(201);
+    expect(json).toHaveProperty('user');
   });
 });
