@@ -1,19 +1,27 @@
-const { getUser, getUserByMail } = require('../../../shared/users');
+const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const { savePledge } = require('../../../shared/pledges');
 
 module.exports.handler = async event => {
   try {
+    if (!isAuthorized(event)) {
+      return errorResponse(
+        401,
+        'No permission to override pledge of other user'
+      );
+    }
+
     const requestBody = JSON.parse(event.body);
 
     console.log('request body', requestBody);
 
-    if (!validateParams(requestBody)) {
+    if (!validateParams(event, requestBody)) {
       return errorResponse(400, 'One or more parameters are missing');
     }
 
     try {
       //check if there is a user with the passed user id
-      const { userId } = requestBody;
+      const { userId } = event.pathParameters;
       const result = await getUser(userId);
 
       console.log('user', result);
@@ -44,6 +52,15 @@ module.exports.handler = async event => {
   }
 };
 
-const validateParams = requestBody => {
-  return 'userId' in requestBody && 'newsletterConsent' in requestBody;
+const validateParams = (event, requestBody) => {
+  return (
+    ('userId' in requestBody || 'userId' in event.pathParameters) &&
+    'newsletterConsent' in requestBody
+  );
+};
+
+const isAuthorized = event => {
+  return (
+    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
+  );
 };

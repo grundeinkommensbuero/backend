@@ -1,5 +1,6 @@
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const { savePledge } = require('../../../shared/pledges');
 
 module.exports.handler = async event => {
   try {
@@ -53,10 +54,7 @@ module.exports.handler = async event => {
 
       // check if a pledge was already made
       if ('pledges' in user) {
-        return errorResponse(
-          401,
-          'A pledge for this campaign was already made'
-        );
+        return errorResponse(401, 'A pledge for this user was already made');
       }
 
       // if no pledge was made, proceed...
