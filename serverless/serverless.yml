@@ -47,8 +47,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
-          - dynamodb:Scan
-          - dynamodb:UpdateItem
+          - dynamodb:PutItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 

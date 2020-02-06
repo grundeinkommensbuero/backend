@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const { constructCampaignId } = require('../../shared/utils');
+const { constructCampaignId } = require('../../../shared/utils');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
@@ -31,11 +31,15 @@ module.exports.handler = async event => {
 
         // if no pledge was made, proceed...
 
-        await savePledge(requestBody);
+        console.log('result savePledge', await savePledge(requestBody));
 
         // saving pledge was successfull, return appropriate json
         return {
-          statusCode: 204,
+          statusCode: 201,
+          body: JSON.stringify({
+            user: { id: userId },
+            message: 'User was successfully created',
+          }),
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
