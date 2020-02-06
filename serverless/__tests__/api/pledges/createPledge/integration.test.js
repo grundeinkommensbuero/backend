@@ -37,6 +37,7 @@ describe('createPledge api test', () => {
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',
+        name: randomWords(),
       }),
     };
 
