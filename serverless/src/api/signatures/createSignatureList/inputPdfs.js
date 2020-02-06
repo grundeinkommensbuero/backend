@@ -1,6 +1,20 @@
 const fs = require('fs');
 
 const CODE_POSITIONS = {
+  HH: {
+    BARCODE: {
+      x: 545,
+      y: 17,
+      width: 120,
+      height: 60,
+    },
+    QRCODE: {
+      x: 693.5,
+      y: 472.5,
+      width: 39,
+      height: 39,
+    },
+  },
   BB: {
     BARCODE: {
       x: 545,
@@ -44,6 +58,23 @@ const CODE_POSITIONS = {
 };
 
 module.exports = {
+  'hamburg-1': {
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.HH.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.HH.QRCODE,
+        },
+      ],
+    },
+  },
   'brandenburg-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/ALLES.pdf'),

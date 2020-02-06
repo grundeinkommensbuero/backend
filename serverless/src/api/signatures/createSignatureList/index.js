@@ -27,6 +27,12 @@ const qrCodeUrls = {
 };
 
 const MAIL_ATTACHMENTS = {
+  'hamburg-1': [
+    {
+      filename: 'Liste.pdf',
+      type: 'COMBINED',
+    },
+  ],
   'brandenburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
