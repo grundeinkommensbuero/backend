@@ -1,7 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const listId = '1280305';
-const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
+const listId = '7525800';
+const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const email = 'vali_schagerl@web.de';
 
 describe('updateSignatureList by user api test', () => {

@@ -1,6 +1,6 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
+const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 
 describe('createSignatureList api test', () => {
   it('should create a new signature list via userId', async () => {

@@ -256,7 +256,7 @@ const getSignatureList = async (
   const params = {
     TableName: signaturesTableName,
     FilterExpression:
-      'userId = :userId AND createdAt = :timestamp AND campaign.code = :campaignCode',
+      'userId = :userId AND createdAt = :timestamp AND campaign.code = :campaignCode AND attribute_not_exists(fakeScannedByUser)',
     ExpressionAttributeValues: {
       ':userId': userId,
       ':timestamp': timestamp,

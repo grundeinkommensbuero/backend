@@ -1,7 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
-const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
+const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const userWithoutConsentId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
 describe('createPledge api test', () => {

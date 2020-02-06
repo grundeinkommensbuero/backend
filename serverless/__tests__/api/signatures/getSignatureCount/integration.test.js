@@ -1,7 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const listId = '1280305';
-const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
+const listId = '7525800';
+const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const email = 'vali_schagerl@web.de';
 
 describe('getSignatureCount api test', () => {
@@ -41,6 +41,12 @@ describe('getSignatureCount api test', () => {
     expect(response.status).toEqual(200);
     expect(json).toHaveProperty('received');
     expect(json).toHaveProperty('scannedByUser');
+
+    expect(json).toHaveProperty('receivedList');
+    expect(json).toHaveProperty('scannedByUserList');
+
+    expect(json.receivedList.length).toBeGreaterThan(0);
+    expect(json.scannedByUserList.length).toBeGreaterThan(0);
   });
 
   it('should get signature count of user by user id', async () => {
@@ -58,6 +64,12 @@ describe('getSignatureCount api test', () => {
     expect(response.status).toEqual(200);
     expect(json).toHaveProperty('received');
     expect(json).toHaveProperty('scannedByUser');
+
+    expect(json).toHaveProperty('receivedList');
+    expect(json).toHaveProperty('scannedByUserList');
+
+    expect(json.receivedList.length).toBeGreaterThan(0);
+    expect(json.scannedByUserList.length).toBeGreaterThan(0);
   });
 
   it('should get signature count of user by email', async () => {
@@ -75,6 +87,12 @@ describe('getSignatureCount api test', () => {
     expect(response.status).toEqual(200);
     expect(json).toHaveProperty('received');
     expect(json).toHaveProperty('scannedByUser');
+
+    expect(json).toHaveProperty('receivedList');
+    expect(json).toHaveProperty('scannedByUserList');
+
+    expect(json.receivedList.length).toBeGreaterThan(0);
+    expect(json.scannedByUserList.length).toBeGreaterThan(0);
   });
 
   it('should not find list by list id', async () => {
@@ -112,8 +130,11 @@ describe('getSignatureCount api test', () => {
     expect(json).toHaveProperty('received');
     expect(json).toHaveProperty('scannedByUser');
 
-    expect(json.received).toEqual([]);
-    expect(json.scannedByUser).toEqual([]);
+    expect(json.received).toEqual(0);
+    expect(json.scannedByUser).toEqual(0);
+
+    expect(json.receivedList).toEqual([]);
+    expect(json.scannedByUserList).toEqual([]);
   });
 
   it('should not find user by email', async () => {

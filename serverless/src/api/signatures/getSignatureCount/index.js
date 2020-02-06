@@ -1,5 +1,3 @@
-const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
 const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getSignatureList,
@@ -8,7 +6,6 @@ const {
 } = require('../../../shared/signatures');
 const { getUserByMail } = require('../../../shared/users');
 
-const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -70,7 +67,12 @@ module.exports.handler = async event => {
 
 // Returns a list of all scans (received or byUser) for this user
 const getScansOfUser = async (userId, campaignCode) => {
-  let stats = { received: [], scannedByUser: [] };
+  let stats = {
+    received: 0,
+    scannedByUser: 0,
+    receivedList: [],
+    scannedByUserList: [],
+  };
 
   //get all lists of this user with received attribute
   const signatureLists = await getScannedSignatureListsOfUser(userId);
@@ -84,11 +86,23 @@ const getScansOfUser = async (userId, campaignCode) => {
       typeof campaignCode === 'undefined'
     ) {
       if ('received' in list) {
-        stats.received.push(...list.received);
+        for (let scan of list.received) {
+          stats.received += parseInt(scan.count);
+
+          // add campaign to scan
+          scan.campaign = list.campaign;
+          stats.receivedList.push(scan);
+        }
       }
 
       if ('scannedByUser' in list) {
-        stats.scannedByUser.push(...list.scannedByUser);
+        for (let scan of list.scannedByUser) {
+          stats.scannedByUser += parseInt(scan.count);
+
+          // add campaign to scan
+          scan.campaign = list.campaign;
+          stats.scannedByUserList.push(scan);
+        }
       }
     }
   }
