@@ -72,7 +72,7 @@ const MAIL_ATTACHMENTS = {
 
 */
 
-module.exports.handler = async event => {
+const handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
     //create a (nice to later work with) object, which campaign it is
@@ -359,4 +359,5 @@ const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
 module.exports = {
   createSignatureList,
   uploadPDF,
+  handler,
 };
