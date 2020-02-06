@@ -51,6 +51,29 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  updatePledge:
+    handler: src/api/pledges/updatePledge/index.handler
+    events:
+      - http:
+          path: pledges/{userId}
+          method: patch
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   createSignatureList:
     handler: src/api/signatures/createSignatureList/index.handler
     events:
@@ -633,6 +656,21 @@ resources:
         UserPoolId:
           Ref: CognitoUserPoolUserPool
         GenerateSecret: false
+
+    # Authorizer for general user pool
+    # https://stackoverflow.com/questions/41664708/cognito-user-pool-authorizer-with-serverless-framework
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: UserPool
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ProviderARNs:
+          - Fn::GetAtt:
+              - CognitoUserPoolUserPool
+              - Arn
 
     # Admin user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name

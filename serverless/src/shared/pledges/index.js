@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const { constructCampaignId } = require('../../../shared/utils');
+const { constructCampaignId } = require('../../shared/utils');
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.savePledge = (userId, requestBody) => {
@@ -49,12 +49,12 @@ module.exports.savePledge = (userId, requestBody) => {
   // if there is no pledges key yet we initiate it with an array,
   // otherwise we add the pledge to the array
   const updateExpression = `
-  set pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),
-  ${':city' in data ? 'city = city, :city,' : ''}
-  zipCode = zipCode, :zipCode,
-  username = username, :username,
-  referral = referral, :referral,
-  newsletterConsent = newsletterConsent, :newsletterConsent
+  set ${':city' in data ? 'city = :city,' : ''}
+  pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),
+  zipCode = :zipCode,
+  username = :username,
+  referral = :referral,
+  newsletterConsent = :newsletterConsent
   `;
 
   return ddb
