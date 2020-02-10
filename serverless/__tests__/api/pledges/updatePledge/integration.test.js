@@ -22,8 +22,6 @@ describe('updatePledge api test', () => {
       })
       .promise();
 
-    console.log('auth data', AuthenticationResult);
-
     const request = {
       method: 'PATCH',
       mode: 'cors',

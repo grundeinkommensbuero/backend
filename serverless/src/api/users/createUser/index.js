@@ -24,29 +24,25 @@ module.exports.handler = async event => {
 
       //if user has Item as property, a user was found and therefore already exists
       if ('Item' in result) {
-        return errorResponse(401, 'A pledge for this user was already made');
+        return errorResponse(401, 'Not authorized to overwrite user');
       }
 
-      try {
-        //otherwise proceed by saving the user
-        await saveUser(requestBody);
+      //otherwise proceed by saving the user
+      await saveUser(requestBody);
 
-        // return message (created)
-        return {
-          statusCode: 201,
-          headers: responseHeaders,
-          body: JSON.stringify({
-            user: { id: userId },
-            message: 'User was successfully created',
-          }),
-          isBase64Encoded: false,
-        };
-      } catch (error) {
-        console.log('error while saving user', error);
-        return errorResponse(500, 'error while saving user', error);
-      }
+      // return message (created)
+      return {
+        statusCode: 201,
+        headers: responseHeaders,
+        body: JSON.stringify({
+          user: { id: userId },
+          message: 'User was successfully created',
+        }),
+        isBase64Encoded: false,
+      };
     } catch (error) {
-      return errorResponse(500, 'Error while getting user from table', error);
+      console.log('error while saving user', error);
+      return errorResponse(500, 'error while saving user', error);
     }
   } catch (error) {
     console.log(error);
@@ -83,9 +79,5 @@ const saveUser = ({ newsletterConsent, email, userId, referral }) => {
 };
 
 const validateParams = requestBody => {
-  return (
-    'userId' in requestBody &&
-    'email' in requestBody &&
-    'newsletterConsent' in requestBody
-  );
+  return 'userId' in requestBody && 'email' in requestBody;
 };
