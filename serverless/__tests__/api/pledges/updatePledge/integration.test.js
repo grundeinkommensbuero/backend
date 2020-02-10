@@ -11,22 +11,13 @@ const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
 describe('updatePledge api test', () => {
   it('should be able to update user', async () => {
-    const { AuthenticationResult } = await cognito
-      .adminInitiateAuth({
-        AuthFlow: 'REFRESH_TOKEN',
-        UserPoolId: USER_POOL_ID,
-        ClientId: CLIENT_ID,
-        AuthParameters: {
-          REFRESH_TOKEN: refreshToken,
-        },
-      })
-      .promise();
+    const token = await authenticate();
 
     const request = {
       method: 'PATCH',
       mode: 'cors',
       headers: {
-        Authorization: AuthenticationResult.IdToken,
+        Authorization: token,
       },
       body: JSON.stringify({
         userId: userId,
@@ -44,22 +35,13 @@ describe('updatePledge api test', () => {
   });
 
   it('should not be able to change other user', async () => {
-    const { AuthenticationResult } = await cognito
-      .adminInitiateAuth({
-        AuthFlow: 'REFRESH_TOKEN',
-        UserPoolId: USER_POOL_ID,
-        ClientId: CLIENT_ID,
-        AuthParameters: {
-          REFRESH_TOKEN: refreshToken,
-        },
-      })
-      .promise();
+    const token = await authenticate();
 
     const request = {
       method: 'PATCH',
       mode: 'cors',
       headers: {
-        Authorization: AuthenticationResult.IdToken,
+        Authorization: token,
       },
 
       body: JSON.stringify({
@@ -97,3 +79,18 @@ describe('updatePledge api test', () => {
     expect(response.status).toEqual(401);
   });
 });
+
+const authenticate = async () => {
+  const { AuthenticationResult } = await cognito
+    .adminInitiateAuth({
+      AuthFlow: 'REFRESH_TOKEN',
+      UserPoolId: USER_POOL_ID,
+      ClientId: CLIENT_ID,
+      AuthParameters: {
+        REFRESH_TOKEN: refreshToken,
+      },
+    })
+    .promise();
+
+  return AuthenticationResult.IdToken;
+};
