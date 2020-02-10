@@ -1,6 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const userId = '64d87c55-4caa-4733-b689-7f1bd3defd0f';
+const randomWords = require('random-words');
+const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const uuid = require('uuid/v4');
 
 describe('createUser api test', () => {
@@ -16,7 +17,7 @@ describe('createUser api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+    const response = await fetch(`${INVOKE_URL}/users`, request);
 
     expect(response.status).toEqual(201);
   });
@@ -32,7 +33,7 @@ describe('createUser api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+    const response = await fetch(`${INVOKE_URL}/users`, request);
 
     expect(response.status).toEqual(201);
   });
@@ -48,7 +49,7 @@ describe('createUser api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+    const response = await fetch(`${INVOKE_URL}/users`, request);
 
     expect(response.status).toEqual(401);
   });
