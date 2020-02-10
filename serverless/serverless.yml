@@ -278,6 +278,29 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  updateUser:
+    handler: src/api/users/updateUser/index.handler
+    events:
+      - http:
+          path: users/{userId}
+          method: patch
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
     events:
