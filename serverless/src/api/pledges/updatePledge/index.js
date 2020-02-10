@@ -57,10 +57,7 @@ module.exports.handler = async event => {
 };
 
 const validateParams = (event, requestBody) => {
-  return (
-    ('userId' in requestBody || 'userId' in event.pathParameters) &&
-    'newsletterConsent' in requestBody
-  );
+  return 'userId' in event.pathParameters && 'newsletterConsent' in requestBody;
 };
 
 const isAuthorized = event => {
