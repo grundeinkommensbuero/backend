@@ -1,0 +1,104 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Berlin und Brandenburg sammeln zusammen: Morgen und Übermorgen gemeinsame Zuganreise.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>
+            Kick-off in Brandenburg - Berlin sammelt mit!
+          </h2>
+
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          heute schreiben wir dir zur Erinnerung: Noch einmal schlafen und dann ist das Kick-off Event in Brandenburg.
+          Samstag (08.02.) und Sonntag (09.02.) wird an verschiedenen Orten in Brandenburg gesammelt.
+          Berlin macht mit und unterstützt am Potsdamer Hauptbahnhof.
+          <br><br>
+          <h2>Zuganreise von Berlin nach Potsdam</h2>
+          Samstag und Sonntag geht’s mit dem RE1 bis Potsdam Hbf.
+          Treffpunkt: 10.25 Uhr am Alexanderplatz auf Gleis 2 ganz vorne in Fahrtrichtung.
+          Du erkennst uns an dem “Expedition Grundeinkommen” Schild und der großen goldenen Fahne.
+          Du kannst auch unabhängig von uns anreisen oder woanders einsteigen. Bitte denke daran,
+          dir vorab ein Ticket zu holen. Wir können es dir später auch erstatten.
+          Schreibe dafür eine E-Mail an <a href="mailto:support@expedition-grundeinkommen.de">support@expedition-grundeinkommen.de</a>.
+          Wenn du auch Klemmbretter, Stifte und ausgedruckte Unterschriftenlisten mitbringst, hilft das sehr.
+          Bist du dabei?
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/EqcRX8?user_email={{Address}}">
+          Ich bin dabei
+        </mj-button>
+
+        <mj-text>
+          Mit deinen Antworten unterstützt du uns, das Wochenende besser zu planen.
+          Wenn du uns am Wochenende bezüglich der Anreise erreichen musst,
+          melde dich unter dieser Nummer: 0157-55940729.
+          <mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Wir sind viele - und zusammen noch mehr!</h2>
+          Das möchten wir allen zeigen:
+          “Zusammen sammeln” wird unser Motto und deshalb auch #zusammeln Hashtag der Aktion!
+          Schick uns über <a href="https://expedition-grundeinkommen.de/socialmedia/">Social Media</a> oder <a href="mailto:support@expedition-grundeinkommen.de">E-Mail</a> Fotos von dir und anderen Menschen beim
+          Unterschriften sammeln und wir zeigen es auf unseren Social Media Kanälen unter #zusammeln.
+          Auch auf unserem <a href="https://expedition-grundeinkommen.de/blog/2020/02/04/kick-off-in-brandenburg-gemeinsames-unterschriften-sammeln/">Blog</a>
+          wird es Beiträge und Bilder zum Kick-off geben.
+          <br><br>
+          Bis Morgen beim #zusammeln Kick-off.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/EqcRX8?user_email={{Address}}" color="#fef377" border="1px solid #fef377">
+          Ich bin dabei
+        </mj-button>
+        <mj-text mj-class="section-red-text">
+          Wir freuen uns auf dich!
+          <br><br>
+          Nina und Lucia von Expedition Grundeinkommen
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Bitte unterstütze die Expedition auch finanziell.</h2>
+          Mit deiner Unterstützung bringst du unsere Initiative voran.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)<br>
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>

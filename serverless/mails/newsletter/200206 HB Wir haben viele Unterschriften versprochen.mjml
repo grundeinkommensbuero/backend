@@ -1,0 +1,119 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Das Ergebnis ist überwältigend: 6.000 Unterschriften brauchen wir,
+      um die Initiative auf den Weg zu bringen. Und 6.344 Unterschriften wurden versprochen. Wow!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>
+            Wir sind viele! Nun beantragen wir die offizielle Volksinitiative.
+          </h2>
+
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          danke, dass du Teil der Expedition Grundeinkommen bist!
+          <br><br>
+          In den letzten zwei Wochen sind wir im Land Bremen über 1.300 Menschen geworden,
+          die gemeinsam für einen Modellversuch zum Grundeinkommen kämpfen wollen. Wow!
+          <br><br>
+          Die Herausforderung ist jetzt: die Eintragung auf der Website ist noch NICHT
+          die Unterschrift zu der Volksinitiative. Die Gesetze des Land Bremens schreiben vor,
+          dass nur Unterschriften auf den ausgedruckten und handschriftlich ausgefüllten Listen gültig sind.
+          <br><br>
+          Das ist zwar viel Aufwand, aber dafür bringen wir auch tatsächlich ein Gesetz auf den Weg.
+          Wenn wir erfolgreich sind, wird es ohne Wenn und Aber umgesetzt.
+          <br><br>
+          6.000 Unterschriften brauchen wir, um die Volksinitiative auf den Weg zu bringen.
+          Genau so viele trauen wir uns laut Umfrage gemeinsam zu!
+          <br><br>
+          <h2>
+            Wie geht es jetzt weiter?
+          </h2>
+          Bald beantragen wir den Start der Unterschriftensammlung beim Land Bremen,
+          und alle bekommen dann die Listen zugeschickt. Diese müssen dann ausgedruckt,
+          unterschrieben und ans Kampagnenbüro geschickt werden.
+          <br><br>
+          <h2>Was kann ich bis dahin tun?</h2>
+          In Schleswig-Holstein und Brandenburg läuft die Unterschriftensammlung bereits.
+          In Hamburg startet sie nächste Woche. Du kennst Menschen in diesen Bundesländern?
+          Dann überzeug sie Teil der Expedition zu werden und für den Modellversuch zu unterschreiben.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/schleswig-holstein/">
+          Schleswig-Holstein
+        </mj-button>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/brandenburg/">
+          Brandenburg
+        </mj-button>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/hamburg/">
+          Hamburg
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+
+        <mj-text mj-class="section-red-text">
+          <h2>Wie läuft so eine Volksabstimmung ab?</h2>
+          Die Volksgesetzgebung läuft in Bremen und Bremerhaven in drei Stufen.
+          Zwei Unterschriftensammlungen und am Ende ein Volksentscheid.
+          In der ersten Stufe brauchen wir 5.000 gültige Unterschriften,
+          mit Puffer also 6.000. In der 2. Stufe brauchen wir 25.000 Unterschriften plus Puffer.
+          <br><br>
+          Nach jeder Stufe muss sich das Parlament mit unserem Gesetzesvorschlag befassen.
+          Nimmt das Parlament den Vorschlag nicht an, kommt es zum Volksentscheid,
+          und das ganze Land stimmt darüber ab, ob Grundeinkommen getestet wird – verbindlich.
+          Das soll nach unserem Zeitplan zeitgleich mit der nächsten Bundestagswahl 2021 stattfinden.
+          <br><br>
+          Mehr dazu findest du auch auf unserem Blog:
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/blog/2020/01/16/uber-unseren-weg-wie-funktioniert-ein-volksbegehren/" color="#fef377" border="1px solid #fef377">
+          Warum wir Volksbegehren organisieren
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Bitte unterstütze die Expedition Bremen auch finanziell.</h2>
+          Mit deiner Unterstützung bringst du unsere Initiative voran.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)<br>
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
