@@ -274,7 +274,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
-          - dynamodb:UpdateItem
+          - dynamodb:PutItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
