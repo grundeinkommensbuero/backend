@@ -33,7 +33,15 @@ const MAIL_ATTACHMENTS = {
   'hamburg-1': [
     {
       filename: 'Liste.pdf',
-      type: 'COMBINED',
+      type: 'SINGLE_SW',
+    },
+    {
+      filename: 'Newsletter.pdf',
+      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/NEWSLETTER.pdf'),
+    },
+    {
+      filename: 'Gesetzestext.pdf',
+      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/GESETZ.pdf'),
     },
   ],
   'brandenburg-1': [
