@@ -7,9 +7,10 @@ const responseHeaders = {
 };
 
 module.exports.handler = async event => {
-  //get user id from path parameter
-  const userId = event.pathParameters.userId;
   try {
+    //get user id from path parameter
+    const userId = event.pathParameters.userId;
+
     const result = await getUser(userId);
     //if user does not have Item as property, there was no user found
     if (!('Item' in result) || typeof result.Item === 'undefined') {
