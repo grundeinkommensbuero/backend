@@ -211,6 +211,7 @@ functions:
         Action:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
+          - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
