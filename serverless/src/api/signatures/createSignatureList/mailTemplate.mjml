@@ -1,11 +1,11 @@
 <mjml>
 
   <mj-head>
-    <mj-include path="../../mails/includes/head.mjml" />
+    <mj-include path="../../../../mails/includes/head.mjml" />
   </mj-head>
 
   <mj-body background-color="#f0f0f0">
-    <mj-include path="../../mails/includes/header.mjml" />
+    <mj-include path="../../../../mails/includes/header.mjml" />
     <mj-section background-color="#fef377" padding-top="40px">
       <mj-column>
         <mj-text>
@@ -16,15 +16,16 @@
           per E-Mail zu.
           <br><br>
           Bitte druck die Liste aus, unterschreibe sie und schicke sie an uns zurück.
-          Kennst du noch Menschen in deinem Umfeld, die mit dir unterschreiben
+          [[OPTIONAL_TEXT_1]]
+          <br><br>Kennst du noch Menschen in deinem Umfeld, die mit dir unterschreiben
           können? Prima: Je mehr Freund*innen und Kolleg*innen von dir mit unterschreiben,
           um so besser!
           <br><br>
           Bitte schick die Listen dann möglichst bald an uns zurück.
           Die Adresse zum Zurücksenden steht auf jeder Liste.
           <br><br>
-          Du willst auch auf der Straße Unterschriften sammeln? Perfekt! Antworte gern
-          auf diese E-Mail, und sag uns, wie wir dich unterstützen können.
+          Du willst auch auf der Straße Unterschriften sammeln? Perfekt!
+          [[OPTIONAL_TEXT_2]]
           <br><br>
           Schön, dass du dabei bist!
           <br><br>
@@ -60,6 +61,6 @@
       </mj-column>
     </mj-section>
 
-    <mj-include path="../../mails/includes/footer.mjml" />
+    <mj-include path="../../../../mails/includes/footer.mjml" />
   </mj-body>
 </mjml>

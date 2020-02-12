@@ -226,7 +226,7 @@ const handler = async event => {
                 requestBody.campaignCode
               );
 
-              await sendMail(email, attachments);
+              await sendMail(email, attachments, campaign);
             }
             return {
               statusCode: 201,
