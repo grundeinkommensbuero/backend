@@ -8,11 +8,19 @@ const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
 const CAMPAIGN_SLUGS = {
   'schleswig-holstein-1': 'schleswig-holstein',
   'brandenburg-1': 'brandenburg',
+  'berlin-1': 'berlin',
+  'hamburg-1': 'hamburg',
+  'bremen-1': 'bremen',
+  'berlin-0': 'berlin',
 };
 
 const STATES = {
   'schleswig-holstein-1': 'Schleswig-Holstein',
   'brandenburg-1': 'Brandenburg',
+  'berlin-1': 'Berlin',
+  'hamburg-1': 'Hamburg',
+  'bremen-1': 'Bremen',
+  'berlin-0': 'Berlin',
 };
 
 //Function which sends an email to welcome the user to our expedition
