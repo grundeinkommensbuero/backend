@@ -5,13 +5,11 @@ const paths = {
   mailerlite: './data/mailerlite_users.csv',
   change: './data/change_users.csv',
   signaturesTest: './data/signatures_test_users.csv',
-  typeform: './data/typeform_users.csv',
+  typeform: './data/Ergebnisse Briefaktion.csv',
 };
-const zipCodeMatcher = require('./zipCodeMatcher');
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const { getUserByMail } = require('../shared/users/getUsers');
 const {
   confirmUser,
   createUserInCognito,
@@ -24,33 +22,7 @@ const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
 // AWS Cognito limits to 10 per second, so be safe and do 5 per second
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
-const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
-
-const processTypeformUsers = async () => {
-  try {
-    const allUsers = await readCsv('typeform');
-
-    //add new users to database
-    for (let user of allUsers) {
-      const result = await getUserByMail(tableName, user.email);
-
-      // only update pinpoint for the users we already have in dynamo
-      if (result.Count !== 0) {
-        user.userId = result.Items[0].cognitoId;
-        console.log('processing', user.userId);
-        await addKickOffToPinpoint(user);
-      } else {
-        //if the user is not in dynamo create new user
-        //if user wants to (newsletter flag)
-        if (user.newsletter) {
-          // await createUser(user);
-        }
-      }
-    }
-  } catch (error) {
-    console.log('error', error);
-  }
-};
+const cognitoLimiter = new Bottleneck({ minTime: 50, maxConcurrent: 2 });
 
 //if we want to "manually" add a single user (e.g. after someone asks as via mail)
 const addUser = async (email, username) => {
@@ -68,7 +40,7 @@ const addUser = async (email, username) => {
 
 const migrateUsers = async () => {
   try {
-    const changeUsers = await readCsv('change');
+    /* const changeUsers = await readCsv('change');
     const mailerliteUsers = await readCsv('mailerlite');
 
     //remove duplicates between mailerlite and change
@@ -79,27 +51,26 @@ const migrateUsers = async () => {
           changeUser => changeUser.email === mailerliteUser.email
         ) === -1
     );
-
+    
     //merge both arrays into one
     const allUsers = changeUsers.concat(mailerliteUsersWithoutDuplicates);
+  */
 
-    //filter duplicates with already existing users in our db
-    const newUsers = await filterDuplicates(allUsers);
+    const users = await readCsv('typeform');
 
-    for (let user of newUsers) {
+    console.log('user', users[0]);
+
+    for (let user of users) {
       try {
         await createUser(user);
       } catch (error) {
         if (error.code === 'UsernameExistsException') {
           console.log('user exists', user.email, error);
+        } else {
+          console.log('different error', error);
         }
       }
     }
-
-    console.log('change users', changeUsers.length);
-    console.log('mailerlite users', mailerliteUsersWithoutDuplicates.length);
-    console.log('all users', allUsers.length);
-    console.log('minus duplicates', newUsers.length);
   } catch (error) {
     console.log('error while migrating users', error);
   }
@@ -119,14 +90,15 @@ const readCsv = source => {
         //leave out headers
         if (count > 0) {
           console.log('row', row);
-          if (source === 'change') {
-            user = {
-              email: row[0],
-              username: row[1],
-              zipCode: zipCodeMatcher.getZipCodeByCity(row[3]),
-              createdAt: new Date(row[6]).toISOString(),
-              source: source,
-            };
+          if (source === 'typeform') {
+            if (row[7] === '' && row[4] !== '') {
+              user = {
+                email: row[4],
+                zipCode: row[2],
+                createdAt: new Date(transformDate(row[9])).toISOString(),
+                source: 'typeform-bge',
+              };
+            }
           } else if (source === 'mailerlite') {
             user = {
               email: row[0],
@@ -135,28 +107,8 @@ const readCsv = source => {
               timestampConfirmation: new Date(row[9]).toISOString(),
               source: source,
             };
-          } else if (source === 'typeform') {
-            //only add user if there is a mail
-            if (row[1] !== '' || row[2] !== '') {
-              const date = new Date(row[3]);
-              console.log('date', date);
-              user = {
-                email: row[1] !== '' ? row[1] : row[2],
-                newsletter: row[1] !== '' ? true : false,
-                createdAt: date.toISOString(),
-                source: source,
-                kickOff: row[0],
-                phoneNumber: row[4] !== '' ? row[4] : 'k.A.',
-              };
-            }
-          } else {
-            user = {
-              email: row[0],
-              username: 'Test-Unterschriftenliste',
-              createdAt: new Date().toISOString(),
-              source: source,
-            };
           }
+
           if (typeof user !== 'undefined') {
             users.push(user);
           }
@@ -169,38 +121,6 @@ const readCsv = source => {
         resolve(users);
       });
   });
-};
-
-//goes through array of users and checks for duplicates
-const filterDuplicates = async users => {
-  const withoutDuplicates = [];
-  const duplicates = [];
-  for (let user of users) {
-    if (await userExists(user)) {
-      console.log('duplicate');
-      duplicates.push(user.email);
-    } else {
-      //push to array, because user does not exist
-      withoutDuplicates.push(user);
-    }
-  }
-  console.log('duplicates', duplicates);
-  return withoutDuplicates;
-};
-
-//function that checks if the user already exists
-const userExists = async user => {
-  try {
-    console.log('checking user ', user.email);
-    const result = await getUserByMail(user.email);
-    //return false if no user was found, true otherwise
-    if (result.Count === 0) {
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.log('error while getting user by mail', error);
-  }
 };
 
 const createUser = async (user, recreate = false) => {
@@ -250,3 +170,11 @@ const createUserInDynamo = (userId, user) => {
   };
   return ddb.put(params).promise();
 };
+
+// Transforms date from e.g. 13.02.2020 00:52:51 to 02.13.2020 00:52:51
+const transformDate = date => {
+  const dateArray = date.split('.');
+  return `${dateArray[1]}.${dateArray[0]}.${dateArray[2]}`;
+};
+
+migrateUsers();
