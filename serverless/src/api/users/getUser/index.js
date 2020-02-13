@@ -1,3 +1,8 @@
+/**
+ *  In comparison to getUsers this endpoint just gets one user via the path param
+ *  and the endpoint is therefore /users/{userId}
+ */
+
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
@@ -39,7 +44,7 @@ module.exports.handler = async event => {
       isBase64Encoded: false,
     };
   } catch (error) {
-    console.log('Error', error);
+    console.log('error getting user', error);
     return errorResponse(500, 'Error while getting user from table', error);
   }
 };
