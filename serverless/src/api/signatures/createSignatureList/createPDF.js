@@ -2,11 +2,19 @@ const pdfLib = require('pdf-lib');
 const bwipjs = require('bwip-js');
 const inputPdfs = require('./inputPdfs');
 
-module.exports = async function generatePdf(url, code, type, campaignCode) {
+module.exports = async function generatePdf(
+  url,
+  code,
+  type,
+  campaignCode,
+  address
+) {
   console.log('generating pdf...');
   const pdfDoc = await pdfLib.PDFDocument.load(
     inputPdfs[campaignCode][type].file
   );
+
+  const font = await pdfDoc.embedFont(pdfLib.StandardFonts.Helvetica);
 
   const pages = pdfDoc.getPages();
 
@@ -17,9 +25,20 @@ module.exports = async function generatePdf(url, code, type, campaignCode) {
   const qrCodeInDocument = await pdfDoc.embedPng(qrCode);
 
   inputPdfs[campaignCode][type].codes.forEach(codeInfo => {
-    const codeImage =
-      codeInfo.type === 'BAR' ? barcodeInDocument : qrCodeInDocument;
-    pages[codeInfo.page].drawImage(codeImage, codeInfo.position);
+    if (codeInfo.type === 'BAR') {
+      pages[codeInfo.page].drawImage(barcodeInDocument, codeInfo.position);
+    }
+    if (codeInfo.type === 'QR') {
+      pages[codeInfo.page].drawImage(qrCodeInDocument, codeInfo.position);
+    }
+    if (codeInfo.type === 'ADDRESS') {
+      const textProps = codeInfo.position;
+      textProps.font = font;
+      textProps.color = pdfLib.rgb(0, 0, 0);
+      textProps.size = 12;
+      textProps.lineHeight = 15;
+      pages[codeInfo.page].drawText(getAddressString(address), textProps);
+    }
   });
 
   const pdfBytes = await pdfDoc.save();
@@ -45,4 +64,10 @@ function getQrCode(text) {
     height: 100,
     width: 100,
   });
+}
+
+function getAddressString({ name, street, zipCode, city }) {
+  return `${name}
+${street}
+${zipCode} ${city}`;
 }

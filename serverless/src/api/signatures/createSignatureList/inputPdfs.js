@@ -89,6 +89,49 @@ module.exports = {
         },
       ],
     },
+    SERIENBRIEF: {
+      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/SERIENBRIEF.pdf'),
+      codes: [
+        {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 80,
+            y: 650,
+          },
+        },
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.HH.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.HH.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 2,
+          position: CODE_POSITIONS.HH.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 2,
+          position: CODE_POSITIONS.HH.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 3,
+          position: CODE_POSITIONS.HH.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 3,
+          position: CODE_POSITIONS.HH.QRCODE,
+        },
+      ],
+    },
   },
   'brandenburg-1': {
     COMBINED: {
