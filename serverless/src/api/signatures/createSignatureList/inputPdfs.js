@@ -130,6 +130,16 @@ module.exports = {
           page: 3,
           position: CODE_POSITIONS.HH.QRCODE,
         },
+        {
+          type: 'BAR',
+          page: 4,
+          position: CODE_POSITIONS.HH.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 4,
+          position: CODE_POSITIONS.HH.QRCODE,
+        },
       ],
     },
   },
