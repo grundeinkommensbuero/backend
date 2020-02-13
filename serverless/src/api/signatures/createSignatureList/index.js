@@ -149,7 +149,10 @@ const handler = async event => {
       campaign.code
     );
 
-    if (foundSignatureLists.Count !== 0) {
+    if (
+      foundSignatureLists.Count !== 0 &&
+      !foundSignatureLists.Items[0].manually
+    ) {
       //if there was a signature list for this day found
       //we want to update the downloads counter and send the list id and the url to the pdf as response
       const signatureList = foundSignatureLists.Items[0]; //we definitely only have one value (per user/day)
@@ -281,7 +284,6 @@ const getSignatureList = async (
       ':timestamp': timestamp,
       ':campaignCode': campaignCode,
     },
-    ProjectionExpression: 'id, pdfUrl, downloads',
   };
 
   if (startKey !== null) {
@@ -315,6 +317,7 @@ const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
       downloads: 1,
       campaign: campaign,
       createdAt: timestamp,
+      // manually: true,
     },
   };
 

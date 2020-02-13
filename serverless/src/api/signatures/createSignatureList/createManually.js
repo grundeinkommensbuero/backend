@@ -1,26 +1,103 @@
 const fs = require('fs');
-const { generateRandomId } = require('../../../shared/utils');
-const { createSignatureList, uploadPDF } = require('./');
+const {
+  generateRandomId,
+  constructCampaignId,
+} = require('../../../shared/utils');
+const { checkIfIdExists } = require('../../../shared/signatures');
+const { getUserByMail } = require('../../../shared/users');
+const { createSignatureList } = require('./');
+const parse = require('csv-parse');
 const generatePdf = require('./createPDF');
 
-const URL = 'https://xbge.de/qr/bb/?listId=';
-const CAMPAIGN = 'brandenburg-1';
-const USER_ID = '03f14bbb-92ec-4ff4-8ad3-8bf01473a7c0';
-const NAME = 'vali';
+const URL = 'https://xbge.de/qr/hh/?listId=';
+const CAMPAIGN_CODE = 'hamburg-1';
+const PATH = './Ergebnisse Briefaktion.csv';
 
-createListManually = async () => {
+const createListManually = async (userId, user) => {
   //we only want the current day (YYYY-MM-DD), then it is also easier to filter
   const timestamp = new Date().toISOString().substring(0, 10);
-  const pdfId = generateRandomId(7);
 
-  console.log('pdf id', pdfId);
+  const campaign = constructCampaignId(CAMPAIGN_CODE);
+  //because the id is quite small we need to check if the newly created one already exists (unlikely)
+  let idExists = true;
+  let pdfId;
 
-  const pdfBytes = await generatePdf(URL, pdfId, 'COMBINED', 'brandenburg-1');
+  while (idExists) {
+    pdfId = generateRandomId(7);
+    idExists = await checkIfIdExists(pdfId);
+    console.log('id already exists?', idExists);
+  }
 
-  const { Location } = await uploadPDF(pdfId, pdfBytes);
-  await createSignatureList(pdfId, timestamp, Location, CAMPAIGN, USER_ID);
+  const pdfBytes = await generatePdf(
+    URL,
+    pdfId,
+    'SERIENBRIEF',
+    'hamburg-1',
+    user
+  );
 
-  fs.writeFileSync(`./list_bb_${NAME}.pdf`, pdfBytes);
+  await createSignatureList(pdfId, timestamp, '', campaign, userId);
+
+  fs.writeFileSync(`./lists/list_hh_${user.name}.pdf`, pdfBytes);
 };
 
-createListManually();
+processCsv = async () => {
+  try {
+    const users = await readCsv();
+
+    for (let user of users) {
+      // Get userId of user
+      const result = await getUserByMail(user.email);
+
+      if (result.Count === 0) {
+        console.log('no user found with that email', user.email);
+      } else {
+        userId = result.Items[0].cognitoId;
+
+        // Create signature list
+        await createListManually(userId, user);
+      }
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+//reads and parses the csv file and returns a promise containing
+//an array of the users
+const readCsv = () => {
+  return new Promise(resolve => {
+    const users = [];
+    let count = 0;
+
+    fs.createReadStream(PATH)
+      .pipe(parse({ delimiter: ',' }))
+      .on('data', row => {
+        let user;
+        //leave out headers
+        if (count > 0) {
+          if (row[7] === '' && row[4] !== '') {
+            user = {
+              name: row[0],
+              street: row[1],
+              zipCode: row[2],
+              city: row[3],
+              email: row[4],
+            };
+          }
+
+          if (typeof user !== 'undefined') {
+            users.push(user);
+          }
+        }
+
+        count++;
+      })
+      .on('end', () => {
+        console.log('finished parsing');
+        resolve(users);
+      });
+  });
+};
+
+processCsv();
