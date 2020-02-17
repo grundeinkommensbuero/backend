@@ -89,6 +89,21 @@ module.exports = {
         },
       ],
     },
+    SINGLE: {
+      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/5er_FARBIG.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.HH.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.HH.QRCODE,
+        },
+      ],
+    },
     SERIENBRIEF: {
       file: fs.readFileSync(__dirname + '/pdf/hamburg-1/SERIENBRIEF.pdf'),
       codes: [

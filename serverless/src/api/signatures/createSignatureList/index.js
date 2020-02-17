@@ -36,8 +36,12 @@ const MAIL_ATTACHMENTS = {
       file: fs.readFileSync(__dirname + '/pdf/hamburg-1/TIPPS.pdf'),
     },
     {
-      filename: 'Liste.pdf',
+      filename: 'Liste_schwarz-weiss.pdf',
       type: 'SINGLE_SW',
+    },
+    {
+      filename: 'Liste_Farbig.pdf',
+      type: 'SINGLE',
     },
     {
       filename: 'Newsletter.pdf',
