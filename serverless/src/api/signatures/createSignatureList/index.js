@@ -32,6 +32,10 @@ const qrCodeUrls = {
 const MAIL_ATTACHMENTS = {
   'hamburg-1': [
     {
+      filename: 'Tipps_zum_Unterschriftensammeln.pdf',
+      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/TIPPS.pdf'),
+    },
+    {
       filename: 'Liste.pdf',
       type: 'SINGLE_SW',
     },
