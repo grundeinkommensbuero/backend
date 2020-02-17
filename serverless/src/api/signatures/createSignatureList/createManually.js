@@ -9,7 +9,12 @@ const { createSignatureList } = require('./');
 const parse = require('csv-parse');
 const generatePdf = require('./createPDF');
 
-const URL = 'https://xbge.de/qr/hh/?listId=';
+const URLS = {
+  'hamburg-1': 'https://xbge.de/qr/hh/?listId=',
+  'schleswig-holstein-1': 'https://xbge.de/qr/sh/?listId=',
+  'brandenburg-1': 'https://xbge.de/qr/bb/?listId=',
+};
+
 const CAMPAIGN_CODE = 'hamburg-1';
 const PATH = './Ergebnisse Briefaktion.csv';
 
@@ -29,10 +34,10 @@ const createListManually = async (userId, user) => {
   }
 
   const pdfBytes = await generatePdf(
-    URL,
+    URLS[CAMPAIGN_CODE],
     pdfId,
     'SERIENBRIEF',
-    'hamburg-1',
+    CAMPAIGN_CODE,
     user
   );
 
