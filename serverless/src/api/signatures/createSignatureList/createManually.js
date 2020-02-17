@@ -36,7 +36,7 @@ const createListManually = async (userId, user) => {
     user
   );
 
-  await createSignatureList(pdfId, timestamp, '', campaign, userId);
+  await createSignatureList(pdfId, timestamp, undefined, campaign, userId);
 
   fs.writeFileSync(`./lists/list_hh_${user.name}.pdf`, pdfBytes);
 };
@@ -44,13 +44,13 @@ const createListManually = async (userId, user) => {
 processCsv = async () => {
   try {
     const users = await readCsv();
-
+    console.log('users length', users.length);
     for (let user of users) {
       // Get userId of user
       const result = await getUserByMail(user.email);
 
       if (result.Count === 0) {
-        console.log('no user found with that email', user.email);
+        throw new Error(`no user found with that email ${user.email}`);
       } else {
         userId = result.Items[0].cognitoId;
 
@@ -76,17 +76,15 @@ const readCsv = () => {
         let user;
         //leave out headers
         if (count > 0) {
-          if (row[7] === '' && row[4] !== '') {
-            user = {
-              name: row[0],
-              street: row[1],
-              zipCode: row[2],
-              city: row[3],
-              email: row[4],
-            };
-          }
+          user = {
+            name: row[0],
+            street: row[1],
+            zipCode: row[2],
+            city: row[3],
+            email: row[7] === '' ? row[4] : row[7],
+          };
 
-          if (typeof user !== 'undefined') {
+          if (typeof user !== 'undefined' && user.email !== '') {
             users.push(user);
           }
         }

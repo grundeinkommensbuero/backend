@@ -20,9 +20,9 @@ const CONFIG = require('../config');
 const tableName = CONFIG.PROD_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
-// AWS Cognito limits to 10 per second, so be safe and do 5 per second
+// AWS Cognito limits to 10 per second, so be safe and do x per second
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
-const cognitoLimiter = new Bottleneck({ minTime: 50, maxConcurrent: 2 });
+const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 
 //if we want to "manually" add a single user (e.g. after someone asks as via mail)
 const addUser = async (email, username) => {
@@ -65,7 +65,7 @@ const migrateUsers = async () => {
         await createUser(user);
       } catch (error) {
         if (error.code === 'UsernameExistsException') {
-          console.log('user exists', user.email, error);
+          console.log('user exists', user.email);
         } else {
           console.log('different error', error);
         }
