@@ -1,0 +1,98 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Letztes Wochenende hatten wir einen gelungenen Sammel-Kick-off in Brandenburg!
+      Allein am Potsdamer Hauptbahnhof konnten wir über 200 Unterschriften sammeln.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          letztes Wochenende hatten wir einen gelungenen Sammel-Kick-off in Brandenburg!
+          Allein am Potsdamer Hauptbahnhof konnten wir über 200 Unterschriften sammeln.
+          Vielen Dank an alle, die am Wochenende fleißig gesammelt haben.
+          <br><br>
+          Bitte denk daran die Listen per Post abzuschicken. Aber erstmal ganz wichtig:
+          Trage deine gesammelten Unterschriften schon vorab in den Sammelbalken ein.
+          Folge einfach diesem <a href="https://expedition-grundeinkommen.de/qr/bb/?userId={{User.UserId}}">Link</a> oder scannen den QR-Code auf deiner Liste.
+          So machen wir unseren aktuellen Stand und Fortschritt auf der Webseite sichtbar!
+          <br><br>
+          <h2>Werde Ortsgruppen-Koordinator*in</h2>
+          Findest du das Grundeinkommen und unsere Expedition spannend?
+          Hast du Lust, als Teil der Expedition Dinge in deiner Region in die Hand zu nehmen?
+          Dann werde Ortsgruppen-Koordinator*in für Brandenburg!
+          <br><br>
+          Als Koordinator*in bist du Ansprechpartner*in in deiner Stadt oder Region.
+          Du bist frei in deiner Aufgabengestaltung.
+          <br><br>
+          In unserem Blogbeitrag erfährst du mehr:
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/blog/2020/02/13/werde-ortsgruppen-koordinatorin-fur-brandenburg/">
+          Klingt spannend
+        </mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+
+          <h2>Unterschriftenlisten per Post</h2>
+          Du kannst selbst keine Unterschriftenlisten ausdrucken? Gerne schicken wir dir einige Exemplare per Post zu!
+
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/NzwTfY?user_email={{Address}}" color="#fef377" border="1px solid #fef377">
+          Listen per Post
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Lasst uns gemeinsam das nächste Sammelziel von 2.000 Unterschriften erreichen!
+          <br><br>
+          Lucia vom Expeditionsteam
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+
+
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Bitte unterstütze die Expedition auch finanziell.</h2>
+          Mit deiner Unterstützung bringst du unsere Initiative voran.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)<br>
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
