@@ -39,6 +39,8 @@ module.exports.handler = async event => {
     //create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(campaignCode);
 
+    let usedQrCode = false;
+
     try {
       let listToUpdateId;
 
@@ -54,6 +56,9 @@ module.exports.handler = async event => {
         }
 
         listToUpdateId = listId;
+
+        // If the list id was passed, the user used the qr code
+        usedQrCode = true;
       } else {
         // userId or email was provided,
         // therefore we want to find a list for this user
@@ -82,7 +87,7 @@ module.exports.handler = async event => {
 
       // Proceed by updating dynamo resource
       try {
-        await updateSignatureList(listToUpdateId, count);
+        await updateSignatureList(listToUpdateId, count, usedQrCode);
         // return message (no content)
         return {
           statusCode: 204,
@@ -104,12 +109,13 @@ module.exports.handler = async event => {
 };
 
 //function to set the count for the signature list
-const updateSignatureList = (id, count) => {
+const updateSignatureList = (id, count, usedQrCode) => {
   //needs to be array because append_list works with an array
   const countObject = [
     {
       count: parseInt(count),
       timestamp: new Date().toISOString(),
+      usedQrCode,
     },
   ];
   const params = {
