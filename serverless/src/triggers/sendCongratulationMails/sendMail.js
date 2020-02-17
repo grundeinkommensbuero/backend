@@ -1,9 +1,8 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 const ses = new AWS.SES({ region: 'eu-central-1' });
-const fs = require('fs');
 
-const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
+const htmlMail = require('./mailTemplate.html').default;
 
 const GOALS = {
   'schleswig-holstein-1': '25.000',

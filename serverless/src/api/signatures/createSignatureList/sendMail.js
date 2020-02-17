@@ -1,9 +1,8 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 const ses = new AWS.SES();
-const fs = require('fs');
 
-const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
+const htmlMail = require('./mailTemplate.html').default;
 
 //Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, attachments, campaign) => {

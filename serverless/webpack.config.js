@@ -24,10 +24,7 @@ const CopyStaticFilesPlugin = () => ({
 
     if (moduleName) {
       console.log('module has static file dependencies:', moduleName);
-      new CopyWebpackPlugin([
-        `**/${moduleName}/mailTemplate.html`,
-        `**/${moduleName}/**/*.pdf`,
-      ]).apply(compiler);
+      new CopyWebpackPlugin([`**/${moduleName}/**/*.pdf`]).apply(compiler);
     } else {
     }
   },
