@@ -96,8 +96,8 @@ module.exports = {
           type: 'ADDRESS',
           page: 0,
           position: {
-            x: 80,
-            y: 650,
+            x: 67,
+            y: 660,
           },
         },
         {
