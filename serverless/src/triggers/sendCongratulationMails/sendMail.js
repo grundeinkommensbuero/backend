@@ -8,12 +8,15 @@ const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
 const GOALS = {
   'schleswig-holstein-1': '25.000',
   'brandenburg-1': '25.000',
+  'hamburg-1': '12.000',
+  'bremen-1': '6.000',
+  'berlin-1': '25.000',
 };
 
 const STATES = {
   'schleswig-holstein': 'Schleswig-Holstein',
   brandenburg: 'Brandenburg',
-  hamburg: 'Schleswig-Holstein',
+  hamburg: 'Hamburg',
   berlin: 'Berlin',
   bremen: 'Bremen',
 };
