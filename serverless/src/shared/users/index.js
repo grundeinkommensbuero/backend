@@ -32,7 +32,6 @@ const getUserByMail = async (email, startKey = null) => {
   //call same function again, if there is no user found, but not
   //the whole db has been scanned
   if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    console.log('call getUserByMail recursively');
     return getUserByMail(email, result.LastEvaluatedKey);
   } else {
     return result;

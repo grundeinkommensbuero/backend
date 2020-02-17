@@ -21,6 +21,22 @@ describe('updateSignatureList by user api test', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('should update signature list by list id with parsed count', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({
+        count: '6',
+        listId: listId,
+        campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
   it('should not find signature list by list id ', async () => {
     const request = {
       method: 'PATCH',
@@ -107,6 +123,54 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: 6,
+        campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have incorrect count', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({
+        listId: listId,
+        count: 'blub',
+        campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have incorrect count', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({
+        listId: listId,
+        count: 5000,
+        campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have incorrect count', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({
+        listId: listId,
+        count: -4,
         campaignCode: 'schleswig-holstein-1',
       }),
     };

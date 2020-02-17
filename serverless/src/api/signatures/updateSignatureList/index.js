@@ -22,25 +22,22 @@ module.exports.handler = async event => {
   try {
     //get user id from path parameter
     const body = JSON.parse(event.body);
-    const { count, listId, email, campaignCode } = body;
-    let { userId } = body;
+    const { listId, email, campaignCode } = body;
+    let { userId, count } = body;
+
+    //if the one of the needed params is somehow undefined return error
+    if (!validateParams(listId, userId, email, count, campaignCode)) {
+      return errorResponse(
+        400,
+        'List id (or user id) or count not provided or incorrect in request'
+      );
+    }
+
+    count = parseInt(count);
 
     //check which pledge it is (e.g. pledgeId='brandenburg-1')
     //create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(campaignCode);
-
-    //if the one of the needed params is somehow undefined return error
-    if (
-      (typeof listId === 'undefined' &&
-        typeof userId === 'undefined' &&
-        typeof email === 'undefined') ||
-      typeof count === 'undefined'
-    ) {
-      return errorResponse(
-        400,
-        'List id (or user id) or count not provided in request'
-      );
-    }
 
     try {
       let listToUpdateId;
@@ -180,4 +177,20 @@ const getFirstSignatureListOfUser = async (userId, campaignCode) => {
 
   console.log('first list', firstList);
   return firstList;
+};
+
+const validateParams = (listId, userId, email, count) => {
+  if (
+    (typeof listId === 'undefined' &&
+      typeof userId === 'undefined' &&
+      typeof email === 'undefined') ||
+    typeof count === 'undefined'
+  ) {
+    return false;
+  }
+
+  const parsedCount = parseInt(count);
+  return (
+    Number.isInteger(parsedCount) && parsedCount >= 0 && parsedCount < 1000
+  );
 };
