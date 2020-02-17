@@ -17,13 +17,24 @@ const getSignatureList = id => {
 //function to get signature lists for this particular user
 const getSignatureListsOfUser = async (
   userId,
+  campaignCode = null,
   signatureLists = [],
   startKey = null
 ) => {
+  let filter;
+  if (campaignCode) {
+    filter = 'userId = :userId AND campaign.code = :campaignCode';
+  } else {
+    filter = 'userId = :userId';
+  }
+
   const params = {
     TableName: tableName,
-    FilterExpression: 'userId = :userId',
-    ExpressionAttributeValues: { ':userId': userId },
+    FilterExpression: filter,
+    ExpressionAttributeValues: {
+      ':userId': userId,
+      ':campaignCode': campaignCode,
+    },
   };
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
@@ -38,6 +49,7 @@ const getSignatureListsOfUser = async (
     console.log('call get lists recursively');
     return getSignatureListsOfUser(
       userId,
+      campaignCode,
       signatureLists,
       result.LastEvaluatedKey
     );

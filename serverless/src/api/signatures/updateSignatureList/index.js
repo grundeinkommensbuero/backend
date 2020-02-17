@@ -160,7 +160,7 @@ const createSignatureList = async (userId, campaign) => {
 // Function to get the first list of the user
 const getFirstSignatureListOfUser = async (userId, campaignCode) => {
   // First get all lists for this user
-  const signatureLists = await getSignatureListsOfUser(userId);
+  const signatureLists = await getSignatureListsOfUser(userId, campaignCode);
 
   // if result does not have Item as property, there was no list found
   if (signatureLists.length === 0) {
@@ -172,15 +172,12 @@ const getFirstSignatureListOfUser = async (userId, campaignCode) => {
 
   for (let list of signatureLists) {
     // Check if this list was created earlier than the current firstList
-    // and if the list is from the same campaign
-    if (
-      new Date(list.createdAt) < new Date(firstList.createdAt) &&
-      list.campaign.code === campaignCode
-    ) {
+    if (new Date(list.createdAt) < new Date(firstList.createdAt)) {
       console.log(`${list.createdAt} is earlier than ${firstList.createdAt}`);
       firstList = list;
     }
   }
 
+  console.log('first list', firstList);
   return firstList;
 };
