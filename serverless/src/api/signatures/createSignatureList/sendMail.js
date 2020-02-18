@@ -25,24 +25,17 @@ const sendMail = (email, attachments, campaign) => {
 
 const customEmail = campaign => {
   let optionalText1 = '';
-  let optionalText2 = '';
 
   if (campaign.state === 'hamburg') {
-    optionalText1 = `Ganz wichtig: Der Gesetzentwurf (ebenfalls im Anhang) muss immer mitgeführt werden. 
-    Interessierte Personen sollen die Möglichkeit haben, vor Ort beim Unterschreiben hineingucken 
-    und selbst nachlesen zu können. Den Gesetzentwurf beim Sammeln in mehrfacher Ausführung dabei zu haben, ist daher sinnvoll. 
+    optionalText1 = `Ganz wichtig: Der Gesetzentwurf (ebenfalls im Anhang) muss immer mitgeführt werden.
+    Interessierte Personen sollen die Möglichkeit haben, vor Ort beim Unterschreiben hineingucken
+    und selbst nachlesen zu können. Den Gesetzentwurf beim Sammeln in mehrfacher Ausführung dabei zu haben, ist daher sinnvoll.
     Unterschriftenliste und "auf dem Laufenden bleiben" Liste sollten außerdem getrennt voneinander ausgedruckt werden.
-    
-    `;
 
-    optionalText2 = `Tipps zum Sammeln findest du in den bereits existierenden 
-    <a href="https://expedition-grundeinkommen.de/downloads/">Sammelleitfäden</a> 
-    auf unserer Webseite. Bald wird es auch einen eigenen Hamburger Sammelleitfaden geben.`;
+    `;
   }
 
-  return htmlMail
-    .replace(/\[\[OPTIONAL_TEXT_1\]\]/gi, optionalText1)
-    .replace(/\[\[OPTIONAL_TEXT_2\]\]/gi, optionalText2);
+  return htmlMail.replace(/\[\[OPTIONAL_TEXT_1\]\]/gi, optionalText1);
 };
 
 module.exports = sendMail;

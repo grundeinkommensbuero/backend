@@ -11,7 +11,7 @@
         <mj-text>
           Hallo,
           <br><br>
-          danke, dass du dir die Unterschriftsliste heruntergeladen hast.
+          danke, dass du dir die Unterschriftenliste heruntergeladen hast.
           Zum einfacheren Weiterleiten schicken wir dir die Liste noch einmal
           per E-Mail zu.
           <br><br>
@@ -25,7 +25,7 @@
           Die Adresse zum Zurücksenden steht auf jeder Liste.
           <br><br>
           Du willst auch auf der Straße Unterschriften sammeln? Perfekt!
-          [[OPTIONAL_TEXT_2]]
+          Einen Sammelleitfaden mit Tipps zum Sammeln findest du anbei.
           <br><br>
           Schön, dass du dabei bist!
           <br><br>
@@ -35,7 +35,7 @@
       </mj-column>
     </mj-section>
 
-    <mj-section mj-class="section-red">
+    <mj-section mj-class="section-red" padding-top="40px">
       <mj-column>
         <mj-text mj-class="section-red-text">
           <h2>Du magst uns auch mit Geld helfen?</h2>
