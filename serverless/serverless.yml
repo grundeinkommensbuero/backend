@@ -25,6 +25,7 @@ provider:
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
     STAGE: ${self:custom.stage}
+    IMAGE_BUCKET: xbge-profile-pictures
 
 plugins:
   - serverless-iam-roles-per-function
@@ -399,8 +400,36 @@ functions:
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
           - s3:PutObject
           - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+
+  processUploadedImage:
+    handler: src/triggers/processUploadedImage/index.handler
+    events:
+      - s3:
+          bucket: xbge-profile-pictures
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: originals/
+    environment:
+      S3_IMAGES_URL: https://xbge-profile-pictures.s3.eu-central-1.amazonaws.com
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: Allow
+        Action:
+          - s3:GetObject
+          - s3:HeadObject
         Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
 
   # Admin cognito auth triggers
