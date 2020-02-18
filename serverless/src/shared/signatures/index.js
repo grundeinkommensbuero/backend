@@ -22,8 +22,10 @@ const getSignatureListsOfUser = async (
   startKey = null
 ) => {
   let filter;
+  let values = { ':userId': userId };
   if (campaignCode) {
     filter = 'userId = :userId AND campaign.code = :campaignCode';
+    values[':campaignCode'] = campaignCode;
   } else {
     filter = 'userId = :userId';
   }
@@ -31,10 +33,7 @@ const getSignatureListsOfUser = async (
   const params = {
     TableName: tableName,
     FilterExpression: filter,
-    ExpressionAttributeValues: {
-      ':userId': userId,
-      ':campaignCode': campaignCode,
-    },
+    ExpressionAttributeValues: values,
   };
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
