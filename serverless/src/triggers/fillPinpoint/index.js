@@ -186,11 +186,16 @@ const updateEndpoint = async (user, verified) => {
     typeof pledge !== 'undefined' ? parseInt(pledge.signatureCount) : 0;
   signatureCount = isNaN(signatureCount) ? 0 : signatureCount;
 
-  // Check if the user has already sent lists to us
+  // Check if the user has already sent lists to us or scanned
   let listsReceived = false;
+  let listsScanned = false;
   for (let list of user.signatureLists) {
     if ('received' in list && list.received.length > 0) {
       listsReceived = true;
+    }
+
+    if ('scannedByUser' in list && list.scannedByUser.length > 0) {
+      listsScanned = true;
     }
   }
 
@@ -224,6 +229,7 @@ const updateEndpoint = async (user, verified) => {
             : 'undefined',
         ],
         HasSentLists: [listsReceived ? 'Yes' : 'No'],
+        HasScannedLists: [listsScanned ? 'Yes' : 'No'],
       },
       EffectiveDate: createdAt,
       Location: {
