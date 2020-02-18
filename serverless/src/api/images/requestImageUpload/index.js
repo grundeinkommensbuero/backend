@@ -1,10 +1,14 @@
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const uuid = require('uuid/v4');
+const { getUser } = require('../../../shared/users');
+const { errorResponse } = require('../../../shared/apiResponse');
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 };
+
+const bucket = process.env.IMAGE_BUCKET;
 
 module.exports.handler = async event => {
   try {
@@ -49,9 +53,9 @@ const getSignedUrl = (userId, contentType) => {
   const imageId = uuid();
 
   const params = {
-    Bucket: 'xbge-profile-pictures',
+    Bucket: bucket,
     ACL: 'public-read',
-    Key: `${imageId}.${getFileSuffix(contentType)}`,
+    Key: `originals/${imageId}.${getFileSuffix(contentType)}`,
     ContentType: contentType,
     Metadata: {
       contentType,
@@ -60,20 +64,6 @@ const getSignedUrl = (userId, contentType) => {
   };
 
   return s3.getSignedUrlPromise('putObject', params);
-};
-
-// Updates user to save url of image
-const updateUser = (userId, url) => {
-  const params = {
-    TableName: tableName,
-    Key: { cognitoId: userId },
-    UpdateExpression: 'SET profilePicture = :url',
-    ExpressionAttributeValues: {
-      ':url': url,
-    },
-  };
-
-  return ddb.update(params).promise();
 };
 
 const getFileSuffix = contentType => {
