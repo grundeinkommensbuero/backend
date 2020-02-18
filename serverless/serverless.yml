@@ -389,6 +389,20 @@ functions:
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
 
+  requestImageUpload:
+    handler: src/api/images/requestImageUpload/index.handler
+    events:
+      - http:
+          path: images/upload-url
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+
   # Admin cognito auth triggers
 
   createAuthChallenge:
