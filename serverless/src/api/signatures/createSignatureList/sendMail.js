@@ -26,11 +26,12 @@ const customEmail = campaign => {
   let optionalText1 = '';
 
   if (campaign.state === 'hamburg') {
-    optionalText1 = `Ganz wichtig: Der Gesetzentwurf (ebenfalls im Anhang) muss immer mitgeführt werden.
-    Interessierte Personen sollen die Möglichkeit haben, vor Ort beim Unterschreiben hineingucken
-    und selbst nachlesen zu können. Den Gesetzentwurf beim Sammeln in mehrfacher Ausführung dabei zu haben, ist daher sinnvoll.
-    Unterschriftenliste und "auf dem Laufenden bleiben" Liste sollten außerdem getrennt voneinander ausgedruckt werden.
-
+    optionalText1 = `Bitte drucke die Unterschriftenliste und die Liste für
+    E-Mail-Adressen („Auf dem Laufenden bleiben"-Liste) auf getrennten Blättern aus.
+    Ganz wichtig: Der Gesetzentwurf (ebenfalls im Anhang) muss immer mitgeführt
+    werden. Interessierte Personen sollen die Möglichkeit haben, vor Ort beim
+    Unterschreiben hineingucken und selbst nachlesen zu können. Den Gesetzentwurf
+    beim Sammeln in mehrfacher Ausführung dabei zu haben, ist daher sinnvoll.
     `;
   }
 
