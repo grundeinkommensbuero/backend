@@ -3,6 +3,7 @@ const s3 = new AWS.S3();
 const uuid = require('uuid/v4');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const { getFileSuffix } = require('../../../shared/utils');
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -64,8 +65,4 @@ const getSignedUrl = (userId, contentType) => {
   };
 
   return s3.getSignedUrlPromise('putObject', params);
-};
-
-const getFileSuffix = contentType => {
-  return contentType.split('/')[1];
 };
