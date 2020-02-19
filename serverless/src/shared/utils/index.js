@@ -23,4 +23,8 @@ const generateRandomId = length => {
   return result;
 };
 
-module.exports = { constructCampaignId, generateRandomId };
+const getFileSuffix = contentType => {
+  return contentType.split('/')[1];
+};
+
+module.exports = { constructCampaignId, generateRandomId, getFileSuffix };

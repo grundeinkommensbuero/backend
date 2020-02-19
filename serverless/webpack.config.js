@@ -52,10 +52,6 @@ module.exports = {
           },
         ],
       },
-      {
-        test: /\.node$/,
-        use: 'node-loader',
-      },
     ],
   },
   stats: 'errors-warnings', // less logging

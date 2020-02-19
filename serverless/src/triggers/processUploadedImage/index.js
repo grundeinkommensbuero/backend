@@ -1,10 +1,14 @@
 const AWS = require('aws-sdk');
-const sharp = require('sharp');
+const jimp = require('jimp/dist');
+const uuid = require('uuid/v4');
+const { getFileSuffix } = require('../../shared/utils');
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 const bucketUrl = process.env.S3_IMAGES_URL;
 const tableName = process.env.USERS_TABLE_NAME;
 const bucket = process.env.IMAGE_BUCKET;
+
+const sizes = [200, 500, 900];
 
 module.exports.handler = async event => {
   try {
@@ -22,17 +26,26 @@ module.exports.handler = async event => {
 
     // S3 metadata field names are converted to lowercase
     const userId = s3Object.Metadata.userid;
+    const contentType = s3Object.Metadata.contenttype;
 
     console.log('s3 object', s3Object);
 
+    const image = await jimp.read(s3Object.Body);
+    // Use array of promises so that we can use promise all
+    // to handle operations in parallel
+    const images = await Promise.all(
+      sizes.map(size => resizeAndUploadImage(image, size, contentType, userId))
+    );
+
     const imageUrls = {
-      original: `${bucketUrl}/originals/${originalFilename}`,
+      original: `${bucketUrl}/${originalFilename}`,
+      small: images[0].Location,
+      medium: images[1].Location,
+      big: images[2].Location,
     };
 
-    // resizeImage(data.Body);
-
     // Now save image urls in db
-    // await updateUser(userId, imageUrls);
+    await updateUser(userId, imageUrls);
   } catch (error) {
     console.log('Error', error);
     return event;
@@ -53,15 +66,48 @@ const updateUser = (userId, urls) => {
   return ddb.update(params).promise();
 };
 
+// Get image from S3
 const getImage = filename => {
-  var params = {
+  const params = {
     Bucket: bucket,
-    Key: `originals/${filename}"`,
+    Key: filename,
   };
 
   return s3.getObject(params).promise();
 };
 
-const resizeImage = buffer => {
-  sharp(buffer).resize();
+// Resize and upload image to S3
+const resizeAndUploadImage = async (image, width, contentType, userId) => {
+  const resizedImage = await resizeImage(image, width);
+  const buffer = await resizedImage.getBufferAsync(contentType);
+
+  return uploadImage(buffer, contentType, userId);
+};
+
+// Read image from buffer and resize image using jimp
+const resizeImage = async (image, width) => {
+  const clone = await image.clone();
+
+  return clone.resize(width, jimp.AUTO);
+};
+
+const uploadImage = async (buffer, contentType, userId) => {
+  console.log('uploading image');
+  const imageId = uuid();
+
+  const params = {
+    Bucket: bucket,
+    ACL: 'public-read',
+    Key: `resized/${imageId}.${getFileSuffix(contentType)}`,
+    Body: buffer,
+    ContentType: contentType,
+    Metadata: {
+      contentType,
+      userId,
+    },
+  };
+
+  console.log('params', params);
+
+  return s3.upload(params).promise();
 };
