@@ -368,8 +368,8 @@ functions:
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
-    events: # Call this function every day at 8 (via cloudwatch event)
-      - schedule: cron(0 19 * * ? *)
+    events: # Call this function every day at 8:30 (via cloudwatch event)
+      - schedule: cron(30 19 * * ? *)
     memorySize: 2048 # memorySize for this specific function.
     timeout: 300 # Timeout for this specific function.
     iamRoleStatements:
