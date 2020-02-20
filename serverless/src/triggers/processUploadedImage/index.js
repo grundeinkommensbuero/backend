@@ -31,10 +31,13 @@ module.exports.handler = async event => {
     console.log('s3 object', s3Object);
 
     const image = await jimp.read(s3Object.Body);
+
     // Use array of promises so that we can use promise all
     // to handle operations in parallel
     const images = await Promise.all(
-      sizes.map(size => resizeAndUploadImage(image, size, contentType, userId))
+      sizes.map(size =>
+        resizeAndUploadImage(image, size, contentType, userId, originalFilename)
+      )
     );
 
     const imageUrls = {
@@ -77,11 +80,17 @@ const getImage = filename => {
 };
 
 // Resize and upload image to S3
-const resizeAndUploadImage = async (image, width, contentType, userId) => {
+const resizeAndUploadImage = async (
+  image,
+  width,
+  contentType,
+  userId,
+  originalFilename
+) => {
   const resizedImage = await resizeImage(image, width);
   const buffer = await resizedImage.getBufferAsync(contentType);
 
-  return uploadImage(buffer, contentType, userId);
+  return uploadImage(buffer, contentType, userId, originalFilename);
 };
 
 // Read image from buffer and resize image using jimp
@@ -91,7 +100,7 @@ const resizeImage = async (image, width) => {
   return clone.resize(width, jimp.AUTO);
 };
 
-const uploadImage = async (buffer, contentType, userId) => {
+const uploadImage = async (buffer, contentType, userId, originalFilename) => {
   console.log('uploading image');
   const imageId = uuid();
 
@@ -104,6 +113,7 @@ const uploadImage = async (buffer, contentType, userId) => {
     Metadata: {
       contentType,
       userId,
+      original: originalFilename,
     },
   };
 
