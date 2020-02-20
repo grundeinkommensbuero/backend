@@ -8,7 +8,7 @@ const bucketUrl = process.env.S3_IMAGES_URL;
 const tableName = process.env.USERS_TABLE_NAME;
 const bucket = process.env.IMAGE_BUCKET;
 
-const sizes = [200, 500, 900];
+const sizes = [200, 500, 900, 1200];
 
 module.exports.handler = async event => {
   try {
@@ -42,13 +42,16 @@ module.exports.handler = async event => {
 
     const imageUrls = {
       original: `${bucketUrl}/${originalFilename}`,
-      small: images[0].Location,
-      medium: images[1].Location,
+      tiny: images[0].Location,
+      small: images[1].Location,
+      medium: images[2].Location,
       big: images[2].Location,
     };
 
     // Now save image urls in db
     await updateUser(userId, imageUrls);
+
+    return event;
   } catch (error) {
     console.log('Error', error);
     return event;
@@ -87,17 +90,19 @@ const resizeAndUploadImage = async (
   userId,
   originalFilename
 ) => {
-  const resizedImage = await resizeImage(image, width);
-  const buffer = await resizedImage.getBufferAsync(contentType);
+  const buffer = await resizeImage(image, width, contentType);
 
   return uploadImage(buffer, contentType, userId, originalFilename);
 };
 
 // Read image from buffer and resize image using jimp
-const resizeImage = async (image, width) => {
+const resizeImage = async (image, width, contentType) => {
   const clone = await image.clone();
 
-  return clone.resize(width, jimp.AUTO);
+  return clone
+    .resize(width, jimp.AUTO)
+    .quality(60)
+    .getBufferAsync(contentType);
 };
 
 const uploadImage = async (buffer, contentType, userId, originalFilename) => {

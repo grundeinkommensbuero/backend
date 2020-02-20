@@ -337,7 +337,7 @@ functions:
     events: # Call this function every day at 0 am (via cloudwatch event)
       - schedule: cron(0 23 * * ? *)
     timeout: 900 # Timeout for this specific function. Takes a while...
-    memorySize: 2028 # memorySize for this specific function.
+    memorySize: 2048 # memorySize for this specific function.
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -418,6 +418,8 @@ functions:
           existing: true
           rules:
             - prefix: originals/
+    timeout: 30 # Timeout for this specific function.
+    memorySize: 1600 # memorySize for this specific function.
     environment:
       S3_IMAGES_URL: https://xbge-profile-pictures.s3.eu-central-1.amazonaws.com
     iamRoleStatements:
