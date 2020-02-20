@@ -42,8 +42,13 @@ module.exports.handler = async event => {
           // get user to get mail
           const result = await getUser(list.userId);
 
-          // the user might have been deleted
-          if ('Item' in result) {
+          // the user might have been deleted or does not have
+          // newsletter consent
+          if (
+            'Item' in result &&
+            'newsletterConsent' in result.Item &&
+            result.Item.newsletterConsent.value
+          ) {
             // initialize an object in the map
             usersMap[list.userId] = {
               dailyCount,
