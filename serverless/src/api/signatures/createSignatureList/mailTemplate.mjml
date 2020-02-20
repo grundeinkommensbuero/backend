@@ -65,6 +65,6 @@
 
     </mj-section>
 
-    <mj-include path="../../../../mails/includes/footer.mjml" />
+    <mj-include path="../../../../mails/includes/footer-transactional.mjml" />
   </mj-body>
 </mjml>

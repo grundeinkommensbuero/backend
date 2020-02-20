@@ -1,0 +1,23 @@
+<mj-section padding-top="40px" padding-bottom="40px">
+  <mj-column>
+    <mj-social font-size="15px" icon-size="40px" mode="horizontal" align="left">
+      <mj-social-element name="facebook" href="https://www.facebook.com/expeditionbge/" src="https://expedition-grundeinkommen.de/mailgraphics/facebook.png" background-color="transparent">
+      </mj-social-element>
+      <mj-social-element name="twitter" href="https://twitter.com/expeditionbge" src="https://expedition-grundeinkommen.de/mailgraphics/twitter.png" background-color="transparent">
+      </mj-social-element>
+      <mj-social-element name="instagram" href="https://www.instagram.com/expedition.bge/" src="https://expedition-grundeinkommen.de/mailgraphics/instagram.png" background-color="transparent">
+      </mj-social-element>
+    </mj-social>
+    <mj-text color="#3423f6" font-size="13px">
+
+      Vertrauensgesellschaft e.V.<br>
+      c/o Expedition Grundeinkommen<br>
+      Karl-Marx-Strasse 50<br>
+      12043 Berlin
+      <br><br>
+      <a href="https://expedition-grundeinkommen.de/" class="link">expedition-grundeinkommen.de</a><br />
+      <a href="https://expedition-grundeinkommen.de/impressum/" class="link">Impressum</a>
+      <a href="https://expedition-grundeinkommen.de/datenschutz/" class="link">Datenschutz</a>
+    </mj-text>
+  </mj-column>
+</mj-section>
