@@ -67,6 +67,7 @@ module.exports.handler = async event => {
       // user might not exist anymore because he*she was deleted
       if ('Item' in result) {
         user.email = result.Item.email;
+        user.username = result.Item.username;
         user.newsletterConsent = result.Item.newsletterConsent;
         user.stillExists = true;
       } else {
