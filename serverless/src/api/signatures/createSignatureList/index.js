@@ -117,6 +117,7 @@ const handler = async event => {
       //now we want to validate if the user actually exists
       try {
         const user = await getUser(userId);
+        console.log('user after getting user', user);
 
         //if user does not have Item as property, there was no user found
         if (!('Item' in user) || typeof user.Item === 'undefined') {

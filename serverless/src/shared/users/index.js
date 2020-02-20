@@ -32,7 +32,8 @@ const getUserByMail = async (email, startKey = null) => {
   //call same function again, if there is no user found, but not
   //the whole db has been scanned
   if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    return getUserByMail(email, result.LastEvaluatedKey);
+    console.log('call getUserByMail recursively');
+    return await getUserByMail(email, result.LastEvaluatedKey);
   } else {
     return result;
   }
@@ -55,7 +56,7 @@ const getAllUsers = async (users = [], startKey = null) => {
 
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return getAllUsers(users, result.LastEvaluatedKey);
+    return await getAllUsers(users, result.LastEvaluatedKey);
   } else {
     //otherwise return the array
     return users;
@@ -93,7 +94,7 @@ const getAllUnverifiedCognitoUsers = async (
   unverifiedCognitoUsers.push(...data.Users);
 
   if ('PaginationToken' in data) {
-    return getAllUnverifiedCognitoUsers(
+    return await getAllUnverifiedCognitoUsers(
       unverifiedCognitoUsers,
       data.PaginationToken
     );

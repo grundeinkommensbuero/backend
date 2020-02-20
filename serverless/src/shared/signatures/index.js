@@ -45,7 +45,7 @@ const getSignatureListsOfUser = async (
 
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return getSignatureListsOfUser(
+    return await getSignatureListsOfUser(
       userId,
       campaignCode,
       signatureLists,
@@ -81,7 +81,7 @@ const getScannedSignatureListsOfUser = async (
 
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return getScannedSignatureListsOfUser(
+    return await getScannedSignatureListsOfUser(
       userId,
       signatureLists,
       result.LastEvaluatedKey
@@ -113,7 +113,10 @@ const getScannedSignatureLists = async (
 
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return getScannedSignatureLists(signatureLists, result.LastEvaluatedKey);
+    return await getScannedSignatureLists(
+      signatureLists,
+      result.LastEvaluatedKey
+    );
   } else {
     //otherwise return the array
     return signatureLists;
