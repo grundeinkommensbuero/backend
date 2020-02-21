@@ -215,6 +215,25 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  createQuestion:
+    handler: src/api/users/questions/createQuestion/index.handler
+    events:
+      - http:
+          path: users/{userId}/questions
+          method: post
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
     events:
