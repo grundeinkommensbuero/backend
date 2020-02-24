@@ -26,7 +26,6 @@ module.exports.handler = async event => {
 
     // S3 metadata field names are converted to lowercase
     const userId = s3Object.Metadata.userid;
-    const contentType = s3Object.Metadata.contenttype;
 
     console.log('s3 object', s3Object);
 
@@ -36,7 +35,7 @@ module.exports.handler = async event => {
     // to handle operations in parallel
     const images = await Promise.all(
       sizes.map(size =>
-        resizeAndUploadImage(image, size, contentType, userId, originalFilename)
+        resizeAndUploadImage(image, size, userId, originalFilename)
       )
     );
 
@@ -83,40 +82,34 @@ const getImage = filename => {
 };
 
 // Resize and upload image to S3
-const resizeAndUploadImage = async (
-  image,
-  width,
-  contentType,
-  userId,
-  originalFilename
-) => {
-  const buffer = await resizeImage(image, width, contentType);
+const resizeAndUploadImage = async (image, width, userId, originalFilename) => {
+  const buffer = await resizeImage(image, width);
 
-  return uploadImage(buffer, contentType, userId, originalFilename);
+  return uploadImage(buffer, userId, originalFilename);
 };
 
 // Read image from buffer and resize image using jimp
-const resizeImage = async (image, width, contentType) => {
+const resizeImage = async (image, width) => {
   const clone = await image.clone();
 
   return clone
     .resize(width, jimp.AUTO)
     .quality(60)
-    .getBufferAsync(contentType);
+    .getBufferAsync(jimp.MIME_JPEG);
 };
 
-const uploadImage = async (buffer, contentType, userId, originalFilename) => {
+const uploadImage = async (buffer, userId, originalFilename) => {
   console.log('uploading image');
   const imageId = uuid();
 
   const params = {
     Bucket: bucket,
     ACL: 'public-read',
-    Key: `resized/${imageId}.${getFileSuffix(contentType)}`,
+    Key: `resized/${imageId}.jpg`,
     Body: buffer,
-    ContentType: contentType,
+    ContentType: jimp.MIME_JPEG,
     Metadata: {
-      contentType,
+      contentType: jimp.MIME_JPEG,
       userId,
       original: originalFilename,
     },
