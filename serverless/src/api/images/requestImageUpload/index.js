@@ -15,8 +15,11 @@ module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    if (!('userId' in requestBody) || !('contentType' in requestBody)) {
-      return errorResponse(400, 'User id or contentType was not provided');
+    if (!validateParams()) {
+      return errorResponse(
+        400,
+        'User id or contentType was not provided or contentType is not png or jpg'
+      );
     }
 
     try {
@@ -65,4 +68,14 @@ const getSignedUrl = (userId, contentType) => {
   };
 
   return s3.getSignedUrlPromise('putObject', params);
+};
+
+// Validates request body for missing params or wrong content types
+const validateParams = body => {
+  if (!('userId' in requestBody) || !('contentType' in requestBody)) {
+    return false;
+  }
+
+  const { contentType } = body;
+  return contentType === 'image/png' || contentType === 'image/jpeg';
 };
