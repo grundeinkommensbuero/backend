@@ -195,6 +195,14 @@ module.exports = {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_4.pdf'),
       codes: [
         {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 67,
+            y: 660,
+          },
+        },
+        {
           type: 'BAR',
           page: 1,
           position: CODE_POSITIONS.SH.BARCODE_MULTI,
@@ -239,6 +247,14 @@ module.exports = {
     SERIENBRIEF10: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_10.pdf'),
       codes: [
+        {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 67,
+            y: 660,
+          },
+        },
         {
           type: 'BAR',
           page: 1,
@@ -344,6 +360,14 @@ module.exports = {
     SERIENBRIEF20: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_20.pdf'),
       codes: [
+        {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 67,
+            y: 660,
+          },
+        },
         {
           type: 'BAR',
           page: 1,
@@ -549,6 +573,14 @@ module.exports = {
     SERIENBRIEF30: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_30.pdf'),
       codes: [
+        {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 67,
+            y: 660,
+          },
+        },
         {
           type: 'BAR',
           page: 1,

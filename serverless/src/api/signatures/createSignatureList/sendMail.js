@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 const ses = new AWS.SES();
 
-const htmlMail = require('./mailTemplate.html').default;
+// const htmlMail = require('./mailTemplate.html').default;
 
 //Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, attachments, campaign) => {

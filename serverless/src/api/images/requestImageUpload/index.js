@@ -72,7 +72,7 @@ const getSignedUrl = (userId, contentType) => {
 
 // Validates request body for missing params or wrong content types
 const validateParams = body => {
-  if (!('userId' in requestBody) || !('contentType' in requestBody)) {
+  if (!('userId' in body) || !('contentType' in body)) {
     return false;
   }
 
