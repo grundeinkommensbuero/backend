@@ -25,7 +25,7 @@ module.exports.handler = async event => {
       const result = await getUser(userId);
       //if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
-        return errorResponse(400, 'No user found with the passed user id');
+        return errorResponse(404, 'No user found with the passed user id');
       }
 
       try {
@@ -34,9 +34,13 @@ module.exports.handler = async event => {
 
         // return message (no content)
         return {
-          statusCode: 204,
+          statusCode: 201,
           headers: responseHeaders,
           isBase64Encoded: false,
+          body: JSON.stringify({
+            message: 'Successfully created new question',
+            question,
+          }),
         };
       } catch (error) {
         console.log('error while updating user', error);
@@ -55,20 +59,34 @@ module.exports.handler = async event => {
 const updateUser = (userId, question, timestamp, zipCode, name) => {
   const questionObject = { timestamp, text: question };
 
+  const values = { ':question': [questionObject], ':emptyList': [] };
+
+  // Zip code and username might not have been passed to endpoint
+  if (typeof name !== 'undefined') {
+    values[':username'] = name;
+  }
+
+  if (typeof zipCode !== 'undefined') {
+    values[':zipCode'] = zipCode;
+  }
+
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
     UpdateExpression: `
-    SET zipCode = if_not_exists(zipCode, :zipCode),
-    username = if_not_exists(username, :username),
+    SET ${
+      typeof zipCode !== 'undefined'
+        ? 'zipCode = if_not_exists(zipCode, :zipCode),'
+        : ''
+    }
+    ${
+      typeof name !== 'undefined'
+        ? 'username = if_not_exists(username, :username),'
+        : ''
+    }
     questions = list_append(if_not_exists(questions, :emptyList), :question)
     `,
-    ExpressionAttributeValues: {
-      ':zipCode': zipCode,
-      ':username': name,
-      ':question': [questionObject],
-      ':emptyList': [],
-    },
+    ExpressionAttributeValues: values,
   };
   return ddb.update(params).promise();
 };
