@@ -14,7 +14,7 @@ module.exports.handler = async event => {
     //get user id from path parameter
     let userId = event.pathParameters.userId;
 
-    const { question, zipCode, name } = JSON.parse(event.body);
+    const { question, zipCode, username } = JSON.parse(event.body);
 
     if (!validateParams(userId, question)) {
       return errorResponse(400, 'User id was not provided');
@@ -30,7 +30,7 @@ module.exports.handler = async event => {
 
       try {
         //otherwise proceed by saving the referral and saving a true newsletter consent
-        await updateUser(userId, question, timestamp, zipCode, name);
+        await updateUser(userId, question, timestamp, zipCode, username);
 
         // return message (no content)
         return {
@@ -56,14 +56,14 @@ module.exports.handler = async event => {
   }
 };
 
-const updateUser = (userId, question, timestamp, zipCode, name) => {
+const updateUser = (userId, question, timestamp, zipCode, username) => {
   const questionObject = { timestamp, text: question };
 
   const values = { ':question': [questionObject], ':emptyList': [] };
 
   // Zip code and username might not have been passed to endpoint
-  if (typeof name !== 'undefined') {
-    values[':username'] = name;
+  if (typeof username !== 'undefined') {
+    values[':username'] = username;
   }
 
   if (typeof zipCode !== 'undefined') {
@@ -80,7 +80,7 @@ const updateUser = (userId, question, timestamp, zipCode, name) => {
         : ''
     }
     ${
-      typeof name !== 'undefined'
+      typeof username !== 'undefined'
         ? 'username = if_not_exists(username, :username),'
         : ''
     }
