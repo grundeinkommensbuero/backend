@@ -191,6 +191,666 @@ module.exports = {
     },
   },
   'schleswig-holstein-1': {
+    SERIENBRIEF4: {
+      file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_4.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 2,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 2,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 3,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 3,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 4,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 4,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+      ],
+    },
+    SERIENBRIEF10: {
+      file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_10.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 2,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 2,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 3,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 3,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 4,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 4,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 5,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 5,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 6,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 6,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 7,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 7,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 8,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 8,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 9,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 9,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 10,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 10,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+      ],
+    },
+    SERIENBRIEF20: {
+      file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_20.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 2,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 2,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 3,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 3,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 4,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 4,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 5,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 5,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 6,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 6,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 7,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 7,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 8,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 8,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 9,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 9,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 10,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 10,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 11,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 11,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 12,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 12,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 13,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 13,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 14,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 14,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 15,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 15,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 16,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 16,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 17,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 17,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 18,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 18,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 19,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 19,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 20,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 20,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+      ],
+    },
+    SERIENBRIEF30: {
+      file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_30.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 2,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 2,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 3,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 3,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 4,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 4,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 5,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 5,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 6,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 6,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 7,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 7,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 8,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 8,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 9,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 9,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 10,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 10,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 11,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 11,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 12,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 12,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 13,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 13,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 14,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 14,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 15,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 15,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 16,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 16,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 17,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 17,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 18,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 18,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 19,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 19,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 20,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 20,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 21,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 21,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 22,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 22,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 23,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 23,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 24,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 24,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 25,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 25,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 26,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 26,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 27,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 27,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 28,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 28,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 29,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 29,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+        {
+          type: 'BAR',
+          page: 30,
+          position: CODE_POSITIONS.SH.BARCODE_MULTI,
+        },
+        {
+          type: 'QR',
+          page: 30,
+          position: CODE_POSITIONS.SH.QRCODE_MULTI,
+        },
+      ],
+    },
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES_sw.pdf'),
       codes: [
