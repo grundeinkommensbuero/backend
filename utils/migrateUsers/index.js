@@ -95,7 +95,7 @@ const readCsv = source => {
               user = {
                 email: row[7],
                 zipCode: row[6].split(' ')[0],
-                createdAt: new Date(transformDate(row[11])).toISOString(),
+                createdAt: new Date(transformDate(row[12])).toISOString(),
                 source: 'typeform-bge',
               };
             }

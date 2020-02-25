@@ -15,7 +15,7 @@ const URLS = {
   'brandenburg-1': 'https://xbge.de/qr/bb/?listId=',
 };
 
-const CAMPAIGN_CODE = 'schleswig-holstein-1';
+const CAMPAIGN_CODE = 'brandenburg-1';
 const PATH = './Ergebnisse Briefaktion.csv';
 
 const createListManually = async (userId, user) => {
@@ -44,6 +44,8 @@ const createListManually = async (userId, user) => {
     pdfType = 'SERIENBRIEF30';
   }
 
+  pdfType = 'MULTI';
+
   console.log('pdf type', pdfType);
 
   const pdfBytes = await generatePdf(
@@ -56,12 +58,15 @@ const createListManually = async (userId, user) => {
 
   await createSignatureList(pdfId, timestamp, undefined, campaign, userId);
 
-  fs.writeFileSync(`./lists/list_sh_${user.name}.pdf`, pdfBytes);
+  fs.writeFileSync(`./lists/list_bb_${user.name}.pdf`, pdfBytes);
 };
 
 processCsv = async () => {
   try {
-    const users = await readCsv();
+    // const users = await readCsv();
+    const users = [
+      { email: 'elena.wenz@posteo.de', count: 4, name: 'Elena Wenz' },
+    ];
     console.log('users length', users.length);
     for (let user of users) {
       // Get userId of user
@@ -100,7 +105,7 @@ const readCsv = () => {
             zipCode: row[6].split(' ')[0],
             city: row[6].split(' ')[1],
             email: row[10] === '' ? row[7] : row[10],
-            count: parseInt(row[2]),
+            count: parseInt(row[1]),
           };
 
           if (typeof user !== 'undefined' && user.email !== '') {

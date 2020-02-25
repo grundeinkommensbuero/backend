@@ -325,7 +325,7 @@ const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
       downloads: 1,
       campaign: campaign,
       createdAt: timestamp,
-      manually: true,
+      // manually: true,
     },
   };
 
