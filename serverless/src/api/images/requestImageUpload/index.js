@@ -16,7 +16,7 @@ module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    if (!validateParams()) {
+    if (!validateParams(requestBody)) {
       return errorResponse(
         400,
         'User id or contentType was not provided or contentType is not png or jpg'
