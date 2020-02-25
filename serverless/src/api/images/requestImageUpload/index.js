@@ -10,6 +10,7 @@ const responseHeaders = {
 };
 
 const bucket = process.env.IMAGE_BUCKET;
+const stage = process.env.STAGE;
 
 module.exports.handler = async event => {
   try {
@@ -59,7 +60,7 @@ const getSignedUrl = (userId, contentType) => {
   const params = {
     Bucket: bucket,
     ACL: 'public-read',
-    Key: `originals/${imageId}.${getFileSuffix(contentType)}`,
+    Key: `${stage}/originals/${imageId}.${getFileSuffix(contentType)}`,
     ContentType: contentType,
     Metadata: {
       contentType,

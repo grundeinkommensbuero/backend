@@ -7,6 +7,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const bucketUrl = process.env.S3_IMAGES_URL;
 const tableName = process.env.USERS_TABLE_NAME;
 const bucket = process.env.IMAGE_BUCKET;
+const stage = process.env.STAGE;
 
 const sizes = [200, 500, 900, 1200];
 
@@ -105,7 +106,7 @@ const uploadImage = async (buffer, userId, originalFilename) => {
   const params = {
     Bucket: bucket,
     ACL: 'public-read',
-    Key: `resized/${imageId}.jpg`,
+    Key: `${stage}/resized/${imageId}.jpg`,
     Body: buffer,
     ContentType: jimp.MIME_JPEG,
     Metadata: {
