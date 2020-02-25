@@ -15,7 +15,7 @@ const URLS = {
   'brandenburg-1': 'https://xbge.de/qr/bb/?listId=',
 };
 
-const CAMPAIGN_CODE = 'hamburg-1';
+const CAMPAIGN_CODE = 'brandenburg-1';
 const PATH = './Ergebnisse Briefaktion.csv';
 
 const createListManually = async (userId, user) => {
@@ -30,25 +30,43 @@ const createListManually = async (userId, user) => {
   while (idExists) {
     pdfId = generateRandomId(7);
     idExists = await checkIfIdExists(pdfId);
-    console.log('id already exists?', idExists);
   }
+
+  let pdfType;
+
+  if (user.count <= 5) {
+    pdfType = 'SERIENBRIEF4';
+  } else if (user.count <= 10) {
+    pdfType = 'SERIENBRIEF10';
+  } else if (user.count <= 20) {
+    pdfType = 'SERIENBRIEF20';
+  } else {
+    pdfType = 'SERIENBRIEF30';
+  }
+
+  pdfType = 'MULTI';
+
+  console.log('pdf type', pdfType);
 
   const pdfBytes = await generatePdf(
     URLS[CAMPAIGN_CODE],
     pdfId,
-    'SERIENBRIEF',
+    pdfType,
     CAMPAIGN_CODE,
     user
   );
 
   await createSignatureList(pdfId, timestamp, undefined, campaign, userId);
 
-  fs.writeFileSync(`./lists/list_hh_${user.name}.pdf`, pdfBytes);
+  fs.writeFileSync(`./lists/list_bb_${user.name}.pdf`, pdfBytes);
 };
 
 processCsv = async () => {
   try {
-    const users = await readCsv();
+    // const users = await readCsv();
+    const users = [
+      { email: 'elena.wenz@posteo.de', count: 4, name: 'Elena Wenz' },
+    ];
     console.log('users length', users.length);
     for (let user of users) {
       // Get userId of user
@@ -82,11 +100,12 @@ const readCsv = () => {
         //leave out headers
         if (count > 0) {
           user = {
-            name: row[0],
-            street: row[1],
-            zipCode: row[2],
-            city: row[3],
-            email: row[7] === '' ? row[4] : row[7],
+            name: row[4],
+            street: row[5],
+            zipCode: row[6].split(' ')[0],
+            city: row[6].split(' ')[1],
+            email: row[10] === '' ? row[7] : row[10],
+            count: parseInt(row[1]),
           };
 
           if (typeof user !== 'undefined' && user.email !== '') {

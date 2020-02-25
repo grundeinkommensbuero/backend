@@ -25,6 +25,7 @@ provider:
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
     STAGE: ${self:custom.stage}
+    IMAGE_BUCKET: xbge-profile-pictures
 
 plugins:
   - serverless-iam-roles-per-function
@@ -373,7 +374,7 @@ functions:
     events: # Call this function every day at 0 am (via cloudwatch event)
       - schedule: cron(0 23 * * ? *)
     timeout: 900 # Timeout for this specific function. Takes a while...
-    memorySize: 2028 # memorySize for this specific function.
+    memorySize: 2048 # memorySize for this specific function.
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -425,6 +426,52 @@ functions:
           - ses:SendEmail
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+
+  requestImageUpload:
+    handler: src/api/images/requestImageUpload/index.handler
+    events:
+      - http:
+          path: images/upload-url
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+
+  processUploadedImage:
+    handler: src/triggers/processUploadedImage/index.handler
+    events:
+      - s3:
+          bucket: xbge-profile-pictures
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: originals/
+    timeout: 30 # Timeout for this specific function.
+    memorySize: 1600 # memorySize for this specific function.
+    environment:
+      S3_IMAGES_URL: https://xbge-profile-pictures.s3.eu-central-1.amazonaws.com
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: Allow
+        Action:
+          - s3:GetObject
+          - s3:HeadObject
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
 
   # Admin cognito auth triggers
 

@@ -126,32 +126,36 @@ const updateEndpoint = async (user, verified) => {
 
   let { newsletterConsent } = user;
 
-  //for now we just take the first pledge
-  let pledge;
-  if ('pledges' in user) {
-    pledge = user.pledges[0];
-  }
-
   const pledgeAttributes = [];
-  if (typeof pledge !== 'undefined' && pledge !== null) {
-    if (pledge.wouldPrintAndSendSignatureLists) {
-      pledgeAttributes.push('wouldPrintAndSendSignatureLists');
-    }
-    if (pledge.wouldCollectSignaturesInPublicSpaces) {
-      pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
-    }
-    if (pledge.wouldPutAndCollectSignatureLists) {
-      pledgeAttributes.push('wouldPutAndCollectSignatureLists');
-    }
-    if (pledge.wouldDonate) {
-      pledgeAttributes.push('wouldDonate');
-    }
-    if (
-      'wouldEngageCustom' in pledge &&
-      pledge.wouldEngageCustom !== 'empty' &&
-      pledge.wouldEngageCustom.length < 50
-    ) {
-      pledgeAttributes.push(pledge.wouldEngageCustom);
+  const signatureCounts = [];
+
+  if ('pledges' in user) {
+    for (let pledge of user.pledges) {
+      if (typeof pledge !== 'undefined' && pledge !== null) {
+        if (pledge.wouldPrintAndSendSignatureLists) {
+          pledgeAttributes.push('wouldPrintAndSendSignatureLists');
+        }
+        if (pledge.wouldCollectSignaturesInPublicSpaces) {
+          pledgeAttributes.push('wouldCollectSignaturesInPublicSpaces');
+        }
+        if (pledge.wouldPutAndCollectSignatureLists) {
+          pledgeAttributes.push('wouldPutAndCollectSignatureLists');
+        }
+        if (pledge.wouldDonate) {
+          pledgeAttributes.push('wouldDonate');
+        }
+        if (
+          'wouldEngageCustom' in pledge &&
+          pledge.wouldEngageCustom !== 'empty' &&
+          pledge.wouldEngageCustom.length < 50
+        ) {
+          pledgeAttributes.push(pledge.wouldEngageCustom);
+        }
+
+        if ('signatureCount' in pledge && pledge.signatureCount) {
+          signatureCounts.push(pledge.signatureCount.toString());
+        }
+      }
     }
   }
 
@@ -180,12 +184,6 @@ const updateEndpoint = async (user, verified) => {
     pinpointName = '';
   }
 
-  //some signatureCounts were saved as string (need to refactor in db),
-  //which is why we need to parse them
-  let signatureCount =
-    typeof pledge !== 'undefined' ? parseInt(pledge.signatureCount) : 0;
-  signatureCount = isNaN(signatureCount) ? 0 : signatureCount;
-
   // Check if the user has already sent lists to us or scanned
   let listsReceived = false;
   let listsScanned = false;
@@ -208,15 +206,16 @@ const updateEndpoint = async (user, verified) => {
       Attributes: {
         // Referral: [referral], -> never really needed, and there's a limit to attributes
         Region: [region],
-        Pledge: pledgeAttributes,
-        PledgeCampaignCode: [
-          typeof pledge !== 'undefined' ? pledge.campaign.code : 'undefined',
-        ],
+        // Pledge: pledgeAttributes,  -> never really needed, and there's a limit to attributes
+        PledgeCampaignCode:
+          'pledges' in user
+            ? user.pledges.map(pledge => pledge.campaign.code)
+            : [],
+
         SignaturesCampaignCode:
           user.signatureLists.length > 0
             ? user.signatureLists.map(list => list.campaign.code)
             : [],
-        PostalCode: [typeof zipCode !== 'undefined' ? zipCode : 'undefined'],
         // Username: [username], -> not eneeded anymore, and there's a limit to attributes
         UsernameWithSpace: [pinpointName],
         Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
@@ -230,14 +229,12 @@ const updateEndpoint = async (user, verified) => {
         ],
         HasSentLists: [listsReceived ? 'Yes' : 'No'],
         HasScannedLists: [listsScanned ? 'Yes' : 'No'],
+        PledgedSignatureCount: signatureCounts,
       },
       EffectiveDate: createdAt,
       Location: {
         PostalCode: typeof zipCode !== 'undefined' ? zipCode : 'undefined',
         Region: region,
-      },
-      Metrics: {
-        // SignatureCount: signatureCount, -> never really needed, and there's a limit to attributes
       },
       //if user is not yet verified opt out in pinpoint
       OptOut: verified ? 'NONE' : 'ALL',

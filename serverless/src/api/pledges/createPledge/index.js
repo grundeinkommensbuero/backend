@@ -63,7 +63,7 @@ module.exports.handler = async event => {
       if ('pledges' in user) {
         for (let pledge of user.pledges) {
           if (requestBody.pledgeId === pledge.campaign.code) {
-            pledgeAlreadyMade = true;
+            pledgeWasAlreadyMade = true;
           }
         }
       }
@@ -119,6 +119,7 @@ const savePledge = (
   pledgeWasAlreadyMade,
   newsletterConsentHasChanged
 ) => {
+  console.log('pledge was already made', pledgeWasAlreadyMade);
   //check which pledge it is (e.g. pledgeId='brandenburg-1')
   //create a (nice to later work with) object, which campaign it is
   const campaign = constructCampaignId(requestBody.pledgeId);
@@ -139,8 +140,6 @@ const savePledge = (
   }
 
   const data = {
-    //needs to be array because append_list works with an array
-    ':pledge': [pledge],
     ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
     ':username':
       'name' in requestBody && requestBody.name !== ''
@@ -151,7 +150,6 @@ const savePledge = (
       value: requestBody.newsletterConsent,
       timestamp: timestamp,
     },
-    ':emptyList': [],
   };
 
   // If city is the request body we add it (is the case for general pledge)
@@ -159,14 +157,20 @@ const savePledge = (
     data[':city'] = requestBody.city;
   }
 
+  if (!pledgeWasAlreadyMade) {
+    data[':emptyList'] = [];
+    //needs to be array because append_list works with an array
+    data[':pledge'] = [pledge];
+  }
+
   // if there is no pledges key yet we initiate it with an array,
   // otherwise we add the pledge to the array (if the specific pledge does not yet exist).
   // Also we do not want to overwrite everything else, if those keys already exist.
   // If the newsletter consent changed from no to yes we want to save it
-  const updateExpression = `
+  const updateExpression = `set 
   ${
     !pledgeWasAlreadyMade
-      ? 'set pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),'
+      ? 'pledges = list_append(if_not_exists(pledges, :emptyList), :pledge),'
       : ''
   }${
     newsletterConsentHasChanged
