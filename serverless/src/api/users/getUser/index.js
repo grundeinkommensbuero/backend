@@ -18,16 +18,21 @@ module.exports.handler = async event => {
 
     const user = result.Item;
 
+    const userData = {
+      profilePictures: user.profilePictures,
+      questions: user.questions,
+      hasZipCode: 'zipCode' in user && user.zipCode !== 'empty',
+    };
+
+    if ('username' in user && user.username !== 'empty') {
+      userData.username = user.username;
+    }
+
     // return user
     return {
       statusCode: 200,
       body: JSON.stringify({
-        user: {
-          profilePictures: user.profilePictures,
-          questions: user.questions,
-          hasZipCode: 'zipCode' in user && user.zipCode !== 'empty',
-          username: user.username,
-        },
+        user: userData,
       }),
       headers: responseHeaders,
       isBase64Encoded: false,
