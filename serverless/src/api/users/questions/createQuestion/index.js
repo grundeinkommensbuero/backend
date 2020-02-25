@@ -59,7 +59,7 @@ module.exports.handler = async event => {
 const updateUser = (userId, question, timestamp, zipCode, username) => {
   const questionObject = { timestamp, text: question };
 
-  const values = { ':question': [questionObject], ':emptyList': [] };
+  const values = { ':question': [questionObject] };
 
   // Zip code and username might not have been passed to endpoint
   if (typeof username !== 'undefined') {
@@ -84,7 +84,7 @@ const updateUser = (userId, question, timestamp, zipCode, username) => {
         ? 'username = if_not_exists(username, :username),'
         : ''
     }
-    questions = list_append(if_not_exists(questions, :emptyList), :question)
+    questions = :question
     `,
     ExpressionAttributeValues: values,
   };
