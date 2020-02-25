@@ -15,6 +15,7 @@ describe('createPledge api test', () => {
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',
+        username: 'Vali',
       }),
     };
 
@@ -33,6 +34,7 @@ describe('createPledge api test', () => {
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',
+        username: 'Vali',
       }),
     };
 

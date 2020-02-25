@@ -21,10 +21,10 @@ module.exports.handler = async event => {
     const userData = {
       profilePictures: user.profilePictures,
       questions: user.questions,
-      hasZipCode: 'zipCode' in user && user.zipCode !== 'empty',
+      hasZipCode: 'zipCode' in user,
     };
 
-    if ('username' in user && user.username !== 'empty') {
+    if ('username' in user) {
       userData.username = user.username;
     }
 

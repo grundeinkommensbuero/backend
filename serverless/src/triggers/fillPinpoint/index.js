@@ -178,7 +178,7 @@ const updateEndpoint = async (user, verified) => {
 
   //construct name with space before
   let pinpointName;
-  if (typeof username !== 'undefined' && username !== 'empty') {
+  if (typeof username !== 'undefined') {
     pinpointName = `&#160;${username}`;
   } else {
     pinpointName = '';

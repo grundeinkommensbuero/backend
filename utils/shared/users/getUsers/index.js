@@ -20,7 +20,7 @@ const getAllUnverifiedCognitoUsers = async (
   unverifiedCognitoUsers.push(...data.Users);
 
   if ('PaginationToken' in data) {
-    return getAllUnverifiedCognitoUsers(
+    return await getAllUnverifiedCognitoUsers(
       userPoolId,
       unverifiedCognitoUsers,
       data.PaginationToken
@@ -47,7 +47,11 @@ const getAllCognitoUsers = async (
   cognitoUsers.push(...data.Users);
 
   if ('PaginationToken' in data) {
-    return getAllCognitoUsers(userPoolId, cognitoUsers, data.PaginationToken);
+    return await getAllCognitoUsers(
+      userPoolId,
+      cognitoUsers,
+      data.PaginationToken
+    );
   } else {
     return cognitoUsers;
   }
@@ -100,7 +104,7 @@ const getAllUsers = async (tableName, users = [], startKey = null) => {
 
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return getAllUsers(tableName, users, result.LastEvaluatedKey);
+    return await getAllUsers(tableName, users, result.LastEvaluatedKey);
   } else {
     //otherwise return the array
     return users;
@@ -131,7 +135,7 @@ const getUserByMail = async (tableName, email, startKey = null) => {
   //call same function again, if there is no user found, but not
   //the whole db has been scanned
   if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    return getUserByMail(tableName, email, result.LastEvaluatedKey);
+    return await getUserByMail(tableName, email, result.LastEvaluatedKey);
   } else {
     return result;
   }

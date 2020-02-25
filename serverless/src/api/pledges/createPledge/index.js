@@ -140,17 +140,24 @@ const savePledge = (
   }
 
   const data = {
-    ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
-    ':username':
-      'name' in requestBody && requestBody.name !== ''
-        ? requestBody.name
-        : 'empty',
-    ':referral': 'referral' in requestBody ? requestBody.referral : 'empty',
     ':newsletterConsent': {
       value: requestBody.newsletterConsent,
       timestamp: timestamp,
     },
   };
+
+  // The following parameters are iptional
+  if ('zipCode' in requestBody) {
+    data[':zipCode'] = requestBody.zipCode;
+  }
+
+  if ('name' in requestBody) {
+    data[':username'] = requestBody.name;
+  }
+
+  if ('referral' in requestBody) {
+    data[':referral'] = requestBody.referral;
+  }
 
   // If city is the request body we add it (is the case for general pledge)
   if ('city' in requestBody && requestBody.city !== '') {
@@ -178,9 +185,9 @@ const savePledge = (
       : ''
   }
   ${':city' in data ? 'city = if_not_exists(city, :city),' : ''}
-  zipCode = if_not_exists(zipCode, :zipCode),
-  username = if_not_exists(username, :username),
-  referral = if_not_exists(referral, :referral),
+  ${':zipCode' in data ? 'zipCode = if_not_exists(zipCode, :zipCode),' : ''}
+  ${':username' in data ? 'username = if_not_exists(username, :username),' : ''}
+  ${':referral' in data ? 'referral = if_not_exists(referral, :referral),' : ''}
   newsletterConsent = if_not_exists(newsletterConsent, :newsletterConsent)
   `;
 

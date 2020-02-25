@@ -65,7 +65,7 @@ const customMail = (
 
   //if there is a username we want to have a specific greeting
   //username might be in different forms, definitely need to refactor
-  if (typeof username !== 'undefined' && username !== 'empty') {
+  if (typeof username !== 'undefined') {
     greeting = `Hallo ${username},`;
   } else {
     greeting = 'Hallo,';
