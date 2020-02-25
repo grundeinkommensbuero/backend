@@ -11,7 +11,7 @@ const {
   isVerified,
 } = require('../../shared/users');
 
-const zipCodeMatcher = require('./zipCodeMatcher');
+const zipCodeMatcher = require('../../shared/zipCodeMatcher');
 
 const tableName = process.env.USERS_TABLE_NAME;
 

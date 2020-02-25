@@ -67,7 +67,7 @@ const updateUser = (userId, question, timestamp, zipCode, username) => {
   }
 
   if (typeof zipCode !== 'undefined') {
-    values[':zipCode'] = zipCode;
+    values[':zipCode'] = zipCode.toString();
   }
 
   const params = {

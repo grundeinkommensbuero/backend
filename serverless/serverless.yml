@@ -473,6 +473,20 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
 
+  getQuestions:
+    handler: src/api/users/questions/getQuestions/index.handler
+    events:
+      - http:
+          path: questions
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   # Admin cognito auth triggers
 
   createAuthChallenge:
