@@ -41,10 +41,10 @@ module.exports.handler = async event => {
 
     const imageUrls = {
       original: `${bucketUrl}/${originalFilename}`,
-      tiny: images[0].Location,
-      small: images[1].Location,
-      medium: images[2].Location,
-      big: images[2].Location,
+      [sizes[0]]: images[0].Location,
+      [sizes[1]]: images[1].Location,
+      [sizes[2]]: images[2].Location,
+      [sizes[3]]: images[2].Location,
     };
 
     // Now save image urls in db
