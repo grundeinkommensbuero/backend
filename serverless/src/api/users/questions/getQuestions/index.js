@@ -10,18 +10,18 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-const defaultQuestionNumber = 10;
+const defaultQuestionLimit = 10;
 
 module.exports.handler = async event => {
   try {
     // If there is a query param use it as the number of questions to get,
     // otherwise the default
-    const questionNumber =
-      event.queryStringParameters && event.queryStringParameters.number
-        ? event.queryStringParameters.number
-        : defaultQuestionNumber;
+    const questionLimit =
+      event.queryStringParameters && event.queryStringParameters.limit
+        ? event.queryStringParameters.limit
+        : defaultQuestionLimit;
 
-    const users = await getUsersWithRecentQuestions(questionNumber);
+    const questions = await getRecentQuestions(questionLimit);
 
     // return message (no content)
     return {
@@ -30,7 +30,7 @@ module.exports.handler = async event => {
       isBase64Encoded: false,
       body: JSON.stringify({
         message: 'Successfully retrieved users with most recent questions',
-        users,
+        questions,
       }),
     };
   } catch (error) {
@@ -43,7 +43,7 @@ module.exports.handler = async event => {
   }
 };
 
-const getUsersWithRecentQuestions = async questionNumber => {
+const getRecentQuestions = async questionLimit => {
   const users = await getAllUsersWithQuestions();
 
   // Sort questions by most recent
@@ -54,22 +54,30 @@ const getUsersWithRecentQuestions = async questionNumber => {
   );
 
   // get the first x elements of array
-  const usersWithRecentQuestions = users.slice(0, questionNumber);
+  const usersWithRecentQuestions = users.slice(0, questionLimit);
 
+  const questions = [];
+
+  // Construct new questions array
   // Match zip code to city and add it to user object
   for (let user of usersWithRecentQuestions) {
     if ('zipCode' in user) {
       if (!('city' in user)) {
-        // Zip code should be string, but we need to make sure
-        user.city = zipCodeMatcher.getCityByZipCode(user.zipCode.toString());
+        questions.push({
+          body: user.questions[0].body,
+          timestamp: user.questions[0].timestamp,
+          user: {
+            username: user.username,
+            // Zip code should be string, but we need to make sure
+            city: zipCodeMatcher.getCityByZipCode(user.zipCode.toString()),
+            profilePictures: user.profilePictures,
+          },
+        });
       }
-
-      // We do not want to send the zip Code
-      delete user.zipCode;
     }
   }
 
-  return usersWithRecentQuestions;
+  return questions;
 };
 
 const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
