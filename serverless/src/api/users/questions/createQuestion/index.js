@@ -57,7 +57,7 @@ module.exports.handler = async event => {
 };
 
 const updateUser = (userId, question, timestamp, zipCode, username) => {
-  const questionObject = { timestamp, text: question };
+  const questionObject = { timestamp, body: question };
 
   const values = { ':question': [questionObject] };
 

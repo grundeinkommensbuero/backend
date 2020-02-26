@@ -13,8 +13,8 @@ describe('get questions api test', () => {
     const json = await response.json();
 
     expect(response.status).toEqual(200);
-    expect(json).toHaveProperty('users');
-    expect(json.users[0]).toHaveProperty('questions');
+    expect(json).toHaveProperty('questions');
+    expect(json.questions[0]).toHaveProperty('user');
   });
 
   it('should get most recent questions with number', async () => {
@@ -28,7 +28,7 @@ describe('get questions api test', () => {
     const json = await response.json();
 
     expect(response.status).toEqual(200);
-    expect(json).toHaveProperty('users');
-    expect(json.users[0]).toHaveProperty('questions');
+    expect(json).toHaveProperty('questions');
+    expect(json.questions[0]).toHaveProperty('user');
   });
 });
