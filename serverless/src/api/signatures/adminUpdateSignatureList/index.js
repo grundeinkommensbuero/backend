@@ -37,11 +37,15 @@ module.exports.handler = async event => {
       //otherwise proceed by updating dynamo resource
       try {
         await updateSignatureList(listId, count, mixed);
-        // return message (no content)
+        // return message
+        // We want to return a flag if the list was anonymous
         return {
-          statusCode: 204,
+          statusCode: 200,
           headers: responseHeaders,
           isBase64Encoded: false,
+          body: JSON.stringify({
+            isAnonymous: result.Item.userId === 'anonymous',
+          }),
         };
       } catch (error) {
         console.log('Error while updating signature list', error);
