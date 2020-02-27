@@ -161,6 +161,7 @@ const getSignatureCountOfAllLists = async () => {
       stats[campaign][list.userId] = {
         withoutMixed: 0,
         withMixed: 0,
+        from27: 0,
         scannedByUser: 0,
       };
     }
@@ -174,7 +175,17 @@ const getSignatureCountOfAllLists = async () => {
           stats[campaign][userId].withoutMixed += parseInt(scan.count);
         }
 
-        stats[campaign][userId].withMixed += parseInt(scan.count);
+        // HACK: if campaign is hamburg and scan was done after 27th Feb
+        // do not count it!
+        if (campaign === 'hamburg-1') {
+          if (new Date(scan.timestamp) < new Date()) {
+            stats[campaign][userId].withMixed += parseInt(scan.count);
+          } else {
+            stats[campaign][userId].from27 += parseInt(scan.count);
+          }
+        } else {
+          stats[campaign][userId].withMixed += parseInt(scan.count);
+        }
       }
     }
 
@@ -193,6 +204,7 @@ const getSignatureCountOfAllLists = async () => {
     computedStats[campaign] = {
       withMixed: 0,
       withoutMixed: 0,
+      from27: 0,
       scannedByUser: 0,
       computed: 0,
     };
@@ -209,6 +221,8 @@ const getSignatureCountOfAllLists = async () => {
         stats[campaign][userId].withoutMixed;
       computedStats[campaign].scannedByUser +=
         stats[campaign][userId].scannedByUser;
+
+      computedStats[campaign].from27 += stats[campaign][userId].from27;
     }
   }
 
