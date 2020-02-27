@@ -3,14 +3,22 @@ const nodemailer = require('nodemailer');
 const ses = new AWS.SES({ region: 'eu-central-1' });
 const fs = require('fs');
 
-const htmlMail = fs.readFileSync(__dirname + '/mailTemplate.html', 'utf8');
+const htmlMail = require('/mailTemplate.html');
+
+const CAMPAIGN_SHORTS = {
+  'schleswig-holstein-1': 'sh',
+  'brandenburg-1': 'bb',
+  'berlin-1': 'be',
+  'hamburg-1': 'hh',
+  'bremen-1': 'hb',
+};
 
 // Function which sends an email to remind user to send signature lists
-const sendMail = ({ email, username }) => {
+const sendMail = ({ email, username, userId }, campaignCode) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
-    subject: `Schick mal deine Liste!`,
-    html: customMail(username),
+    subject: 'Erinnerung: Schick uns deine Unterschriftenliste!',
+    html: customMail(userId, username, campaignCode),
     to: email,
   };
 
@@ -23,18 +31,21 @@ const sendMail = ({ email, username }) => {
 };
 
 // construct an email with the passed username
-const customMail = username => {
+const customMail = (userId, username, campaignCode) => {
   let greeting;
 
   //if there is a username we want to have a specific greeting
   //username might be in different forms, definitely need to refactor
-  if (typeof username !== 'undefined' && username !== 'empty') {
+  if (typeof username !== 'undefined') {
     greeting = `Hallo ${username},`;
   } else {
     greeting = 'Hallo,';
   }
 
-  return htmlMail.replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting);
+  return htmlMail
+    .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
+    .replace(/\[\[USER_ID\]\]/gi, userId)
+    .replace(/\[\[CAMPAIGN_SHORT\]\]/gi, CAMPAIGN_SHORTS(campaignCode));
 };
 
 module.exports = sendMail;

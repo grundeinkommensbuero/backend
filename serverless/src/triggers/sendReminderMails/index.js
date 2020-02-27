@@ -1,7 +1,7 @@
 const { getAllSignatureLists } = require('../../shared/signatures');
 const { getUser } = require('../../shared/users');
 const sendMail = require('./sendMail');
-const remindAfter = 14;
+const remindAfter = 7;
 
 module.exports.handler = async event => {
   try {
@@ -16,7 +16,7 @@ module.exports.handler = async event => {
 
     console.log('two weeks ago', timestamp);
 
-    // Loop through lists to check a list was created two weeks ago
+    // Loop through lists to check if a list was created two weeks ago
     for (let list of signatureLists) {
       // We only need to check lists of users
       if (list.userId !== 'anonymous') {
@@ -28,10 +28,19 @@ module.exports.handler = async event => {
           if (!('received' in list)) {
             // Get user from users table to get email
             const result = await getUser(list.userId);
-            const user = result.Item;
 
-            await sendMail(user);
-            console.log('success sending mail to', user.email);
+            // the user might have been deleted or does not have
+            // newsletter consent
+            if (
+              'Item' in result &&
+              'newsletterConsent' in result.Item &&
+              result.Item.newsletterConsent.value
+            ) {
+              const user = result.Item;
+
+              await sendMail(user, list.campaign.code);
+              console.log('success sending mail to', user.email);
+            }
           }
         }
       }

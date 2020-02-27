@@ -3,7 +3,7 @@
   <mj-head>
     <mj-include path="../../../mails/includes/head.mjml" />
     <mj-preview>
-      [[CUSTOM_PREHEADER]]
+      Vor zwei Wochen hast du eine Unterschriftenliste für die Expedition Grundeinkommen heruntergeladen.
     </mj-preview>
   </mj-head>
 
@@ -12,8 +12,34 @@
     <mj-section background-color="#fef377">
       <mj-column>
         <mj-text>
-          Heyho, du hast vor zwei Wochen eine Liste heruntergeladen
-
+          [[CUSTOM_GREETING]]
+          <br><br>
+          vor einer Woche hast du eine Unterschriftenliste für die Expedition Grundeinkommen heruntergeladen.
+          Danke! Wir wollen dich mit dieser E-Mail daran erinnern, die gesammelten Unterschriften
+          sobald wie möglich zur Post zu bringen.
+          <br><br>
+          Deine Unterschriften sind enorm wichtig, damit unsere Volksinitiative erfolgreich ist!
+          <br><br>
+          Du kannst auch schon vorab über unsere Webseite deine bereits gesammelten Unterschriften
+          in den Sammelbalken eintragen. Dann sind deine Unterschriften schon sichtbar,
+          auch wenn du sie noch nicht losgeschickt hast.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/qr/[[CAMPAIGN_SHORT]]/?userId=[[USER_ID]]">
+          Unterschriften eintragen
+        </mj-button>
+        <mj-text>
+          Falls du noch Unterstützung brauchst, z.B. weil du nicht drucken kannst,
+          Material oder mehr Informationen brauchst, dann melde dich gerne auf diese E-Mail zurück.
+          <br><br>
+          Es kommt auf jede Unterschrift an – auch auf deine!
+          <br><br>
+          Danke, dass du Teil der Expedition bist!
+          <br><br>
+          Herzliche Grüße<br>
+          Dein Expeditionsteam
+          <br><br>
+          PS: Falls du die Liste anonym heruntergeladen und bereits eingeschickt,
+          können wir das natürlich nicht sehen. Dann sagen wir einfach nur eins: Danke!
         </mj-text>
 
       </mj-column>
@@ -22,42 +48,33 @@
     <mj-section mj-class="section-red" padding-top="40px">
       <mj-column>
         <mj-text mj-class="section-red-text">
-          [[CUSTOM_CTA_TEXT]]
-          <br><br>
-          Also: Bitte weitermachen!
 
-        </mj-text>
-        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId=[[USER_ID]]&campaignCode=[[CAMPAIGN_CODE]]">
-          Liste herunterladen
-        </mj-button>
-      </mj-column>
-    </mj-section>
-
-    <mj-section background-color="#fef377" padding-top="40px">
-      <mj-column>
-        <mj-text>
-          <h2>Deine Spende bringt die Expedition voran</h2>
-
-          Mit deiner Unterstützung für unsere Expedition bringst du das Thema Grundeinkommen voran.
+          <h2>Bitte unterstütze die Expedition auch finanziell.</h2>
+          Mit deiner Unterstützung bringst du unsere Initiative voran.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
           <br><br>
           Bankverbindung:
           <br><br>
           Vertrauensgesellschaft e.V.<br>
           IBAN: DE74 4306 0967 1218 1056 01<br>
-          BIC: GENODEM1GLS (GLS-Bank)
+          BIC: GENODEM1GLS (GLS-Bank)<br>
           <br><br>
           Charity-SMS:
           <br><br>
-          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen. Sende dazu das Kennwort expedition5 oder expedition10 an die 81190. Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
           <br><br>
           oder
         </mj-text>
 
-        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
           Spende mit Paypal/Kreditkarte
         </mj-button>
       </mj-column>
+
     </mj-section>
-    <mj-include path="../../../mails/includes/footer.mjml" />
+
+    <mj-include path="../../../mails/includes/footer-transactional.mjml" />
   </mj-body>
 </mjml>
