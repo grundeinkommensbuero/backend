@@ -1,9 +1,8 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 const ses = new AWS.SES({ region: 'eu-central-1' });
-const fs = require('fs');
 
-const htmlMail = require('/mailTemplate.html');
+const htmlMail = require('./mailTemplate.html').default;
 
 const CAMPAIGN_SHORTS = {
   'schleswig-holstein-1': 'sh',
@@ -14,11 +13,11 @@ const CAMPAIGN_SHORTS = {
 };
 
 // Function which sends an email to remind user to send signature lists
-const sendMail = ({ email, username, userId }, campaignCode) => {
+const sendMail = ({ email, username, cognitoId }, campaignCode) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
     subject: 'Erinnerung: Schick uns deine Unterschriftenliste!',
-    html: customMail(userId, username, campaignCode),
+    html: customMail(cognitoId, username, campaignCode),
     to: email,
   };
 
@@ -45,7 +44,7 @@ const customMail = (userId, username, campaignCode) => {
   return htmlMail
     .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
     .replace(/\[\[USER_ID\]\]/gi, userId)
-    .replace(/\[\[CAMPAIGN_SHORT\]\]/gi, CAMPAIGN_SHORTS(campaignCode));
+    .replace(/\[\[CAMPAIGN_SHORT\]\]/gi, CAMPAIGN_SHORTS[campaignCode]);
 };
 
 module.exports = sendMail;
