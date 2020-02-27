@@ -14,32 +14,34 @@ module.exports.handler = async event => {
     // we only want the current day (YYYY-MM-DD), because the lists are saved that way
     const timestamp = date.toISOString().substring(0, 10);
 
-    console.log('two weeks ago', timestamp);
+    console.log(`${remindAfter} days ago`, timestamp);
 
     // Loop through lists to check if a list was created two weeks ago
     for (let list of signatureLists) {
-      // We only need to check lists of users
-      if (list.userId !== 'anonymous') {
-        if (list.createdAt === timestamp) {
-          console.log('same date', list.createdAt, timestamp);
+      if (list.campaign.code !== 'hamburg-1') {
+        // We only need to check lists of users
+        if (list.userId !== 'anonymous') {
+          if (list.createdAt === timestamp) {
+            console.log('same date', list.createdAt, timestamp, list);
 
-          // List was created x days ago, therefore we might send a reminder mail
-          // if the list was not sent yet
-          if (!('received' in list)) {
-            // Get user from users table to get email
-            const result = await getUser(list.userId);
+            // List was created x days ago, therefore we might send a reminder mail
+            // if the list was not sent yet
+            if (!('received' in list)) {
+              // Get user from users table to get email
+              const result = await getUser(list.userId);
 
-            // the user might have been deleted or does not have
-            // newsletter consent
-            if (
-              'Item' in result &&
-              'newsletterConsent' in result.Item &&
-              result.Item.newsletterConsent.value
-            ) {
-              const user = result.Item;
+              // the user might have been deleted or does not have
+              // newsletter consent
+              if (
+                'Item' in result &&
+                'newsletterConsent' in result.Item &&
+                result.Item.newsletterConsent.value
+              ) {
+                const user = result.Item;
 
-              await sendMail(user, list.campaign.code);
-              console.log('success sending mail to', user.email);
+                await sendMail(user, list.campaign.code);
+                console.log('success sending mail to', user.email);
+              }
             }
           }
         }
