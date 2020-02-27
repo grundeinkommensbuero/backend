@@ -201,7 +201,7 @@ const getSignatureCountOfAllLists = async () => {
         // HACK: if campaign is hamburg and scan was done after 27th Feb
         // do not count it!
         if (campaign === 'hamburg-1') {
-          if (new Date(scan.timestamp) < new Date()) {
+          if (new Date(scan.timestamp) < new Date('2020-02-27')) {
             stats[campaign][userId].withMixed += parseInt(scan.count);
           } else {
             stats[campaign][userId].from27 += parseInt(scan.count);
