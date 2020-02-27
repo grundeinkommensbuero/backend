@@ -226,7 +226,14 @@ const handler = async event => {
         try {
           //if the upload process was successful, we create the list entry in the db
           //userId might be 'anonymous'
-          await createSignatureList(pdfId, timestamp, url, campaign, userId);
+          await createSignatureList(
+            pdfId,
+            timestamp,
+            url,
+            campaign,
+            false,
+            userId
+          );
 
           try {
             //if the download was not anonymous send a mail with the attached pdf
@@ -316,7 +323,14 @@ const getSignatureList = async (
 };
 
 //function to create new signature list, userId can be null (anonymous list)
-const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
+const createSignatureList = (
+  id,
+  timestamp,
+  url,
+  campaign,
+  manually,
+  userId = null
+) => {
   const params = {
     TableName: signaturesTableName,
     Item: {
@@ -325,7 +339,7 @@ const createSignatureList = (id, timestamp, url, campaign, userId = null) => {
       downloads: 1,
       campaign: campaign,
       createdAt: timestamp,
-      // manually: true,
+      manually: manually,
     },
   };
 

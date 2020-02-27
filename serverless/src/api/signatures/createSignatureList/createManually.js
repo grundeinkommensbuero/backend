@@ -9,10 +9,22 @@ const { createSignatureList } = require('./');
 const parse = require('csv-parse');
 const generatePdf = require('./createPDF');
 
-const URLS = {
-  'hamburg-1': 'https://xbge.de/qr/hh/?listId=',
-  'schleswig-holstein-1': 'https://xbge.de/qr/sh/?listId=',
-  'brandenburg-1': 'https://xbge.de/qr/bb/?listId=',
+const MAPPING = {
+  'hamburg-1': {
+    URL: 'https://xbge.de/qr/hh/?listId=',
+    SHORT: 'hh',
+    COUNT_INDEX: 12,
+  },
+  'schleswig-holstein-1': {
+    URL: 'https://xbge.de/qr/sh/?listId=',
+    SHORT: 'sh',
+    COUNT_INDEX: 11,
+  },
+  'brandenburg-1': {
+    URL: 'https://xbge.de/qr/bb/?listId=',
+    SHORT: 'bb',
+    COUNT_INDEX: 13,
+  },
 };
 
 const CAMPAIGN_CODE = 'brandenburg-1';
@@ -34,39 +46,44 @@ const createListManually = async (userId, user) => {
 
   let pdfType;
 
-  if (user.count <= 5) {
-    pdfType = 'SERIENBRIEF4';
-  } else if (user.count <= 10) {
-    pdfType = 'SERIENBRIEF10';
-  } else if (user.count <= 20) {
-    pdfType = 'SERIENBRIEF20';
+  if (user.count <= 2) {
+    pdfType = 'SERIENBRIEF2';
+  } else if (user.count <= 5) {
+    pdfType = 'SERIENBRIEF5';
+  } else if (user.count <= 15) {
+    pdfType = 'SERIENBRIEF15';
   } else {
     pdfType = 'SERIENBRIEF30';
   }
 
-  pdfType = 'MULTI';
-
   console.log('pdf type', pdfType);
 
   const pdfBytes = await generatePdf(
-    URLS[CAMPAIGN_CODE],
+    MAPPING[CAMPAIGN_CODE].URL,
     pdfId,
     pdfType,
     CAMPAIGN_CODE,
     user
   );
 
-  await createSignatureList(pdfId, timestamp, undefined, campaign, userId);
+  await createSignatureList(
+    pdfId,
+    timestamp,
+    undefined,
+    campaign,
+    true,
+    userId
+  );
 
-  fs.writeFileSync(`./lists/list_bb_${user.name}.pdf`, pdfBytes);
+  fs.writeFileSync(
+    `./lists/list_${MAPPING[CAMPAIGN_CODE].SHORT}_${user.name}.pdf`,
+    pdfBytes
+  );
 };
 
 processCsv = async () => {
   try {
-    // const users = await readCsv();
-    const users = [
-      { email: 'elena.wenz@posteo.de', count: 4, name: 'Elena Wenz' },
-    ];
+    const users = await readCsv();
     console.log('users length', users.length);
     for (let user of users) {
       // Get userId of user
@@ -105,7 +122,7 @@ const readCsv = () => {
             zipCode: row[6].split(' ')[0],
             city: row[6].split(' ')[1],
             email: row[10] === '' ? row[7] : row[10],
-            count: parseInt(row[1]),
+            count: parseInt(row[MAPPING[CAMPAIGN_CODE].COUNT_INDEX]),
           };
 
           if (typeof user !== 'undefined' && user.email !== '') {
