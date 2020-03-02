@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const { constructCampaignId } = require('../../../shared/utils');
 const tableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
@@ -53,7 +54,8 @@ module.exports.handler = async event => {
           userId,
           requestBody.referral,
           timestamp,
-          newsletterConsentHasChanged
+          newsletterConsentHasChanged,
+          requestBody.campaignCode
         );
         // return message (no content)
         return {
@@ -79,7 +81,8 @@ const updateUser = (
   userId,
   referral,
   timestamp,
-  newsletterConsentHasChanged
+  newsletterConsentHasChanged,
+  campaignCode
 ) => {
   const newsletterConsent = {
     value: true,
@@ -99,6 +102,13 @@ const updateUser = (
     updateExpression += ', referral = :referral';
   }
 
+  let campaign;
+  if (typeof campaignCode !== 'undefined') {
+    campaign = constructCampaignId(campaignCode);
+    updateExpression +=
+      ', signatureCampaigns = list_append(if_not_exists(signatureCampaigns, :emptyList), :campaign)';
+  }
+
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
@@ -108,5 +118,11 @@ const updateUser = (
       ':referral': referral,
     },
   };
+
+  if (typeof campaignCode !== 'undefined') {
+    params.ExpressionAttributeValues[':emptyList'] = [];
+    params.ExpressionAttributeValues[':campaign'] = [campaign];
+  }
+
   return ddb.update(params).promise();
 };
