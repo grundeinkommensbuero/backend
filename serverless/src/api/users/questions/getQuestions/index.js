@@ -21,7 +21,10 @@ module.exports.handler = async event => {
         ? event.queryStringParameters.limit
         : defaultQuestionLimit;
 
-    const questions = await getRecentQuestions(questionLimit);
+    const userId =
+      event.queryStringParameters && event.queryStringParameters.userId;
+
+    const questions = await getRecentQuestions(questionLimit, userId);
 
     // return message (no content)
     return {
@@ -43,7 +46,7 @@ module.exports.handler = async event => {
   }
 };
 
-const getRecentQuestions = async questionLimit => {
+const getRecentQuestions = async (questionLimit, userId) => {
   const users = await getAllUsersWithQuestions();
 
   // Sort questions by most recent
@@ -54,7 +57,12 @@ const getRecentQuestions = async questionLimit => {
   );
 
   // get the first x elements of array
-  const usersWithRecentQuestions = users.slice(0, questionLimit);
+  // First get 10 more, so we can filter out hidden ones
+  // This way we don't have to loop through the whole users array
+  const usersWithRecentQuestions = users
+    .slice(0, questionLimit + 10)
+    .filter(user => !user.questions[0].hidden)
+    .slice(0, questionLimit);
 
   const questions = [];
 
@@ -72,6 +80,7 @@ const getRecentQuestions = async questionLimit => {
             city: zipCodeMatcher.getCityByZipCode(user.zipCode.toString()),
             profilePictures: user.profilePictures,
           },
+          belongsToCurrentUser: user.cognitoId === userId,
         });
       }
     }
