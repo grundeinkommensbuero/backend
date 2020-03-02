@@ -79,6 +79,7 @@ module.exports.handler = async event => {
       statusCode: 200,
       body: JSON.stringify({
         users: powerUsers,
+        count: powerUsers.length,
       }),
       headers: responseHeaders,
       isBase64Encoded: false,
