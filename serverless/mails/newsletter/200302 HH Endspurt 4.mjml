@@ -1,0 +1,74 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Wir sind fast am Ziel: Wir sammeln weiter, bis wir 12.000 Unterschriften
+      in den Sammelstellen liegen haben. Wir brauchen weiterhin jede Unterschrift!
+      Nur bis Mittwochmittag haben wir dafür noch Zeit. Dann müssen wir beim Senat einreichen.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Wir sammeln weiter bis wir 12.000 Unterschriften haben</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          mit den Unterschriften vom Wochenende liegen nun knapp 10.000 Unterschriften im Büro!
+          Danke! 🎉💐🎺 Auf St. Pauli haben wir gestern mit vielen Menschen vor Ort über 1.300 Unterschriften eingesammelt.
+          <br><br>
+          Geschafft ist es aber noch nicht: Wir sammeln weiter, bis wir 12.000 Unterschriften
+          in den Sammelstellen liegen haben. Wir brauchen weiterhin jede Unterschrift!
+          Nur bis Mittwochmittag haben wir dafür noch Zeit. Dann müssen wir beim Senat einreichen.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expeditionbge.typeform.com/to/A4uhy2">
+          Ich habe noch Listen Zuhause
+        </mj-button>
+        <mj-text>
+          <h2>Melde dich, wenn du noch Unterschriften Zuhause hast</h2>
+          Da die Post nun zu lange dauert, schick bitte ab jetzt keine Briefe mehr los.
+          Wenn du mehr als 10 Unterschriften hast, dann trag diese bitte in die Umfrage ein.
+          Entweder bringst du sie zu einem der vier Sammelpunkte (in der Umfrage) oder wir
+          gucken, ob sie jemand bei dir abholen kann.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expeditionbge.typeform.com/to/A4uhy2">
+          Ich habe noch Listen Zuhause
+        </mj-button>
+        <mj-text>
+          Auf dich und deine Unterschriften kommt es nun an.
+          <br><br>
+          Das Ziel ist zum greifen nah. Los geht’s! :)
+          <br><br>
+          Laura und Joy für die gesamte Expedition Hamburg
+        </mj-text>
+
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Ab jetzt keine Post mehr losschicken</h2>
+          Damit der anvisierte Volksentscheid parallel zur Bundestagswahl 2021 stattfinden kann,
+          müssen wir die erste Hürde (10.000 Unterschriften plus 2.000 Puffer) bis Mittwoch schaffen.
+          <br><br>
+          Da die Post nun zu lange dauert, schick bitte ab jetzt keine Briefe mehr los.
+          <br><br>
+          Wir glauben, dass wir das schaffen können. Dafür brauchen wir nun noch einmal alle. <i>Hast du noch Listen die ins Büro müssen?</i>
+          <br><br>
+          Dann antworte einfach auf dieses E-Mail!
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
