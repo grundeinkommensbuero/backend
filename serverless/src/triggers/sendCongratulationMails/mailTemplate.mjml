@@ -33,6 +33,20 @@
         <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId=[[USER_ID]]&campaignCode=[[CAMPAIGN_CODE]]">
           Liste herunterladen
         </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          <h2>Du hattest mehr Unterschriften gesendet?</h2>
+          Keine Sorge, vermutlich sind keine Unterschriftenlisten verloren gegangen!
+          Dass in dieser E-Mail eine geringere Anzahl angegeben ist, kann folgende Gründe haben:
+          <br><br>
+          1) Noch nicht alle Unterschriftenlisten wurden in unserem Büro bearbeitet.<br>
+          2) Falls du auch Unterschriftenlisten eingeschickt hast, die du nicht selber heruntergeladen,
+          sondern von Bekannten erhalten hattest, können wir diese nicht deiner E-Mail-Adresse zuordnen.<br>
+          3) Das Gleiche gilt, falls du beim Download einer Liste die Option "anonym herunterladen" gewählt hast.
+          <br><br>
+          Wenn du sicher bist, dass du die Listen selbst und nicht anonym heruntergeladen hast,
+          ein paar Tage gewartet hast und trotzdem noch Unterschriften vermisst, antworte einfach auf diese E-Mail.
+        </mj-text>
       </mj-column>
     </mj-section>
 
