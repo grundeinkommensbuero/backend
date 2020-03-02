@@ -67,23 +67,30 @@ const getRecentQuestions = async (questionLimit, userId) => {
   const questions = [];
 
   // Construct new questions array
-  // Match zip code to city and add it to user object
   for (let user of usersWithRecentQuestions) {
-    if ('zipCode' in user) {
-      if (!('city' in user)) {
-        questions.push({
-          body: user.questions[0].body,
-          timestamp: user.questions[0].timestamp,
-          user: {
-            username: user.username,
-            // Zip code should be string, but we need to make sure
-            city: zipCodeMatcher.getCityByZipCode(user.zipCode.toString()),
-            profilePictures: user.profilePictures,
-          },
-          belongsToCurrentUser: user.cognitoId === userId,
-        });
+    const question = {
+      body: user.questions[0].body,
+      timestamp: user.questions[0].timestamp,
+      user: {
+        username: user.username,
+        profilePictures: user.profilePictures,
+      },
+      belongsToCurrentUser: user.cognitoId === userId,
+    };
+
+    // Match zip code to city and add it to user object
+    if (!('city' in user)) {
+      if ('zipCode' in user) {
+        // Zip code should be string, but we need to make sure
+        question.user.city = zipCodeMatcher.getCityByZipCode(
+          user.zipCode.toString()
+        );
       }
+    } else {
+      question.user.city = user.city;
     }
+
+    questions.push(question);
   }
 
   return questions;
@@ -93,7 +100,8 @@ const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
   const params = {
     TableName: tableName,
     FilterExpression: 'attribute_exists(questions)',
-    ProjectionExpression: 'username, zipCode, profilePictures, questions',
+    ProjectionExpression:
+      'cognitoId, username, zipCode, profilePictures, questions, city',
   };
 
   if (startKey !== null) {
