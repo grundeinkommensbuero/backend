@@ -184,6 +184,7 @@ const getSignatureCountOfAllLists = async () => {
       stats[campaign][list.userId] = {
         withoutMixed: 0,
         withMixed: 0,
+        since3rd: 0,
         scannedByUser: 0,
       };
     }
@@ -197,7 +198,15 @@ const getSignatureCountOfAllLists = async () => {
           stats[campaign][userId].withoutMixed += parseInt(scan.count);
         }
 
-        stats[campaign][userId].withMixed += parseInt(scan.count);
+        if (campaign === 'hamburg-1') {
+          if (new Date(scan.timestamp) < new Date('2020-03-03')) {
+            stats[campaign][userId].withMixed += parseInt(scan.count);
+          } else {
+            stats[campaign][userId].since3rd += parseInt(scan.count);
+          }
+        } else {
+          stats[campaign][userId].withMixed += parseInt(scan.count);
+        }
       }
     }
 
@@ -217,6 +226,7 @@ const getSignatureCountOfAllLists = async () => {
       withMixed: 0,
       withoutMixed: 0,
       scannedByUser: 0,
+      since3rd: 0,
       computed: 0,
     };
 
@@ -224,14 +234,18 @@ const getSignatureCountOfAllLists = async () => {
       // Computed always takes the higher number of scannedByUser or received
       computedStats[campaign].computed += Math.max(
         stats[campaign][userId].scannedByUser,
-        stats[campaign][userId].withMixed
+        stats[campaign][userId].withMixed +
+          parseInt(0.5 * stats[campaign][userId].since3rd)
       );
 
-      computedStats[campaign].withMixed += stats[campaign][userId].withMixed;
+      computedStats[campaign].withMixed +=
+        stats[campaign][userId].withMixed + stats[campaign][userId].since3rd;
       computedStats[campaign].withoutMixed +=
         stats[campaign][userId].withoutMixed;
       computedStats[campaign].scannedByUser +=
         stats[campaign][userId].scannedByUser;
+
+      computedStats[campaign].since3rd += stats[campaign][userId].since3rd;
     }
   }
 
