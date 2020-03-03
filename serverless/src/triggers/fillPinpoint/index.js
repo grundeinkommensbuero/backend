@@ -72,7 +72,20 @@ const processBatchOfUsers = async (
       // Get signature lists of this user and add it to user object
       user.signatureLists = await getSignatureListsOfUser(user.cognitoId);
 
-      await updateEndpoint(user, verified);
+      const signatureCampaigns = user.signatureLists.map(list => list.campaign);
+
+      await ddb
+        .update({
+          TableName: tableName,
+          Key: { cognitoId: user.cognitoId },
+          UpdateExpression: 'SET signatureCampaigns = :signatureCampaigns',
+          ExpressionAttributeValues: {
+            ':signatureCampaigns': signatureCampaigns,
+          },
+        })
+        .promise();
+
+      // await updateEndpoint(user, verified);
 
       count++;
     }
