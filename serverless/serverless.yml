@@ -562,7 +562,7 @@ resources:
             KeyType: HASH
         StreamSpecification:
           StreamViewType: NEW_IMAGE
-        # BillingMode: PAY_PER_REQUEST
+        BillingMode: PAY_PER_REQUEST
 
     SignaturesTable:
       Type: AWS::DynamoDB::Table
@@ -574,7 +574,7 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-        # BillingMode: PAY_PER_REQUEST
+        BillingMode: PAY_PER_REQUEST
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
