@@ -42,6 +42,7 @@ const analyse = async () => {
     }
   }
 
+  console.log('users', users.length);
   console.log('total count', totalCount);
   console.log('has sent count', hasSentCount);
   console.log('average', totalCount / users.length);
