@@ -320,19 +320,6 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  getUsers:
-    handler: src/api/users/getUsers/index.handler
-    events:
-      - http:
-          path: users
-          method: get
-          cors: true
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - dynamodb:Scan
-        Resource:
-          - 'Fn::GetAtt': [UsersTable, Arn]
 
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
