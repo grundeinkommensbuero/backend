@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const ses = new AWS.SES({ region: 'eu-central-1' });
 
 const htmlMail = require('./mailTemplate.html').default;
+const htmlMailHamburg = require('./mailTemplateHamburg.html').default;
 
 const GOALS = {
   'schleswig-holstein-1': '25.000',
@@ -81,14 +82,19 @@ const customMail = (
       ? `Damit hast du insgesamt schon ${totalCount} Unterschriften beigetragen. `
       : ''
   }
-
+  <br><br>
   Ein großes Danke dafür!
+  ${
+    campaign.code !== 'hamburg-1'
+      ? `
   <br><br>
   Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment ${totalCountForAllUsers} von ${
-    GOALS[campaign.code]
-  } benötigten Unterschriften in ${STATES[campaign.state]} gesammelt.
+          GOALS[campaign.code]
+        } benötigten Unterschriften in ${STATES[campaign.state]} gesammelt.
   Wir haben also noch etwas vor uns.
-  `;
+  `
+      : ''
+  }`;
 
   let ctaText;
   if (totalCount > 5) {
@@ -102,7 +108,9 @@ const customMail = (
       'Kennst du noch Menschen in deinem Umfeld, die auch für einen Modellversuch zum Grundeinkommen unterschreiben könnten? Bitte lass sie auch unterschreiben! ';
   }
 
-  return htmlMail
+  const mail = campaign.code === 'hamburg-1' ? htmlMailHamburg : htmlMail;
+
+  return mail
     .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
     .replace(/\[\[CUSTOM_PREHEADER\]\]/gi, preheader)
     .replace(/\[\[CUSTOM_TEXT\]\]/gi, text)
