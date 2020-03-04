@@ -116,15 +116,23 @@ const handler = async event => {
 
       //now we want to validate if the user actually exists
       try {
-        const user = await getUser(userId);
+        const result = await getUser(userId);
         console.log('user after getting user', user);
 
         //if user does not have Item as property, there was no user found
-        if (!('Item' in user) || typeof user.Item === 'undefined') {
+        if (!('Item' in result) || typeof result.Item === 'undefined') {
           return errorResponse(400, 'No user found with the passed user id');
         }
 
-        email = user.Item.email;
+        // If user does not have newsletter consent we want to return 401
+        if (
+          !('newsletterConsent' in result.Item) ||
+          !result.Item.newsletterConsent.value
+        ) {
+          return errorResponse(401, 'User does not have newsletter consent');
+        }
+
+        email = result.Item.email;
       } catch (error) {
         console.log('error', error);
         return errorResponse(500, 'Error while getting user', error);
@@ -139,9 +147,17 @@ const handler = async event => {
         if (result.Count === 0) {
           console.log('error', 'no user found', result);
           return errorResponse(400, 'No user found with the passed email');
-        } else {
-          userId = result.Items[0].cognitoId;
         }
+
+        // If user does not have newsletter consent we want to return 401
+        if (
+          !('newsletterConsent' in result.Items[0]) ||
+          !result.Items[0].newsletterConsent.value
+        ) {
+          return errorResponse(401, 'User does not have newsletter consent');
+        }
+
+        userId = result.Items[0].cognitoId;
       } catch (error) {
         console.log('error', error);
         return errorResponse(500, 'Error while getting user by email', error);
