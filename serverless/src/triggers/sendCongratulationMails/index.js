@@ -13,6 +13,8 @@ module.exports.handler = async event => {
     const usersMap = {};
     const signatureLists = await getReceivedSignatureLists();
 
+    // We want to save the campaign for which there was a scan today
+    let campaignToday;
     for (let list of signatureLists) {
       // loop through the scan array and check if there were new
       // scans during the last 24h
@@ -29,6 +31,7 @@ module.exports.handler = async event => {
         // if the scan was during the last day add it to the count
         if (now - scannedAt < oneDay) {
           dailyCount += scan.count;
+          campaignToday = list.campaign;
         }
 
         // we also want to compute the total count to check,
@@ -56,13 +59,14 @@ module.exports.handler = async event => {
               email: result.Item.email,
               username: result.Item.username,
               userId: result.Item.cognitoId,
-              campaign: list.campaign,
+              campaign: campaignToday,
             };
           }
         } else {
           // if there already is an entry in the map, change the values
           usersMap[list.userId].dailyCount += dailyCount;
           usersMap[list.userId].totalCount += totalCount;
+          usersMap[list.userId].campaign = campaignToday;
         }
       }
     }
@@ -81,8 +85,6 @@ module.exports.handler = async event => {
           totalCountForAllUsers[usersMap[key].campaign.code].computed;
         let contentfulCountForThisCampaign =
           contentfulCounts[usersMap[key].campaign.code];
-
-        console.log('campaign', usersMap[key].campaign.code);
 
         console.log('contetful count', contentfulCounts);
         console.log(
