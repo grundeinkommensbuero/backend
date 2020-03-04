@@ -12,12 +12,20 @@ const CAMPAIGN_SHORTS = {
   'bremen-1': 'hb',
 };
 
+const STATES = {
+  'schleswig-holstein': 'Schleswig-Holstein',
+  brandenburg: 'Brandenburg',
+  hamburg: 'Hamburg',
+  berlin: 'Berlin',
+  bremen: 'Bremen',
+};
+
 // Function which sends an email to remind user to send signature lists
-const sendMail = ({ email, username, cognitoId }, campaignCode) => {
+const sendMail = ({ email, username, cognitoId }, campaign) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
     subject: 'Erinnerung: Schick uns deine Unterschriftenliste!',
-    html: customMail(cognitoId, username, campaignCode),
+    html: customMail(cognitoId, username, campaign),
     to: email,
   };
 
@@ -30,7 +38,7 @@ const sendMail = ({ email, username, cognitoId }, campaignCode) => {
 };
 
 // construct an email with the passed username
-const customMail = (userId, username, campaignCode) => {
+const customMail = (userId, username, campaign) => {
   let greeting;
 
   //if there is a username we want to have a specific greeting
@@ -44,7 +52,8 @@ const customMail = (userId, username, campaignCode) => {
   return htmlMail
     .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
     .replace(/\[\[USER_ID\]\]/gi, userId)
-    .replace(/\[\[CAMPAIGN_SHORT\]\]/gi, CAMPAIGN_SHORTS[campaignCode]);
+    .replace(/\[\[STATE\]\]/gi, STATES[campaign.state])
+    .replace(/\[\[CAMPAIGN_SHORT\]\]/gi, CAMPAIGN_SHORTS[campaign.code]);
 };
 
 module.exports = sendMail;

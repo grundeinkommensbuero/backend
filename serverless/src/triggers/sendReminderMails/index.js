@@ -39,7 +39,7 @@ module.exports.handler = async event => {
               ) {
                 const user = result.Item;
 
-                await sendMail(user, list.campaign.code);
+                await sendMail(user, list.campaign);
                 console.log('success sending mail to', user.email);
               }
             }
