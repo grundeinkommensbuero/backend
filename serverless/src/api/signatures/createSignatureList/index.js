@@ -242,14 +242,17 @@ const handler = async event => {
         try {
           //if the upload process was successful, we create the list entry in the db
           //userId might be 'anonymous'
-          await createSignatureList(
-            pdfId,
-            timestamp,
-            url,
-            campaign,
-            false,
-            userId
-          );
+          const promises = [
+            createSignatureList(pdfId, timestamp, url, campaign, false, userId),
+          ];
+
+          // Also create a promise to update the user record to save the signature campaign
+          if (userId !== 'anonymous') {
+            promises.push(updateUser(userId, campaign));
+          }
+
+          // Do (maybe) both promises async to increase performance
+          await Promise.all(promises);
 
           try {
             //if the download was not anonymous send a mail with the attached pdf
@@ -263,6 +266,7 @@ const handler = async event => {
 
               await sendMail(email, attachments, campaign);
             }
+
             return {
               statusCode: 201,
               headers: responseHeaders,
@@ -412,6 +416,25 @@ const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
       getAttachment(attachment, qrCodeUrl, pdfId, campaignCode)
     )
   );
+};
+
+const updateUser = (userId, campaign) => {
+  const timestamp = new Date().toISOString();
+
+  const params = {
+    TableName: tableName,
+    Key: { cognitoId: userId },
+    UpdateExpression:
+      'signatureCampaigns = list_append(if_not_exists(signatureCampaigns, :emptyList), :campaign), updatedAt = :updatedAt',
+    ExpressionAttributeValues: {
+      ':campaign': campaign,
+      ':emptyList': [],
+      ':updatedAt': timestamp,
+    },
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  return ddb.update(params).promise();
 };
 
 module.exports = {
