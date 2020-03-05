@@ -40,23 +40,7 @@ const addUser = async (email, username) => {
 
 const migrateUsers = async () => {
   try {
-    /* const changeUsers = await readCsv('change');
-    const mailerliteUsers = await readCsv('mailerlite');
-
-    //remove duplicates between mailerlite and change
-    //we want to keep change because of existing location
-    const mailerliteUsersWithoutDuplicates = mailerliteUsers.filter(
-      mailerliteUser =>
-        changeUsers.findIndex(
-          changeUser => changeUser.email === mailerliteUser.email
-        ) === -1
-    );
-    
-    //merge both arrays into one
-    const allUsers = changeUsers.concat(mailerliteUsersWithoutDuplicates);
-  */
-
-    const users = await readCsv('typeform');
+    const users = await readCsv('mailerlite');
 
     console.log('user', users[0]);
 
