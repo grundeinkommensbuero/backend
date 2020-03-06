@@ -1,0 +1,83 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Hamburg ist einen Schritt näher am Grundeinkommen:
+      Nach nur drei Wochen hat die Volksinitiative in der Hansestadt über
+      13.000 Unterschriften für einen Modellversuch des
+      bedingungslosen Grundeinkommens abgegeben – 3.000 mehr als nötig.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Erste Hürde in Hamburg in Rekordzeit genommen</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wir haben großartige Neuigkeiten: In nur drei Wochen hat die Expedition in
+          Hamburg über 13.000 Unterschriften für einen Modellversuch zum bedingungslosen
+          Grundeinkommen eingesammelt – 3.000 mehr als nötig!
+          <br><br>
+          Dank des unglaublichen gemeinschaftlichen Engagements der Expeditionsmitglieder
+          vor Ort ist Hamburg damit das erste Bundesland, in dem wir die erste Hürde
+          auf dem Weg zum Volksentscheid genommen haben. <br>
+          <h3>Die gigantische Resonanz auf der Straße hat glasklar gezeigt: Deutschland ist bereit für den Praxistest! </h3>
+
+        </mj-text>
+        <mj-image src="https://images.ctfassets.net/af08tobnb0cl/KPJFRTfktjsvi44p3fNg9/41511ff2c75a21bcbd8a62b853633cc7/Hamburg_Collage_3_1_.png" />
+        <mj-text>
+          <h2>Wie geht es weiter?</h2>
+          Lass uns jetzt gemeinsam Schleswig-Holstein und Brandenburg erobern!
+          Dort laufen die Volksinitiativen auf Hochtouren. Weitere Orte wie
+          Berlin und Bremen stehen in den Startlöchern.
+          <br><br>
+          Dafür brauchen wir dich:
+          <br><br>
+          Komm Unterschriften sammeln! Wenn du in der Nähe wohnst,
+          dann unterstütze die Expeditionsmitglieder in Schleswig-Holstein,
+          Brandenburg, Berlin und Bremen beim Sammeln.
+
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="40px" href="https://expeditionbge.typeform.com/to/o3hqfs?user_email={{Address}}&version=a">
+          Ich könnte mithelfen
+        </mj-button>
+        <mj-text>
+          Du wohnst zu weit weg oder hast keine Zeit? Dann hilf uns bitte mit einer Spende,
+          um die Kosten der Kampagne zu decken: Material, Fahrtkosten und Gehälter. Jeder Euro hilft!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/?pk_campaign=xbge-newsletter&pk_kwd=ueberregional-a&pk_source=xbge#Spenden">
+          Jetzt spenden
+        </mj-button>
+        <mj-text>
+          Gemeinsam setzen wir den Modellversuch durch – und bringen damit das bedingungslose Grundeinkommen auf den Weg!
+          <br><br>
+          Laura und Joy vom Expeditionsteam
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Wie geht es in Hamburg jetzt weiter?</h2>
+          In den kommenden Monaten wird im Landesparlament, der Hamburger Bürgerschaft,
+          über die Volksinitiative abgestimmt. Wird der Vorschlag nicht angenommen,
+          können wir ein Volksbegehren starten. Dafür sammeln wir noch einmal Unterschriften,
+          dann nicht mehr nur auf der Straße, sondern es liegen auch offiziell Listen in
+          Ämtern und Behörden aus und man kann per Briefwahl dabei sein. Stimmt das
+          Landesparlament dann wieder nicht zu, ist der dritte Schritt der rechtlich
+          bindende Volksentscheid - hier können alle Wähler*innen für oder gegen den Vorschlag stimmen.
+
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
