@@ -1,0 +1,72 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Wir nehmen den Schwung aus Hamburg mit nach Schleswig-Holstein!</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wir haben großartige Neuigkeiten: In nur drei Wochen hat die Expedition
+          in Hamburg über 13.000 Unterschriften für einen Modellversuch zum
+          bedingungslosen Grundeinkommen eingesammelt - 3.000 mehr als nötig!
+          <h3>Die gigantische Resonanz auf der Straße hat gezeigt: Deutschland ist bereit für den Praxistest!</h3>
+
+        </mj-text>
+        <mj-image src="https://images.ctfassets.net/af08tobnb0cl/29q93ImP2aXXkYPE4iMRDW/dbe17b19ce5b434a29264f2773b80769/Hamburg_Collage_3_1_smaller.jpg" />
+        <mj-text>
+          <br>
+          <h2>Was bedeutet das für uns in Brandenburg?</h2>
+          Während der Kampagne in Hamburg haben wir viel gelernt. Diese Erkenntnisse
+          wollen wir jetzt gemeinsam nutzen, um in den kommenden Wochen auch die
+          Volksinitiative in Brandenburg zum Erfolg zu bringen.
+          <br><br>
+          <h2>Komm zum Vernetzungstreffen</h2>
+          In Kürze wird es in Berlin ein Treffen der Expedition geben, da auch
+          hier bald die Unterschriftensammlung startet. Wir wollen diese Gelegenheit
+          nutzen, um uns als Aktive aus Berlin und Brandenburg gegenseitig
+          kennenzulernen, uns zu vernetzen, den Zeitplan in beiden Bundesländern zu
+          besprechen, Ideen zu sammeln und uns für die Unterschriftensammlungen zu
+          organisieren.
+          <br><br>
+          Sag uns, ob du dabei sein willst. Fahrtkosten können dir nach Absprache
+          erstattet werden.
+        </mj-text>
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/UBXcpk?user_email={{Address}}">
+          Ich will beim Treffen dabei sein
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          Du hast keine Zeit? Dann unterstütze die Volksinitiative stattdessen mit
+          einer Spende. Damit decken wir die Kosten für Material, Fahrtkosten und
+          Aufwandsentschädigungen.
+          Jeder Euro hilft!
+
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/#Spenden"color="#fef377" border="1px solid #fef377">
+          Jetzt spenden
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Gemeinsam setzen wir den Modellversuch durch – und bringen damit das
+          bedingungslose Grundeinkommen auf den Weg!
+          <br><br>
+          Laura und Joy vom Expeditionsteam
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
