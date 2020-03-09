@@ -12,6 +12,7 @@
   "author": "Vali",
   "license": "ISC",
   "dependencies": {
+    "bottleneck": "^2.19.5",
     "bwip-js": "^2.0.5",
     "crypto-secure-random-digit": "^1.0.7",
     "jimp": "^0.9.3",

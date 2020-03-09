@@ -1,9 +1,12 @@
 const AWS = require('aws-sdk');
+const Bottleneck = require('bottleneck');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const { getAllUnverifiedCognitoUsers } = require('../../shared/users');
 const tableName = process.env.USERS_TABLE_NAME;
 const userPoolId = process.env.USER_POOL_ID;
+
+const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 
 module.exports.handler = async event => {
   try {
@@ -34,8 +37,10 @@ const deleteUsers = async () => {
 
   for (let user of filteredUsers) {
     try {
-      await deleteUserInCognito(user);
-      await deleteUserInDynamo(user);
+      await limiter.schedule(async () => {
+        await deleteUserInCognito(user);
+        await deleteUserInDynamo(user);
+      });
     } catch (error) {
       console.log('error deleting user', error);
       break;
