@@ -94,6 +94,8 @@ const MAIL_ATTACHMENTS = {
   campaign: object
   downloads: number
   pdfUrl: string
+  received: array
+  scannedByUser: array
 
 */
 
@@ -117,7 +119,6 @@ const handler = async event => {
       //now we want to validate if the user actually exists
       try {
         const result = await getUser(userId);
-        console.log('user after getting user', user);
 
         //if user does not have Item as property, there was no user found
         if (!('Item' in result) || typeof result.Item === 'undefined') {
