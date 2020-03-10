@@ -29,7 +29,7 @@ module.exports.handler = async event => {
       }
 
       try {
-        //otherwise proceed by saving the referral and saving a true newsletter consent
+        //otherwise proceed
         await updateUser(userId, question, timestamp, zipCode, username);
 
         // return message (no content)
