@@ -236,7 +236,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
-          - dynamodb:UpdateItem
+          - dynamodb:PutItem
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
@@ -275,6 +275,7 @@ functions:
         Action:
           - dynamodb:GetItem
           - dynamodb:PutItem
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
