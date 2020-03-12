@@ -1,0 +1,105 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Berlin testet Grundeinkommen: Wir starten gemeinsam das
+      Berliner Volksbegehren für einen Modellversuch zum Grundeinkommen. Bist du dabei?
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Expedition Grundeinkommen: Wir sind startklar.</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          es ist entschieden: Am Sonntag, den 15. März ist unser Initiator*innen-Treffen,
+          und wir starten gemeinsam die Unterschriftensammlung für unser Grundeinkommens-Volksbegehren!
+          <br><br>
+          Wir wollen diese Gelegenheit nutzen, um uns als Aktive gegenseitig kennenzulernen,
+          den Zeitplan zu besprechen und uns für die anstehende Unterschriftensammlung zu organisieren.
+          <br><br>
+          Der Kick-off startet am Sonntag um 15 Uhr hier:
+          <br><br>
+          CityLAB Berlin<br>
+          Platz der Luftbrücke 4<br>
+          12101 Berlin
+          <br><br>
+          Falls du noch nicht angemeldet bist, melde dich gerne an, damit wir wissen, dass du kommst:
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/V4nLBd?user_email={{Address}}">
+          Ich bin dabei!
+        </mj-button>
+
+        <mj-text>
+          <br>
+          <h2>Wie geht es in den nächsten Wochen weiter?</h2>
+          Sobald wir die Volksinitiative zusammen gestartet haben,
+          kannst du dir die Unterschriftenlisten herunterladen,
+          sie ausdrucken und lossammeln. Wenn du keinen Drucker hast,
+          bieten wir dir auch an, die Listen per Post zu dir zu senden.
+          Oder du holst sie dir im Büro ab (Karl-Marx-Str. 50, Nähe Rathaus Neukölln).
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/Dq3SOi?user_email={{Address}}">
+          Ich habe keinen Drucker. Schickt mir die Listen per Post.
+        </mj-button>
+
+        <mj-text>
+          Die Gesetze für das Land Berlin schreiben vor, dass die Unterschriften auf
+          offiziellen Listen von Hand geleistet werden müssen. Das ist zwar viel Aufwand,
+          dafür bringen wir tatsächlich ein verbindliches Gesetz auf den Weg. Wenn wir erfolgreich sind,
+          muss es ohne Wenn und Aber umgesetzt werden.
+          <br><br>
+          Am besten wäre es, wenn der Volksentscheid im September 2021 am Tag der
+          Bundestagswahl stattfinden kann. Um das zu erreichen, wollen wir innerhalb
+          von einem Monat die 24.000 Unterschriften gemeinsam sammeln.
+          <br><br>
+          Packen wir es an!
+          <br><br>
+          Wir freuen uns auf euch alle am Sonntag,
+          <br><br>
+          Laura und Joy von der Expedition Grundeinkommen
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+
+          <h2>Bitte unterstütze die Expedition Berlin auch finanziell!</h2>
+          Mit deiner Unterstützung bringst du unsere Initiative voran.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
