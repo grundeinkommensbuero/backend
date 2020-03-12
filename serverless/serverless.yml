@@ -91,9 +91,13 @@ functions:
     handler: src/api/signatures/updateSignatureList/index.handler
     events:
       - http:
-          path: signatures
+          path: signatures/{listId}
           method: patch
           cors: true
+          request:
+            parameters:
+              paths:
+                listId: true # not optional
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -106,6 +110,8 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
