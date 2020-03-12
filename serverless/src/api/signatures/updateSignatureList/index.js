@@ -1,18 +1,12 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const {
-  getSignatureList,
-  getSignatureListsOfUser,
-  checkIfIdExists,
-} = require('../../../shared/signatures');
+const { getSignatureList } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getUserByMail } = require('../../../shared/users');
-const {
-  constructCampaignId,
-  generateRandomId,
-} = require('../../../shared/utils');
+const { getUserByMail, getUser } = require('../../../shared/users');
 
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
+const usersTableName = process.env.USERS_TABLE_NAME;
+
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -22,72 +16,63 @@ module.exports.handler = async event => {
   try {
     //get user id from path parameter
     const body = JSON.parse(event.body);
-    const { listId, email, campaignCode } = body;
+    const { listId } = event.pathParameters;
+    const { email } = body;
     let { userId, count } = body;
 
     //if the one of the needed params is somehow undefined return error
-    if (!validateParams(listId, userId, email, count, campaignCode)) {
-      return errorResponse(
-        400,
-        'List id (or user id) or count not provided or incorrect in request'
-      );
+    if (!validateParams(listId, count)) {
+      return errorResponse(400, 'Params not provided or incorrect in request');
     }
 
     count = parseInt(count);
 
-    //check which pledge it is (e.g. pledgeId='brandenburg-1')
-    //create a (nice to later work with) object, which campaign it is
-    const campaign = constructCampaignId(campaignCode);
-
     let usedQrCode = false;
 
     try {
-      let listToUpdateId;
+      // check if there even is a list with the id
+      // (update creates a new entry, if it does not exist)
+      const result = await getSignatureList(listId);
 
-      // Check if list id is provided
-      if (typeof listId !== 'undefined') {
-        // check if there even is a list with the id
-        // (update creates a new entry, if it does not exist)
-        const result = await getSignatureList(listId);
-
-        // if result does not have Item as property, there was no list found
-        if (!('Item' in result)) {
-          return errorResponse(404, 'No list found with the passed id');
-        }
-
-        listToUpdateId = listId;
-
-        // If the list id was passed, the user used the qr code
-        usedQrCode = true;
-      } else {
-        // userId or email was provided,
-        // therefore we want to find a list for this user
-
-        // if email was provided instead of user id we first need the userid
-        if (typeof userId === 'undefined') {
-          const result = await getUserByMail(email);
-
-          if (result.Count === 0) {
-            return errorResponse(404, 'No user with that email found');
-          }
-
-          userId = result.Items[0].cognitoId;
-        }
-
-        const list = await getFirstSignatureListOfUser(userId, campaignCode);
-
-        // if function returned null, there was no list found
-        if (!list) {
-          // If no lists were found we want to create a new list for this user
-          listToUpdateId = await createSignatureList(userId, campaign);
-        } else {
-          listToUpdateId = list.id;
-        }
+      // if result does not have Item as property, there was no list found
+      if (!('Item' in result)) {
+        return errorResponse(404, 'No list found with the passed id');
       }
 
-      // Proceed by updating dynamo resource
+      if (typeof email !== 'undefined') {
+        // email was provided,
+        const result = await getUserByMail(email);
+
+        if (result.Count === 0) {
+          return errorResponse(404, 'No user with that email found');
+        }
+
+        userId = result.Items[0].cognitoId;
+      } else if (typeof userId !== 'undefined') {
+        // Check if user exists
+        const result = await getUser(userId);
+
+        if (!('Item' in result)) {
+          return errorResponse(404, 'No user with that user id found');
+        }
+      } else {
+        // If no user id or list id was passed, the user used the qr code
+        usedQrCode = true;
+      }
+
+      // Proceed by updating dynamo resources
       try {
-        await updateSignatureList(listToUpdateId, count, usedQrCode);
+        // Only update user, if there is a userId defined
+        const promises = [
+          updateSignatureList(listId, userId, count, usedQrCode),
+        ];
+
+        if (typeof userId !== 'undefined') {
+          promises.push(updateUser(userId, listId, count, usedQrCode));
+        }
+
+        await Promise.all(promises);
+
         // return message (no content)
         return {
           statusCode: 204,
@@ -109,15 +94,17 @@ module.exports.handler = async event => {
 };
 
 //function to set the count for the signature list
-const updateSignatureList = (id, count, usedQrCode) => {
+const updateSignatureList = (id, userId, count, usedQrCode) => {
   //needs to be array because append_list works with an array
   const countObject = [
     {
       count: parseInt(count),
       timestamp: new Date().toISOString(),
+      userId,
       usedQrCode,
     },
   ];
+
   const params = {
     TableName: signaturesTableName,
     Key: { id: id },
@@ -128,70 +115,30 @@ const updateSignatureList = (id, count, usedQrCode) => {
   return ddb.update(params).promise();
 };
 
-// Creates a new "fake" signature list and returns the id
-const createSignatureList = async (userId, campaign) => {
-  //because the id is quite small we need to check if the newly created one already exists (unlikely)
-  let idExists = true;
-  let id;
-
-  while (idExists) {
-    id = generateRandomId(7);
-    idExists = await checkIfIdExists(id);
-    console.log('id already exists?', idExists);
-  }
-
-  const date = new Date();
-  //we only want the current day (YYYY-MM-DD), then it is also easier to filter
-  const timestamp = date.toISOString().substring(0, 10);
+// Update user record to add the scan of this list
+const updateUser = (userId, listId, count, usedQrCode) => {
+  //needs to be array because append_list works with an array
+  const countObject = [
+    {
+      count: parseInt(count),
+      timestamp: new Date().toISOString(),
+      listId,
+      usedQrCode,
+    },
+  ];
 
   const params = {
-    TableName: signaturesTableName,
-    Item: {
-      id: id,
-      campaign: campaign,
-      createdAt: timestamp,
-      userId: userId,
-      fakeScannedByUser: true,
-    },
+    TableName: usersTableName,
+    Key: { cognitoId: userId },
+    UpdateExpression:
+      'SET scannedLists = list_append(if_not_exists(scannedLists, :emptyList), :count)',
+    ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
-
-  await ddb.put(params).promise();
-
-  return id;
+  return ddb.update(params).promise();
 };
 
-// Function to get the first list of the user
-const getFirstSignatureListOfUser = async (userId, campaignCode) => {
-  // First get all lists for this user
-  const signatureLists = await getSignatureListsOfUser(userId, campaignCode);
-
-  // if result does not have Item as property, there was no list found
-  if (signatureLists.length === 0) {
-    return null;
-  }
-
-  // Then check the date to get the first one
-  let firstList = signatureLists[0];
-
-  for (let list of signatureLists) {
-    // Check if this list was created earlier than the current firstList
-    if (new Date(list.createdAt) < new Date(firstList.createdAt)) {
-      console.log(`${list.createdAt} is earlier than ${firstList.createdAt}`);
-      firstList = list;
-    }
-  }
-
-  console.log('first list', firstList);
-  return firstList;
-};
-
-const validateParams = (listId, userId, email, count) => {
-  if (
-    (typeof listId === 'undefined' &&
-      typeof userId === 'undefined' &&
-      typeof email === 'undefined') ||
-    typeof count === 'undefined'
-  ) {
+const validateParams = (listId, count) => {
+  if (typeof listId === 'undefined' || typeof count === 'undefined') {
     return false;
   }
 
