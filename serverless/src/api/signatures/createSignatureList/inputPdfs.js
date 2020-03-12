@@ -731,12 +731,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 2,
+          page: 3,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 2,
+          page: 3,
           position: CODE_POSITIONS.BB.QRCODE,
         },
       ],
@@ -764,16 +764,6 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 2,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 2,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 3,
           position: CODE_POSITIONS.BB.BARCODE,
         },
@@ -784,22 +774,32 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 4,
+          page: 5,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 4,
+          page: 5,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
           type: 'BAR',
-          page: 5,
+          page: 7,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 5,
+          page: 7,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 9,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 9,
           position: CODE_POSITIONS.BB.QRCODE,
         },
       ],
@@ -829,32 +829,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 2,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 2,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 3,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 3,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 4,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 4,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -869,32 +849,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 6,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 6,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 7,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 7,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 8,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 8,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -909,32 +869,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 10,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 10,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 11,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 11,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 12,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 12,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -949,22 +889,82 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 14,
+          page: 15,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 14,
+          page: 15,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
           type: 'BAR',
-          page: 15,
+          page: 17,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 15,
+          page: 17,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 19,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 19,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 21,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 21,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 23,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 23,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 25,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 25,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 27,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 27,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 29,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 29,
           position: CODE_POSITIONS.BB.QRCODE,
         },
       ],
@@ -994,32 +994,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 2,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 2,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 3,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 3,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 4,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 4,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1034,32 +1014,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 6,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 6,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 7,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 7,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 8,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 8,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1074,32 +1034,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 10,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 10,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 11,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 11,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 12,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 12,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1114,32 +1054,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 14,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 14,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 15,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 15,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 16,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 16,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1154,32 +1074,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 18,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 18,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 19,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 19,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 20,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 20,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1194,32 +1094,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 22,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 22,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 23,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 23,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 24,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 24,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1234,32 +1114,12 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 26,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 26,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
           page: 27,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
           page: 27,
-          position: CODE_POSITIONS.BB.QRCODE,
-        },
-        {
-          type: 'BAR',
-          page: 28,
-          position: CODE_POSITIONS.BB.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 28,
           position: CODE_POSITIONS.BB.QRCODE,
         },
         {
@@ -1274,12 +1134,152 @@ module.exports = {
         },
         {
           type: 'BAR',
-          page: 30,
+          page: 31,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 30,
+          page: 31,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 33,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 33,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 35,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 35,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 37,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 37,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 39,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 39,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 41,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 41,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 43,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 43,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 45,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 45,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 47,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 47,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 49,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 49,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 51,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 51,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 53,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 53,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 55,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 55,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 57,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 57,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+        {
+          type: 'BAR',
+          page: 59,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 59,
           position: CODE_POSITIONS.BB.QRCODE,
         },
       ],

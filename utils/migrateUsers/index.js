@@ -40,7 +40,7 @@ const addUser = async (email, username) => {
 
 const migrateUsers = async () => {
   try {
-    const users = await readCsv('mailerlite');
+    const users = await readCsv('typeform');
 
     console.log('user', users[0]);
 
