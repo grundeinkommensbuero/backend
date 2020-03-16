@@ -11,12 +11,11 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: 6,
-        listId: listId,
         campaignCode: 'schleswig-holstein-1',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(204);
   });
@@ -27,12 +26,11 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: '6',
-        listId: listId,
         campaignCode: 'schleswig-holstein-1',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(204);
   });
@@ -43,12 +41,11 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: 6,
-        listId: '123456',
         campaignCode: 'schleswig-holstein-1',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/123456`, request);
 
     expect(response.status).toEqual(404);
   });
@@ -64,12 +61,12 @@ describe('updateSignatureList by user api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(204);
   });
 
-  it('should not find signature list by user id and create new one', async () => {
+  it('should not find user', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -80,9 +77,9 @@ describe('updateSignatureList by user api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
-    expect(response.status).toEqual(204);
+    expect(response.status).toEqual(404);
   });
 
   it('should update signature list by email', async () => {
@@ -96,7 +93,7 @@ describe('updateSignatureList by user api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(204);
   });
@@ -112,24 +109,9 @@ describe('updateSignatureList by user api test', () => {
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(404);
-  });
-
-  it('should have missing params', async () => {
-    const request = {
-      method: 'PATCH',
-      mode: 'cors',
-      body: JSON.stringify({
-        count: 6,
-        campaignCode: 'schleswig-holstein-1',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
-
-    expect(response.status).toEqual(400);
   });
 
   it('should have incorrect count', async () => {
@@ -137,13 +119,12 @@ describe('updateSignatureList by user api test', () => {
       method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({
-        listId: listId,
         count: 'blub',
         campaignCode: 'schleswig-holstein-1',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(400);
   });
@@ -153,13 +134,12 @@ describe('updateSignatureList by user api test', () => {
       method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({
-        listId: listId,
         count: 5000,
         campaignCode: 'schleswig-holstein-1',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(400);
   });
@@ -169,13 +149,12 @@ describe('updateSignatureList by user api test', () => {
       method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({
-        listId: listId,
         count: -4,
         campaignCode: 'schleswig-holstein-1',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
 
     expect(response.status).toEqual(400);
   });
