@@ -4,6 +4,8 @@ const sendMail = require('./sendMail');
 const remindAfter = 7;
 
 module.exports.handler = async event => {
+  return event;
+
   try {
     const signatureLists = await getAllSignatureLists();
 
