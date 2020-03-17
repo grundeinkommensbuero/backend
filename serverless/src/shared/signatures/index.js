@@ -227,13 +227,15 @@ const getComputedCountForList = scans => {
   let count = 0;
 
   for (let scan of scans) {
-    if (!scan.isReceived) {
-      count += scan.count;
-      buffer += scan.count;
-    } else {
-      received += scan.count;
+    scanCount = parseInt(scan.count);
 
-      buffer -= scan.count;
+    if (!scan.isReceived) {
+      count += scanCount;
+      buffer += scanCount;
+    } else {
+      received += scanCount;
+
+      buffer -= scanCount;
 
       if (buffer < 0) {
         buffer = 0;
