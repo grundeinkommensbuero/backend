@@ -19,13 +19,23 @@ module.exports.handler = async event => {
     if (event.queryStringParameters) {
       // If there is a list id or user id we want to count
       // the signatures for just one user
-      const {
-        listId,
-        userId,
-        email,
-        campaignCode,
-      } = event.queryStringParameters;
+      const { listId, email, campaignCode } = event.queryStringParameters;
+      let { userId } = event.queryStringParameters;
       let user;
+
+      if (typeof listId !== 'undefined') {
+        // If list id is provided we need to get the user id of this list
+        // so that we can afterwards compute the count
+        // of that user
+        const result = await getSignatureList(listId);
+
+        // If there is no key 'Item' in result, no list was found
+        if (!('Item' in result)) {
+          return errorResponse(404, 'No list found with the passed id');
+        }
+
+        userId = result.Item.userId;
+      }
 
       if (typeof userId !== 'undefined') {
         const result = await getUser(userId);
