@@ -4,7 +4,7 @@ const {
   getScannedSignatureListsOfUser,
   getSignatureCountOfAllLists,
 } = require('../../../shared/signatures');
-const { getUserByMail } = require('../../../shared/users');
+const { getUserByMail, getUser } = require('../../../shared/users');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,34 +19,34 @@ module.exports.handler = async event => {
     if (event.queryStringParameters) {
       // If there is a list id or user id we want to count
       // the signatures for just one user
-      const { listId, email, campaignCode } = event.queryStringParameters;
-      let { userId } = event.queryStringParameters;
+      const {
+        listId,
+        userId,
+        email,
+        campaignCode,
+      } = event.queryStringParameters;
+      let user;
 
-      if (typeof listId !== 'undefined') {
-        // If list id is provided we need to get the user id of this list
-        // so that we can afterwards compute the count for all lists
-        // of that user
-        const result = await getSignatureList(listId);
+      if (typeof userId !== 'undefined') {
+        const result = await getUser(userId);
 
-        // If there is no key 'Item' in result, no list was found
+        // If there is no key 'Item' in result, no user was found
         if (!('Item' in result)) {
-          return errorResponse(404, 'No list found with the passed id');
+          return errorResponse(404, 'No user found with the passed id');
         }
 
-        userId = result.Item.userId;
+        user = result.Item;
       } else if (typeof email !== 'undefined') {
-        // If email is provided we need to get the user by mail to get id
+        // If email is provided we need to get the user by mail
         const result = await getUserByMail(email);
 
         if (result.Count === 0) {
           return errorResponse(404, 'No user with that email found');
         }
 
-        userId = result.Items[0].cognitoId;
+        user = result.Items[0];
       }
-
-      // if list id was not provided, the user id was provided in query params
-      stats = await getScansOfUser(userId, campaignCode);
+      stats = await getScansOfUser(user, campaignCode);
     } else {
       // No query param provided -> get count for all lists
       stats = await getSignatureCountOfAllLists();
@@ -66,7 +66,9 @@ module.exports.handler = async event => {
 };
 
 // Returns a list of all scans (received or byUser) for this user
-const getScansOfUser = async (userId, campaignCode) => {
+const getScansOfUser = async (user, campaignCode) => {
+  const userId = user.cognitoId;
+
   let stats = {
     received: 0,
     scannedByUser: 0,
@@ -94,15 +96,23 @@ const getScansOfUser = async (userId, campaignCode) => {
           stats.receivedList.push(scan);
         }
       }
+    }
+  }
 
-      if ('scannedByUser' in list) {
-        for (let scan of list.scannedByUser) {
-          stats.scannedByUser += parseInt(scan.count);
+  // New algorithm: we don't compute the scanned by user
+  // anymore by checking the lists, but we use the saved scans
+  // inside the user record
+  if ('scannedLists' in user) {
+    for (let scan of user.scannedLists) {
+      // Only add scans, if the scan was for the campaign
+      // If no campaign is provided we want every scan
+      if (
+        scan.campaign.code === campaignCode ||
+        typeof campaignCode === 'undefined'
+      ) {
+        stats.scannedByUser += parseInt(scan.count);
 
-          // add campaign to scan
-          scan.campaign = list.campaign;
-          stats.scannedByUserList.push(scan);
-        }
+        stats.scannedByUserList.push(scan);
       }
     }
   }
