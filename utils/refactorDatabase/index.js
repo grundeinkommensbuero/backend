@@ -43,4 +43,77 @@ const removeEmptyValuesFromUser = async (tableName, user) => {
   return ddb.update(params).promise();
 };
 
-removeEmptyValues(CONFIG.PROD_TABLE_NAME);
+const moveScansToUsers = async (usersTableName, signaturesTableName) => {
+  try {
+    const signatureLists = await getScannedSignatureLists(signaturesTableName);
+
+    for (let list of signatureLists) {
+      if (list.userId !== 'anonymous') {
+        if ('scannedByUser' in list) {
+          const scans = list.scannedByUser.map(scan => {
+            return {
+              count: parseInt(scan.count),
+              timestamp: scan.timestamp,
+              campaign: list.campaign,
+              listId: list.id,
+            };
+          });
+
+          console.log('updating user', list.userId);
+          await saveScansInUser(usersTableName, list.userId, scans);
+        }
+      }
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+const saveScansInUser = async (usersTableName, userId, scans) => {
+  const params = {
+    TableName: usersTableName,
+    Key: { cognitoId: userId },
+    UpdateExpression:
+      'SET scannedLists = list_append(if_not_exists(scannedLists, :emptyList), :scans)',
+    ExpressionAttributeValues: { ':scans': scans, ':emptyList': [] },
+  };
+
+  return ddb.update(params).promise();
+};
+
+const getScannedSignatureLists = async (
+  signaturesTableName,
+  signatureLists = [],
+  startKey = null
+) => {
+  const params = {
+    TableName: signaturesTableName,
+    FilterExpression:
+      'attribute_exists(received) OR attribute_exists(scannedByUser)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+  //add elements to existing array
+  signatureLists.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getScannedSignatureLists(
+      signaturesTableName,
+      signatureLists,
+      result.LastEvaluatedKey
+    );
+  } else {
+    //otherwise return the array
+    return signatureLists;
+  }
+};
+
+moveScansToUsers(
+  CONFIG.PROD_USERS_TABLE_NAME,
+  CONFIG.PROD_SIGNATURES_TABLE_NAME
+);

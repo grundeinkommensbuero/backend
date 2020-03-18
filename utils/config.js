@@ -1,6 +1,8 @@
 module.exports = {
-  PROD_TABLE_NAME: 'prod-users',
+  PROD_USERS_TABLE_NAME: 'prod-users',
+  PROD_SIGNATURES_TABLE_NAME: 'prod-signatures',
   PROD_USER_POOL_ID: 'eu-central-1_xx4VmPPdF',
-  DEV_TABLE_NAME: 'dev-users',
+  DEV_USERS_TABLE_NAME: 'dev-users',
+  DEV_SIGNATURES_TABLE_NAME: 'dev-signatures',
   DEV_USER_POOL_ID: 'eu-central-1_SYtDaO0qH',
 };
