@@ -1,0 +1,128 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Kann der Modellversuch zum Grundeinkommen trotz Corona noch kommen?
+      Das Virus verändert die Rahmenbedingungen der Volksabstimmung - das sind jetzt unsere Optionen
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          es lief gut: Hamburg eingetütet, Schleswig-Holstein und Brandenburg mittendrin,
+          Berlin in den Startlöchern - dann kam Corona.
+          <br><br>
+          Das Virus stellt die Expedition vor veränderte Rahmenbedingungen:
+          Bisher kamen die meisten Unterschriften bei Sammelaktionen auf
+          Großveranstaltungen oder in den Fußgängerzonen zusammen. Das ist nun erstmal nicht möglich.
+          <br><br>
+          Jetzt stehen wir vor einer Entscheidung, die wir gemeinsam treffen wollen.
+          Es gibt drei Wege, wie die Expedition nun weitergehen kann:
+          <br><br>
+          1. Jetzt erst recht! <br>
+          Eine Onlinepetition zur sofortigen Einführung eines Grundeinkommens
+          hat in wenigen Tagen hunderttausende Unterstützer*innen gewonnen -
+          das Thema ist heiß! Wir können diese Dynamik nutzen, um online
+          Unterstützer*innen zu gewinnen, die ihre eigene Unterschrift per
+          Brief einsenden. Das ist schaffbar, würde die Kosten aber um ein
+          Vielfaches erhöhen (Papier + Porto). Diese Mittel könnten wir durch ein groß angelegtes Crowdfunding aufbringen.
+
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/gWGwCn?user_email={{Address}}">
+          Jetzt erst recht - unbedingt weitermachen!
+        </mj-button>
+
+        <mj-text>
+          2. Wir pausieren die Unterschriftensammlung. Stattdessen setzen wir uns zunächst anderweitig
+          für den Diskurs rund ums bedingungslose Grundeinkommen ein. Hiermit vertun wir
+          ziemlich sicher die Chance, bis zur Bundestagswahl 2021 ein Volksbegehren für
+          einen deutschlandweit repräsentativen Modellversuch auf den Weg zu bringen.
+          Aber wir können das gesellschaftliche Umfeld für ein späteres Volksbegehren
+          vorbereiten. Die Kampagne samt Unterschriftensammlung nehmen wir wieder auf,
+          sobald sich die Lage normalisiert hat.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/w6Zgt3?user_email={{Address}}">
+          Unterschriftensammlung besser erstmal aussetzen.
+        </mj-button>
+
+        <mj-text>
+          3. Wir stellen den Betrieb ein. Es werden keine weiteren Unterschriften gesammelt.
+          Ein Comeback wird nicht geplant.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/m3LvsS?user_email={{Address}}">
+          Abbrechen - gerade ist anderes wichtiger.
+        </mj-button>
+
+      </mj-column>
+    </mj-section>
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+
+        <mj-text mj-class="section-red-text">
+          Natürlich hoffen wir, dass wir uns von der aktuellen Situation nicht lahmlegen lassen!
+          Doch die Expedition besteht aus dir und allen Unterstützer*innen des Modellversuchs zusammen
+          - wir organisieren die Kampagne gemeinsam, und es ist euer Antrieb, den die Expedition braucht,
+          um weiterzumachen. Bitte lass uns darum wissen, wie du in der aktuellen Lage
+          zu unserer gemeinsamen Mission stehst:
+
+        </mj-text>
+
+        <mj-button width="90%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/gWGwCn?user_email={{Address}}" color="#fef377" border="1px solid #fef377">
+          Ich bin für Option 1 - jetzt erst recht!
+        </mj-button>
+
+        <mj-button width="90%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/w6Zgt3?user_email={{Address}}" color="#fef377" border="1px solid #fef377">
+          Ich bin für Option 2 - pausieren.
+        </mj-button>
+
+        <mj-button width="90%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/m3LvsS?user_email={{Address}}" color="#fef377" border="1px solid #fef377">
+          Ich bin für Option 3 - abbrechen.
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Wir sind gespannt auf eure Entscheidung!
+          <br><br>
+          Euer Expeditionsteam
+          Laura, Joy, Timur, Vali, Nina, Lucia, Leonie & Ronnit
+        </mj-text>
+
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Was heißt das nun für Berlin?</h2>
+          Wir hatten am Sonntag trotz aller Widrigkeiten ein sehr produktives Initiator*innen-Treffen
+          - per Videokonferenz. Zusammen haben wir überlegt, wie wir Unterschriften sammeln können,
+          ohne uns oder andere damit zu gefährden.
+          <br><br>
+          Von verstärkter Mobilisierung online über Plattformen wie nebenan.de und Aushängen
+          im Treppenhaus stehen nun schon einige umsetzbare Ideen im Raum, wie wir auch unter
+          Vermeidung von sozialen Kontakten für unsere Demokratie und das Bedingungslose Grundeinkommen eintreten können.
+          <br><br>
+
+          Das hat uns sehr gefreut! Die Tendenz nach dem Treffen ist also, dass wir in
+          Berlin loslegen und das Beste aus den schwierigen Gegebenheiten machen.
+          Am Ende wollen wir aber eure Rückmeldungen auf dieses Mailing abwarten.
+          Denn starten wollen wir nur alle gemeinsam!
+
+
+        </mj-text>
+
+
+      </mj-column>
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
