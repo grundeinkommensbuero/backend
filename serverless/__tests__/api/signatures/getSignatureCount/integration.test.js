@@ -111,7 +111,7 @@ describe('getSignatureCount api test', () => {
     expect(response.status).toEqual(404);
   });
 
-  it('should not find any lists of user by user id', async () => {
+  it('should not find user by user id', async () => {
     const request = {
       method: 'GET',
       mode: 'cors',
@@ -123,18 +123,8 @@ describe('getSignatureCount api test', () => {
       `${INVOKE_URL}/analytics/signatures?userId=${wrongUserId}`,
       request
     );
-    const json = await response.json();
 
-    expect(response.status).toEqual(200);
-
-    expect(json).toHaveProperty('received');
-    expect(json).toHaveProperty('scannedByUser');
-
-    expect(json.received).toEqual(0);
-    expect(json.scannedByUser).toEqual(0);
-
-    expect(json.receivedList).toEqual([]);
-    expect(json.scannedByUserList).toEqual([]);
+    expect(response.status).toEqual(404);
   });
 
   it('should not find user by email', async () => {
