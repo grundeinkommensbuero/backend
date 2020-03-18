@@ -32,10 +32,10 @@ module.exports.handler = async event => {
     try {
       // check if there even is a list with the id
       // (update creates a new entry, if it does not exist)
-      const result = await getSignatureList(listId);
+      const listResult = await getSignatureList(listId);
 
       // if result does not have Item as property, there was no list found
-      if (!('Item' in result)) {
+      if (!('Item' in listResult)) {
         return {
           statusCode: 404,
           body: JSON.stringify({
@@ -46,6 +46,9 @@ module.exports.handler = async event => {
           isBase64Encoded: false,
         };
       }
+
+      // Get campaign from signature list
+      const { campaign } = listResult.Item;
 
       if (typeof email !== 'undefined') {
         // email was provided,
@@ -92,7 +95,7 @@ module.exports.handler = async event => {
         ];
 
         if (typeof userId !== 'undefined') {
-          promises.push(updateUser(userId, listId, count, usedQrCode));
+          promises.push(updateUser(userId, listId, count, campaign));
         }
 
         await Promise.all(promises);
@@ -140,14 +143,14 @@ const updateSignatureList = (id, userId, count, usedQrCode) => {
 };
 
 // Update user record to add the scan of this list
-const updateUser = (userId, listId, count, usedQrCode) => {
+const updateUser = (userId, listId, count, campaign) => {
   //needs to be array because append_list works with an array
   const countObject = [
     {
       count: parseInt(count),
       timestamp: new Date().toISOString(),
       listId,
-      usedQrCode,
+      campaign,
     },
   ];
 
