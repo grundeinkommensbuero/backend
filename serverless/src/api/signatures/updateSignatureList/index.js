@@ -36,7 +36,15 @@ module.exports.handler = async event => {
 
       // if result does not have Item as property, there was no list found
       if (!('Item' in result)) {
-        return errorResponse(404, 'No list found with the passed id');
+        return {
+          statusCode: 404,
+          body: JSON.stringify({
+            message: 'No list found with the passed id',
+            errorCode: 'listNotFound',
+          }),
+          headers: responseHeaders,
+          isBase64Encoded: false,
+        };
       }
 
       if (typeof email !== 'undefined') {
@@ -44,7 +52,15 @@ module.exports.handler = async event => {
         const result = await getUserByMail(email);
 
         if (result.Count === 0) {
-          return errorResponse(404, 'No user with that email found');
+          return {
+            statusCode: 404,
+            body: JSON.stringify({
+              message: 'No user with that email found',
+              errorCode: 'userNotFound',
+            }),
+            headers: responseHeaders,
+            isBase64Encoded: false,
+          };
         }
 
         userId = result.Items[0].cognitoId;
@@ -53,7 +69,15 @@ module.exports.handler = async event => {
         const result = await getUser(userId);
 
         if (!('Item' in result)) {
-          return errorResponse(404, 'No user with that user id found');
+          return {
+            statusCode: 404,
+            body: JSON.stringify({
+              message: 'No user with that user id found',
+              errorCode: 'userNotFound',
+            }),
+            headers: responseHeaders,
+            isBase64Encoded: false,
+          };
         }
       } else {
         // If no user id or list id was passed, the user used the qr code
