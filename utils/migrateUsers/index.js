@@ -42,7 +42,7 @@ const migrateUsers = async () => {
   try {
     const users = await readCsv('typeform');
 
-    console.log('user', users[0]);
+    // console.log('user', users);
 
     for (let user of users) {
       try {
@@ -78,7 +78,7 @@ const readCsv = source => {
             if ((row[10] === '' || row[10] === 'xxxxx') && row[7] !== '') {
               user = {
                 email: row[7],
-                zipCode: row[6].split(' ')[0],
+                zipCode: row[6].substr(0, row[6].indexOf(' ')),
                 createdAt: new Date(transformDate(row[14])).toISOString(),
                 source: 'typeform-bge',
               };

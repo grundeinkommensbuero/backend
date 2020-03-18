@@ -119,8 +119,8 @@ const readCsv = () => {
           user = {
             name: row[4],
             street: row[5],
-            zipCode: row[6].split(' ')[0],
-            city: row[6].split(' ')[1],
+            zipCode: row[6].substr(0, row[6].indexOf(' ')),
+            city: row[6].substr(row[6].indexOf(' ') + 1),
             email: row[10] === '' ? row[7] : row[10],
             count: parseInt(row[MAPPING[CAMPAIGN_CODE].COUNT_INDEX]),
           };
