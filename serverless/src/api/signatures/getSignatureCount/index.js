@@ -42,7 +42,10 @@ module.exports.handler = async event => {
 
         // If there is no key 'Item' in result, no user was found
         if (!('Item' in result)) {
-          return errorResponse(404, 'No user found with the passed id');
+          return errorResponse(
+            404,
+            'No user found with the passed id or user is anonymous'
+          );
         }
 
         user = result.Item;
