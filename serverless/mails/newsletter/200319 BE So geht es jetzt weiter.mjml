@@ -1,0 +1,104 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Gemeinsam haben wir beschlossen, dass wir auch trotz Corona in Berlin starten wollen –
+      aber eben an die neue Situation angepasst. Gleiches hat auch die Umfrage ergeben, die
+      vor zwei Tagen an alle deutschlandweit ging.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Volksabstimmung trotz Corona? Jetzt erst recht!</h2>
+          Hallo liebe Grundeinkommensentdecker*innen!
+          <br><br>
+          Vergangenen Sonntag hat unser Initiator*innen-Treffen in Berlin stattgefunden.
+          Vielen Dank an alle, die trotz der veränderten Situation virtuell mit dabei waren!
+          Gemeinsam haben wir beschlossen, dass wir auch trotz Corona in Berlin starten wollen
+          – aber eben an die neue Situation angepasst. Gleiches hat auch die Umfrage ergeben,
+          die vor zwei Tagen an alle deutschlandweit ging.
+          <br><br>
+          Das Coronavirus stellt die Expedition vor veränderte Rahmenbedingungen:
+          Bisher kamen die meisten Unterschriften bei Sammelaktionen auf
+          Großveranstaltungen oder in den Fußgängerzonen zusammen. Das ist nun erstmal nicht möglich.
+
+          <br><br>
+          <h2>Ideensammlung: Unterschriftensammlung in Zeiten von Corona</h2>
+          Wir haben zusammen überlegt, wie wir auch unter Vermeidung von sozialen Kontakten
+          Unterschriften für den Modellversuch zum Grusndeinkommen sammeln können.
+          Von verstärkter Online-Mobilisierung über Plattformen wie <a style="color: #fc484c">nebenan.de</a> und
+          Aushängen im Treppenhaus stehen schon einige umsetzbare Ideen im Raum.
+          So gefährden wir weder uns noch andere Menschen.
+          <br><br>
+          Das Protokoll zum Treffen mit unserer Ideensammlung findet ihr <a href="https://docs.google.com/document/d/1jPqjzhRJRtGp9zIjjymyiYh3FcnmR5O-1dyLuhyU0tU/edit?usp=sharing">hier</a>.
+          <br><br>
+          <h2>Willst du dich mit anderen Aktiven vernetzen?</h2>
+          Melde dich gerne zum Aktiven-Verteiler an. Über diesen wird es regelmäßigere
+          Kommunikation über alle geplanten Aktionen und Neuigkeiten geben,
+          als an den großen E-Mail-Verteiler. Du kannst hier auch zusätzlich
+          deine Kontaktdaten zur Weitergabe an andere Aktive freigeben,
+          und du bekommst die Kontakte der anderen in deiner Umgebung.
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/YweaBz?user_email={{Address}}">
+          Teil des Aktiven-Netzwerks werden
+        </mj-button>
+
+        <mj-text>
+          Aktuell stellen wir unsere Prozesse auf die neuen Bedingungen um,
+          schauen wie wir die vielen Ideen von Sonntag am besten mit euch
+          umsetzen können und bereiten die Unterschriftenlisten vor.
+          <br><br>
+          Sicher ist: Wir machen weiter! Corona zeigt: Eine Diskussion zum Grundeinkommen ist relevanter denn je.
+          <br><br>
+          Du wirst in den nächsten Tagen erfahren, wann es los geht.
+          <br><br>
+          Bleib gesund!
+          <br><br>
+          Laura und Joy von der Expedition Grundeinkommen
+
+        </mj-text>
+
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+
+          <h2>Bitte unterstütze die Expedition Berlin auch finanziell!</h2>
+          Mit deiner Unterstützung bringst du unsere Initiative voran.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
+          <br><br>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
