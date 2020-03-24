@@ -30,6 +30,7 @@ provider:
 plugins:
   - serverless-iam-roles-per-function
   - serverless-webpack
+  - serverless-plugin-split-stacks # needed because of the 200 resources limit
 
 # no global iam policies, because we want to follow the least privilege princilpe
 # therefore we use a plugin to define roles per function
