@@ -29,7 +29,7 @@ module.exports.handler = async event => {
 
       //if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
-        return errorResponse(400, 'No user found with the passed user id');
+        return errorResponse(404, 'No user found with the passed user id');
       }
 
       // Get pre signed url to be able to upload image to s3
