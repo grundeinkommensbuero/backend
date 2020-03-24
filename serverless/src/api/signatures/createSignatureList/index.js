@@ -15,6 +15,8 @@ const s3 = new AWS.S3(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName =
   process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
+const usersTableName = process.env.USERS_TABLE_NAME || 'prod-users';
+
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -423,12 +425,12 @@ const updateUser = (userId, campaign) => {
   const timestamp = new Date().toISOString();
 
   const params = {
-    TableName: tableName,
+    TableName: usersTableName,
     Key: { cognitoId: userId },
     UpdateExpression:
-      'signatureCampaigns = list_append(if_not_exists(signatureCampaigns, :emptyList), :campaign), updatedAt = :updatedAt',
+      'SET signatureCampaigns = list_append(if_not_exists(signatureCampaigns, :emptyList), :campaign), updatedAt = :updatedAt',
     ExpressionAttributeValues: {
-      ':campaign': campaign,
+      ':campaign': [campaign],
       ':emptyList': [],
       ':updatedAt': timestamp,
     },
