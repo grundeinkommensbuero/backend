@@ -122,7 +122,7 @@ const handler = async event => {
 
         //if user does not have Item as property, there was no user found
         if (!('Item' in result) || typeof result.Item === 'undefined') {
-          return errorResponse(400, 'No user found with the passed user id');
+          return errorResponse(404, 'No user found with the passed user id');
         }
 
         // If user does not have newsletter consent we want to return 401
@@ -147,7 +147,7 @@ const handler = async event => {
 
         if (result.Count === 0) {
           console.log('error', 'no user found', result);
-          return errorResponse(400, 'No user found with the passed email');
+          return errorResponse(404, 'No user found with the passed email');
         }
 
         // If user does not have newsletter consent we want to return 401
