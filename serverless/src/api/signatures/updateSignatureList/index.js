@@ -28,6 +28,7 @@ module.exports.handler = async event => {
     count = parseInt(count);
 
     let usedQrCode = false;
+    let listNotFound = false;
 
     try {
       // check if there even is a list with the id
@@ -36,6 +37,66 @@ module.exports.handler = async event => {
 
       // if result does not have Item as property, there was no list found
       if (!('Item' in listResult)) {
+        listNotFound = true;
+      }
+
+      if (typeof email !== 'undefined') {
+        // email was provided,
+        const result = await getUserByMail(email);
+
+        if (result.Count === 0) {
+          // Depending on whether the list was also not found we return different things
+          const body = listNotFound
+            ? {
+                message:
+                  'No user with that email and no list with that id  found',
+                errorCode: 'listAndUserNotFound',
+              }
+            : {
+                message: 'No user with that email found',
+                errorCode: 'userNotFound',
+              };
+
+          return {
+            statusCode: 404,
+            body: JSON.stringify(body),
+            headers: responseHeaders,
+            isBase64Encoded: false,
+          };
+        }
+
+        userId = result.Items[0].cognitoId;
+      } else if (typeof userId !== 'undefined') {
+        // Check if user exists
+        const result = await getUser(userId);
+
+        if (!('Item' in result)) {
+          // Depending on whether the list was also not found we return different things
+          const body = listNotFound
+            ? {
+                message:
+                  'No user with that email and no list with that id  found',
+                errorCode: 'listAndUserNotFound',
+              }
+            : {
+                message: 'No user with that user id found',
+                errorCode: 'userNotFound',
+              };
+
+          return {
+            statusCode: 404,
+            body: JSON.stringify(body),
+            headers: responseHeaders,
+            isBase64Encoded: false,
+          };
+        }
+      } else {
+        // If no user id or list id was passed, the user used the qr code
+        usedQrCode = true;
+      }
+
+      // If only the list was not found we return that information
+      if (listNotFound) {
         return {
           statusCode: 404,
           body: JSON.stringify({
@@ -49,43 +110,6 @@ module.exports.handler = async event => {
 
       // Get campaign from signature list
       const { campaign } = listResult.Item;
-
-      if (typeof email !== 'undefined') {
-        // email was provided,
-        const result = await getUserByMail(email);
-
-        if (result.Count === 0) {
-          return {
-            statusCode: 404,
-            body: JSON.stringify({
-              message: 'No user with that email found',
-              errorCode: 'userNotFound',
-            }),
-            headers: responseHeaders,
-            isBase64Encoded: false,
-          };
-        }
-
-        userId = result.Items[0].cognitoId;
-      } else if (typeof userId !== 'undefined') {
-        // Check if user exists
-        const result = await getUser(userId);
-
-        if (!('Item' in result)) {
-          return {
-            statusCode: 404,
-            body: JSON.stringify({
-              message: 'No user with that user id found',
-              errorCode: 'userNotFound',
-            }),
-            headers: responseHeaders,
-            isBase64Encoded: false,
-          };
-        }
-      } else {
-        // If no user id or list id was passed, the user used the qr code
-        usedQrCode = true;
-      }
 
       // Proceed by updating dynamo resources
       try {
