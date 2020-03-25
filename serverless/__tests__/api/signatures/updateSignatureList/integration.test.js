@@ -46,8 +46,10 @@ describe('updateSignatureList by user api test', () => {
     };
 
     const response = await fetch(`${INVOKE_URL}/signatures/123456`, request);
+    const json = await response.json();
 
     expect(response.status).toEqual(404);
+    expect(json.errorCode).toEqual('listNotFound');
   });
 
   it('should update signature list by user id', async () => {
@@ -78,8 +80,10 @@ describe('updateSignatureList by user api test', () => {
     };
 
     const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
+    const json = await response.json();
 
     expect(response.status).toEqual(404);
+    expect(json.errorCode).toEqual('userNotFound');
   });
 
   it('should update signature list by email', async () => {
@@ -110,8 +114,46 @@ describe('updateSignatureList by user api test', () => {
     };
 
     const response = await fetch(`${INVOKE_URL}/signatures/${listId}`, request);
+    const json = await response.json();
 
     expect(response.status).toEqual(404);
+    expect(json.errorCode).toEqual('userNotFound');
+  });
+
+  it('should not find list id and user by email', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({
+        count: 6,
+        userId: '123456',
+        campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures/12345`, request);
+    const json = await response.json();
+
+    expect(response.status).toEqual(404);
+    expect(json.errorCode).toEqual('listAndUserNotFound');
+  });
+
+  it('should not find list id and user by user id', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({
+        count: 6,
+        email: 'wrongEmail@web.de',
+        campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures/12345`, request);
+    const json = await response.json();
+
+    expect(response.status).toEqual(404);
+    expect(json.errorCode).toEqual('listAndUserNotFound');
   });
 
   it('should have incorrect count', async () => {
