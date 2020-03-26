@@ -573,6 +573,8 @@ resources:
         AttributeDefinitions:
           - AttributeName: cognitoId
             AttributeType: S
+          - AttributeName: email
+            AttributeType: S
         KeySchema:
           - AttributeName: cognitoId
             KeyType: HASH
@@ -581,6 +583,16 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+        GlobalSecondaryIndexes:
+          - IndexName: emailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: 'ALL'
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
 
     SignaturesTable:
       Type: AWS::DynamoDB::Table
