@@ -91,6 +91,14 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
       - Effect: 'Allow'
         Action:
           - dynamodb:PutItem
@@ -134,10 +142,19 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:Scan
+          - dynamodb:Query
           - dynamodb:GetItem
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
 
   adminUpdateSignatureList:
     handler: src/api/signatures/adminUpdateSignatureList/index.handler
@@ -184,6 +201,14 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
 
   getUserCount:
     handler: src/api/users/getUserCount/index.handler
@@ -326,6 +351,14 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
       - Effect: 'Allow'
         Action:
           - ses:SendEmail

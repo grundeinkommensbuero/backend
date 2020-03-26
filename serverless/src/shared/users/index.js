@@ -19,7 +19,8 @@ const getUser = userId => {
 const getUserByMail = async (email, startKey = null) => {
   const params = {
     TableName: tableName,
-    FilterExpression: 'email = :email',
+    IndexName: 'emailIndex',
+    KeyConditionExpression: 'email = :email',
     ExpressionAttributeValues: { ':email': email },
   };
 
@@ -27,16 +28,7 @@ const getUserByMail = async (email, startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
-
-  //call same function again, if there is no user found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    console.log('call getUserByMail recursively');
-    return await getUserByMail(email, result.LastEvaluatedKey);
-  } else {
-    return result;
-  }
+  return ddb.query(params).promise();
 };
 
 //function to get all users from dynamo
