@@ -65,7 +65,7 @@ describe('createSignatureList api test', () => {
 
     const response = await fetch(`${INVOKE_URL}/signatures`, request);
 
-    expect(response.status).toEqual(400);
+    expect(response.status).toEqual(404);
   });
 
   it('should not find user via email', async () => {
@@ -80,6 +80,6 @@ describe('createSignatureList api test', () => {
 
     const response = await fetch(`${INVOKE_URL}/signatures`, request);
 
-    expect(response.status).toEqual(400);
+    expect(response.status).toEqual(404);
   });
 });
