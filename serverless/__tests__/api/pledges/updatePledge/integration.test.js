@@ -9,10 +9,14 @@ const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
-describe('updatePledge api test', () => {
-  it('should be able to update user', async () => {
-    const token = await authenticate();
+let token;
 
+describe('updatePledge api test', () => {
+  beforeAll(async () => {
+    token = await authenticate();
+  });
+
+  it('should be able to update user', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -35,8 +39,6 @@ describe('updatePledge api test', () => {
   });
 
   it('should not be able to change other user', async () => {
-    const token = await authenticate();
-
     const request = {
       method: 'PATCH',
       mode: 'cors',
