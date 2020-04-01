@@ -286,6 +286,24 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  getCurrentUser:
+    handler: src/api/users/getCurrentUser/index.handler
+    events:
+      - http:
+          path: users/me
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
     events:
