@@ -17,7 +17,7 @@ const {
 } = require('../shared/users/createUsers');
 
 const CONFIG = require('../config');
-const tableName = CONFIG.PROD_TABLE_NAME;
+const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
 // AWS Cognito limits to 10 per second, so be safe and do x per second
