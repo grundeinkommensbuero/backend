@@ -1,0 +1,78 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Wir trotzen der Krise - mit deiner Hilfe starten wir heute unser Crowdfunding.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Gemeinsam trotzen wir der Krise</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          letzte Woche haben viele ihre Freund*innen, Bekannte und Familie zur
+          Expedition eingeladen. Danke dafür! Nun starten wir gemeinsam unser Crowdfunding.
+        </mj-text>
+        <mj-image href="https://www.startnext.com/C7v" src="https://images.ctfassets.net/af08tobnb0cl/2cNp7JnLt3KJHJA99WDuTQ/955c7de5e1362c56720b80ed555bc6bd/Vorschau_CF_Video.png" />
+
+
+
+        <mj-text>
+          Durch Corona ist das Sammeln von Unterschriften in der Öffentlichkeit aktuell nicht möglich.
+          Zusätzlich wurden uns bedingt durch die Coronakrise Fördergelder auf Eis gelegt.
+          <br><br>
+          Damit die Unterschriftensammlung für den Modellversuch trotz Corona weitergehen kann,
+          sammeln wir Unterschriften nun zu 100% per Post! Dazu brauchen wir jetzt deine Hilfe:
+          Schreib mit uns Geschichte und unterstütze das Crowdfunding für die
+          erste Volksinitiative aus der Quarantäne. Jeder Euro heißt eine Unterschrift mehr!
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/C7v">
+          Jetzt Unterschriftensammeln ermöglichen
+        </mj-button>
+
+        <mj-text>
+          Gemeinsam setzen wir den staatlichen Modellversuch zum bedingungslosen
+          Grundeinkommen durch!
+
+          <br><br>
+          Dein Expeditionsteam <br>
+          Laura, Joy, Timur, Vali, Nina, Lucia, Leonie & Ronnit
+
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Was bedeutet die neue Kampagne für die Fristen?</h2>
+          Die Sammelphasen waren bislang so angesetzt, dass der am Ende
+          des Volksabstimmungsprozesses stehende Volksentscheid in allen
+          Bundesländern parallel zur Bundestagswahl 2021 stattfinden kann.
+          Über 8 Mio. Wahlberechtigte sollten so am Tag der Bundestagswahl
+          auch einen Wahlzettel zur Abstimmung über den Modellversuch erhalten.
+          Ob dieser Zeitplan angesichts der Corona-Krise in allen Bundesländern zu halten ist, ist fraglich.
+          <br><br>
+          Ob parallel zur Wahl oder nicht, der Volksentscheid wird stattfinden.
+          Wir sprechen derzeit mit weiteren Volksinitiativen in den betroffenen Bundesländern,
+          die vor ähnlichen Herausforderungen stehen. Evtl. ergibt sich daraus ein abgestimmtes Vorgehen.
+          Wir halten dich auf dem Laufenden!
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="40px" href="https://www.startnext.com/C7v" color="#fef377" border="1px solid #fef377">
+          Für den Modellversuch spenden
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
