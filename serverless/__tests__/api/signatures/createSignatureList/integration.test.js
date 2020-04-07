@@ -1,8 +1,16 @@
 const { INVOKE_URL } = require('../../../testConfig');
+const { authenticate } = require('../../../testUtils');
 const fetch = require('node-fetch');
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
+
+let token;
 
 describe('createSignatureList api test', () => {
+  beforeAll(async () => {
+    token = await authenticate();
+  });
+
   it('should create a new signature list via userId', async () => {
     const request = {
       method: 'POST',
@@ -73,7 +81,7 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: 'wrongMail@web.de',
+        email: 'wrongMail@web.de',
         campaignCode: `schleswig-holstein-1`,
       }),
     };
@@ -81,5 +89,66 @@ describe('createSignatureList api test', () => {
     const response = await fetch(`${INVOKE_URL}/signatures`, request);
 
     expect(response.status).toEqual(404);
+  });
+
+  it('should create a new signature list via authenticated route', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        campaignCode: `schleswig-holstein-1`,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/signatures`,
+      request
+    );
+    const json = await response.json();
+
+    console.log(json);
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should be unauthorized to create list via authenticated route for other user', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        campaignCode: `schleswig-holstein-1`,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${otherUserId}/signatures`,
+      request
+    );
+
+    expect(response.status).toEqual(401);
+  });
+
+  it('should be unauthorized to create list via authenticated route', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        campaignCode: `schleswig-holstein-1`,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/signatures`,
+      request
+    );
+
+    expect(response.status).toEqual(401);
   });
 });
