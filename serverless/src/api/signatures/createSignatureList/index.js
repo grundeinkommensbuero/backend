@@ -101,7 +101,7 @@ const MAIL_ATTACHMENTS = {
 
 */
 
-const handler = async event => {
+const handler = async (event) => {
   try {
     const requestBody = JSON.parse(event.body);
     //create a (nice to later work with) object, which campaign it is
@@ -115,8 +115,8 @@ const handler = async event => {
     let userId;
     //we need the email to later send the pdf
     let email;
-    if ('userId' in requestBody) {
-      userId = requestBody.userId;
+    if ('userId' in requestBody || event.pathParameters) {
+      userId = requestBody.userId || event.pathParameters.userId;
 
       //now we want to validate if the user actually exists
       try {
@@ -127,10 +127,18 @@ const handler = async event => {
           return errorResponse(404, 'No user found with the passed user id');
         }
 
-        // If user does not have newsletter consent we want to return 401
+        // If we came from authenticated route with userId in path params,
+        // we need to check if the user is authorized (same user as in token)
+        if (event.pathParameters && !isAuthorized(event)) {
+          return errorResponse(401, 'Token points to a different user');
+        }
+
+        // Otherwise (not authenticated route) if user does not have
+        // newsletter consent we want to return 401
         if (
-          !('newsletterConsent' in result.Item) ||
-          !result.Item.newsletterConsent.value
+          !event.pathParameters &&
+          (!('newsletterConsent' in result.Item) ||
+            !result.Item.newsletterConsent.value)
         ) {
           return errorResponse(401, 'User does not have newsletter consent');
         }
@@ -415,7 +423,7 @@ const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {
 
 const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
   return Promise.all(
-    attachments.map(attachment =>
+    attachments.map((attachment) =>
       getAttachment(attachment, qrCodeUrl, pdfId, campaignCode)
     )
   );
@@ -438,6 +446,12 @@ const updateUser = (userId, campaign) => {
   };
 
   return ddb.update(params).promise();
+};
+
+const isAuthorized = (event) => {
+  return (
+    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
+  );
 };
 
 module.exports = {
