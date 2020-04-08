@@ -355,8 +355,8 @@ functions:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
   # Endpoint refers to pinpoint user endpoint
-  deleteEndpoint:
-    handler: src/triggers/deletePinpointEndpoint/index.handler
+  updateEndpoint:
+    handler: src/triggers/updatePinpointEndpoint/index.handler
     events: # dynamodb trigger through a dynamo stream
       - stream:
           type: dynamodb
