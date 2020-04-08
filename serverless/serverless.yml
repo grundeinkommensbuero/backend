@@ -119,7 +119,7 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::signature-lists/*'
 
-  createSignatureListAuthenticated:
+  createSignatureListAuth:
     handler: src/api/signatures/createSignatureList/index.handler
     events:
       - http:
