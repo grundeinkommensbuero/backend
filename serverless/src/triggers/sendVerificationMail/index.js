@@ -7,10 +7,11 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo
-module.exports.handler = async event => {
+module.exports.handler = async (event) => {
   // Identify why was this function invoked
   if (event.triggerSource === 'CustomMessage_SignUp') {
-    const { email, codeParameter } = event.request.userAttributes;
+    const { email } = event.request.userAttributes;
+    const { codeParameter } = event.request;
 
     //customize email
     event.response.emailSubject =
