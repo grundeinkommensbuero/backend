@@ -5,7 +5,7 @@ const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 const { getSignatureCountFromContentful } = require('./contentfulApi');
 
 // function to get a list by id
-const getSignatureList = (id) => {
+const getSignatureList = id => {
   const params = {
     TableName: tableName,
     Key: {
@@ -148,7 +148,7 @@ const getAllSignatureLists = async (signatureLists = [], startKey = null) => {
 };
 
 //Checks, if the passed id already exists in the signatures table (returns true or false)
-const checkIfIdExists = async (id) => {
+const checkIfIdExists = async id => {
   const params = {
     TableName: tableName,
     Key: {
@@ -163,12 +163,15 @@ const checkIfIdExists = async (id) => {
 
 // Function to compute the stats for all lists (every User)
 const getSignatureCountOfAllLists = async () => {
-  let currentMillis = new Date().getTime();
-
   let stats = {};
 
-  //get all lists with received attribute
-  const signatureLists = await getScannedSignatureLists();
+  // Get all lists with received attribute and
+  // make api call to contentful to later compute the total number of signatures
+  // Use Promise.all() to boost performance
+  const [signatureLists, contentfulCounts] = await Promise.all([
+    getScannedSignatureLists(),
+    getSignatureCountFromContentful(),
+  ]);
 
   // loop through lists to compute the stats for each campaign
   for (let list of signatureLists) {
@@ -216,9 +219,6 @@ const getSignatureCountOfAllLists = async () => {
     stats[campaign].computed += getComputedCountForList(scans);
   }
 
-  // Make api call to contentful to compute the total number of signatures
-  const contentfulCounts = await getSignatureCountFromContentful();
-
   // Add contentful numbers to each campaign
   for (let campaign in stats) {
     stats[campaign].withContentful = stats[campaign].computed;
@@ -239,15 +239,10 @@ const getSignatureCountOfAllLists = async () => {
     }
   }
 
-  console.log(
-    'getting signature count takes',
-    new Date().getTime() - currentMillis
-  );
-
   return stats;
 };
 
-const getComputedCountForList = (scans) => {
+const getComputedCountForList = scans => {
   // sort array of scans by time (oldest first)
   scans.sort(
     (scan1, scan2) => new Date(scan1.timestamp) - new Date(scan2.timestamp)
