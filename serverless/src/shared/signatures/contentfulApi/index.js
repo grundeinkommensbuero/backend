@@ -9,45 +9,39 @@ const campaigns = {
   'berlin-1': '6oq0POf8UcRLZs4kzyQd49',
   'bremen-1': '6BgXlAhocgSwZGozhJEqmn',
 };
+const requestParams = {
+  headers: {
+    Authorization: `Bearer ${accessToken}`,
+  },
+};
 
 module.exports.getSignatureCountFromContentful = async () => {
-  const params = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-
   const contentfulCounts = {};
 
   // Get the signature counts from contentful for each campaign
-  let allCallsCurrentMillis = new Date().getTime();
+  const promises = [];
 
   for (let campaign in campaigns) {
-    let currentMillis = new Date().getTime();
-
-    //make api call to contentful to get the current signature count
-    const result = await fetch(
-      `https://cdn.contentful.com/spaces/${spaceId}/entries/${campaigns[campaign]}`,
-      params
-    );
-
-    //parse result to json
-    const json = await result.json();
-
-    contentfulCounts[campaign] = {
-      minimum: json.fields.minimum,
-      addToSignatureCount: json.fields.addToSignatureCount,
-    };
-    console.log(
-      'each call to contentful takes',
-      new Date().getTime() - currentMillis
-    );
+    promises.push(makeApiCall(campaign, contentfulCounts));
   }
 
-  console.log(
-    'all calls to contentful takes',
-    new Date().getTime() - allCallsCurrentMillis
-  );
+  await Promise.all(promises);
 
   return contentfulCounts;
+};
+
+const makeApiCall = async (campaign, contentfulCounts) => {
+  // add api call to contentful to get the current signature count to promises
+  const result = await fetch(
+    `https://cdn.contentful.com/spaces/${spaceId}/entries/${campaigns[campaign]}`,
+    requestParams
+  );
+
+  //parse result to json
+  const json = await result.json();
+
+  contentfulCounts[campaign] = {
+    minimum: json.fields.minimum,
+    addToSignatureCount: json.fields.addToSignatureCount,
+  };
 };
