@@ -1,7 +1,7 @@
 // Get .default because of problems with webpack
 // https://github.com/bitinn/node-fetch/issues/450
 const fetch = require('node-fetch').default;
-const { accessToken, spaceId } = require('./contentfulConfig');
+const { accessToken, spaceId } = require('../../../../contentfulConfig');
 const campaigns = {
   'schleswig-holstein-1': 'JH4OhoEW7AMcnrL6zLhXu',
   'brandenburg-1': 'JrA0oRRv0IvBq6KFR0HAY',
@@ -20,7 +20,11 @@ module.exports.getSignatureCountFromContentful = async () => {
   const contentfulCounts = {};
 
   // Get the signature counts from contentful for each campaign
+  let allCallsCurrentMillis = new Date().getTime();
+
   for (let campaign in campaigns) {
+    let currentMillis = new Date().getTime();
+
     //make api call to contentful to get the current signature count
     const result = await fetch(
       `https://cdn.contentful.com/spaces/${spaceId}/entries/${campaigns[campaign]}`,
@@ -34,7 +38,16 @@ module.exports.getSignatureCountFromContentful = async () => {
       minimum: json.fields.minimum,
       addToSignatureCount: json.fields.addToSignatureCount,
     };
+    console.log(
+      'each call to contentful takes',
+      new Date().getTime() - currentMillis
+    );
   }
+
+  console.log(
+    'all calls to contentful takes',
+    new Date().getTime() - allCallsCurrentMillis
+  );
 
   return contentfulCounts;
 };
