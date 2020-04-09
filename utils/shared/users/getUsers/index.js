@@ -59,7 +59,7 @@ const getAllCognitoUsers = async (
 
 const getUsersFromState = async (tableName, state) => {
   const users = await getAllUsers();
-  return users.filter(user => {
+  return users.filter((user) => {
     if ('pledges' in user) {
       for (let pledge of user.pledges) {
         return pledge.campaign.state === state;
@@ -72,7 +72,7 @@ const getUsersFromState = async (tableName, state) => {
 const getUsersWithoutNewsletterFromState = async (tableName, state) => {
   const users = await getAllUsers(tableName);
 
-  return users.filter(user => {
+  return users.filter((user) => {
     if ('pledges' in user) {
       for (let pledge of user.pledges) {
         if (pledge.campaign.state === state) {
@@ -122,23 +122,15 @@ const getUser = (tableName, id) => {
   return ddb.get(params).promise();
 };
 
-const getUserByMail = async (tableName, email, startKey = null) => {
+const getUserByMail = async (tableName, email) => {
   const params = {
     TableName: tableName,
-    FilterExpression: 'email = :email',
+    IndexName: 'emailIndex',
+    KeyConditionExpression: 'email = :email',
     ExpressionAttributeValues: { ':email': email },
   };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-  const result = await ddb.scan(params).promise();
-  //call same function again, if there is no user found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    return await getUserByMail(tableName, email, result.LastEvaluatedKey);
-  } else {
-    return result;
-  }
+
+  return ddb.query(params).promise();
 };
 
 const isVerified = (user, unverifiedCognitoUsers) => {
