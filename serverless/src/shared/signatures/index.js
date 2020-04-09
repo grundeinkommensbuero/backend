@@ -2,9 +2,10 @@ const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
+const { getSignatureCountFromContentful } = require('./contentfulApi');
 
 // function to get a list by id
-const getSignatureList = id => {
+const getSignatureList = (id) => {
   const params = {
     TableName: tableName,
     Key: {
@@ -147,7 +148,7 @@ const getAllSignatureLists = async (signatureLists = [], startKey = null) => {
 };
 
 //Checks, if the passed id already exists in the signatures table (returns true or false)
-const checkIfIdExists = async id => {
+const checkIfIdExists = async (id) => {
   const params = {
     TableName: tableName,
     Key: {
@@ -162,6 +163,8 @@ const checkIfIdExists = async id => {
 
 // Function to compute the stats for all lists (every User)
 const getSignatureCountOfAllLists = async () => {
+  let currentMillis = new Date().getTime();
+
   let stats = {};
 
   //get all lists with received attribute
@@ -213,10 +216,38 @@ const getSignatureCountOfAllLists = async () => {
     stats[campaign].computed += getComputedCountForList(scans);
   }
 
+  // Make api call to contentful to compute the total number of signatures
+  const contentfulCounts = await getSignatureCountFromContentful();
+
+  // Add contentful numbers to each campaign
+  for (let campaign in stats) {
+    stats[campaign].withContentful = stats[campaign].computed;
+
+    // addToSignatureCount is a sort of a base number
+    // which is defined in contentful
+    if (contentfulCounts[campaign].addToSignatureCount) {
+      stats[campaign].withContentful +=
+        contentfulCounts[campaign].addToSignatureCount;
+    }
+
+    //if the minimum contentful signature count is more, use that number
+    if (contentfulCounts[campaign].minimum) {
+      stats[campaign].withContentful = Math.max(
+        stats[campaign].withContentful,
+        contentfulCounts[campaign].minimum
+      );
+    }
+  }
+
+  console.log(
+    'getting signature count takes',
+    new Date().getTime() - currentMillis
+  );
+
   return stats;
 };
 
-const getComputedCountForList = scans => {
+const getComputedCountForList = (scans) => {
   // sort array of scans by time (oldest first)
   scans.sort(
     (scan1, scan2) => new Date(scan1.timestamp) - new Date(scan2.timestamp)
