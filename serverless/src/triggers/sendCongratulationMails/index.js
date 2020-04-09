@@ -1,13 +1,15 @@
 const AWS = require('aws-sdk');
 const sendMail = require('./sendMail');
-const { getSignatureCountFromContentful } = require('./contentfulApi');
+const {
+  getSignatureCountFromContentful,
+} = require('../../shared/signatures/contentfulApi');
 const { getUser } = require('../../shared/users');
 const { getSignatureCountOfAllLists } = require('../../shared/signatures');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 
-module.exports.handler = async event => {
+module.exports.handler = async (event) => {
   return event;
   try {
     // user object will contain signature count for a specific user id
