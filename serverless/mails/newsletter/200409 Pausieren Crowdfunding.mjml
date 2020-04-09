@@ -1,0 +1,115 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Die gesellschaftliche Debatte um das Grundeinkommen ist so laut - und so positiv - wie nie zuvor. Was wir tun, um diese Dynamik zu nutzen:
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wir haben gefragt, wie es mit der Expedition weitergehen soll und rund 4.700 Menschen haben geantwortet. Fast 4.000 von euch haben dabei gesagt:
+          “Jetzt erst recht - unbedingt weitermachen!” Mit diesem Auftrag haben wir letzte Woche
+          eine <a href="https://www.startnext.com/CbJ">Crowdfundingkampagne</a> gestartet, die die Weiterführung der Kampagne unter den
+          schwierigen neuen Bedingungen ermöglichen soll.
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/CbJ">
+          Jetzt das Crowdfunding unterstützen
+        </mj-button>
+
+
+        <mj-text>
+          Doch gut 700 von euch haben eben auch gesagt “Lieber abwarten und das Thema anders voranbringen”.
+          Euch möchten wir zeigen, was wir gerade alles tun, um das Thema Grundeinkommen auch auf andere Arten zu befördern:
+          <br><br>
+          1. Wir vernetzen uns noch intensiver mit anderen Akteuren der BGE-Szene und unterstützen uns gegenseitig.
+          Zum Beispiel sind wir offizieller Partner der Petition von <a href="https://www.change.org/p/finanzminister-olaf-scholz-und-wirtschaftsminister-peter-altmaier-mit-dem-bedingungslosen-grundeinkommen-durch-die-coronakrise-coronavirusde-olafscholz-peteraltmaier-bmas-bund-hubertus-heil">Grundeinkommen jetzt!</a> auf <a style="color: #fc484c">change.org</a> und
+          unterstützen Initiatorin Tonia Merz bei der Öffentlichkeitsarbeit.
+          <br><br>
+          2. Wir haben intensiv Pressearbeit gemacht, um dem Thema mehr öffentliche Sichtbarkeit und eine
+          breitere Unterstützung zu bescheren. <a href="https://expedition-grundeinkommen.de/pressespiegel">Den Pressespiegel mit allen Veröffentlichungen findet ihr hier.</a>
+          <br><br>
+          3. Gemeinsam mit anderen Akteuren der BGE-Szene co-produzieren wir momentan zahlreiche
+          Social Media Formate zum Thema Grundeinkommen. Das Thema Grundeinkommen war letzte Woche
+          durch eine von uns mit initiierte digitale Demo auf Trending Platz 1.
+
+          <br><br>
+          Noch nie standen die Vorzeichen für unser Anliegen im öffentlichen Diskurs so gut wie jetzt -
+          lasst uns jetzt alles tun, um diese Chance zu nutzen! Bitte hilf mit, damit die Expedition Grundeinkommen weitergehen kann und unterstütze unser Crowdfunding:
+
+        </mj-text>
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/CbJ">
+          Klar, ich unterstütze!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/o133kz?user_email={{Address}}&version=pausieren">
+          Ich hab schon gespendet.
+        </mj-button>
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/TQq6K1?user_email={{Address}}&version=pausieren">
+          Ich kann nicht spenden.
+        </mj-button>
+        <mj-text>
+
+          Herzlichen Dank<br>
+          Eure Joy, Laura, Lucia, Nina, Timur, Leonie, Vali & Ronnit
+
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Bedingungslos nachgefragt - mach mit!</h2>
+          Am kommen Donnerstag zum Beispiel veranstalten wir mit <a href="https://www.meinbge.de">Mein Grundeinkommen</a> und
+          <a href="https://www.change.org/p/finanzminister-olaf-scholz-und-wirtschaftsminister-peter-altmaier-mit-dem-bedingungslosen-grundeinkommen-durch-die-coronakrise-coronavirusde-olafscholz-peteraltmaier-bmas-bund-hubertus-heil">Grundeinkommen jetzt!</a>
+          eine digitale Talkrunde: “Bedingungslos nachgefragt - live aus dem Wohnzimmer”. Mit dabei sind spannende Gäste aus unterschiedlichsten Bereichen der Gesellschaft - und du! Schreib uns deine Frage ans Grundeinkommen per Mail oder Social Media oder sende uns ein kurzes Video zu. Nutze dabei den Hashtag #ichwillwissen, damit wir deinen Beitrag schnell finden.
+          Am Donnerstag, den 16.04. um 18.30 Uhr kannst du dann alles live über Facebook,
+          Instagram und unsere Website mit verfolgen.
+
+
+        </mj-text>
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.facebook.com/expeditionbge/posts/251330696263439" color="#fef377" border="1px solid #fef377">
+          #ichwillwissen
+        </mj-button>
+      </mj-column>
+
+
+      </mj-column>
+
+    </mj-section>
+
+
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Was ist der Stand der Voksinitiativen?</h2>
+          Durch die Verzögerung durch die Coronakrise hat sich in einigen Bundesländern die Lage verändert:
+          Während in Hamburg die Abgabe rechtzeitig für die Bundestagswahl 2021 sicher und in Berlin
+          und Bremen unter Umständen noch zu schaffen ist, ist dies für Schleswig-Holstein und Brandenburg
+          inzwischen leider nicht mehr realistisch.
+          <br><br>
+          Wir werden daher nun kurzfristig alle Ressourcen auf die Stadtstaaten legen,
+          und nächste Woche die Listendownloads, sowie eine Vorbestelloption für Listen
+          per Post für Berlin und Bremen online stellen. Der Postversand der Listen beginnt,
+          sobald wir eine Marke von 15.000 Euro beim Crowdfunding erreicht haben.
+          <br><br>
+
+          In Schleswig-Holstein und Brandenburg machen wir aus der Not eine Tugend:
+          Wir werden für den Volksentscheid Termine in den Monaten nach der Wahl anvisieren
+          und die zusätzliche Zeit nutzen, um diese Kampagnen auch mit kommunalen
+          Volksentscheiden zu kombinieren - deutschlandweit!
+
+      </mj-column>
+
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
