@@ -5,7 +5,7 @@ const generatePdf = require('./createPDF');
 const CODE = '0123456789';
 const URL = 'https://xbge.de/qr/hh/?listId=';
 
-generatePdf(URL, CODE, 'SERIENBRIEF30', 'schleswig-holstein-1', {
+generatePdf(URL, CODE, 'SINGLE_SW', 'berlin-1', {
   name: 'Max Musterfrau',
   street: 'Am Fleet 2',
   zipCode: '21333',

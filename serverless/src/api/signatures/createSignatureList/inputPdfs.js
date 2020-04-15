@@ -10,7 +10,7 @@ const CODE_POSITIONS = {
     },
     QRCODE: {
       x: 357,
-      y: 38,
+      y: 25,
       width: 41,
       height: 41,
     },
@@ -78,12 +78,12 @@ module.exports = {
       codes: [
         {
           type: 'BAR',
-          page: 0,
+          page: 1,
           position: CODE_POSITIONS.B.BARCODE,
         },
         {
           type: 'QR',
-          page: 0,
+          page: 1,
           position: CODE_POSITIONS.B.QRCODE,
         },
       ],
@@ -93,12 +93,12 @@ module.exports = {
       codes: [
         {
           type: 'BAR',
-          page: 0,
+          page: 1,
           position: CODE_POSITIONS.B.BARCODE,
         },
         {
           type: 'QR',
-          page: 0,
+          page: 1,
           position: CODE_POSITIONS.B.QRCODE,
         },
       ],
