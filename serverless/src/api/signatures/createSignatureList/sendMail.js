@@ -4,11 +4,39 @@ const ses = new AWS.SES();
 
 const htmlMail = require('./mailTemplate.html').default;
 
+const ADDRESSES = {
+  'brandenburg-1': `
+  Expedition Grundeinkommen<br>
+  Karl-Marx-Strasse 50<br>
+  12043 Berlin
+  `,
+  'berlin-1': `
+  Expedition Grundeinkommen<br>
+  Karl-Marx-Strasse 50<br>
+  12043 Berlin
+  `,
+  'schleswig-holstein-1': `
+  Johannes Wagner<br>
+  Postfach 1104<br>
+  24585 Nortorf
+  `,
+};
+
+const STATES = {
+  'schleswig-holstein': 'Schleswig-Holstein',
+  brandenburg: 'Brandenburg',
+  hamburg: 'Hamburg',
+  berlin: 'Berlin',
+  bremen: 'Bremen',
+};
+
 //Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, attachments, campaign) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
-    subject: 'Deine Unterschriftenliste',
+    subject: `Deine Unterschriftenliste für "${
+      STATES[campaign.state]
+    } soll Grundeinkommen testen!" im Anhang`,
     html: customEmail(campaign),
     to: email,
     attachments: attachments,
@@ -35,7 +63,9 @@ const customEmail = campaign => {
     `;
   }
 
-  return htmlMail.replace(/\[\[OPTIONAL_TEXT_1\]\]/gi, optionalText1);
+  return htmlMail
+    .replace(/\[\[OPTIONAL_TEXT_1\]\]/gi, optionalText1)
+    .replace(/\[\[ADDRESS\]\]/gi, ADDRESSES[campaign.code]);
 };
 
 module.exports = sendMail;
