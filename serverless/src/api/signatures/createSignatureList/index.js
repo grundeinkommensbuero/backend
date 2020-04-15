@@ -32,6 +32,16 @@ const qrCodeUrls = {
 };
 
 const MAIL_ATTACHMENTS = {
+  'berlin-1': [
+    {
+      filename: 'Liste_schwarz-weiss.pdf',
+      type: 'SINGLE_SW',
+    },
+    {
+      filename: 'Liste_Farbig.pdf',
+      type: 'SINGLE',
+    },
+  ],
   'hamburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
@@ -101,7 +111,7 @@ const MAIL_ATTACHMENTS = {
 
 */
 
-const handler = async (event) => {
+const handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
     //create a (nice to later work with) object, which campaign it is
@@ -423,7 +433,7 @@ const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {
 
 const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
   return Promise.all(
-    attachments.map((attachment) =>
+    attachments.map(attachment =>
       getAttachment(attachment, qrCodeUrl, pdfId, campaignCode)
     )
   );
@@ -448,7 +458,7 @@ const updateUser = (userId, campaign) => {
   return ddb.update(params).promise();
 };
 
-const isAuthorized = (event) => {
+const isAuthorized = event => {
   return (
     event.requestContext.authorizer.claims.sub === event.pathParameters.userId
   );
