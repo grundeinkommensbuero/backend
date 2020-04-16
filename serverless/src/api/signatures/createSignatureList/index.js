@@ -34,7 +34,7 @@ const qrCodeUrls = {
 const MAIL_ATTACHMENTS = {
   'berlin-1': [
     {
-      filename: 'Anschreiben.pdf',
+      filename: 'Anleitung und Tipps.pdf',
       file: fs.readFileSync(__dirname + '/pdf/berlin-1/ANSCHREIBEN.pdf'),
     },
     {
