@@ -73,8 +73,8 @@ const CODE_POSITIONS = {
 
 module.exports = {
   'berlin-1': {
-    SINGLE_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er.pdf'),
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdf/berlin-1/COMBINED.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -86,6 +86,31 @@ module.exports = {
           page: 1,
           position: CODE_POSITIONS.B.QRCODE,
         },
+        {
+          type: 'BAR',
+          page: 2,
+          position: CODE_POSITIONS.B.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 2,
+          position: CODE_POSITIONS.B.QRCODE,
+        },
+      ],
+    },
+    SINGLE_SW: {
+      file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.B.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.B.QRCODE,
+        },
       ],
     },
     SINGLE: {
@@ -93,12 +118,12 @@ module.exports = {
       codes: [
         {
           type: 'BAR',
-          page: 1,
+          page: 0,
           position: CODE_POSITIONS.B.BARCODE,
         },
         {
           type: 'QR',
-          page: 1,
+          page: 0,
           position: CODE_POSITIONS.B.QRCODE,
         },
       ],
