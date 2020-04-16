@@ -34,11 +34,15 @@ const qrCodeUrls = {
 const MAIL_ATTACHMENTS = {
   'berlin-1': [
     {
+      filename: 'Anschreiben.pdf',
+      file: fs.readFileSync(__dirname + '/pdf/berlin-1/ANSCHREIBEN.pdf'),
+    },
+    {
       filename: 'Liste_schwarz-weiss.pdf',
       type: 'SINGLE_SW',
     },
     {
-      filename: 'Liste_Farbig.pdf',
+      filename: 'Liste_farbig.pdf',
       type: 'SINGLE',
     },
   ],
