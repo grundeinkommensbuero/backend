@@ -6,7 +6,7 @@ const campaigns = {
   'schleswig-holstein-1': 'JH4OhoEW7AMcnrL6zLhXu',
   'brandenburg-1': 'JrA0oRRv0IvBq6KFR0HAY',
   'hamburg-1': '5Lit4YciGc6MxsIJ6M4aNI',
-  'berlin-1': '6oq0POf8UcRLZs4kzyQd49',
+  'berlin-1': '48SFq6zs6sIdUs1APadYmm',
   'bremen-1': '6BgXlAhocgSwZGozhJEqmn',
 };
 const requestParams = {
