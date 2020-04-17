@@ -34,12 +34,12 @@ const qrCodeUrls = {
 const MAIL_ATTACHMENTS = {
   'berlin-1': [
     {
-      filename: 'Anleitung und Tipps – farbig.pdf',
-      type: 'SINGLE',
+      filename: 'Liste_schwarz-weiss.pdf',
+      type: 'SINGLE_SW',
     },
     {
-      filename: 'Anleitung und Tipps – schwarz-weiß.pdf',
-      type: 'SINGLE_SW',
+      filename: 'Liste_farbig.pdf',
+      type: 'SINGLE',
     },
   ],
   'hamburg-1': [
