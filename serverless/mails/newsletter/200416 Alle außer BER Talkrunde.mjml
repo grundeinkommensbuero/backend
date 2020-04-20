@@ -1,0 +1,96 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Mit spannenden Gästen möchten wir über eure Fragen zum Grundeinkommen. Sei dabei!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Deine Frage ans Grundeinkommen - Talkrunde</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wie bereits angekündigt findet heute Abend die digitale Talkrunde “Bedingungslos nachgefragt – live aus dem Wohnzimmer” statt. Mit dabei sind meinGrundeinkommen, die Petition ”Grundeinkommen Jetzt!” und spannende Vertreter*innen der Zivilgesellschaft, unter anderem Judith Holofernes von Wir sind Helden! Wir möchten mit euch über eure Fragen zum Grundeinkommen sprechen.
+          <br><br>
+          Sag uns deshalb jetzt: Was möchtest du zum Grundeinkommen wissen?
+          <br><br>
+          Noch bis 17 Uhr kannst du uns deinen Beitrag per Mail oder Social Media oder als kurzes Video zusenden.
+          Nutze dabei den Hashtag #ichwillwissen, damit wir deinen Beitrag schnell finden.
+          Ab 18:30 Uhr kannst du die Sendung live über Facebook, Instagram und unsere Webseite mitverfolgen!
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.facebook.com/expeditionbge/posts/251330696263439">
+          #ichwillwissen
+        </mj-button>
+
+
+
+        <mj-text>
+          Außerdem haben wir ein Crowdfunding gestartet, um unsere Kampagne auch trotz Corona weiterführen zu können.
+          Hast du schon gespendet?
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/CbP">
+          Klar, ich unterstütze!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/o133kz?user_email={{Address}}&version=talkrunde">
+          Ich hab schon gespendet.
+        </mj-button>
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/TQq6K1?user_email={{Address}}&version=talkrunde">
+          Ich kann nicht spenden.
+        </mj-button>
+        <mj-text>
+          Wir freuen uns auf dich!
+
+          <br><br>
+          Herzliche Grüße<br>
+          Eure Joy, Laura, Lucia, Nina, Timur, Leonie, Vali & Ronnit
+
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Was ist sonst noch passiert?</h2>
+          Das Thema bedingungsloses Grundeinkommen hat in den letzten Wochen mehr Aufmerksamkeit
+          und Zuspruch erfahren als jemals zuvor. Wir haben viel getan, um diesen gesellschaftlichen
+          Schwung zu nutzen und zu unterstützen:
+          <br><br>
+          <li>
+            Wir sind nun offizieller Partner der Petition von <a href="https://www.change.org/p/finanzminister-olaf-scholz-und-wirtschaftsminister-peter-altmaier-mit-dem-bedingungslosen-grundeinkommen-durch-die-coronakrise-coronavirusde-olafscholz-peteraltmaier-bmas-bund-hubertus-heil">Grundeinkommen jetzt! auf change.org</a> und unterstützen Initiatorin Tonia Merz bei der Öffentlichkeitsarbeit.
+          </li>
+          <br>
+          <li>Wir haben intensiv Pressearbeit gemacht um dem Thema mehr öffentliche Sichtbarkeit und eine breitere Unterstützung zu bescheren. Den Pressespiegel mit allen Veröffentlichungen findet ihr <a href="https://expedition-grundeinkommen.de/pressespiegel">hier</a>.</li>
+          <br>
+          <li>Gemeinsam mit anderen Akteuren der Grundeinkommensszene co-produzieren wir momentan zahlreiche Social Media Formate zum Thema Grundeinkommen. Das Thema Grundeinkommen war letzte Woche durch eine von uns mit initiierte digitale Demo auf Trending Platz 1.</li>
+          <br>
+          <li>Wir haben die Kampagnenstrategie neu konzipiert um auf die aktuellen Ausgangsbeschränkungen zu reagieren. Damit kann die Unterschriftensammlung in Berlin nun trotz Ausgangsbeschränkungen starten! Parallel bereiten wir den Sammlungsstart in Bremen vor.</li>
+          <br><br>
+          Noch nie standen die Vorzeichen für unser Anliegen im öffentlichen Diskurs so gut wie jetzt - lasst uns jetzt alles tun, um diese Chance zu nutzen! Für die neue Kampagnenstrategie brauchen wir mehr Mittel. Hilf jetzt mit, damit die Expedition Grundeinkommen weitergehen kann: Unterstütze unser Crowdfunding!
+
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/CbP" color="#fef377" border="1px solid #fef377">
+          Klar, ich unterstütze!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/o133kz?user_email={{Address}}&version=talkrunde" color="#fef377" border="1px solid #fef377">
+          Ich hab schon gespendet.
+        </mj-button>
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/TQq6K1?user_email={{Address}}&version=talkrunde" color="#fef377" border="1px solid #fef377">
+          Ich kann nicht spenden.
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>

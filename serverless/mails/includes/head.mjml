@@ -23,4 +23,8 @@
   .code {
     font-size: 20px
   }
+
+  li {
+    margin-bottom: 25px;
+  }
 </mj-style>
