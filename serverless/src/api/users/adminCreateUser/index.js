@@ -43,7 +43,8 @@ module.exports.handler = async event => {
 
       try {
         //send email to to user to welcome them
-        await sendMail(email, campaignCode, userId);
+        // TODO: reactivate sending of email
+        // await sendMail(email, campaignCode, userId);
 
         // return message (created)
         return {
