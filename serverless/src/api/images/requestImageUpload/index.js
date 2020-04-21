@@ -28,8 +28,11 @@ module.exports.handler = async event => {
       const result = await getUser(userId);
 
       //if user does not have Item as property, there was no user found
-      if (!('Item' in result) || typeof result.Item === 'undefined') {
-        return errorResponse(404, 'No user found with the passed user id');
+      if ('Item' in result && typeof result.Item !== 'undefined') {
+        return errorResponse(
+          401,
+          'Cannot upload image for existing user without authorization'
+        );
       }
 
       // Get pre signed url to be able to upload image to s3
