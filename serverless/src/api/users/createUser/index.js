@@ -50,24 +50,36 @@ module.exports.handler = async event => {
   }
 };
 
-const saveUser = ({ newsletterConsent, email, userId, referral }) => {
+const saveUser = ({
+  newsletterConsent,
+  email,
+  userId,
+  username,
+  zipCode,
+  question,
+  referral,
+}) => {
   const timestamp = new Date().toISOString();
 
+  // some of the attributes (e.g. username, zipCode) might be undefined
   const data = {
     cognitoId: userId,
-    email: email,
+    email,
+    zipCode,
+    username,
+    referral,
     newsletterConsent: {
       value:
         // If there is no newsletter consent in the request we set it to true
         typeof newsletterConsent !== 'undefined' ? newsletterConsent : true,
-      timestamp: timestamp,
+      timestamp,
     },
     createdAt: timestamp,
   };
 
-  //if referral is undefined, don't add the key
-  if (typeof referral !== 'undefined') {
-    data.referral = referral;
+  // Only add the question array, if the a question was passed
+  if (typeof question !== 'undefined') {
+    data.questions = [{ timestamp, body: question }];
   }
 
   const params = {

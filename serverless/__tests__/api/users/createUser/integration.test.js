@@ -22,7 +22,7 @@ describe('createUser api test', () => {
     expect(response.status).toEqual(201);
   });
 
-  it('should create a new user without newsletter consent', async () => {
+  it('should create a new user without passed newsletter consent', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
@@ -30,6 +30,24 @@ describe('createUser api test', () => {
         userId: uuid(),
         email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
         referral: 'test-referral',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(201);
+  });
+
+  it('should create a new user with question', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        question: 'Was machst du heute Abend?',
+        zipCode: '12456',
+        username: 'Wall-E',
       }),
     };
 
