@@ -368,6 +368,10 @@ functions:
             parameters:
               paths:
                 userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: 'Allow'
         Action:

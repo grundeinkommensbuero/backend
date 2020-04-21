@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../../shared/users');
 const { errorResponse } = require('../../../../shared/apiResponse');
+const { isAuthorized } = require('../../../../shared/utils');
 const tableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
@@ -11,8 +12,15 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
+    if (!isAuthorized(event)) {
+      return errorResponse(
+        401,
+        'No permission to create question for other user'
+      );
+    }
+
     //get user id from path parameter
-    let userId = event.pathParameters.userId;
+    const { userId } = event.pathParameters;
 
     const { question, zipCode, username } = JSON.parse(event.body);
 

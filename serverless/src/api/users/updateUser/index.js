@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
+const { isAuthorized } = require('../../../shared/utils');
 const { errorResponse } = require('../../../shared/apiResponse');
 
 const tableName = process.env.USERS_TABLE_NAME;
@@ -54,12 +55,6 @@ module.exports.handler = async event => {
 
 const validateParams = pathParameters => {
   return 'userId' in pathParameters;
-};
-
-const isAuthorized = event => {
-  return (
-    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
-  );
 };
 
 saveUser = (userId, newsletterConsent) => {

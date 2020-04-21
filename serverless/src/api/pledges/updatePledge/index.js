@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
-const { constructCampaignId } = require('../../../shared/utils');
+const { constructCampaignId, isAuthorized } = require('../../../shared/utils');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
@@ -58,12 +58,6 @@ module.exports.handler = async event => {
 
 const validateParams = (event, requestBody) => {
   return 'userId' in event.pathParameters && 'newsletterConsent' in requestBody;
-};
-
-const isAuthorized = event => {
-  return (
-    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
-  );
 };
 
 savePledge = (userId, requestBody) => {

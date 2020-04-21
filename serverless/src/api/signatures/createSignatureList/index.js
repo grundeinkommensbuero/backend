@@ -8,6 +8,7 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const {
   constructCampaignId,
   generateRandomId,
+  isAuthorized,
 } = require('../../../shared/utils');
 
 const config = { region: 'eu-central-1' };
@@ -456,12 +457,6 @@ const updateUser = (userId, campaign) => {
   };
 
   return ddb.update(params).promise();
-};
-
-const isAuthorized = event => {
-  return (
-    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
-  );
 };
 
 module.exports = {

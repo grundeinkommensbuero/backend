@@ -23,8 +23,19 @@ const generateRandomId = length => {
   return result;
 };
 
+const isAuthorized = event => {
+  return (
+    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
+  );
+};
+
 const getFileSuffix = contentType => {
   return contentType.split('/')[1];
 };
 
-module.exports = { constructCampaignId, generateRandomId, getFileSuffix };
+module.exports = {
+  constructCampaignId,
+  generateRandomId,
+  isAuthorized,
+  getFileSuffix,
+};
