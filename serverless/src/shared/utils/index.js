@@ -25,6 +25,7 @@ const generateRandomId = length => {
 
 const isAuthorized = event => {
   return (
+    'authorizer' in event.requestContext &&
     event.requestContext.authorizer.claims.sub === event.pathParameters.userId
   );
 };

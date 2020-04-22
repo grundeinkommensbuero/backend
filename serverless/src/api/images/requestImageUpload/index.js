@@ -3,7 +3,7 @@ const s3 = new AWS.S3();
 const uuid = require('uuid/v4');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getFileSuffix } = require('../../../shared/utils');
+const { getFileSuffix, isAuthorized } = require('../../../shared/utils');
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    if (!validateParams(requestBody)) {
+    if (!validateParams(event, requestBody)) {
       return errorResponse(
         400,
         'User id or contentType was not provided or contentType is not png or jpg'
@@ -24,15 +24,30 @@ module.exports.handler = async event => {
     }
 
     try {
-      const { userId, contentType } = requestBody;
+      const { contentType } = requestBody;
+      let userId = requestBody.userId || event.pathParameters.userId;
+
       const result = await getUser(userId);
 
-      //if user does not have Item as property, there was no user found
-      if ('Item' in result && typeof result.Item !== 'undefined') {
+      // If user is not authorized, we only create the url for non existing users
+      if (
+        'Item' in result &&
+        typeof result.Item !== 'undefined' &&
+        !isAuthorized(event)
+      ) {
         return errorResponse(
           401,
           'Cannot upload image for existing user without authorization'
         );
+      }
+
+      // If user is authorized we want to check, if the user exists
+      // Maybe a bit redundant...
+      if (
+        isAuthorized(event) &&
+        (!('Item' in result) || typeof result.Item === 'undefined')
+      ) {
+        return errorResponse(404, 'User does not exist');
       }
 
       // Get pre signed url to be able to upload image to s3
@@ -75,8 +90,14 @@ const getSignedUrl = (userId, contentType) => {
 };
 
 // Validates request body for missing params or wrong content types
-const validateParams = body => {
-  if (!('userId' in body) || !('contentType' in body)) {
+const validateParams = (event, body) => {
+  if (
+    !(
+      'userId' in body ||
+      (event.pathParameters && 'userId' in event.pathParameters)
+    ) ||
+    !('contentType' in body)
+  ) {
     return false;
   }
 

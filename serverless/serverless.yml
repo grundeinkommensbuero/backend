@@ -605,6 +605,33 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
 
+  requestImageAuth:
+    handler: src/api/images/requestImageUpload/index.handler
+    events:
+      - http:
+          path: users/{userId}/images/upload-url
+          method: post
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+
   processUploadedImage:
     handler: src/triggers/processUploadedImage/index.handler
     events:
