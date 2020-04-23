@@ -8,12 +8,14 @@ const { getUserByMail } = require('./../shared/users/getUsers');
 const paths = {
   'jetzt-erst-recht': './data/jetzt erst recht.csv',
   pausieren: './data/kampagne pausieren.csv',
+  'schon-gespendet': './data/schon gespendet.csv',
+  'kann-nicht-spenden': './data/kann nicht spenden.csv',
 };
 const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 
 const updatePinpoint = async () => {
   try {
-    const users = await readCsv('pausieren');
+    const users = await readCsv('kann-nicht-spenden');
 
     for (let user of users) {
       const result = await getUserByMail(tableName, user.email);
@@ -26,7 +28,7 @@ const updatePinpoint = async () => {
           EndpointRequest: {
             ChannelType: 'EMAIL',
             Attributes: {
-              TypeformAnswers: ['Kampagne pausieren'],
+              TypeformAnswers: ['Kann nicht spenden'],
             },
           },
         };
@@ -44,14 +46,14 @@ const updatePinpoint = async () => {
 
 //reads and parses the csv file and returns a promise containing
 //an array of the users
-const readCsv = (source) => {
-  return new Promise((resolve) => {
+const readCsv = source => {
+  return new Promise(resolve => {
     const users = [];
     const path = paths[source];
     let count = 0;
     fs.createReadStream(path)
       .pipe(parse({ delimiter: ',' }))
-      .on('data', (row) => {
+      .on('data', row => {
         let user;
         //leave out headers
         if (count > 0) {
