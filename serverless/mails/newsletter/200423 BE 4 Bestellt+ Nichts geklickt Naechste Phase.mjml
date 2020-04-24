@@ -1,0 +1,69 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Die erste Hürde im Crowdfunding ist genommen - damit können wir den Listenversand per Post starten!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wir sind einen Schritt weiter: am Mittwoch haben wir die Marke von 15.000 Euro im Crowdfunding erreicht.
+          Damit können wir die erste Runde Unterschriftenlisten zur Post bringen. Vielen Dank an alle,
+          die das mit ihrer Spende ermöglicht haben!
+          <br><br>
+          <h2>Wie geht es weiter?</h2>
+          Inzwischen wurden über 8.000 Unterschriftenlisten per Post bestellt und heruntergeladen.
+          Wir gehen davon aus, dass wir mit dem aktuellen Finanzierungsstand auf etwa 18.000
+          Unterschriften in Berlin kommen. Um die erste Phase des Volksbegehrens erfolgreich
+          zu bestehen, brauchen wir 24.000 Unterschriften. Die nächsten 6.000 Euro die wir
+          fundraisen, werden eingesetzt, um die fehlenden Unterschriften in Berlin zu sammeln
+          - durch zielgerichtete Öffentlichkeitsarbeit, Verbesserung der Aktionsplattform,
+          Postversand von Unterschriften sowie Social Media Aktionen und Kooperationen, um mehr Menschen zu erreichen.
+          <br><br>
+          Kannst du spenden, damit Berlin erfolgreich wird?
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/CbK">
+          Klar, ich unterstütze das!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/o133kz?user_email={{Address}}&version=nl200424be4">
+          Ich hab schon gespendet.
+        </mj-button>
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/TQq6K1?user_email={{Address}}&version=nl200424be4">
+          Ich kann nicht spenden.
+        </mj-button>
+
+
+        <mj-text>
+          Sobald Berlin erfolgreich abgeschlossen ist, nehmen wir Bremen in Angriff!
+          <br><br>
+          Wir freuen uns auf dich,
+          <br><br>
+          Herzliche Grüße<br>
+          Eure Joy, Laura, Lucia, Nina, Timur, Leonie, Vali & Ronnit
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Talkrunde verpasst?</h2>
+          Hier kannst du die digitale Talkrunde zum Thema bedingungsloses Grundeinkommen anschauen:
+          <a href="https://www.youtube.com/watch?v=ZBzRGkzTCZc&feature=emb_logo">Bedingungslos nachgefragt - live aus dem Wohnzimmer</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
