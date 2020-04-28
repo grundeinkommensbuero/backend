@@ -75,11 +75,12 @@ const readCsv = source => {
         if (count > 0) {
           console.log('row', row);
           if (source === 'typeform') {
-            if ((row[10] === '' || row[10] === 'xxxxx') && row[7] !== '') {
+            // if ((row[10] === '' || row[10] === 'xxxxx') && row[7] !== '') {
+            if (row[9] !== '') {
               user = {
-                email: row[7],
-                zipCode: row[6].substr(0, row[6].indexOf(' ')),
-                createdAt: new Date(transformDate(row[18])).toISOString(),
+                email: row[9],
+                zipCode: row[7],
+                createdAt: new Date(transformDate(row[20])).toISOString(),
                 source: 'typeform-bge',
               };
             }

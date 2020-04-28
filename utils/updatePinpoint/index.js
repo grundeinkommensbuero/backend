@@ -10,12 +10,13 @@ const paths = {
   pausieren: './data/kampagne pausieren.csv',
   'schon-gespendet': './data/schon gespendet.csv',
   'kann-nicht-spenden': './data/kann nicht spenden.csv',
+  'listen-per-post': './data/listen per post.csv',
 };
 const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 
 const updatePinpoint = async () => {
   try {
-    const users = await readCsv('kann-nicht-spenden');
+    const users = await readCsv('listen-per-post');
 
     for (let user of users) {
       const result = await getUserByMail(tableName, user.email);
@@ -28,7 +29,7 @@ const updatePinpoint = async () => {
           EndpointRequest: {
             ChannelType: 'EMAIL',
             Attributes: {
-              TypeformAnswers: ['Kann nicht spenden'],
+              ListsViaMail: ['Ja'],
             },
           },
         };
@@ -58,9 +59,9 @@ const readCsv = source => {
         //leave out headers
         if (count > 0) {
           console.log('row', row);
-          if (row[2] !== '') {
+          if (row[9] !== '') {
             user = {
-              email: row[2],
+              email: row[9],
             };
           }
 
