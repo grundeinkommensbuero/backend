@@ -72,7 +72,9 @@ const processBatchOfUsers = async (
       // Get signature lists of this user and add it to user object
       user.signatureLists = await getSignatureListsOfUser(user.cognitoId);
 
-      await updateEndpoint(user, verified);
+      if (user.email) {
+        await updateEndpoint(user, verified);
+      }
 
       count++;
     }
