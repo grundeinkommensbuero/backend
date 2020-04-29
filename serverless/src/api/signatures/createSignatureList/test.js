@@ -18,14 +18,18 @@ const URL = 'https://xbge.de/qr/hh/?listId=';
 createPDFLetter({
   url: URL,
   code: CODE,
-  listCounts: [
+  lists: [
     {
       campaignCode: 'brandenburg-1',
+      state: 'brandenburg',
       listCount: 1,
+      code: '43234',
     },
     {
       campaignCode: 'berlin-1',
+      state: 'berlin',
       listCount: 2,
+      code: '12345',
     },
   ],
   address: {

@@ -1,17 +1,16 @@
 const pdfLib = require('pdf-lib');
 const fs = require('fs');
 const createPDF = require('./createPDF');
+const qrCodeUrls = require('./qrCodeUrls');
 
 module.exports = async function createPDFLetter({
-  url,
-  code,
-  listCounts,
+  lists,
   address,
   needsMailMissingAddition,
 }) {
   const letter = await createPDF(
-    url,
-    code,
+    'foo',
+    'foo',
     'ANSCHREIBEN_GENERAL',
     'anschreiben',
     address,
@@ -31,9 +30,9 @@ module.exports = async function createPDFLetter({
     letter.addPage(mailMissingAdditionPage);
   }
 
-  for (const { campaignCode, listCount } of listCounts) {
+  for (const { campaignCode, listCount, code, state } of lists) {
     const listDoc = await createPDF(
-      url,
+      qrCodeUrls[state],
       code,
       'SINGLE_SW',
       campaignCode,
