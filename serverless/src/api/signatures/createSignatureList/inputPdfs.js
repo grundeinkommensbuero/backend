@@ -229,39 +229,6 @@ module.exports = {
     },
   },
   'schleswig-holstein-1': {
-    SERIENBRIEF2: {
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/SERIENBRIEF_2.pdf'),
-      codes: [
-        {
-          type: 'ADDRESS',
-          page: 0,
-          position: {
-            x: 67,
-            y: 660,
-          },
-        },
-        {
-          type: 'BAR',
-          page: 1,
-          position: CODE_POSITIONS.SH.BARCODE_MULTI,
-        },
-        {
-          type: 'QR',
-          page: 1,
-          position: CODE_POSITIONS.SH.QRCODE_MULTI,
-        },
-        {
-          type: 'BAR',
-          page: 2,
-          position: CODE_POSITIONS.SH.BARCODE_MULTI,
-        },
-        {
-          type: 'QR',
-          page: 2,
-          position: CODE_POSITIONS.SH.QRCODE_MULTI,
-        },
-      ],
-    },
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES_sw.pdf'),
       codes: [
