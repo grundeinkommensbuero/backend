@@ -31,10 +31,13 @@ module.exports = async function createPDFLetter({
   }
 
   for (const { campaignCode, listCount, code, state } of lists) {
+    const documentType =
+      campaignCode === 'schleswig-holstein-1' ? 'MULTI_SW' : 'SINGLE_SW';
+
     const listDoc = await createPDF(
       qrCodeUrls[state],
       code,
-      'SINGLE_SW',
+      documentType,
       campaignCode,
       address,
       'PDFDOC'

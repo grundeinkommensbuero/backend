@@ -31,6 +31,12 @@ createPDFLetter({
       listCount: 2,
       code: '12345',
     },
+    {
+      campaignCode: 'schleswig-holstein-1',
+      state: 'schleswig-holstein',
+      listCount: 2,
+      code: '12345',
+    },
   ],
   address: {
     name: 'Max Musterfrau',
