@@ -43,9 +43,8 @@ module.exports = async function createPDFLetter({
     // for some campaign reason, in berlin the lists are on the second page
     const pageNumberOfList = campaignCode === 'berlin-1' ? 1 : 0;
 
-    const [listPage] = await letter.copyPages(listDoc, [pageNumberOfList]);
-
     for (let i = 0; i < listCount; i++) {
+      const [listPage] = await letter.copyPages(listDoc, [pageNumberOfList]);
       letter.addPage(listPage);
     }
   }
