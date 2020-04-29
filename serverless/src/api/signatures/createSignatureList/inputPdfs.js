@@ -784,6 +784,21 @@ module.exports = {
         },
       ],
     },
+    SINGLE_SW: {
+      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+      ],
+    },
     SERIENBRIEF2: {
       file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/SERIENBRIEF_2.pdf'),
       codes: [
