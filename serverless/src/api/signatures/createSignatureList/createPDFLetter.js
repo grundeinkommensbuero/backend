@@ -8,6 +8,10 @@ module.exports = async function createPDFLetter({
   address,
   needsMailMissingAddition,
 }) {
+  isDuplex = !!lists.find(
+    ({ campaignCode }) => campaignCode === 'brandenburg-1'
+  );
+
   const letter = await createPDF(
     'foo',
     'foo',
@@ -28,6 +32,8 @@ module.exports = async function createPDFLetter({
       mailMissingAdditionPage,
     ] = await letter.copyPages(mailMissingAdditionDoc, [0]);
     letter.addPage(mailMissingAdditionPage);
+  } else if (isDuplex) {
+    letter.addPage();
   }
 
   for (const { campaignCode, listCount, code, state } of lists) {
@@ -47,8 +53,18 @@ module.exports = async function createPDFLetter({
     const pageNumberOfList = campaignCode === 'berlin-1' ? 1 : 0;
 
     for (let i = 0; i < listCount; i++) {
+      if (isDuplex && letter.getPageCount() % 2) {
+        letter.addPage();
+      }
+
       const [listPage] = await letter.copyPages(listDoc, [pageNumberOfList]);
       letter.addPage(listPage);
+
+      if (campaignCode === 'brandenburg-1') {
+        // needs the gesetzestext on the back side if it is brandenburg
+        const [lawPage] = await letter.copyPages(listDoc, [1]);
+        letter.addPage(lawPage);
+      }
     }
   }
   const pdfBytes = await letter.save();
