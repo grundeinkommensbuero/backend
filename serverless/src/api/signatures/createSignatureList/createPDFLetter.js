@@ -5,8 +5,7 @@ const createPDF = require('./createPDF');
 module.exports = async function createPDFLetter({
   url,
   code,
-  campaignCode,
-  listCount,
+  listCounts,
   address,
   needsMailMissingAddition,
 }) {
@@ -32,24 +31,25 @@ module.exports = async function createPDFLetter({
     letter.addPage(mailMissingAdditionPage);
   }
 
-  const listDoc = await createPDF(
-    url,
-    code,
-    'SINGLE_SW',
-    campaignCode,
-    address,
-    'PDFDOC'
-  );
+  for (const { campaignCode, listCount } of listCounts) {
+    const listDoc = await createPDF(
+      url,
+      code,
+      'SINGLE_SW',
+      campaignCode,
+      address,
+      'PDFDOC'
+    );
 
-  // for some campaign reason, in berlin the lists are on the second page
-  const pageNumberOfList = campaignCode === 'berlin-1' ? 1 : 0;
+    // for some campaign reason, in berlin the lists are on the second page
+    const pageNumberOfList = campaignCode === 'berlin-1' ? 1 : 0;
 
-  const [listPage] = await letter.copyPages(listDoc, [pageNumberOfList]);
+    const [listPage] = await letter.copyPages(listDoc, [pageNumberOfList]);
 
-  for (let i = 0; i < listCount; i++) {
-    letter.addPage(listPage);
+    for (let i = 0; i < listCount; i++) {
+      letter.addPage(listPage);
+    }
   }
-
   const pdfBytes = await letter.save();
   return pdfBytes;
 };
