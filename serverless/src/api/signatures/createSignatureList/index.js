@@ -5,6 +5,7 @@ const fs = require('fs');
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { checkIfIdExists } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
+const qrCodeUrls = require('./qrCodeUrls');
 const {
   constructCampaignId,
   generateRandomId,
@@ -20,15 +21,6 @@ const usersTableName = process.env.USERS_TABLE_NAME || 'prod-users';
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
-};
-
-const qrCodeUrls = {
-  'schleswig-holstein': 'https://xbge.de/qr/sh/?listId=',
-  brandenburg: 'https://xbge.de/qr/bb/?listId=',
-  hamburg: 'https://xbge.de/qr/hh/?listId=',
-  bremen: 'https://xbge.de/qr/hb/?listId=',
-  berlin: 'https://xbge.de/qr/b/?listId=',
-  default: 'https://xbge.de/qr/default/?listId=',
 };
 
 const MAIL_ATTACHMENTS = {
