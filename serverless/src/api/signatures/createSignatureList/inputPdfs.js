@@ -72,6 +72,21 @@ const CODE_POSITIONS = {
 };
 
 module.exports = {
+  anschreiben: {
+    ANSCHREIBEN_GENERAL: {
+      file: fs.readFileSync(__dirname + '/pdf/letters/ANSCHREIBEN.pdf'),
+      codes: [
+        {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 85,
+            y: 680,
+          },
+        },
+      ],
+    },
+  },
   'berlin-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er.pdf'),
