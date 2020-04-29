@@ -22,6 +22,10 @@ module.exports = async function createPDFLetter({
   );
 
   if (needsMailMissingAddition) {
+    if (isDuplex) {
+      letter.addPage();
+    }
+
     const mailMissingAdditionBytes = fs.readFileSync(
       __dirname + '/pdf/letters/BEILAGE_MAIL_FEHLT.pdf'
     );
