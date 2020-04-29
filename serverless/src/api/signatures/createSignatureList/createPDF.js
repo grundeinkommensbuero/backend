@@ -7,7 +7,8 @@ module.exports = async function generatePdf(
   code,
   type,
   campaignCode,
-  address
+  address,
+  format
 ) {
   console.log('generating pdf...');
   const pdfDoc = await pdfLib.PDFDocument.load(
@@ -41,8 +42,12 @@ module.exports = async function generatePdf(
     }
   });
 
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  if (format === 'PDFDOC') {
+    return pdfDoc;
+  } else {
+    const pdfBytes = await pdfDoc.save();
+    return pdfBytes;
+  }
 };
 
 function getBarcode(text) {
