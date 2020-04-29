@@ -44,7 +44,7 @@ createPDFLetter({
     zipCode: '21333',
     city: 'Hamburg',
   },
-  needsMailMissingAddition: false,
+  needsMailMissingAddition: true,
 }).then(pdfBytes => {
   fs.writeFileSync('./test-serienbrief.pdf', pdfBytes);
 });
