@@ -6,11 +6,11 @@ const htmlMail = require('./mailTemplate.html').default;
 const htmlMailHamburg = require('./mailTemplateHamburg.html').default;
 
 const GOALS = {
-  'schleswig-holstein-1': '25.000',
-  'brandenburg-1': '25.000',
-  'hamburg-1': '12.000',
-  'bremen-1': '6.000',
-  'berlin-1': '25.000',
+  'schleswig-holstein-1': '25000',
+  'brandenburg-1': '25000',
+  'hamburg-1': '12000',
+  'bremen-1': '6000',
+  'berlin-1': '24000',
 };
 
 const STATES = {
@@ -65,7 +65,6 @@ const customMail = (
       : `Herzlichen Dank! Wir haben heute ${dailyCount} Unterschrift von dir erhalten.`;
 
   //if there is a username we want to have a specific greeting
-  //username might be in different forms, definitely need to refactor
   if (typeof username !== 'undefined') {
     greeting = `Hallo ${username},`;
   } else {
@@ -101,8 +100,10 @@ const customMail = (
     ctaText =
       'Wie können wir dich beim weiteren Sammeln unterstützen? Antworte gern auf diese E-Mail!';
   } else if (totalCount > 1) {
-    ctaText = `Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? Bitte lass sie auch mit unterschreiben!
-    Du kannst auch Listen in der Bäckerei oder im Supermarkt um die Ecke auslegen. Trag dann bitte den neuen Sammelort in unsere <a class="link" href="https://expedition-grundeinkommen.de/${campaign.region}/#karte">Sammellandkarte</a> ein.`;
+    ctaText = ` Du kennst noch mehr Menschen, die auch für ein Grundeinkommensexperiment unterschreiben könnten? 
+    Bitte lass sie auch mit unterschreiben! Du kannst auch Listen in deinem Treppenhaus auslegen oder deinen 
+    Nachbarn in den Briefkasten werfen. Einen Vordruck dafür findest du <a href="http://expedition-grundeinkommen.de/briefkasten">hier</a>.
+    `;
   } else {
     ctaText =
       'Kennst du noch Menschen in deinem Umfeld, die auch für einen Modellversuch zum Grundeinkommen unterschreiben könnten? Bitte lass sie auch unterschreiben! ';

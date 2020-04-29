@@ -9,8 +9,7 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 
-module.exports.handler = async (event) => {
-  return event;
+module.exports.handler = async event => {
   try {
     // user object will contain signature count for a specific user id
     const usersMap = {};
@@ -24,7 +23,6 @@ module.exports.handler = async (event) => {
       let dailyCount = 0;
       let totalCount = 0;
 
-      console.log('list', list);
       for (let scan of list.received) {
         // we have to bring the two dates into the same format (UNIX time)
         const now = new Date().getTime();
@@ -111,7 +109,7 @@ module.exports.handler = async (event) => {
         }
 
         await sendMail(usersMap[key], totalCountForThisCampaign);
-        console.log('success sending mail');
+        console.log('success sending mail to', usersMap[key].email);
       }
     }
 
