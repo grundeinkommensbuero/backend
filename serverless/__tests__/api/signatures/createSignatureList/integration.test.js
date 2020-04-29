@@ -11,13 +11,47 @@ describe('createSignatureList api test', () => {
     token = await authenticate();
   });
 
-  it('should create a new signature list via userId', async () => {
+  it('should create a new signature list for sh via userId', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
         userId: userId,
         campaignCode: `schleswig-holstein-1`,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should create a new signature list for ber via userId', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: userId,
+        campaignCode: `berlin-1`,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should create a new signature list for bb via userId', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: userId,
+        campaignCode: `brandenburg-1`,
       }),
     };
 
