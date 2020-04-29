@@ -400,6 +400,25 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  createSurveyAnswer:
+    handler: src/api/users/createSurveyAnswer/index.handler
+    events:
+      - http:
+          path: users/{userId}/surveys
+          method: post
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
     events:
