@@ -256,7 +256,15 @@ const handler = async event => {
           //if the upload process was successful, we create the list entry in the db
           //userId might be 'anonymous'
           const promises = [
-            createSignatureList(pdfId, timestamp, url, campaign, false, userId),
+            createSignatureList(
+              pdfId,
+              timestamp,
+              url,
+              campaign,
+              false,
+              false,
+              userId
+            ),
           ];
 
           // Also create a promise to update the user record to save the signature campaign
@@ -362,6 +370,7 @@ const createSignatureList = (
   url,
   campaign,
   manually,
+  mailMissing,
   userId = null
 ) => {
   const params = {
@@ -372,6 +381,7 @@ const createSignatureList = (
       downloads: 1,
       campaign: campaign,
       createdAt: timestamp,
+      mailMissing,
       manually: manually,
     },
   };

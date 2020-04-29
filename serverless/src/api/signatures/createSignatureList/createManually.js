@@ -7,23 +7,28 @@ const { checkIfIdExists } = require('../../../shared/signatures');
 const { getUserByMail } = require('../../../shared/users');
 const { createSignatureList } = require('./');
 const parse = require('csv-parse');
-const generatePdf = require('./createPDF');
+const generatePdfLetter = require('./createPDFLetter');
 
 const MAPPING = {
   'hamburg-1': {
     URL: 'https://xbge.de/qr/hh/?listId=',
     SHORT: 'hh',
-    COUNT_INDEX: 12,
+    COUNT_INDEX: 14,
   },
   'schleswig-holstein-1': {
     URL: 'https://xbge.de/qr/sh/?listId=',
     SHORT: 'sh',
-    COUNT_INDEX: 11,
+    COUNT_INDEX: 13,
   },
   'brandenburg-1': {
     URL: 'https://xbge.de/qr/bb/?listId=',
     SHORT: 'bb',
-    COUNT_INDEX: 13,
+    COUNT_INDEX: 15,
+  },
+  'berlin-1': {
+    URL: 'https://xbge.de/qr/b/?listId=',
+    SHORT: 'b',
+    COUNT_INDEX: 17,
   },
 };
 
@@ -34,7 +39,59 @@ const createListManually = async (userId, user) => {
   //we only want the current day (YYYY-MM-DD), then it is also easier to filter
   const timestamp = new Date().toISOString().substring(0, 10);
 
-  const campaign = constructCampaignId(CAMPAIGN_CODE);
+  let lists = [];
+  let isDuplex = false;
+
+  if (user.countB > 0) {
+    lists.push(await constructListConfig('berlin-1', user.countB));
+  }
+
+  if (user.countBB > 0) {
+    lists.push(await constructListConfig('brandenburg-1', user.countBB));
+    isDuplex = true;
+  }
+
+  if (user.countHH > 0) {
+    lists.push(await constructListConfig('hamburg-1', user.countHH));
+  }
+
+  if (user.countSH > 0) {
+    lists.push(await constructListConfig('schleswig-holstein-1', user.countSH));
+  }
+
+  const mailMissing =
+    user.email === 'postbrief-april-ohne-mail@expedition-grundeinkommen.de';
+
+  const pdfBytes = await generatePdfLetter({
+    lists,
+    address: user.address,
+    needsMailMissingAddition: mailMissing,
+  });
+
+  for (let list of lists) {
+    await createSignatureList(
+      list.code,
+      timestamp,
+      undefined,
+      constructCampaignId(list.campaignCode),
+      true,
+      true, // mail missing
+      userId
+    );
+  }
+
+  // Remove "/" from names for saving to file
+  user.address.name = user.address.name.replace('/', '');
+
+  fs.writeFileSync(
+    `./lists/${isDuplex ? 'duplex' : 'simplex'}/${
+      user.needsEnvelope ? 'envelope' : 'no-envelope'
+    }/list_${user.address.name}.pdf`,
+    pdfBytes
+  );
+};
+
+const constructListConfig = async (campaignCode, count) => {
   //because the id is quite small we need to check if the newly created one already exists (unlikely)
   let idExists = true;
   let pdfId;
@@ -44,44 +101,14 @@ const createListManually = async (userId, user) => {
     idExists = await checkIfIdExists(pdfId);
   }
 
-  let pdfType;
-
-  if (user.count <= 2) {
-    pdfType = 'SERIENBRIEF2';
-  } else if (user.count <= 5) {
-    pdfType = 'SERIENBRIEF5';
-  } else if (user.count <= 15) {
-    pdfType = 'SERIENBRIEF15';
-  } else {
-    pdfType = 'SERIENBRIEF30';
-  }
-
-  console.log('pdf type', pdfType);
-
-  const pdfBytes = await generatePdf(
-    MAPPING[CAMPAIGN_CODE].URL,
-    pdfId,
-    pdfType,
-    CAMPAIGN_CODE,
-    user
-  );
-
-  await createSignatureList(
-    pdfId,
-    timestamp,
-    undefined,
-    campaign,
-    true,
-    userId
-  );
-
-  fs.writeFileSync(
-    `./lists/list_${MAPPING[CAMPAIGN_CODE].SHORT}_${user.name}.pdf`,
-    pdfBytes
-  );
+  return {
+    code: pdfId,
+    campaignCode,
+    listCount: count,
+  };
 };
 
-processCsv = async () => {
+const processCsv = async () => {
   try {
     const users = await readCsv();
     console.log('users length', users.length);
@@ -117,12 +144,33 @@ const readCsv = () => {
         //leave out headers
         if (count > 0) {
           user = {
-            name: row[4],
-            street: row[5],
-            zipCode: row[6].substr(0, row[6].indexOf(' ')),
-            city: row[6].substr(row[6].indexOf(' ') + 1),
-            email: row[10] === '' ? row[7] : row[10],
-            count: parseInt(row[MAPPING[CAMPAIGN_CODE].COUNT_INDEX]),
+            address: {
+              name: `${row[4]} ${row[5]}`,
+              street: row[6],
+              zipCode: row[7],
+              city: row[8],
+            },
+            email:
+              row[9] !== '' && row[9] !== 'Beilage'
+                ? row[9]
+                : 'postbrief-april-ohne-mail@expedition-grundeinkommen.de',
+            countB:
+              row[MAPPING['berlin-1'].COUNT_INDEX] !== ''
+                ? parseInt(row[MAPPING['berlin-1'].COUNT_INDEX])
+                : 0,
+            countSH:
+              row[MAPPING['schleswig-holstein-1'].COUNT_INDEX] !== ''
+                ? parseInt(row[MAPPING['schleswig-holstein-1'].COUNT_INDEX])
+                : 0,
+            countBB:
+              row[MAPPING['brandenburg-1'].COUNT_INDEX] !== ''
+                ? parseInt(row[MAPPING['brandenburg-1'].COUNT_INDEX])
+                : 0,
+            countHH:
+              row[MAPPING['hamburg-1'].COUNT_INDEX] !== ''
+                ? parseInt(row[MAPPING['hamburg-1'].COUNT_INDEX])
+                : 0,
+            needsEnvelope: row[19].startsWith('Ja'),
           };
 
           if (typeof user !== 'undefined' && user.email !== '') {
