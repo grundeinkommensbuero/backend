@@ -18,7 +18,16 @@ const URL = 'https://xbge.de/qr/hh/?listId=';
 createPDFLetter({
   url: URL,
   code: CODE,
-  campaignCode: 'brandenburg-1',
+  listCounts: [
+    {
+      campaignCode: 'brandenburg-1',
+      listCount: 1,
+    },
+    {
+      campaignCode: 'berlin-1',
+      listCount: 2,
+    },
+  ],
   address: {
     name: 'Max Musterfrau',
     street: 'Am Fleet 2',
@@ -26,7 +35,6 @@ createPDFLetter({
     city: 'Hamburg',
   },
   needsMailMissingAddition: false,
-  listCount: 1,
 }).then(pdfBytes => {
   fs.writeFileSync('./test-serienbrief.pdf', pdfBytes);
 });
