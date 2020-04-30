@@ -45,6 +45,7 @@ module.exports.handler = async event => {
           isBase64Encoded: false,
           body: JSON.stringify({
             isAnonymous: result.Item.userId === 'anonymous',
+            mailMissing: result.Item.mailMissing,
           }),
         };
       } catch (error) {
