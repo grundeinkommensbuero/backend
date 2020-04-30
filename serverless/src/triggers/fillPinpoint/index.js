@@ -85,7 +85,7 @@ const processBatchOfUsers = async (
     // and if there are still users to process
     if ('LastEvaluatedKey' in result) {
       // If the remaining time is more than 5 minutes start a new batch
-      if (context.getRemainingTimeInMillis() > 300000) {
+      if (context.getRemainingTimeInMillis() > 500000) {
         await processBatchOfUsers(
           event,
           context,
@@ -232,6 +232,10 @@ const updateEndpoint = async (user, verified) => {
         HasSentLists: [listsReceived ? 'Yes' : 'No'],
         HasScannedLists: [listsScanned ? 'Yes' : 'No'],
         PledgedSignatureCount: signatureCounts,
+        Surveys:
+          'surveys' in user
+            ? user.surveys.map(survey => `${survey.code}:${survey.answer}`)
+            : [],
       },
       EffectiveDate: createdAt,
       Location: {
