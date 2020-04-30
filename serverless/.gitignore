@@ -7,3 +7,4 @@ jspm_packages
 .webpack
 src/triggers/sendCongratulationMails/contentfulConfig.js
 secretConfig.js
+list*.pdf
