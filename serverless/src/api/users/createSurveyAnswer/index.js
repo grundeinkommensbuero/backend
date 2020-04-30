@@ -14,20 +14,31 @@ module.exports.handler = async event => {
     }
 
     try {
-      //check if there is a user with the passed user id
+      // check if there is a user with the passed user id
       const { userId } = event.pathParameters;
       const result = await getUser(userId);
 
       console.log('user', result);
 
-      //if user does not have Item as property, there was no user found
+      // if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
+      const user = result.Item;
+
+      // Check if this survey has already been answered
+      if ('surveys' in user) {
+        for (let survey of user.surveys) {
+          if (survey.code === requestBody.surveyCode) {
+            return errorResponse(401, 'Cannot answer same survey twice');
+          }
+        }
+      }
+
       await saveUser(userId, requestBody);
 
-      //updating user was successful, return appropriate json
+      // updating user was successful, return appropriate json
       return {
         statusCode: 201,
         headers: {
@@ -47,22 +58,16 @@ module.exports.handler = async event => {
 };
 
 const validateParams = (body, pathParameters) => {
-  return (
-    'userId' in pathParameters &&
-    'surveyCode' in body &&
-    'answer' in body &&
-    'answerId' in body
-  );
+  return 'userId' in pathParameters && 'surveyCode' in body && 'answer' in body;
 };
 
-saveUser = (userId, { answer, answerId, surveyCode }) => {
+saveUser = (userId, { answer, surveyCode }) => {
   const timestamp = new Date().toISOString();
 
   const data = {
     ':survey': [
       {
         answer,
-        answerId,
         code: surveyCode,
         timestamp,
       },
