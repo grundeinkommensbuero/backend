@@ -1,0 +1,75 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Die Volksabstimmung “Berlin soll Grundeinkommen testen!” braucht deine Stimme - unterschreibe jetzt!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wir testen das bedingungslose Grundeinkommen in Berlin! Damit diese Idee politische Wirklichkeit wird,
+          brauchen wir jetzt deine Unterschrift für das Volksbegehren - schon 3223
+          der Expeditionsmitglieder haben unterschrieben.
+          <br><br>
+          Hast du schon eine Unterschriftsliste heruntergeladen oder bestellt?
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/qr/b?userId={{User.UserId}}">
+          Ja, hab schon!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=berlin-1&pk_campaign=newsletter&pk_kwd=berlin_liste_xbge&pk_source=nl200430didnothing">
+          Nein, bring mich zum Download!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/Dq3SOi?user_email={{Address}}&source=nl200430didnothing">
+          Nein, bring mich zur Post-Bestellung!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/G1Cllz?user_email={{Address}}&source=nl200430didnothing">
+          Nein, ich möchte doch nicht unterschreiben.
+        </mj-button>
+
+        <mj-text>
+          Dieses Volksbegehren ist unsere Chance, das Thema bedingungsloses Grundeinkommen
+          in Deutschland politisch voranzubringen. Lass sie uns nutzen - unterschreibe jetzt!
+          <br><br>
+          Herzlich,
+          <br><br>
+          Laura und dein Expeditions-Team
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Crowdfunding geht in die Verlängerung</h2>
+          Über 750 Spender*innen haben in den letzten Wochen über 19.000 Euro in unserem <a href="https://www.startnext.com/CbK">Crowdfunding</a> gespendet -
+          vielen herzlichen Dank an alle, die mitgemacht und es damit ermöglicht haben,
+          dass die Unterschriftensammlung für einen Modellversuch des Grundeinkommens in
+          Berlin schon losgehen konnte! Über 10.000 Unterschriftslisten wurden in Berlin bisher heruntergeladen und bestellt.
+          <br><br>
+          Ursprünglich war der 30. April als Enddatum für das Crowdfunding vorgesehen.
+          Wir wissen aber, dass mehr Mittel als das nötig werden, um die Kampagne in Berlin
+          und in anderen Bundesländern auch erfolgreich zu Ende zu bringen. Darum verlängern
+          wir das Crowdfunding noch einmal um vier Wochen bis zum 27. Mai. Die nächsten 5.000
+          Euro fließen dabei vor allem in den Abschluss der Kampagne in Berlin.
+
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
