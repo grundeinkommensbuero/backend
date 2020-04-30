@@ -32,7 +32,7 @@ const CODE_POSITIONS = {
   BB: {
     BARCODE: {
       x: 545,
-      y: 17,
+      y: 29,
       width: 120,
       height: 60,
     },
