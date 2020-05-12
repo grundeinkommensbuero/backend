@@ -75,7 +75,7 @@ const createListManually = async (userId, user) => {
       undefined,
       constructCampaignId(list.campaignCode),
       true,
-      true, // mail missing
+      mailMissing,
       userId
     );
   }
@@ -150,10 +150,7 @@ const readCsv = () => {
               zipCode: row[7],
               city: row[8],
             },
-            email:
-              row[9] !== '' && row[9] !== 'Beilage'
-                ? row[9]
-                : 'postbrief-april-ohne-mail@expedition-grundeinkommen.de',
+            email: row[9] !== '' ? row[9] : row[12],
             countB:
               row[MAPPING['berlin-1'].COUNT_INDEX] !== ''
                 ? parseInt(row[MAPPING['berlin-1'].COUNT_INDEX])
