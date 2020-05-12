@@ -76,7 +76,7 @@ const readCsv = source => {
           console.log('row', row);
           if (source === 'typeform') {
             // if ((row[10] === '' || row[10] === 'xxxxx') && row[7] !== '') {
-            if (row[9] !== '' && row[9] !== 'Beilage') {
+            if (row[9] !== '' && row[12] === '') {
               user = {
                 email: row[9],
                 zipCode: row[7],
