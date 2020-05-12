@@ -1,0 +1,66 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Die Crowdfundingsumme für die Kampagne in Berlin ist über 90% voll.
+      Über 22.000 Euro habt ihr für die Unterschriftensammlung in Berlin bisher
+      zusammengetragen und damit den Postversand von Unterschriftenlisten an viele
+      tausend Menschen ermöglicht ‒ herzlichen Dank dafür!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          über 22.000 Euro habt ihr für die Unterschriftensammlung in Berlin bisher zusammengetragen
+          und damit den Postversand von Unterschriftslisten an viele tausend Menschen ermöglicht ‒ herzlichen Dank dafür!
+          <br><br>
+          Jetzt fehlen nicht einmal mehr 10% damit wir die Mittel haben, um die erste Phase des
+          Volksbegehrens für den Modellversuch in Berlin abzuschließen. Bitte schließe dich jetzt
+          den über 850 bisherigen Unterstützer*innen an und hilf uns, noch vor dem Wochenende
+          die 24.000 Euro für Berlin vollzumachen.
+        </mj-text>
+
+        <mj-button align="center" padding-top="20px" padding-bottom="20px" href="https://www.startnext.com/CbK">
+          Das schaffen wir, ich bin dabei
+        </mj-button>
+
+        <mj-text>
+          Wir sind so viele und so nah dran, lasst uns das jetzt zusammen durchziehen!
+          <br><br>
+          Herzliche Grüße<br>
+          Eure Joy & Laura
+        </mj-text>
+
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>Noch nicht unterschrieben?</h2>
+          Falls du noch nicht für den Modellversuch zum bedingungslosen Grundeinkommen
+          unterschrieben hast, kannst du dir hier eine Liste herunterladen oder per Post zuschicken lassen!
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/unterschriftenliste/?userId={{User.UserId}}&campaignCode=berlin-1&pk_campaign=newsletter&pk_kwd=berlin_liste_xbge&pk_source=nl200511bcrowdfunding" color="#fef377" border="1px solid #fef377">
+          Liste herunterladen
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/Dq3SOi?user_email={{Address}}&source=nl200511bcrowdfunding" color="#fef377" border="1px solid #fef377">
+          Liste per Post bestellen
+        </mj-button>
+
+
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
