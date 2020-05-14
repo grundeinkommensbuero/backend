@@ -6,8 +6,8 @@ const htmlMail = require('./mailTemplate.html').default;
 const htmlMailHamburg = require('./mailTemplateHamburg.html').default;
 
 const GOALS = {
-  'schleswig-holstein-1': '25000',
-  'brandenburg-1': '25000',
+  'schleswig-holstein-1': '24000',
+  'brandenburg-1': '24000',
   'hamburg-1': '12000',
   'bremen-1': '6000',
   'berlin-1': '24000',
