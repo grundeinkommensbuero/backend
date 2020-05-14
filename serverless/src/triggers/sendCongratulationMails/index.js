@@ -11,6 +11,11 @@ const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 
 module.exports.handler = async event => {
   try {
+    // Needed for checking, if scan was made during last day,
+    // round the date to nearest 5 min
+    const now =
+      Math.round(new Date().getTime() / (1000 * 60 * 5)) * (1000 * 60 * 5);
+
     // user object will contain signature count for a specific user id
     const usersMap = {};
     const signatureLists = await getReceivedSignatureLists();
@@ -24,8 +29,7 @@ module.exports.handler = async event => {
       let totalCount = 0;
 
       for (let scan of list.received) {
-        // we have to bring the two dates into the same format (UNIX time)
-        const now = new Date().getTime();
+        // we have to bring the date into the same format (UNIX time) as now
         const scannedAt = Date.parse(scan.timestamp);
         const oneDay = 24 * 60 * 60 * 1000;
 
