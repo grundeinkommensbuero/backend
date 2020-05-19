@@ -59,9 +59,10 @@ const readCsv = source => {
         //leave out headers
         if (count > 0) {
           console.log('row', row);
-          if (row[9] !== '' && row[9] !== 'Beilage') {
+          if (row[10] !== '' && row[10] !== 'Beilage' && row[13] !== '') {
             user = {
-              email: row[9],
+              email:
+                row[10] !== '' && row[10] !== 'Beilage' ? row[10] : row[13],
             };
           }
 
