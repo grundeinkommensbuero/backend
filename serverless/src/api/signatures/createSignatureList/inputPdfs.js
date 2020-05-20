@@ -227,6 +227,23 @@ module.exports = {
         },
       ],
     },
+    SINGLE_SW_ROTATED_LAW_FOR_PIN: {
+      file: fs.readFileSync(
+        __dirname + '/pdf/brandenburg-1/5er_rotated_for_pin.pdf'
+      ),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+      ],
+    },
   },
   'schleswig-holstein-1': {
     COMBINED: {

@@ -41,8 +41,15 @@ module.exports = async function createPDFLetter({
   }
 
   for (const { campaignCode, listCount, code, state } of lists) {
-    const documentType =
-      campaignCode === 'schleswig-holstein-1' ? 'MULTI_SW' : 'SINGLE_SW';
+    let documentType;
+
+    if (campaignCode === 'schleswig-holstein-1') {
+      documentType = 'MULTI_SW';
+    } else if (campaignCode === 'brandenburg-1') {
+      documentType = 'SINGLE_SW_ROTATED_LAW_FOR_PIN';
+    } else {
+      documentType = 'SINGLE_SW';
+    }
 
     const listDoc = await createPDF(
       qrCodeUrls[state],
