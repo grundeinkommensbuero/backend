@@ -1,4 +1,5 @@
-const tableName = 'prod-signatures';
+const CONFIG = require('../../config');
+const tableName = CONFIG.PROD_SIGNATURES_TABLE_NAME;
 const { getSignatureLists } = require('../../shared/signatures');
 
 const getListDownloadsSinceDate = async (date, campaignCode) => {
@@ -57,5 +58,34 @@ const getScansByUsersSinceDate = async (date, campaignCode) => {
   }
 };
 
-// getListDownloadsSinceDate('04-16-2020', 'berlin-1');
-getScansByUsersSinceDate('04-16-2020', 'berlin-1');
+const getReceivedSignaturesSinceDate = async (date, campaignCode) => {
+  const signatureLists = await getSignatureLists(tableName);
+
+  const dateToCompare = Date.parse(date);
+  const dailyReceivedSignatures = {};
+
+  for (let list of signatureLists) {
+    console.log('checking list', list.id);
+    if ('received' in list && list.campaign.code === campaignCode) {
+      for (let scan of list.received) {
+        // we have to bring the date into the same format (UNIX time) as now
+        const timestamp = Date.parse(scan.timestamp);
+        if (timestamp > dateToCompare) {
+          const day = scan.timestamp.substring(0, 10);
+          if (!(day in dailyReceivedSignatures)) {
+            dailyReceivedSignatures[day] = 0;
+          }
+
+          dailyReceivedSignatures[day] += scan.count;
+        }
+      }
+    }
+  }
+
+  console.log(dailyReceivedSignatures);
+};
+
+// getListDownloadsSinceDate('05-20-2020', 'berlin-1');
+// getScansByUsersSinceDate('05-18-2020', 'berlin-1');
+
+getReceivedSignaturesSinceDate('04-25-2020', 'brandenburg-1');
