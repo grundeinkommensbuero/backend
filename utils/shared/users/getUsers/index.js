@@ -59,7 +59,7 @@ const getAllCognitoUsers = async (
 
 const getUsersFromState = async (tableName, state) => {
   const users = await getAllUsers();
-  return users.filter((user) => {
+  return users.filter(user => {
     if ('pledges' in user) {
       for (let pledge of user.pledges) {
         return pledge.campaign.state === state;
@@ -72,7 +72,7 @@ const getUsersFromState = async (tableName, state) => {
 const getUsersWithoutNewsletterFromState = async (tableName, state) => {
   const users = await getAllUsers(tableName);
 
-  return users.filter((user) => {
+  return users.filter(user => {
     if ('pledges' in user) {
       for (let pledge of user.pledges) {
         if (pledge.campaign.state === state) {
@@ -105,6 +105,30 @@ const getAllUsers = async (tableName, users = [], startKey = null) => {
   //call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getAllUsers(tableName, users, result.LastEvaluatedKey);
+  } else {
+    //otherwise return the array
+    return users;
+  }
+};
+
+const getUsersWithSurvey = async (tableName, users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(surveys)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  //add elements to existing array
+  users.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getUsersWithSurvey(tableName, users, result.LastEvaluatedKey);
   } else {
     //otherwise return the array
     return users;
@@ -155,4 +179,5 @@ module.exports = {
   getUsersFromState,
   getUsersWithoutNewsletterFromState,
   isVerified,
+  getUsersWithSurvey,
 };
