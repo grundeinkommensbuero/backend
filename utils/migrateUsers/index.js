@@ -42,7 +42,7 @@ const migrateUsers = async () => {
   try {
     const users = await readCsv('typeform');
 
-    // console.log('user', users[0]);
+    console.log('user', users[0]);
 
     for (let user of users) {
       try {
@@ -75,10 +75,9 @@ const readCsv = source => {
         if (count > 0) {
           console.log('row', row);
           if (source === 'typeform') {
-            // if ((row[10] === '' || row[10] === 'xxxxx') && row[7] !== '') {
-            if (row[9] !== '' && row[12] === '') {
+            if (row[9] !== '' || row[12] !== '') {
               user = {
-                email: row[9],
+                email: row[12] !== '' ? row[12] : row[9],
                 zipCode: row[7],
                 createdAt: new Date(transformDate(row[20])).toISOString(),
                 source: 'typeform-bge',
@@ -87,7 +86,6 @@ const readCsv = source => {
           } else if (source === 'mailerlite') {
             user = {
               email: row[0],
-              //TODO: parse date to make it same as others
               createdAt: new Date(row[4]).toISOString(),
               timestampConfirmation: new Date(row[9]).toISOString(),
               source: source,
