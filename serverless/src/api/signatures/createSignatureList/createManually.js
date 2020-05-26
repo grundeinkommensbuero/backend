@@ -150,7 +150,7 @@ const readCsv = () => {
               zipCode: row[7],
               city: row[8],
             },
-            email: row[9] !== '' ? row[9] : row[12],
+            email: row[12] !== '' ? row[12] : row[9],
             countB:
               row[MAPPING['berlin-1'].COUNT_INDEX] !== ''
                 ? parseInt(row[MAPPING['berlin-1'].COUNT_INDEX])
