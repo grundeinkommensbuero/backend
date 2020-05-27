@@ -263,6 +263,20 @@ functions:
               - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
                 - 'index/emailIndex'
 
+  getSignatureHistory:
+    handler: src/api/signatures/getSignatureHistory/index.handler
+    events:
+      - http:
+          path: analytics/signatures/history
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+
   getUserCount:
     handler: src/api/users/getUserCount/index.handler
     events:
