@@ -3,7 +3,7 @@ const fs = require('fs');
 const CONFIG = require('../config');
 const { getAllUsers } = require('../shared/users/getUsers');
 
-const tableName = CONFIG.PROD_TABLE_NAME;
+const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 
 const exportMessagesAsCsv = async () => {
   try {
@@ -29,6 +29,7 @@ const getUsersWithMessages = async () => {
             email: user.email,
             username: user.username,
             message: pledge.message,
+            createdAt: pledge.createdAt,
           });
         }
       }
@@ -41,10 +42,10 @@ const getUsersWithMessages = async () => {
 const generateCsv = users => {
   console.log('generating csv');
 
-  let dataString = 'Email; Name; Nachricht\n';
+  let dataString = 'Email, Name, Nachricht, Erstellt am\n';
 
   for (let user of users) {
-    dataString += `${user.email};${user.username};"${user.message}"\n`;
+    dataString += `${user.email},${user.username},"${user.message}",${user.createdAt}\n`;
   }
 
   fs.writeFileSync(`messages.csv`, dataString);
