@@ -5,6 +5,6 @@ jspm_packages
 # Serverless directories
 .serverless
 .webpack
-src/triggers/sendCongratulationMails/contentfulConfig.js
+contentfulConfig.js
 secretConfig.js
 list*.pdf
