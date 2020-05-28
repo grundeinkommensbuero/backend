@@ -8,14 +8,14 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "aws-sdk": "^2.382.0",
-    "babel-eslint": "^10.0.1",
+    "aws-sdk": "^2.685.0",
+    "babel-eslint": "^10.1.0",
     "bottleneck": "^2.19.5",
-    "copy-dynamodb-table": "^2.0.17",
-    "csv": "^5.3.0",
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-import": "^2.18.2",
+    "copy-dynamodb-table": "^2.0.20",
+    "csv": "^5.3.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.2",
     "serverless-plugin-split-stacks": "^1.9.3"
   }
 }
