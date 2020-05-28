@@ -48,31 +48,28 @@
     <mj-section mj-class="section-red" padding-top="40px">
       <mj-column>
         <mj-text mj-class="section-red-text">
-
-          <h2>Bitte unterstütze die Expedition auch finanziell.</h2>
-          Mit deiner Unterstützung bringst du unsere Initiative voran.
-          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
-          <br><br>
-          Bankverbindung:
+          Wenn du uns monatlich unterstützen willst, kannst du das
+          per Dauerauftrag bei Paypal oder direkt auf unser Konto tun:
           <br><br>
           Vertrauensgesellschaft e.V.<br>
-          IBAN: DE74 4306 0967 1218 1056 01<br>
-          BIC: GENODEM1GLS (GLS-Bank)<br>
+          IBAN: DE74 4306 0967 1218 1056 01
+        </mj-text>
+
+        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Paypal
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Wir sind gemeinnützig, das heißt: Du kannst deine Spende steuerlich absetzen.
+          <br><br>
+          Alternative Spendenmöglichkeit:
           <br><br>
           Charity-SMS:
           <br><br>
           Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
-          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
-          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
-          <br><br>
-          oder
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190. Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
         </mj-text>
-
-        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
-          Spende mit Paypal/Kreditkarte
-        </mj-button>
       </mj-column>
-
     </mj-section>
 
     <mj-include path="../../../mails/includes/footer-transactional.mjml" />
