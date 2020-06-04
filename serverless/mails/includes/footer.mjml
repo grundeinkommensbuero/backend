@@ -10,7 +10,7 @@
     </mj-social>
     <mj-text color="#3423f6" font-size="13px">
 
-      Zum Abbestellen des Newsletters antworte bitte mit &bdquo;Abbestellen&ldquo; auf diese Mail.
+      Zum Abbestellen des Newsletters antworte bitte mit &bdquo;Abbestellen&ldquo; auf diese Mail. Diese Mail wurde an die Adresse {{Address}} versendet.
       <br><br>
       Expedition Grundeinkommen<br>
       c/o Vertrauensgesellschaft e.V.<br>
