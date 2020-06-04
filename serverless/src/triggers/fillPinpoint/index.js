@@ -214,10 +214,10 @@ const updateEndpoint = async (user, verified) => {
             ? user.pledges.map(pledge => pledge.campaign.code)
             : [],
 
-        SignaturesCampaignCode:
-          user.signatureLists.length > 0
-            ? user.signatureLists.map(list => list.campaign.code)
-            : [],
+        // SignaturesCampaignCode:
+        //   user.signatureLists.length > 0
+        //     ? user.signatureLists.map(list => list.campaign.code)
+        //     : [],
         // Username: [username], -> not eneeded anymore, and there's a limit to attributes
         UsernameWithSpace: [pinpointName],
         Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
