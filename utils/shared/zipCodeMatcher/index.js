@@ -5,7 +5,7 @@ const getStateByZipCode = zipCode => {
   if (typeof item !== 'undefined') {
     return item.bundesland;
   } else {
-    return 'undefined';
+    return undefined;
   }
 };
 

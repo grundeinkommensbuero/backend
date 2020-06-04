@@ -6,6 +6,7 @@ jspm_packages
 .serverless
 .webpack
 contentfulConfig.js
+mailjetConfig.js
 secretConfig.js
 mailjetConfig.js
 list*.pdf
