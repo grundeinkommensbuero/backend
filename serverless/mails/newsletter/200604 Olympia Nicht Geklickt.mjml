@@ -1,0 +1,64 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Wir haben die Chance auf eine Riesenspende - mit ihr könnten wir die Expedition deutschlandweit ausbreiten. Erfahre mehr dazu heute Abend im Live-Stream!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wir haben diese Woche die einmalige Chance, eine Finanzierung zu gewinnen,
+          mit der wir die Expedition Grundeinkommen in jeden Ort Deutschlands bringen könnten.
+          Wenn du mehr darüber erfahren möchtest, wo das Geld herkommt und was wir damit
+          machen werden kannst du dir heute Abend um 20:40 Uhr <a href="https://www.instagram.com/12062020olympia/">die Liveübertragung
+            „Olympia Live“ auf Instagram</a> anschauen. Dort werden wir noch einmal unser
+          Projekt im Wettbewerb um die Fördermittel vorstellen.
+          <br><br>
+          Außerdem bitte nicht vergessen: unbedingt abstimmen, denn nur drei von acht Projekten können gefördert werden!
+        </mj-text>
+
+        <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/olympia/?surveyCode=olympia&answer=clicked&userId={{User.UserId}}">
+          Jetzt abstimmen
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>
+            Grundeinkommen Jetzt. Mit deiner Hilfe.
+          </h2>
+
+          So geht's:
+          <br><br>
+          1. Account erstellen
+          <br><br>
+          2. Mit bis zu drei Stimmen für „Grundeinkommen Jetzt! Mit deiner Hilfe“ abstimmen.
+          <br><br>
+          Bis zum 8. Juni läuft die Abstimmung. Danke für deine Unterstützung – gemeinsam mit dir bringen wir den Modellversuch nach ganz Deutschland!
+        </mj-text>
+
+        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/olympia/?surveyCode=olympia&answer=clicked&userId={{User.UserId}}">
+          Jetzt abstimmen
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+
+          Herzlich,
+          <br><br>
+          Laura und Joy vom Expeditionsteam
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
