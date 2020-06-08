@@ -96,7 +96,7 @@ const processBatchOfUsers = async (
             updateMailjetSubscription(user, verified),
           ]);
         } catch (error) {
-          console.log('error updating contact', error.statusCode);
+          console.log('error updating contact', error);
         }
       }
 
@@ -136,6 +136,8 @@ const processBatchOfUsers = async (
         );
       }
     }
+
+    return;
   }
 };
 
@@ -356,7 +358,7 @@ const updateMailjetContact = async ({
   }
 
   if (typeof migrated !== 'undefined') {
-    if (user.migrated.source === 'offline') {
+    if (migrated.source === 'offline') {
       checkIfActiveInState(mailjetUser, migrated.campaign.state);
     }
 
