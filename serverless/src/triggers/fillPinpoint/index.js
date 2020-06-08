@@ -363,7 +363,7 @@ const updateMailjetContact = async ({
       checkIfActiveInState(mailjetUser, migrated.campaign.state);
     }
 
-    mailjetUser.migratedFrom = user.migrated.source;
+    mailjetUser.migratedFrom = migrated.source;
   }
 
   if (typeof surveys !== 'undefined') {
