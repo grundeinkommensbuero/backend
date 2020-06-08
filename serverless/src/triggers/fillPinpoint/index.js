@@ -47,6 +47,7 @@ const fillPinpoint = async (event, context) => {
 const getBatchOfUsers = (startKey = null) => {
   const params = {
     TableName: tableName,
+    Limit: 500,
   };
 
   if (startKey !== null) {
@@ -108,8 +109,8 @@ const processBatchOfUsers = async (
     // After batch of users is processed check how much time we have got left in this lambda
     // and if there are still users to process
     if ('LastEvaluatedKey' in result) {
-      // If the remaining time is more than 5 minutes start a new batch
-      if (context.getRemainingTimeInMillis() > 500000) {
+      // If the remaining time is more than x minutes start a new batch
+      if (context.getRemainingTimeInMillis() > 300000) {
         await processBatchOfUsers(
           event,
           context,
@@ -437,8 +438,6 @@ const updateMailjetContact = async ({
       ...mailjetUser.surveyParams,
     ],
   };
-
-  console.log('request', requestParams);
 
   // We have to make two requests to update the contact data and add or remove user to/from contact list
   return mailjet
