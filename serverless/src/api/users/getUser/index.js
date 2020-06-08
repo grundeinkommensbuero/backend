@@ -4,6 +4,7 @@
  */
 
 const { getUser } = require('../../../shared/users');
+const { anonymizeEmail } = require('./utils');
 const { errorResponse } = require('../../../shared/apiResponse');
 
 const responseHeaders = {
@@ -24,10 +25,13 @@ module.exports.handler = async event => {
 
     const user = result.Item;
 
+    const anonEmail = anonymizeEmail(user.email);
+
     const userData = {
       profilePictures: user.profilePictures,
       questions: user.questions,
       hasZipCode: 'zipCode' in user,
+      email: anonEmail,
     };
 
     if ('username' in user) {
