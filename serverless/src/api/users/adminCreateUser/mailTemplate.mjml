@@ -67,7 +67,8 @@
           per Dauerauftrag bei Paypal oder direkt auf unser Konto tun:
           <br><br>
           Vertrauensgesellschaft e.V.<br>
-          IBAN: DE74 4306 0967 1218 1056 01
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)
         </mj-text>
 
         <mj-button align="left" padding-top="20px" padding-bottom="20px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
