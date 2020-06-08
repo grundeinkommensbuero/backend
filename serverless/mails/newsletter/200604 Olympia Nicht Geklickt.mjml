@@ -17,7 +17,7 @@
           wir haben diese Woche die einmalige Chance, eine Finanzierung zu gewinnen,
           mit der wir die Expedition Grundeinkommen in jeden Ort Deutschlands bringen könnten.
           Wenn du mehr darüber erfahren möchtest, wo das Geld herkommt und was wir damit
-          machen werden kannst du dir heute Abend um 20:40 Uhr <a href="https://www.instagram.com/12062020olympia/">die Liveübertragung
+          machen werden, kannst du dir heute Abend um 20:40 Uhr <a href="https://www.instagram.com/12062020olympia/">die Liveübertragung
             „Olympia Live“ auf Instagram</a> anschauen. Dort werden wir noch einmal unser
           Projekt im Wettbewerb um die Fördermittel vorstellen.
           <br><br>
@@ -41,9 +41,7 @@
           <br><br>
           1. Account erstellen
           <br><br>
-          2. Mit bis zu drei Stimmen für „Grundeinkommen Jetzt! Mit deiner Hilfe“ abstimmen.
-          <br><br>
-          Bis zum 8. Juni läuft die Abstimmung. Danke für deine Unterstützung – gemeinsam mit dir bringen wir den Modellversuch nach ganz Deutschland!
+          2. Mit bis zu drei Stimmen für „Grundeinkommen Jetzt! Mit deiner Hilfe.“ abstimmen.
         </mj-text>
 
         <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/olympia/?surveyCode=olympia&answer=clicked&userId={{User.UserId}}">
@@ -51,7 +49,8 @@
         </mj-button>
 
         <mj-text mj-class="section-red-text">
-
+          Bis zum 8. Juni läuft die Abstimmung. Danke für deine Unterstützung – gemeinsam mit dir bringen wir den Modellversuch nach ganz Deutschland!
+          <br><br>
           Herzlich,
           <br><br>
           Laura und Joy vom Expeditionsteam
