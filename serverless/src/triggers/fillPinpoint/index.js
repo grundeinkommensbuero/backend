@@ -466,7 +466,8 @@ const updateMailjetSubscription = async (
 
 const createMailjetContact = async ({ email, newsletterConsent }, verified) => {
   return mailjet.post('contact', { version: 'v3' }).request({
-    IsExcludedFromCampaigns: !(newsletterConsent.value && verified),
+    // We unsub users not through this flag but by unsubbing from contact list
+    IsExcludedFromCampaigns: false,
     Name: email,
     Email: email,
   });
