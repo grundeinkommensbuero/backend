@@ -47,7 +47,7 @@ const fillPinpoint = async (event, context) => {
 const getBatchOfUsers = (startKey = null) => {
   const params = {
     TableName: tableName,
-    Limit: 500,
+    Limit: 1500,
   };
 
   if (startKey !== null) {
