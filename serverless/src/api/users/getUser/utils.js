@@ -1,7 +1,14 @@
 module.exports.anonymizeEmail = email => {
   if (!email) return undefined;
-  const emailParts = email.split('@');
-  const firstLetter = emailParts[0][0];
-  const lastLetter = emailParts[0][emailParts[0].length - 1];
-  return `${firstLetter}***${lastLetter}@${emailParts[1]}`;
+  const [username, domain] = email.split('@');
+  const usernameFirstLetter = username[0];
+  const usernameLastLetter = username[username.length - 1];
+
+  const domainParts = domain.split('.');
+  const tld = domainParts[domainParts.length - 1];
+  // Join all of the subdomain to one string
+  const subdomains = domainParts.slice(0, domainParts.length - 1).join('.');
+  const firstSubdomainLetter = subdomains[0];
+  const lastSubdomainLetter = subdomains[subdomains.length - 1];
+  return `${usernameFirstLetter}***${usernameLastLetter}@${firstSubdomainLetter}***${lastSubdomainLetter}.${tld}`;
 };
