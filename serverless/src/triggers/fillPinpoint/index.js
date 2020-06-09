@@ -464,7 +464,7 @@ const updateMailjetSubscription = async (
     });
 };
 
-const createMailjetContact = async ({ email, newsletterConsent }, verified) => {
+const createMailjetContact = async ({ email }) => {
   return mailjet.post('contact', { version: 'v3' }).request({
     // We unsub users not through this flag but by unsubbing from contact list
     IsExcludedFromCampaigns: false,
