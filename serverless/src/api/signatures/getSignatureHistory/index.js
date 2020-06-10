@@ -54,7 +54,9 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
           stats[list.campaign.code].history[list.createdAt] = {
             downloads: 0,
             received: 0,
-            scans: { users: new Set() },
+            scannedLists: new Set(),
+            scanned: 0,
+            usersWhoScanned: new Set(),
           };
         }
 
@@ -75,13 +77,21 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
 
           if (!(day in stats[list.campaign.code].history)) {
             stats[list.campaign.code].history[day] = {
-              scans: { users: new Set() },
+              usersWhoScanned: new Set(),
               received: 0,
               downloads: 0,
+              scanned: 0,
+              scannedLists: new Set(),
             };
           }
 
-          stats[list.campaign.code].history[day].scans.users.add(scan.userId);
+          stats[list.campaign.code].history[day].usersWhoScanned.add(
+            scan.userId
+          );
+
+          stats[list.campaign.code].history[day].scannedLists.add(list.id);
+
+          stats[list.campaign.code].history[day].scanned += scan.count;
         }
       }
     }
@@ -96,9 +106,11 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
 
           if (!(day in stats[list.campaign.code].history)) {
             stats[list.campaign.code].history[day] = {
-              scans: { users: new Set() },
+              usersWhoScanned: new Set(),
               received: 0,
               downloads: 0,
+              scanned: 0,
+              scannedLists: new Set(),
             };
           }
 
@@ -125,12 +137,21 @@ const cleanAndSortStats = stats => {
         dayObject.downloads = stats[campaign].history[day].downloads;
       }
 
-      if ('scans' in stats[campaign].history[day]) {
-        dayObject.scans = stats[campaign].history[day].scans.users.size;
+      if ('usersWhoScanned' in stats[campaign].history[day]) {
+        dayObject.usersWhoScanned =
+          stats[campaign].history[day].usersWhoScanned.size;
       }
 
       if ('received' in stats[campaign].history[day]) {
         dayObject.received = stats[campaign].history[day].received;
+      }
+
+      if ('scanned' in stats[campaign].history[day]) {
+        dayObject.scanned = stats[campaign].history[day].scanned;
+      }
+
+      if ('scannedLists' in stats[campaign].history[day]) {
+        dayObject.scannedLists = stats[campaign].history[day].scannedLists.size;
       }
 
       historyArray.push(dayObject);
