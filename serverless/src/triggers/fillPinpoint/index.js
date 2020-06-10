@@ -47,7 +47,7 @@ const fillPinpoint = async (event, context) => {
 const getBatchOfUsers = (startKey = null) => {
   const params = {
     TableName: tableName,
-    Limit: 1500,
+    Limit: 500,
   };
 
   if (startKey !== null) {
@@ -110,7 +110,7 @@ const processBatchOfUsers = async (
     // and if there are still users to process
     if ('LastEvaluatedKey' in result) {
       // If the remaining time is more than x minutes start a new batch
-      if (context.getRemainingTimeInMillis() > 300000) {
+      if (context.getRemainingTimeInMillis() > 400000) {
         await processBatchOfUsers(
           event,
           context,
