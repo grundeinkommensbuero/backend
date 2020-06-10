@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const slsw = require('serverless-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -56,5 +57,9 @@ module.exports = {
     ],
   },
   stats: 'errors-warnings', // less logging
-  plugins: [CopyStaticFilesPlugin()],
+  plugins: [
+    CopyStaticFilesPlugin(),
+    // Needed to fix issue with Formidable pack (dependency of node-mailjet)
+    new webpack.DefinePlugin({ 'global.GENTLY': false }),
+  ],
 };

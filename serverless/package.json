@@ -17,6 +17,7 @@
     "crypto-secure-random-digit": "^1.0.7",
     "jimp": "^0.9.8",
     "node-fetch": "^2.6.0",
+    "node-mailjet": "^3.3.1",
     "nodemailer": "^6.4.7",
     "pdf-lib": "^1.6.1",
     "raw-loader": "^4.0.1",
