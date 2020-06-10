@@ -111,9 +111,12 @@ module.exports.handler = async event => {
             contentfulCountForThisCampaign.minimum
           );
         }
-
-        await sendMail(usersMap[key], totalCountForThisCampaign);
-        console.log('success sending mail to', usersMap[key].email);
+        try {
+          console.log(await sendMail(usersMap[key], totalCountForThisCampaign));
+          console.log('success sending mail to', usersMap[key].email);
+        } catch (error) {
+          console.log('error sending mail', error);
+        }
       }
     }
 
