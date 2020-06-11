@@ -96,10 +96,20 @@ const getAllUnverifiedCognitoUsers = async (
   }
 };
 
+const getCognitoUser = userId => {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: userId,
+  };
+
+  return cognito.adminGetUser(params).promise();
+};
+
 module.exports = {
   getUser,
   getUserByMail,
   getAllUsers,
   isVerified,
   getAllUnverifiedCognitoUsers,
+  getCognitoUser,
 };
