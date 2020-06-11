@@ -558,15 +558,17 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  # Endpoint refers to pinpoint user endpoint
-  updateEndpoint:
-    handler: src/triggers/updatePinpointEndpoint/index.handler
+  updateMailjetContact:
+    handler: src/triggers/mailjet/updateMailjetContact/index.handler
     events: # dynamodb trigger through a dynamo stream
       - stream:
           type: dynamodb
           maximumRetryAttempts: 5
           arn:
             Fn::GetAtt: [UsersTable, StreamArn]
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -580,11 +582,26 @@ functions:
         Action:
           - mobiletargeting:*
         Resource: 'arn:aws:mobiletargeting:*:550953582247:*'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminGetUser
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
-  fillPinpoint:
-    handler: src/triggers/fillPinpoint/index.handler
-    events: # Call this function every day at 0 am (via cloudwatch event)
-      - schedule: cron(0 23 * * ? *)
+  fillMailjet:
+    handler: src/triggers/mailjet/fillMailjet/index.handler
+    # events: # Call this function every day at 0 am (via cloudwatch event)
+    #   - schedule: cron(0 23 * * ? *)
     timeout: 900 # Timeout for this specific function. Takes a while...
     memorySize: 2048 # memorySize for this specific function.
     environment:
@@ -800,7 +817,7 @@ resources:
           - AttributeName: cognitoId
             KeyType: HASH
         StreamSpecification:
-          StreamViewType: NEW_IMAGE
+          StreamViewType: NEW_AND_OLD_IMAGES
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
