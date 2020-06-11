@@ -442,7 +442,7 @@ const updateMailjetContact = async ({
   // We have to make two requests to update the contact data and add or remove user to/from contact list
   return mailjet
     .put('contactdata', { version: 'v3' })
-    .id(email)
+    .id(encodeURIComponent(email))
     .request(requestParams);
 };
 
@@ -452,7 +452,7 @@ const updateMailjetSubscription = async (
 ) => {
   return mailjet
     .post('contact', { version: 'v3' })
-    .id(email)
+    .id(encodeURIComponent(email))
     .action('managecontactslists')
     .request({
       ContactsLists: [
