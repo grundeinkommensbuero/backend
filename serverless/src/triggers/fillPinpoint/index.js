@@ -189,6 +189,7 @@ const updateEndpoint = async (user, verified) => {
   // Check if the user has already sent lists to us or scanned
   let listsReceived = false;
   let listsScanned = false;
+  const signatureCampaigns = new Set();
   for (let list of user.signatureLists) {
     if ('received' in list && list.received.length > 0) {
       listsReceived = true;
@@ -197,6 +198,8 @@ const updateEndpoint = async (user, verified) => {
     if ('scannedByUser' in list && list.scannedByUser.length > 0) {
       listsScanned = true;
     }
+
+    signatureCampaigns.add(list.campaign.code);
   }
 
   const params = {
@@ -214,10 +217,8 @@ const updateEndpoint = async (user, verified) => {
             ? user.pledges.map(pledge => pledge.campaign.code)
             : [],
 
-        // SignaturesCampaignCode:
-        //   user.signatureLists.length > 0
-        //     ? user.signatureLists.map(list => list.campaign.code)
-        //     : [],
+        SignaturesCampaignCode:
+          signatureCampaigns.size > 0 ? Array.from(signatureCampaigns) : [],
         // Username: [username], -> not eneeded anymore, and there's a limit to attributes
         UsernameWithSpace: [pinpointName],
         Newsletter: [newsletterConsent ? 'Ja' : 'Nein'],
