@@ -6,7 +6,7 @@ const { getUser, getCognitoUser } = require('../../../shared/users');
 module.exports.handler = async event => {
   try {
     // Only run the script if the environment is prod
-    if (process.env.STAGE === 'prod' || true) {
+    if (process.env.STAGE === 'prod') {
       for (let record of event.Records) {
         console.log({ record });
 
