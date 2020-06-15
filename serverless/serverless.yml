@@ -525,7 +525,7 @@ functions:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
 
   sendVerificationMail:
-    handler: src/triggers/sendVerificationMail/index.handler
+    handler: src/triggers/auth/sendVerificationMail/index.handler
     events:
       - cognitoUserPool:
           pool: UserPool
@@ -555,6 +555,19 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:DeleteItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
+  onVerification:
+    handler: src/triggers/auth/onVerification/index.handler
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PostConfirmation
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
