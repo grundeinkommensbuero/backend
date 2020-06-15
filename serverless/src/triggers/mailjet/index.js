@@ -67,7 +67,9 @@ const updateMailjetContact = async ({
       }
     }
 
-    mailjetUser.downloadedListCount += list.downloads;
+    if (list.downloads) {
+      mailjetUser.downloadedListCount += list.downloads;
+    }
   }
 
   // Use the scan record in the user object,
@@ -122,10 +124,21 @@ const updateMailjetContact = async ({
         console.log('custom attribute already exists');
       }
 
-      mailjetUser.surveyParams.push({
-        Name: surveyName,
-        Value: survey.answer,
-      });
+      // If the mailjet user already contains this survey we want to overwrite it
+      const index = mailjetUser.surveyParams.findIndex(
+        element => element.Name === surveyName
+      );
+      if (index !== -1) {
+        mailjetUser.surveyParams[index] = {
+          Name: surveyName,
+          Value: survey.answer,
+        };
+      } else {
+        mailjetUser.surveyParams.push({
+          Name: surveyName,
+          Value: survey.answer,
+        });
+      }
     }
   }
 
