@@ -305,4 +305,8 @@ const deleteMailjetContact = async email => {
   }
 };
 
-module.exports = { syncMailjetContact, deleteMailjetContact };
+module.exports = {
+  syncMailjetContact,
+  deleteMailjetContact,
+  updateMailjetSubscription,
+};
