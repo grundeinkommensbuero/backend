@@ -566,6 +566,11 @@ functions:
           maximumRetryAttempts: 5
           arn:
             Fn::GetAtt: [UsersTable, StreamArn]
+      - stream:
+          type: dynamodb
+          maximumRetryAttempts: 5
+          arn:
+            Fn::GetAtt: [SignaturesTable, StreamArn]
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -844,6 +849,8 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
