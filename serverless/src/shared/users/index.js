@@ -21,7 +21,8 @@ const getUserByMail = async (email, startKey = null) => {
     TableName: tableName,
     IndexName: 'emailIndex',
     KeyConditionExpression: 'email = :email',
-    ExpressionAttributeValues: { ':email': email },
+    // Important: lowercase email
+    ExpressionAttributeValues: { ':email': email.toLowerCase() },
   };
 
   if (startKey !== null) {
