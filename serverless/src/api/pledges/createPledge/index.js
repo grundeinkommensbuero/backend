@@ -92,7 +92,8 @@ const savePledge = requestBody => {
 
   const data = {
     cognitoId: requestBody.userId,
-    email: requestBody.email,
+    // Important: lowercase email
+    email: requestBody.email.toLowerCase(),
     pledges: [pledge],
     newsletterConsent: {
       value: requestBody.newsletterConsent,
