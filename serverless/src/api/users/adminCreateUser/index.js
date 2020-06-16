@@ -22,6 +22,8 @@ module.exports.handler = async event => {
     //get email from body,
     const { email, campaignCode } = JSON.parse(event.body);
 
+    const lowercaseEmail = email.toLowerCase();
+
     //if the listId is somehow undefined or null return error
     if (typeof email === 'undefined' || typeof campaignCode === 'undefined') {
       return errorResponse(
@@ -32,14 +34,14 @@ module.exports.handler = async event => {
 
     //proceed by creating user
     try {
-      const created = await createUserInCognito(email);
+      const created = await createUserInCognito(lowercaseEmail);
       const userId = created.User.Username;
 
       //confirm user (by setting fake password)
       await confirmUser(userId);
 
       //now create dynamo resource
-      await createUserInDynamo(userId, email, campaignCode);
+      await createUserInDynamo(userId, lowercaseEmail, campaignCode);
 
       try {
         //send email to to user to welcome them

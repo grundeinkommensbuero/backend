@@ -109,7 +109,10 @@ const readCsv = source => {
 const createUser = async (user, recreate = false) => {
   // AWS Cognito limits to 10 per second, which is why we use limiter
   const response = await cognitoLimiter.schedule(async () => {
-    const created = await createUserInCognito(userPoolId, user.email);
+    const created = await createUserInCognito(
+      userPoolId,
+      user.email.toLowerCase()
+    );
     console.log('new user', created);
 
     const userId = created.User.Username;
@@ -134,7 +137,7 @@ const createUserInDynamo = (userId, user) => {
     TableName: tableName,
     Item: {
       cognitoId: userId,
-      email: user.email,
+      email: user.email.toLowerCase(),
       createdAt: timestamp,
       //username and zipCode might be undefined, the key will just be
       //left out in dynamo
