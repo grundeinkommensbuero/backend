@@ -90,10 +90,10 @@ const getScansOfUser = async (user, campaignCode) => {
   };
 
   //get all lists of this user with received attribute
-  const signatureLists = await getScannedSignatureListsOfUser(userId);
+  const result = await getScannedSignatureListsOfUser(userId);
 
   // For each list push the arrays to the general array
-  for (let list of signatureLists) {
+  for (let list of result.Items) {
     // Only add scans, if the list was from the campaign
     // If no campaign is provided we want every scan
     if (

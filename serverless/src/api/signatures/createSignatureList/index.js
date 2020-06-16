@@ -326,16 +326,13 @@ const handler = async event => {
 };
 
 //function to check, if there already is a signature list for this specific day (owned by user or anonymous)
-const getSignatureList = async (
-  userId,
-  timestamp,
-  campaignCode,
-  startKey = null
-) => {
+const getSignatureList = async (userId, timestamp, campaignCode) => {
   const params = {
     TableName: signaturesTableName,
     FilterExpression:
-      'userId = :userId AND createdAt = :timestamp AND campaign.code = :campaignCode AND attribute_not_exists(fakeScannedByUser)',
+      'createdAt = :timestamp AND campaign.code = :campaignCode AND attribute_not_exists(fakeScannedByUser)',
+    IndexName: 'userIdIndex',
+    KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
       ':userId': userId,
       ':timestamp': timestamp,
@@ -343,24 +340,7 @@ const getSignatureList = async (
     },
   };
 
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-
-  //call same function again, if there is no user found, but not
-  //the whole db has been scanned
-  if (result.Count === 0 && 'LastEvaluatedKey' in result) {
-    return getSignatureList(
-      userId,
-      timestamp,
-      campaignCode,
-      result.LastEvaluatedKey
-    );
-  } else {
-    return result;
-  }
+  return ddb.query(params).promise();
 };
 
 //function to create new signature list, userId can be null (anonymous list)

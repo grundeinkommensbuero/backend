@@ -16,81 +16,36 @@ const getSignatureList = id => {
 };
 
 //function to get signature lists for this particular user
-const getSignatureListsOfUser = async (
-  userId,
-  campaignCode = null,
-  signatureLists = [],
-  startKey = null
-) => {
-  let filter;
-  let values = { ':userId': userId };
-  if (campaignCode) {
-    filter = 'userId = :userId AND campaign.code = :campaignCode';
-    values[':campaignCode'] = campaignCode;
-  } else {
-    filter = 'userId = :userId';
-  }
-
+const getSignatureListsOfUser = async (userId, campaignCode = null) => {
   const params = {
     TableName: tableName,
-    FilterExpression: filter,
-    ExpressionAttributeValues: values,
+    IndexName: 'userIdIndex',
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: { ':userId': userId },
   };
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
+
+  // If a campaign code is provided add a filter expression
+  if (campaignCode) {
+    params.FilterExpression = 'campaign.code = :campaignCode';
+    params.ExpressionAttributeValues[':campaignCode'] = campaignCode;
   }
 
-  const result = await ddb.scan(params).promise();
-  //add elements to existing array
-  signatureLists.push(...result.Items);
-
-  //call same function again, if the whole table has not been scanned yet
-  if ('LastEvaluatedKey' in result) {
-    return await getSignatureListsOfUser(
-      userId,
-      campaignCode,
-      signatureLists,
-      result.LastEvaluatedKey
-    );
-  } else {
-    //otherwise return the array
-    return signatureLists;
-  }
+  return ddb.query(params).promise();
 };
 
 // function to get all signature lists of a specific user, where there is a received
 // or scannedByUser key
-const getScannedSignatureListsOfUser = async (
-  userId,
-  signatureLists = [],
-  startKey = null
-) => {
+const getScannedSignatureListsOfUser = async userId => {
   const params = {
     TableName: tableName,
+    IndexName: 'userIdIndex',
+    KeyConditionExpression: 'userId = :userId',
     FilterExpression:
-      '(attribute_exists(received) OR attribute_exists(scannedByUser)) AND userId = :userId',
+      '(attribute_exists(received) OR attribute_exists(scannedByUser))',
     ExpressionAttributeValues: { ':userId': userId },
   };
 
-  if (startKey !== null) {
-    params.ExclusiveStartKey = startKey;
-  }
-
-  const result = await ddb.scan(params).promise();
-  //add elements to existing array
-  signatureLists.push(...result.Items);
-
-  //call same function again, if the whole table has not been scanned yet
-  if ('LastEvaluatedKey' in result) {
-    return await getScannedSignatureListsOfUser(
-      userId,
-      signatureLists,
-      result.LastEvaluatedKey
-    );
-  } else {
-    //otherwise return the array
-    return signatureLists;
-  }
+  return ddb.query(params).promise();
 };
 
 //function to get all signature lists, where there is a received key

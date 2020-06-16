@@ -26,6 +26,7 @@ describe('createSignatureList api test', () => {
 
     expect(response.status).toBeLessThan(202);
     expect(json).toHaveProperty('signatureList');
+    console.log(json);
   });
 
   it('should create a new signature list for ber via userId', async () => {
