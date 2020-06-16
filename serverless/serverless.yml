@@ -118,6 +118,14 @@ functions:
           - s3:PutObject
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::signature-lists/*'
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
 
   createSignatureListAuth:
     handler: src/api/signatures/createSignatureList/index.handler
@@ -171,6 +179,14 @@ functions:
           - s3:PutObject
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::signature-lists/*'
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
 
   updateSignatureList:
     handler: src/api/signatures/updateSignatureList/index.handler
@@ -262,6 +278,14 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
                 - 'index/emailIndex'
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
 
   getSignatureHistory:
     handler: src/api/signatures/getSignatureHistory/index.handler
@@ -591,6 +615,14 @@ functions:
           - lambda:InvokeFunction
           - lambda:InvokeAsync
         Resource: 'arn:aws:lambda:eu-central-1:550953582247:function:ubi-serverless-prod-fillPinpoint'
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
@@ -790,12 +822,24 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+        GlobalSecondaryIndexes:
+          - IndexName: userIdIndex
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+            Projection:
+              ProjectionType: 'ALL'
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
