@@ -55,7 +55,7 @@ const saveUser = ({ newsletterConsent, email, userId, referral }) => {
 
   const data = {
     cognitoId: userId,
-    email: email,
+    email: email.toLowerCase(),
     newsletterConsent: {
       value:
         // If there is no newsletter consent in the request we set it to true

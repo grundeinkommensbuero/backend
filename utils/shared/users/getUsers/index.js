@@ -150,7 +150,7 @@ const getUserByMail = async (tableName, email) => {
     TableName: tableName,
     IndexName: 'emailIndex',
     KeyConditionExpression: 'email = :email',
-    ExpressionAttributeValues: { ':email': email },
+    ExpressionAttributeValues: { ':email': email.toLowerCase() },
   };
 
   return ddb.query(params).promise();
