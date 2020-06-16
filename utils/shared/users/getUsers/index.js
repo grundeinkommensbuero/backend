@@ -37,7 +37,6 @@ const getAllCognitoUsers = async (
 ) => {
   const params = {
     UserPoolId: userPoolId,
-    Filter: 'cognito:user_status = "UNCONFIRMED"',
     PaginationToken: paginationToken,
   };
 
