@@ -5,17 +5,19 @@ const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const Bottleneck = require('bottleneck');
-const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
+const limiter = new Bottleneck({ minTime: 50, maxConcurrent: 5 });
 
 const { PROD_USERS_TABLE_NAME, PROD_USER_POOL_ID } = require('../../config');
 
 const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
   try {
+    console.log('about to get all cognito users');
     const cognitoUsers = await getAllCognitoUsers(userPoolId);
+    console.log('got all cognito users');
 
     const changedEmails = [];
     const duplicates = [];
-
+    let count = 0;
     for (let cognitoUser of cognitoUsers) {
       await limiter.schedule(async () => {
         const email = cognitoUser.Attributes[2].Value;
@@ -27,6 +29,7 @@ const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
             duplicates.push(lowercaseEmail);
           } else {
             changedEmails.push(lowercaseEmail);
+            console.log('about to change email', lowercaseEmail);
 
             try {
               await updateCognitoUser(
@@ -42,6 +45,7 @@ const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
               );
             } catch (error) {
               if (error.code === 'AliasExistsException') {
+                console.log('email could not be changed, already exists');
                 duplicates.push(lowercaseEmail);
               } else {
                 throw error;
@@ -49,6 +53,9 @@ const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
             }
           }
         }
+
+        process.stdout.write(`processed ${count} users\r`);
+        count++;
       });
     }
 
