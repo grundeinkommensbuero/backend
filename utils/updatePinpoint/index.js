@@ -17,7 +17,7 @@ const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 const updatePinpoint = async () => {
   try {
     const users = await readCsv('listen-per-post');
-
+    console.log(users.length);
     for (let user of users) {
       const result = await getUserByMail(tableName, user.email);
       if (result.Count > 0) {
@@ -59,10 +59,9 @@ const readCsv = source => {
         //leave out headers
         if (count > 0) {
           console.log('row', row);
-          if (row[10] !== '' && row[10] !== 'Beilage' && row[13] !== '') {
+          if (row[10] !== '' || row[13] !== '') {
             user = {
-              email:
-                row[10] !== '' && row[10] !== 'Beilage' ? row[10] : row[13],
+              email: row[10] !== '' ? row[10] : row[13],
             };
           }
 
