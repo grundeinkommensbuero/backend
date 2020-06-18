@@ -17,17 +17,16 @@ const functionsWithStaticFiles = [
 // We need this to only copy html and pdf files for the corresponding function.
 // Based on https://github.com/serverless-heaven/serverless-webpack/issues/425
 // We only copy the files for each corresponding function
-const CopyStaticFilesPlugin = () => ({
+const copyStaticFilesPlugin = () => ({
   apply: compiler => {
     // Get the module name off of the output path
-    const moduleName = functionsWithStaticFiles.find(moduleName =>
-      compiler.options.output.path.includes(moduleName)
+    const moduleName = functionsWithStaticFiles.find(name =>
+      compiler.options.output.path.includes(name)
     );
 
     if (moduleName) {
       console.log('module has static file dependencies:', moduleName);
       new CopyWebpackPlugin([`**/${moduleName}/**/*.pdf`]).apply(compiler);
-    } else {
     }
   },
 });
@@ -58,7 +57,7 @@ module.exports = {
   },
   stats: 'errors-warnings', // less logging
   plugins: [
-    CopyStaticFilesPlugin(),
+    copyStaticFilesPlugin(),
     // Needed to fix issue with Formidable pack (dependency of node-mailjet)
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
   ],

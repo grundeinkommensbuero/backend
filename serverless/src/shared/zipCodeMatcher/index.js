@@ -5,9 +5,9 @@ const getStateByZipCode = zipCode => {
 
   if (typeof item !== 'undefined') {
     return item.bundesland;
-  } else {
-    return undefined;
   }
+
+  return undefined;
 };
 
 const getZipCodeByCity = city => {
@@ -15,9 +15,8 @@ const getZipCodeByCity = city => {
 
   if (typeof item !== 'undefined') {
     return item.plz.toString();
-  } else {
-    return undefined;
   }
+  return undefined;
 };
 
 const getCityByZipCode = zipCode => {
@@ -26,9 +25,8 @@ const getCityByZipCode = zipCode => {
 
   if (typeof item !== 'undefined') {
     return item.ort;
-  } else {
-    return undefined;
   }
+  return undefined;
 };
 
 module.exports = { getStateByZipCode, getZipCodeByCity, getCityByZipCode };

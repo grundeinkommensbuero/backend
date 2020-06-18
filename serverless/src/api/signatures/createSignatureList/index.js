@@ -37,7 +37,7 @@ const MAIL_ATTACHMENTS = {
   'hamburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/TIPPS.pdf'),
+      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/TIPPS.pdf`),
     },
     {
       filename: 'Liste_schwarz-weiss.pdf',
@@ -49,17 +49,17 @@ const MAIL_ATTACHMENTS = {
     },
     {
       filename: 'Newsletter.pdf',
-      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/NEWSLETTER.pdf'),
+      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/NEWSLETTER.pdf`),
     },
     {
       filename: 'Gesetzestext.pdf',
-      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/GESETZ.pdf'),
+      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/GESETZ.pdf`),
     },
   ],
   'brandenburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/TIPPS.pdf'),
+      file: fs.readFileSync(`${__dirname}/pdf/brandenburg-1/TIPPS.pdf`),
     },
     {
       filename: 'Liste.pdf',
@@ -69,7 +69,7 @@ const MAIL_ATTACHMENTS = {
   'schleswig-holstein-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/TIPPS.pdf'),
+      file: fs.readFileSync(`${__dirname}/pdf/sh-1/TIPPS.pdf`),
     },
     {
       filename: 'Liste_1er_SW.pdf',
@@ -106,25 +106,25 @@ const MAIL_ATTACHMENTS = {
 const handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
-    //create a (nice to later work with) object, which campaign it is
+    // create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(requestBody.campaignCode);
 
     const date = new Date();
-    //we only want the current day (YYYY-MM-DD), then it is also easier to filter
+    // we only want the current day (YYYY-MM-DD), then it is also easier to filter
     const timestamp = date.toISOString().substring(0, 10);
 
-    //get user id from request body (might not exist, in that case we go a different route)
+    // get user id from request body (might not exist, in that case we go a different route)
     let userId;
-    //we need the email to later send the pdf
+    // we need the email to later send the pdf
     let email;
     if ('userId' in requestBody || event.pathParameters) {
       userId = requestBody.userId || event.pathParameters.userId;
 
-      //now we want to validate if the user actually exists
+      // now we want to validate if the user actually exists
       try {
         const result = await getUser(userId);
 
-        //if user does not have Item as property, there was no user found
+        // if user does not have Item as property, there was no user found
         if (!('Item' in result) || typeof result.Item === 'undefined') {
           return errorResponse(404, 'No user found with the passed user id');
         }
@@ -152,7 +152,7 @@ const handler = async event => {
       }
     } else if ('email' in requestBody) {
       email = requestBody.email;
-      //in case the api only got the email instead of the id we need to get the user id from the db
+      // in case the api only got the email instead of the id we need to get the user id from the db
       try {
         const result = await getUserByMail(email);
         console.log('result after getting user by mail', result);
@@ -179,8 +179,8 @@ const handler = async event => {
       userId = 'anonymous';
     }
 
-    //in does not matter, if the user is anonymous or not...
-    //now we check, if there already is an entry for the list for this day
+    // in does not matter, if the user is anonymous or not...
+    // now we check, if there already is an entry for the list for this day
     const foundSignatureLists = await getSignatureList(
       userId,
       timestamp,
@@ -191,15 +191,15 @@ const handler = async event => {
       foundSignatureLists.Count !== 0 &&
       !foundSignatureLists.Items[0].manually
     ) {
-      //if there was a signature list for this day found
-      //we want to update the downloads counter and send the list id and the url to the pdf as response
-      const signatureList = foundSignatureLists.Items[0]; //we definitely only have one value (per user/day)
+      // if there was a signature list for this day found
+      // we want to update the downloads counter and send the list id and the url to the pdf as response
+      const signatureList = foundSignatureLists.Items[0]; // we definitely only have one value (per user/day)
       console.log('signature list', signatureList);
       try {
-        //update list entry to increment the download count
+        // update list entry to increment the download count
         await incrementDownloads(signatureList.id, signatureList.downloads);
 
-        //after the signature list was successfully updated we return it (id and url to pdf)
+        // after the signature list was successfully updated we return it (id and url to pdf)
         return {
           statusCode: 200,
           headers: responseHeaders,
@@ -215,10 +215,10 @@ const handler = async event => {
         return errorResponse(500, 'Error while updating list entry', error);
       }
     } else {
-      //if there was no signature list with the user as "owner" found
-      //we are going to create a new one
+      // if there was no signature list with the user as "owner" found
+      // we are going to create a new one
 
-      //because the id is quite small we need to check if the newly created one already exists (unlikely)
+      // because the id is quite small we need to check if the newly created one already exists (unlikely)
       let idExists = true;
       let pdfId;
 
@@ -229,8 +229,8 @@ const handler = async event => {
       }
 
       try {
-        //we are going to generate the pdf
-        let currentMillis = new Date().getTime();
+        // we are going to generate the pdf
+        const currentMillis = new Date().getTime();
 
         const qrCodeUrl = qrCodeUrls[campaign.state]
           ? qrCodeUrls[campaign.state]
@@ -247,14 +247,14 @@ const handler = async event => {
           new Date().getTime() - currentMillis
         );
 
-        //upload pdf to s3 after generation was successful
+        // upload pdf to s3 after generation was successful
         const uploadResult = await uploadPDF(pdfId, generatedPdfCombined);
         console.log('success uploading pdf to bucket', uploadResult);
         const url = uploadResult.Location;
 
         try {
-          //if the upload process was successful, we create the list entry in the db
-          //userId might be 'anonymous'
+          // if the upload process was successful, we create the list entry in the db
+          // userId might be 'anonymous'
           const promises = [
             createSignatureList(
               pdfId,
@@ -276,7 +276,7 @@ const handler = async event => {
           await Promise.all(promises);
 
           try {
-            //if the download was not anonymous send a mail with the attached pdf
+            // if the download was not anonymous send a mail with the attached pdf
             if (userId !== 'anonymous') {
               const attachments = await generateAttachments(
                 MAIL_ATTACHMENTS[requestBody.campaignCode],
@@ -292,7 +292,7 @@ const handler = async event => {
               statusCode: 201,
               headers: responseHeaders,
               body: JSON.stringify({
-                signatureList: { id: pdfId, url: url },
+                signatureList: { id: pdfId, url },
                 message:
                   'There was no signature list of this user, created new pdf and uploaded it',
               }),
@@ -325,7 +325,7 @@ const handler = async event => {
   }
 };
 
-//function to check, if there already is a signature list for this specific day (owned by user or anonymous)
+// function to check, if there already is a signature list for this specific day (owned by user or anonymous)
 const getSignatureList = async (userId, timestamp, campaignCode) => {
   const params = {
     TableName: signaturesTableName,
@@ -343,7 +343,7 @@ const getSignatureList = async (userId, timestamp, campaignCode) => {
   return ddb.query(params).promise();
 };
 
-//function to create new signature list, userId can be null (anonymous list)
+// function to create new signature list, userId can be null (anonymous list)
 const createSignatureList = (
   id,
   timestamp,
@@ -356,13 +356,13 @@ const createSignatureList = (
   const params = {
     TableName: signaturesTableName,
     Item: {
-      id: id,
+      id,
       pdfUrl: url,
       downloads: 1,
-      campaign: campaign,
+      campaign,
       createdAt: timestamp,
       mailMissing,
-      manually: manually,
+      manually,
     },
   };
 
@@ -374,19 +374,19 @@ const createSignatureList = (
   return ddb.put(params).promise();
 };
 
-//updates entry in signature lists db to increment the download (the current download count is passed)
+// updates entry in signature lists db to increment the download (the current download count is passed)
 const incrementDownloads = (id, downloads) => {
   downloads++;
   const params = {
     TableName: signaturesTableName,
-    Key: { id: id },
+    Key: { id },
     UpdateExpression: 'SET downloads = :downloads',
     ExpressionAttributeValues: { ':downloads': downloads },
   };
   return ddb.update(params).promise();
 };
 
-//uploads pdf to s3 bucket
+// uploads pdf to s3 bucket
 const uploadPDF = (id, pdf) => {
   return s3
     .upload({

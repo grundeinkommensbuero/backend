@@ -1,6 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const { authenticate } = require('../../../testUtils');
 const fetch = require('node-fetch');
+
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
@@ -16,8 +17,8 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: userId,
-        campaignCode: `schleswig-holstein-1`,
+        userId,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -34,8 +35,8 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: userId,
-        campaignCode: `berlin-1`,
+        userId,
+        campaignCode: 'berlin-1',
       }),
     };
 
@@ -51,8 +52,8 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: userId,
-        campaignCode: `brandenburg-1`,
+        userId,
+        campaignCode: 'brandenburg-1',
       }),
     };
 
@@ -69,7 +70,7 @@ describe('createSignatureList api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         email: 'vali_schagerl@web.de',
-        campaignCode: `brandenburg-1`,
+        campaignCode: 'brandenburg-1',
       }),
     };
 
@@ -85,7 +86,7 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        campaignCode: `schleswig-holstein-1`,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -102,7 +103,7 @@ describe('createSignatureList api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         userId: '123456789',
-        campaignCode: `schleswig-holstein-1`,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -117,7 +118,7 @@ describe('createSignatureList api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         email: 'wrongMail@web.de',
-        campaignCode: `schleswig-holstein-1`,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -134,7 +135,7 @@ describe('createSignatureList api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        campaignCode: `schleswig-holstein-1`,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -158,7 +159,7 @@ describe('createSignatureList api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        campaignCode: `schleswig-holstein-1`,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 
@@ -175,7 +176,7 @@ describe('createSignatureList api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        campaignCode: `schleswig-holstein-1`,
+        campaignCode: 'schleswig-holstein-1',
       }),
     };
 

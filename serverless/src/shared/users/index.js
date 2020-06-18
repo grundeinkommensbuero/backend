@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
@@ -32,7 +33,7 @@ const getUserByMail = async (email, startKey = null) => {
   return ddb.query(params).promise();
 };
 
-//function to get all users from dynamo
+// function to get all users from dynamo
 const getAllUsers = async (users = [], startKey = null) => {
   const params = {
     TableName: tableName,
@@ -44,16 +45,16 @@ const getAllUsers = async (users = [], startKey = null) => {
 
   const result = await ddb.scan(params).promise();
 
-  //add elements to existing array
+  // add elements to existing array
   users.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getAllUsers(users, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
+  } 
+    // otherwise return the array
     return users;
-  }
+  
 };
 
 // Checks, if the user is part of the unverified cognito users
@@ -61,8 +62,8 @@ const getAllUsers = async (users = [], startKey = null) => {
 const isVerified = (user, unverifiedCognitoUsers) => {
   let verified = true;
 
-  for (let cognitoUser of unverifiedCognitoUsers) {
-    //sub is the first attribute
+  for (const cognitoUser of unverifiedCognitoUsers) {
+    // sub is the first attribute
     if (user.cognitoId === cognitoUser.Attributes[0].Value) {
       verified = false;
     }
@@ -81,9 +82,9 @@ const getAllUnverifiedCognitoUsers = async (
     PaginationToken: paginationToken,
   };
 
-  let data = await cognito.listUsers(params).promise();
+  const data = await cognito.listUsers(params).promise();
 
-  //add elements of user array
+  // add elements of user array
   unverifiedCognitoUsers.push(...data.Users);
 
   if ('PaginationToken' in data) {
@@ -91,9 +92,9 @@ const getAllUnverifiedCognitoUsers = async (
       unverifiedCognitoUsers,
       data.PaginationToken
     );
-  } else {
+  } 
     return unverifiedCognitoUsers;
-  }
+  
 };
 
 const getCognitoUser = userId => {

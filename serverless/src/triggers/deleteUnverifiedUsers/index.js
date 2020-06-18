@@ -1,8 +1,10 @@
 const AWS = require('aws-sdk');
 const Bottleneck = require('bottleneck');
+const { getAllUnverifiedCognitoUsers } = require('../../shared/users');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
-const { getAllUnverifiedCognitoUsers } = require('../../shared/users');
+
 const tableName = process.env.USERS_TABLE_NAME;
 const userPoolId = process.env.USER_POOL_ID;
 
@@ -15,15 +17,16 @@ module.exports.handler = async event => {
     return event;
   } catch (error) {
     console.log('error while deleting unconfirmed users', error);
+    return event;
   }
 };
 
 const deleteUsers = async () => {
-  //get all users, which are not verified from user pool
+  // get all users, which are not verified from user pool
   const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
 
-  //filter users to check if the creation of the user was more than
-  //x days ago
+  // filter users to check if the creation of the user was more than
+  // x days ago
   const date = new Date();
   const tenDays = 10 * 24 * 60 * 60 * 1000;
   const filteredUsers = unverifiedCognitoUsers.filter(
@@ -35,7 +38,7 @@ const deleteUsers = async () => {
     filteredUsers.length
   );
 
-  for (let user of filteredUsers) {
+  for (const user of filteredUsers) {
     try {
       await limiter.schedule(async () => {
         await deleteUserInCognito(user);
@@ -50,9 +53,9 @@ const deleteUsers = async () => {
 
 const deleteUserInCognito = user => {
   console.log('deleting user in cognito', user.Username);
-  var params = {
+  const params = {
     UserPoolId: userPoolId,
-    Username: user.Username, //Username is the id of cognito
+    Username: user.Username, // Username is the id of cognito
   };
 
   return cognito.adminDeleteUser(params).promise();
@@ -63,7 +66,7 @@ const deleteUserInDynamo = user => {
   const params = {
     TableName: tableName,
     Key: {
-      cognitoId: user.Username, //Username is the id of cognito
+      cognitoId: user.Username, // Username is the id of cognito
     },
   };
 

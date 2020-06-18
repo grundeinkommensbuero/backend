@@ -4,14 +4,14 @@ module.exports.analyseSignatureLists = async () => {
   const signatureLists = await getAllSignatureLists();
   const stats = {};
 
-  //loop through lists to compute stats
-  for (let list of signatureLists) {
+  // loop through lists to compute stats
+  for (const list of signatureLists) {
     if (!list.fakeScannedByUser) {
       const campaign = list.campaign.code;
 
-      //check if campaign is already in stats
+      // check if campaign is already in stats
       if (!(campaign in stats)) {
-        //initialize object for this campaign
+        // initialize object for this campaign
         stats[campaign] = {
           total: {
             lists: 0,

@@ -2,17 +2,17 @@ module.exports.errorResponse = (statusCode, message, error = null) => {
   let body;
   if (error !== null) {
     body = JSON.stringify({
-      message: message,
-      error: error,
+      message,
+      error,
     });
   } else {
     body = JSON.stringify({
-      message: message,
+      message,
     });
   }
   return {
-    statusCode: statusCode,
-    body: body,
+    statusCode,
+    body,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',

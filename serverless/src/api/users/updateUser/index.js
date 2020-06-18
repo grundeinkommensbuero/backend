@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
@@ -20,20 +21,20 @@ module.exports.handler = async event => {
     }
 
     try {
-      //check if there is a user with the passed user id
+      // check if there is a user with the passed user id
       const { userId } = event.pathParameters;
       const result = await getUser(userId);
 
       console.log('user', result);
 
-      //if user does not have Item as property, there was no user found
+      // if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
       await saveUser(userId, requestBody.newsletterConsent);
 
-      //updating user was successful, return appropriate json
+      // updating user was successful, return appropriate json
       return {
         statusCode: 204,
         headers: {
@@ -62,7 +63,7 @@ const isAuthorized = event => {
   );
 };
 
-saveUser = (userId, newsletterConsent) => {
+const saveUser = (userId, newsletterConsent) => {
   const timestamp = new Date().toISOString();
 
   const data = {
@@ -70,7 +71,7 @@ saveUser = (userId, newsletterConsent) => {
       value:
         // If there is no newsletter consent in the request we set it to true
         typeof newsletterConsent !== 'undefined' ? newsletterConsent : true,
-      timestamp: timestamp,
+      timestamp,
     },
     ':updatedAt': timestamp,
   };

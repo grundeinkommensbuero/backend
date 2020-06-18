@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const randomBytes = require('crypto').randomBytes;
-const sendMail = require('./sendMail');
+// const sendMail = require('./sendMail');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
 const { getUserByMail } = require('../../../shared/users');
@@ -19,12 +19,12 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    //get email from body,
+    // get email from body,
     const { email, campaignCode } = JSON.parse(event.body);
 
     const lowercaseEmail = email.toLowerCase();
 
-    //if the listId is somehow undefined or null return error
+    // if the listId is somehow undefined or null return error
     if (typeof email === 'undefined' || typeof campaignCode === 'undefined') {
       return errorResponse(
         400,
@@ -32,19 +32,19 @@ module.exports.handler = async event => {
       );
     }
 
-    //proceed by creating user
+    // proceed by creating user
     try {
       const created = await createUserInCognito(lowercaseEmail);
       const userId = created.User.Username;
 
-      //confirm user (by setting fake password)
+      // confirm user (by setting fake password)
       await confirmUser(userId);
 
-      //now create dynamo resource
+      // now create dynamo resource
       await createUserInDynamo(userId, lowercaseEmail, campaignCode);
 
       try {
-        //send email to to user to welcome them
+        // send email to to user to welcome them
         // TODO: reactivate sending of email
         // await sendMail(email, campaignCode, userId);
 
@@ -62,7 +62,7 @@ module.exports.handler = async event => {
     } catch (error) {
       console.log('error', error);
 
-      //user already exists
+      // user already exists
       if (error.code === 'UsernameExistsException') {
         try {
           const result = await getUserByMail(email);
@@ -75,18 +75,20 @@ module.exports.handler = async event => {
               'User already exists and has newsletter consent true',
               error
             );
-          } else {
-            // if not, we want to update the user
-            await updateNewsletterConsent(user.cognitoId);
-
-            return errorResponse(
-              200,
-              'User already exists, but had newsletter consent false',
-              error
-            );
           }
-        } catch (error) {
-          console.log('Error while (maybe) updating newsletter consent', error);
+          // if not, we want to update the user
+          await updateNewsletterConsent(user.cognitoId);
+
+          return errorResponse(
+            200,
+            'User already exists, but had newsletter consent false',
+            error
+          );
+        } catch (newsletterError) {
+          console.log(
+            'Error while (maybe) updating newsletter consent',
+            newsletterError
+          );
           return errorResponse(
             500,
             'Error while (maybe) updating newsletter consent',
@@ -95,7 +97,7 @@ module.exports.handler = async event => {
         }
       }
 
-      //invalid email
+      // invalid email
       if (error.code === 'InvalidParameterException') {
         return errorResponse(400, 'Invalid email', error);
       }
@@ -108,7 +110,7 @@ module.exports.handler = async event => {
   }
 };
 
-//Create a new cognito user in our user pool
+// Create a new cognito user in our user pool
 const createUserInCognito = email => {
   const params = {
     UserPoolId: userPoolId,
@@ -123,7 +125,7 @@ const createUserInCognito = email => {
         Value: email,
       },
     ],
-    MessageAction: 'SUPPRESS', //we don't want to send an "invitation mail"
+    MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
   };
   return cognito.adminCreateUser(params).promise();
 };
@@ -135,7 +137,7 @@ const createUserInDynamo = (userId, email, campaignCode) => {
     TableName: usersTableName,
     Item: {
       cognitoId: userId,
-      email: email,
+      email,
       createdAt: timestamp,
       newsletterConsent: {
         value: true,
@@ -143,7 +145,7 @@ const createUserInDynamo = (userId, email, campaignCode) => {
       },
       migrated: {
         source: 'offline',
-        //create a (nice to later work with) object, which campaign it is
+        // create a (nice to later work with) object, which campaign it is
         campaign: constructCampaignId(campaignCode),
       },
     },
@@ -156,7 +158,7 @@ const updateNewsletterConsent = userId => {
 
   const newsletterConsent = {
     value: true,
-    timestamp: timestamp,
+    timestamp,
   };
 
   const params = {
@@ -171,8 +173,8 @@ const updateNewsletterConsent = userId => {
   return ddb.update(params).promise();
 };
 
-//confirm user by setting a random password
-//(need to do it this way, because user is in state force_reset_password)
+// confirm user by setting a random password
+// (need to do it this way, because user is in state force_reset_password)
 const confirmUser = userId => {
   const password = getRandomString(20);
   const setPasswordParams = {
@@ -181,7 +183,7 @@ const confirmUser = userId => {
     Password: password,
     Permanent: true,
   };
-  //set fake password to confirm user
+  // set fake password to confirm user
   return cognito.adminSetUserPassword(setPasswordParams).promise();
 };
 

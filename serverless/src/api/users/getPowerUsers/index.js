@@ -17,14 +17,14 @@ module.exports.handler = async event => {
         ? event.queryStringParameters.minimum
         : defaultSignaturesMininmum;
 
-    //user object will contain signature count for a specific user id
+    // user object will contain signature count for a specific user id
     const usersMap = {};
 
     const signatureLists = await getScannedSignatureLists();
 
     // For each list sum up the received and scanned by user signatures
 
-    for (let list of signatureLists) {
+    for (const list of signatureLists) {
       if (list.userId !== 'anonymous') {
         // Intiailize object in map
         if (!(list.userId in usersMap)) {
@@ -40,18 +40,18 @@ module.exports.handler = async event => {
         }
 
         if ('received' in list) {
-          for (let scan of list.received) {
+          for (const scan of list.received) {
             usersMap[list.userId].signatureCount[
               list.campaign.code
-            ].received += parseInt(scan.count);
+            ].received += parseInt(scan.count, 10);
           }
         }
 
         if ('scannedByUser' in list) {
-          for (let scan of list.scannedByUser) {
+          for (const scan of list.scannedByUser) {
             usersMap[list.userId].signatureCount[
               list.campaign.code
-            ].scannedByUser += parseInt(scan.count);
+            ].scannedByUser += parseInt(scan.count, 10);
           }
         }
       }
@@ -61,7 +61,7 @@ module.exports.handler = async event => {
     const powerUsers = computePowerUsers(usersMap, signaturesMinimum);
 
     // For every power user make call to db to get email etc
-    for (let user of powerUsers) {
+    for (const user of powerUsers) {
       const result = await getUser(user.userId);
 
       // user might not exist anymore because he*she was deleted
@@ -95,13 +95,15 @@ module.exports.handler = async event => {
 const computePowerUsers = (usersMap, signaturesMinimum) => {
   const powerUsers = [];
 
-  for (let userId in usersMap) {
-    const user = usersMap[userId];
+  for (const userId in usersMap) {
+    if (Object.prototype.hasOwnProperty.call(usersMap, userId)) {
+      const user = usersMap[userId];
 
-    // Only add user to power users if he*she had at least x signatures for one campaign
-    if (isPowerUser(user, signaturesMinimum)) {
-      user.userId = userId;
-      powerUsers.push(user);
+      // Only add user to power users if he*she had at least x signatures for one campaign
+      if (isPowerUser(user, signaturesMinimum)) {
+        user.userId = userId;
+        powerUsers.push(user);
+      }
     }
   }
 
@@ -115,7 +117,7 @@ const isPowerUser = (user, signaturesMinimum) => {
   let returnValue = false;
 
   // Iterate over keys in signatureCount and check if one campaign is more than minimum
-  for (let campaign in user.signatureCount) {
+  for (const campaign in user.signatureCount) {
     if (
       user.signatureCount[campaign].received > signaturesMinimum ||
       user.signatureCount[campaign].scannedByUser > signaturesMinimum

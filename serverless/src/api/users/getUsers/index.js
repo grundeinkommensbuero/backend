@@ -43,9 +43,9 @@ module.exports.handler = async event => {
           isBase64Encoded: false,
         };
       }
-    } else {
-      return errorResponse(400, 'No query params provided');
     }
+
+    return errorResponse(400, 'No query params provided');
   } catch (error) {
     console.log('Error getting users', error);
     return errorResponse(500, 'Error while getting users', error);

@@ -1,5 +1,6 @@
 const crypto = require('crypto-secure-random-digit');
 const AWS = require('aws-sdk');
+
 const ses = new AWS.SES();
 
 const htmlMail = require('./loginEmail.html').default;

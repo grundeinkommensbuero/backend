@@ -1,6 +1,7 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
+
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const uuid = require('uuid/v4');
 
@@ -43,7 +44,7 @@ describe('createUser api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: userId,
+        userId,
         email: 'vali_schagerl@web.de',
         referral: 'test-referral',
       }),

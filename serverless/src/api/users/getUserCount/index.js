@@ -6,7 +6,7 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-module.exports.handler = async event => {
+module.exports.handler = async () => {
   try {
     const stats = await analyseUsers();
 
