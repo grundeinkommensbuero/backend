@@ -1,19 +1,14 @@
-const AWS = require('aws-sdk');
-const tableName = process.env.USERS_TABLE_NAME;
-
 const htmlMail = require('./mailTemplate.html').default;
-
-const ddb = new AWS.DynamoDB.DocumentClient();
 
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo
-module.exports.handler = async (event) => {
+module.exports.handler = async event => {
   // Identify why was this function invoked
   if (event.triggerSource === 'CustomMessage_SignUp') {
     const { email } = event.request.userAttributes;
     const { codeParameter } = event.request;
 
-    //customize email
+    // customize email
     event.response.emailSubject =
       'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
     event.response.emailMessage = customEmail(email, codeParameter);
@@ -22,7 +17,7 @@ module.exports.handler = async (event) => {
   } else if (event.triggerSource === 'CustomMessage_ResendCode') {
     const { email, codeParameter } = event.request.userAttributes;
 
-    //customize email
+    // customize email
     event.response.emailSubject =
       'Volksabstimmung Grundeinkommensexperiment: Bitte bestätige deine E-Mail-Adresse!';
     event.response.emailMessage = customReminderEmail(email, codeParameter);

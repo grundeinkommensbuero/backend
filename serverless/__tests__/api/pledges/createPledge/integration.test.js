@@ -1,9 +1,9 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
-const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const uuid = require('uuid/v4');
-const userWithoutConsentId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
+
+const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 
 describe('createPledge api test', () => {
   it('should create a new pledge/new user', async () => {
@@ -33,9 +33,9 @@ describe('createPledge api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: userId,
+        userId,
         email: 'vali_schagerl@web.de',
-        pledgeId: `schleswig-holstein-1`,
+        pledgeId: 'schleswig-holstein-1',
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',
@@ -55,7 +55,7 @@ describe('createPledge api test', () => {
       body: JSON.stringify({
         userId: uuid(),
         email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
-        pledgeId: `general-1`,
+        pledgeId: 'general-1',
         message:
           'Ich habe eine ganz spezielle Frage an euch! Was macht ihr so am Wochenende?',
         zipCode: '72074',

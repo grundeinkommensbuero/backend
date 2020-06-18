@@ -44,16 +44,15 @@ module.exports = async function generatePdf(
 
   if (format === 'PDFDOC') {
     return pdfDoc;
-  } else {
-    const pdfBytes = await pdfDoc.save();
-    return pdfBytes;
   }
+
+  return await pdfDoc.save();
 };
 
 function getBarcode(text) {
   return bwipjs.toBuffer({
     bcid: 'code128',
-    text: text,
+    text,
     scale: 3,
     height: 10,
     includetext: true,
@@ -64,7 +63,7 @@ function getBarcode(text) {
 function getQrCode(text) {
   return bwipjs.toBuffer({
     bcid: 'qrcode',
-    text: text,
+    text,
     scale: 3,
     height: 100,
     width: 100,

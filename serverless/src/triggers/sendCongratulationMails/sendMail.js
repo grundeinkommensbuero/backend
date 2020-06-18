@@ -17,8 +17,8 @@ const STATES = {
   bremen: 'Bremen',
 };
 
-//Function which sends an email to congratulate for the reception of list(s)
-//gets a user object, which is why we destructure the object
+// Function which sends an email to congratulate for the reception of list(s)
+// gets a user object, which is why we destructure the object
 const sendMail = (
   { email, username, userId, dailyCount, totalCount, campaign },
   totalCountForAllUsers
@@ -45,7 +45,7 @@ const sendMail = (
         },
         // TemplateErrorDeliver: true,
         Variables: {
-          username: username ? username : '',
+          username: username || '',
           dailyCount,
           totalCount,
           totalCountGreater5: totalCount > 5,

@@ -1,4 +1,5 @@
 const { getAllSignatureLists } = require('../../../shared/signatures');
+
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
 
   const stats = {};
 
-  for (let list of signatureLists) {
+  for (const list of signatureLists) {
     if (!(list.campaign.code in stats)) {
       stats[list.campaign.code] = {
         history: {},
@@ -68,7 +69,7 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
     // Count scans
 
     if ('scannedByUser' in list) {
-      for (let scan of list.scannedByUser) {
+      for (const scan of list.scannedByUser) {
         // we have to bring the date into the same format (UNIX time) as now
         const timestamp = Date.parse(scan.timestamp);
 
@@ -97,7 +98,7 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
     }
 
     if ('received' in list) {
-      for (let scan of list.received) {
+      for (const scan of list.received) {
         // we have to bring the date into the same format (UNIX time) as now
         const timestamp = Date.parse(scan.timestamp);
 
@@ -124,45 +125,51 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
 };
 
 const cleanAndSortStats = stats => {
-  for (let campaign in stats) {
-    const historyArray = [];
+  for (const campaign in stats) {
+    if (Object.prototype.hasOwnProperty.call(stats, campaign)) {
+      const historyArray = [];
 
-    // Transform the object into an array
-    for (let day in stats[campaign].history) {
-      const dayObject = {
-        day,
-      };
+      // Transform the object into an array
+      for (const day in stats[campaign].history) {
+        if (
+          Object.prototype.hasOwnProperty.call(stats[campaign].history, day)
+        ) {
+          const dayObject = {
+            day,
+          };
 
-      if ('downloads' in stats[campaign].history[day]) {
-        dayObject.downloads = stats[campaign].history[day].downloads;
+          if ('downloads' in stats[campaign].history[day]) {
+            dayObject.downloads = stats[campaign].history[day].downloads;
+          }
+
+          if ('usersWhoScanned' in stats[campaign].history[day]) {
+            dayObject.usersWhoScanned =
+              stats[campaign].history[day].usersWhoScanned.size;
+          }
+
+          if ('received' in stats[campaign].history[day]) {
+            dayObject.received = stats[campaign].history[day].received;
+          }
+
+          if ('scanned' in stats[campaign].history[day]) {
+            dayObject.scanned = stats[campaign].history[day].scanned;
+          }
+
+          if ('scannedLists' in stats[campaign].history[day]) {
+            dayObject.scannedLists =
+              stats[campaign].history[day].scannedLists.size;
+          }
+
+          historyArray.push(dayObject);
+        }
       }
+      // Sort the array (earliest first)
+      historyArray.sort(
+        (element1, element2) => new Date(element1.day) - new Date(element2.day)
+      );
 
-      if ('usersWhoScanned' in stats[campaign].history[day]) {
-        dayObject.usersWhoScanned =
-          stats[campaign].history[day].usersWhoScanned.size;
-      }
-
-      if ('received' in stats[campaign].history[day]) {
-        dayObject.received = stats[campaign].history[day].received;
-      }
-
-      if ('scanned' in stats[campaign].history[day]) {
-        dayObject.scanned = stats[campaign].history[day].scanned;
-      }
-
-      if ('scannedLists' in stats[campaign].history[day]) {
-        dayObject.scannedLists = stats[campaign].history[day].scannedLists.size;
-      }
-
-      historyArray.push(dayObject);
+      stats[campaign] = historyArray;
     }
-
-    // Sort the array (earliest first)
-    historyArray.sort(
-      (element1, element2) => new Date(element1.day) - new Date(element2.day)
-    );
-
-    stats[campaign] = historyArray;
   }
 
   return stats;

@@ -1,5 +1,6 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
+
 const listId = '7525800';
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const email = 'vali_schagerl@web.de';
@@ -58,7 +59,7 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: 11,
-        userId: userId,
+        userId,
         campaignCode: 'schleswig-holstein-1',
       }),
     };
@@ -92,7 +93,7 @@ describe('updateSignatureList by user api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         count: 11,
-        email: email,
+        email,
         campaignCode: 'schleswig-holstein-1',
       }),
     };

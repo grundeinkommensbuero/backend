@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const generatePdf = require('./createPDF');
+// const generatePdf = require('./createPDF');
 const createPDFLetter = require('./createPDFLetter');
 
 const CODE = '0123456789';

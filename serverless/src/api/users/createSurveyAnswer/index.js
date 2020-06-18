@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
@@ -29,7 +30,7 @@ module.exports.handler = async event => {
 
       // Check if this survey has already been answered
       if ('surveys' in user) {
-        for (let survey of user.surveys) {
+        for (const survey of user.surveys) {
           if (survey.code === requestBody.surveyCode) {
             return errorResponse(401, 'Cannot answer same survey twice');
           }
@@ -61,7 +62,7 @@ const validateParams = (body, pathParameters) => {
   return 'userId' in pathParameters && 'surveyCode' in body && 'answer' in body;
 };
 
-saveUser = (userId, { answer, surveyCode }) => {
+const saveUser = (userId, { answer, surveyCode }) => {
   const timestamp = new Date().toISOString();
 
   const data = {

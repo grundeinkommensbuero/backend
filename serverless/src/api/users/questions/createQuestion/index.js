@@ -1,7 +1,9 @@
 const AWS = require('aws-sdk');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../../shared/users');
 const { errorResponse } = require('../../../../shared/apiResponse');
+
 const tableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
@@ -11,8 +13,8 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    //get user id from path parameter
-    let userId = event.pathParameters.userId;
+    // get user id from path parameter
+    const userId = event.pathParameters.userId;
 
     const { question, zipCode, username } = JSON.parse(event.body);
 
@@ -23,13 +25,13 @@ module.exports.handler = async event => {
     const timestamp = new Date().toISOString();
     try {
       const result = await getUser(userId);
-      //if user does not have Item as property, there was no user found
+      // if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
       try {
-        //otherwise proceed
+        // otherwise proceed
         await updateUser(userId, question, timestamp, zipCode, username);
 
         // return message (no content)

@@ -13,12 +13,12 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    //get user id from auth token
+    // get user id from auth token
     const userId = event.requestContext.authorizer.claims.sub;
 
     const result = await getUser(userId);
 
-    //if user does not have Item as property, there was no user found
+    // if user does not have Item as property, there was no user found
     if (!('Item' in result) || typeof result.Item === 'undefined') {
       return errorResponse(404, 'No user found with the passed user id');
     }

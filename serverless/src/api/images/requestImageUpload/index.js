@@ -1,9 +1,10 @@
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
 const uuid = require('uuid/v4');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getFileSuffix } = require('../../../shared/utils');
+
+const s3 = new AWS.S3();
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -27,7 +28,7 @@ module.exports.handler = async event => {
       const { userId, contentType } = requestBody;
       const result = await getUser(userId);
 
-      //if user does not have Item as property, there was no user found
+      // if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
         return errorResponse(404, 'No user found with the passed user id');
       }

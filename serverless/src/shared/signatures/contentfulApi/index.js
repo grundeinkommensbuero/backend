@@ -2,6 +2,7 @@
 // https://github.com/bitinn/node-fetch/issues/450
 const fetch = require('node-fetch').default;
 const { accessToken, spaceId } = require('../../../../contentfulConfig');
+
 const campaigns = {
   'schleswig-holstein-1': 'JH4OhoEW7AMcnrL6zLhXu',
   'brandenburg-1': 'JrA0oRRv0IvBq6KFR0HAY',
@@ -21,8 +22,10 @@ module.exports.getSignatureCountFromContentful = async () => {
   // Get the signature counts from contentful for each campaign
   const promises = [];
 
-  for (let campaign in campaigns) {
-    promises.push(makeApiCall(campaign, contentfulCounts));
+  for (const campaign in campaigns) {
+    if (Object.prototype.hasOwnProperty.call(campaigns, campaign)) {
+      promises.push(makeApiCall(campaign, contentfulCounts));
+    }
   }
 
   await Promise.all(promises);
@@ -37,7 +40,7 @@ const makeApiCall = async (campaign, contentfulCounts) => {
     requestParams
   );
 
-  //parse result to json
+  // parse result to json
   const json = await result.json();
 
   contentfulCounts[campaign] = {

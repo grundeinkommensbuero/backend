@@ -32,14 +32,13 @@ const MAPPING = {
   },
 };
 
-const CAMPAIGN_CODE = 'brandenburg-1';
 const PATH = './Ergebnisse Briefaktion.csv';
 
 const createListManually = async (userId, user) => {
-  //we only want the current day (YYYY-MM-DD), then it is also easier to filter
+  // we only want the current day (YYYY-MM-DD), then it is also easier to filter
   const timestamp = new Date().toISOString().substring(0, 10);
 
-  let lists = [];
+  const lists = [];
   let isDuplex = false;
 
   if (user.countB > 0) {
@@ -68,7 +67,7 @@ const createListManually = async (userId, user) => {
     needsMailMissingAddition: mailMissing,
   });
 
-  for (let list of lists) {
+  for (const list of lists) {
     await createSignatureList(
       list.code,
       timestamp,
@@ -92,7 +91,7 @@ const createListManually = async (userId, user) => {
 };
 
 const constructListConfig = async (campaignCode, count) => {
-  //because the id is quite small we need to check if the newly created one already exists (unlikely)
+  // because the id is quite small we need to check if the newly created one already exists (unlikely)
   let idExists = true;
   let pdfId;
 
@@ -112,14 +111,14 @@ const processCsv = async () => {
   try {
     const users = await readCsv();
     console.log('users length', users.length);
-    for (let user of users) {
+    for (const user of users) {
       // Get userId of user
       const result = await getUserByMail(user.email);
 
       if (result.Count === 0) {
         throw new Error(`no user found with that email ${user.email}`);
       } else {
-        userId = result.Items[0].cognitoId;
+        const userId = result.Items[0].cognitoId;
 
         // Create signature list
         await createListManually(userId, user);
@@ -130,8 +129,8 @@ const processCsv = async () => {
   }
 };
 
-//reads and parses the csv file and returns a promise containing
-//an array of the users
+// reads and parses the csv file and returns a promise containing
+// an array of the users
 const readCsv = () => {
   return new Promise(resolve => {
     const users = [];
@@ -141,7 +140,7 @@ const readCsv = () => {
       .pipe(parse({ delimiter: ',' }))
       .on('data', row => {
         let user;
-        //leave out headers
+        // leave out headers
         if (count > 0) {
           user = {
             address: {
@@ -153,19 +152,19 @@ const readCsv = () => {
             email: row[12] !== '' ? row[12] : row[9],
             countB:
               row[MAPPING['berlin-1'].COUNT_INDEX] !== ''
-                ? parseInt(row[MAPPING['berlin-1'].COUNT_INDEX])
+                ? parseInt(row[MAPPING['berlin-1'].COUNT_INDEX], 10)
                 : 0,
             countSH:
               row[MAPPING['schleswig-holstein-1'].COUNT_INDEX] !== ''
-                ? parseInt(row[MAPPING['schleswig-holstein-1'].COUNT_INDEX])
+                ? parseInt(row[MAPPING['schleswig-holstein-1'].COUNT_INDEX], 10)
                 : 0,
             countBB:
               row[MAPPING['brandenburg-1'].COUNT_INDEX] !== ''
-                ? parseInt(row[MAPPING['brandenburg-1'].COUNT_INDEX])
+                ? parseInt(row[MAPPING['brandenburg-1'].COUNT_INDEX], 10)
                 : 0,
             countHH:
               row[MAPPING['hamburg-1'].COUNT_INDEX] !== ''
-                ? parseInt(row[MAPPING['hamburg-1'].COUNT_INDEX])
+                ? parseInt(row[MAPPING['hamburg-1'].COUNT_INDEX], 10)
                 : 0,
             needsEnvelope: row[19].startsWith('Ja'),
           };

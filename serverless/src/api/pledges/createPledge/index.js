@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
 const { constructCampaignId } = require('../../../shared/utils');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
+const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -20,11 +20,11 @@ module.exports.handler = async event => {
       try {
         const { userId } = requestBody;
 
-        //check if there is a user with the passed user id
+        // check if there is a user with the passed user id
         const result = await getUser(userId);
 
         console.log('user', result);
-        //if user has Item as property, a user was found and therefore already exists
+        // if user has Item as property, a user was found and therefore already exists
         if ('Item' in result) {
           return errorResponse(401, 'A pledge for this user was already made');
         }
@@ -72,12 +72,12 @@ const savePledge = requestBody => {
   const date = new Date();
   const timestamp = date.toISOString();
 
-  //check which pledge it is (e.g. pledgeId='brandenburg-1')
-  //create a (nice to later work with) object, which campaign it is
+  // check which pledge it is (e.g. pledgeId='brandenburg-1')
+  // create a (nice to later work with) object, which campaign it is
   const campaign = constructCampaignId(requestBody.pledgeId);
 
   const pledge = {
-    campaign: campaign,
+    campaign,
     createdAt: timestamp,
   };
   // For the state specific pledges a signature count was sent
@@ -97,7 +97,7 @@ const savePledge = requestBody => {
     pledges: [pledge],
     newsletterConsent: {
       value: requestBody.newsletterConsent,
-      timestamp: timestamp,
+      timestamp,
     },
     createdAt: timestamp,
   };
