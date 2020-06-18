@@ -3,6 +3,15 @@ const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
+const getCognitoUser = async (userPoolId, userId) => {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: userId,
+  };
+
+  return cognito.adminGetUser(params).promise();
+};
+
 const getAllUnverifiedCognitoUsers = async (
   userPoolId,
   unverifiedCognitoUsers = [],
@@ -30,6 +39,33 @@ const getAllUnverifiedCognitoUsers = async (
   }
 };
 
+const getAllVerifiedCognitoUsers = async (
+  userPoolId,
+  verifiedCognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: userPoolId,
+    Filter: 'cognito:user_status = "CONFIRMED"',
+    PaginationToken: paginationToken,
+  };
+
+  let data = await cognito.listUsers(params).promise();
+
+  //add elements of user array
+  verifiedCognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return await getAllVerifiedCognitoUsers(
+      userPoolId,
+      verifiedCognitoUsers,
+      data.PaginationToken
+    );
+  } else {
+    return verifiedCognitoUsers;
+  }
+};
+
 const getAllCognitoUsers = async (
   userPoolId,
   cognitoUsers = [],
@@ -38,6 +74,33 @@ const getAllCognitoUsers = async (
   const params = {
     UserPoolId: userPoolId,
     PaginationToken: paginationToken,
+  };
+
+  let data = await cognito.listUsers(params).promise();
+
+  //add elements of user array
+  cognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return await getAllCognitoUsers(
+      userPoolId,
+      cognitoUsers,
+      data.PaginationToken
+    );
+  } else {
+    return cognitoUsers;
+  }
+};
+
+const getAllCognitoUsersWithUnverifiedEmails = async (
+  userPoolId,
+  cognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: userPoolId,
+    PaginationToken: paginationToken,
+    Filter: 'cognito:user_status = "UNCONFIRMED"',
   };
 
   let data = await cognito.listUsers(params).promise();
@@ -179,4 +242,6 @@ module.exports = {
   getUsersWithoutNewsletterFromState,
   isVerified,
   getUsersWithSurvey,
+  getCognitoUser,
+  getAllVerifiedCognitoUsers,
 };
