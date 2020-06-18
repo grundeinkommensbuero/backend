@@ -1,0 +1,81 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Bis Ende Juni wollen wir 15.000 Unterschriften erreicht haben!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          immer wieder erreicht uns die Frage nach der Sammelfrist für Berlin.
+          Die einfache Antwort ist: je schneller, desto besser.
+          Denn wenn wir zu lange brauchen, könnte sich der Grundeinkommenstest noch
+          einmal um fünf Jahre (!) verzögern. Mehr Infos zu den Sammelfristen findest du in diesem <a href="https://expedition-grundeinkommen.de/blog/2020/06/16/fristen-fur-die-unterschriftensammlung-in-berlin/">Blogpost</a>.
+
+          <br><br>
+
+          Inzwischen sind wir bei rund der Hälfte der benötigten Unterschriften angekommen -
+          vielen Dank für deinen Beitrag. Jetzt ist es an der Zeit, den zweiten Gang einzulegen:
+          Lass uns bis Ende Juni 15.000 Unterschriften voll machen!
+
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          <h2>
+            15.000 Unterschriften bis Ende Juni
+          </h2>
+
+          Gib jetzt nochmal Gas:
+          <ul>
+            <li>
+              Sammle bis zum 30. Juni so viele Unterschriften für den Test des Grundeinkommens in Berlin,
+              wie du kannst! Eine gute Gelegenheit dafür ist zum Beispiel die Mietenwahnsinn-Demo
+              diesen Samstag. Wir sind da und sammeln zusammen. Kommst du mit?
+            </li>
+          </ul>
+        </mj-text>
+
+        <mj-button color="#fef377" width="80%" border="1px solid #fef377" align="center" padding-top="0px" padding-bottom="20px" href="https://expeditionbge.typeform.com/to/zMRXmKcB#user_email={{Address}}">
+          Ich bin dabei!
+        </mj-button>
+        <mj-text mj-class=" section-red-text">
+          <ul>
+            <li>
+              Trage laufend die neuen Unterschriften auf der Webseite ein, damit wir sehen, wenn wir das Zwischenziel erreichen.
+
+            </li>
+          </ul>
+        </mj-text>
+        <mj-button color="#fef377" width="80%" border="1px solid #fef377" align="center" padding-top="0px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/qr/b?userId={{User.UserId}}">
+          Unterschriften eintragen
+        </mj-button>
+        <mj-text mj-class="section-red-text">
+          In unserem Blog findest du weitere Tipps, wie du schnell viele Unterschriften sammeln kannst:
+          <a href="https://expedition-grundeinkommen.de/blog/2020/05/28/kati-und-die-konigliche-backstube/">Kati</a>, <a href="https://expedition-grundeinkommen.de/blog/2020/06/05/babatunde-tauscht-lacheln-gegen-unterschriften/">Babatunde</a> und <a href="https://expedition-grundeinkommen.de/blog/2020/06/01/franzi-sammelt-damit-menschen-eine-zweite-chance-bekommen/">Franzi</a> machen es vor.
+          <br><br>
+          Lass uns in den nächsten Tagen dem Grundeinkommensversuch mit großen Schritten näherkommen!
+          <br><br>
+          Herzlich,
+          <br><br>
+          Laura und Joy vom Expeditionsteam
+          <br><br>
+          P.S. Hier ist noch einmal der <a href="https://expedition-grundeinkommen.de/unterschriftenliste?userId={{User.UserId}}&campaignCode=berlin-1">Downloadlink für deine Liste</a>.
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
