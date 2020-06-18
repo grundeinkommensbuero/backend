@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { errorResponse } = require('../../../../shared/apiResponse');
 const zipCodeMatcher = require('../../../../shared/zipCodeMatcher');
@@ -67,7 +68,7 @@ const getRecentQuestions = async (questionLimit, userId) => {
   const questions = [];
 
   // Construct new questions array
-  for (let user of usersWithRecentQuestions) {
+  for (const user of usersWithRecentQuestions) {
     const question = {
       body: user.questions[0].body,
       timestamp: user.questions[0].timestamp,
@@ -110,14 +111,14 @@ const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
 
   const result = await ddb.scan(params).promise();
 
-  //add elements to existing array
+  // add elements to existing array
   questions.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getAllUsersWithQuestions(questions, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
+  } 
+    // otherwise return the array
     return questions;
-  }
+  
 };

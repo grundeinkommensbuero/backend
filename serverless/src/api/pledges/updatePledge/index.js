@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
 const { constructCampaignId } = require('../../../shared/utils');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
+const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -24,20 +24,20 @@ module.exports.handler = async event => {
     }
 
     try {
-      //check if there is a user with the passed user id
+      // check if there is a user with the passed user id
       const { userId } = event.pathParameters;
       const result = await getUser(userId);
 
       console.log('user', result);
 
-      //if user does not have Item as property, there was no user found
+      // if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
       await savePledge(userId, requestBody);
 
-      //saving pledge was successful, return appropriate json
+      // saving pledge was successful, return appropriate json
       return {
         statusCode: 204,
         headers: {
@@ -66,16 +66,16 @@ const isAuthorized = event => {
   );
 };
 
-savePledge = (userId, requestBody) => {
+const savePledge = (userId, requestBody) => {
   const date = new Date();
   const timestamp = date.toISOString();
 
-  //check which pledge it is (e.g. pledgeId='brandenburg-1')
-  //create a (nice to later work with) object, which campaign it is
+  // check which pledge it is (e.g. pledgeId='brandenburg-1')
+  // create a (nice to later work with) object, which campaign it is
   const campaign = constructCampaignId(requestBody.pledgeId);
 
   const pledge = {
-    campaign: campaign,
+    campaign,
     createdAt: timestamp,
   };
   // For the state specific pledges a signature count was sent
@@ -89,11 +89,11 @@ savePledge = (userId, requestBody) => {
   }
 
   const data = {
-    //needs to be array because append_list works with an array
+    // needs to be array because append_list works with an array
     ':pledge': [pledge],
     ':newsletterConsent': {
       value: requestBody.newsletterConsent,
-      timestamp: timestamp,
+      timestamp,
     },
     ':emptyList': [],
   };

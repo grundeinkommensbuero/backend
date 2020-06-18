@@ -1,7 +1,9 @@
 const AWS = require('aws-sdk');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+
 const tableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
@@ -22,12 +24,12 @@ module.exports.handler = async event => {
 
       const result = await getUser(userId);
 
-      //if user has Item as property, a user was found and therefore already exists
+      // if user has Item as property, a user was found and therefore already exists
       if ('Item' in result) {
         return errorResponse(401, 'Not authorized to overwrite user');
       }
 
-      //otherwise proceed by saving the user
+      // otherwise proceed by saving the user
       await saveUser(requestBody);
 
       // return message (created)
@@ -60,12 +62,12 @@ const saveUser = ({ newsletterConsent, email, userId, referral }) => {
       value:
         // If there is no newsletter consent in the request we set it to true
         typeof newsletterConsent !== 'undefined' ? newsletterConsent : true,
-      timestamp: timestamp,
+      timestamp,
     },
     createdAt: timestamp,
   };
 
-  //if referral is undefined, don't add the key
+  // if referral is undefined, don't add the key
   if (typeof referral !== 'undefined') {
     data.referral = referral;
   }

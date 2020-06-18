@@ -2,6 +2,7 @@ const { INVOKE_URL } = require('../../../testConfig');
 const { authenticate } = require('../../../testUtils');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
+
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
@@ -20,7 +21,7 @@ describe('updatePledge api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        userId: userId,
+        userId,
         pledgeId: `${randomWords()}-${randomWords()}-1`,
         signatureCount: 13,
         newsletterConsent: true,
@@ -43,8 +44,8 @@ describe('updatePledge api test', () => {
       },
 
       body: JSON.stringify({
-        userId: userId,
-        pledgeId: `schleswig-holstein-1`,
+        userId,
+        pledgeId: 'schleswig-holstein-1',
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',
@@ -64,8 +65,8 @@ describe('updatePledge api test', () => {
       method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({
-        userId: userId,
-        pledgeId: `schleswig-holstein-1`,
+        userId,
+        pledgeId: 'schleswig-holstein-1',
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',

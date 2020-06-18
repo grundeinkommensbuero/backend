@@ -8,7 +8,7 @@ module.exports = async function createPDFLetter({
   address,
   needsMailMissingAddition,
 }) {
-  isDuplex = !!lists.find(
+  const isDuplex = !!lists.find(
     ({ campaignCode }) => campaignCode === 'brandenburg-1'
   );
 
@@ -27,7 +27,7 @@ module.exports = async function createPDFLetter({
     }
 
     const mailMissingAdditionBytes = fs.readFileSync(
-      __dirname + '/pdf/letters/BEILAGE_MAIL_FEHLT.pdf'
+      `${__dirname}/pdf/letters/BEILAGE_MAIL_FEHLT.pdf`
     );
     const mailMissingAdditionDoc = await pdfLib.PDFDocument.load(
       mailMissingAdditionBytes

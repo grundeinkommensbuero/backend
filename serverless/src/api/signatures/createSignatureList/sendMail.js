@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
+
 const ses = new AWS.SES();
 
 const htmlMail = require('./mailTemplate.html').default;
@@ -30,7 +31,7 @@ const STATES = {
   bremen: 'Bremen',
 };
 
-//Functions which sends an email with the attached pdf and returns a promise
+// Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, attachments, campaign) => {
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
@@ -39,7 +40,7 @@ const sendMail = (email, attachments, campaign) => {
     } soll Grundeinkommen testen!" im Anhang`,
     html: customEmail(campaign),
     to: email,
-    attachments: attachments,
+    attachments,
   };
 
   // create Nodemailer SES transporter

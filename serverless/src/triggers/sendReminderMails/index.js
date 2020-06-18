@@ -1,12 +1,13 @@
-const { getAllSignatureLists } = require('../../shared/signatures');
-const { getUser } = require('../../shared/users');
-const sendMail = require('./sendMail');
-const remindAfter = 7;
+// const { getAllSignatureLists } = require('../../shared/signatures');
+// const { getUser } = require('../../shared/users');
+// const sendMail = require('./sendMail');
+
+// const remindAfter = 7;
 
 module.exports.handler = async event => {
   return event;
 
-  try {
+  /*  try {
     const signatureLists = await getAllSignatureLists();
 
     // construct a date which is x days ago from now
@@ -54,4 +55,5 @@ module.exports.handler = async event => {
   }
 
   return event;
+  */
 };

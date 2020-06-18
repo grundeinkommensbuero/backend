@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
+
 const ses = new AWS.SES({ region: 'eu-central-1' });
 
 const htmlMail = require('./mailTemplate.html').default;
@@ -22,7 +23,7 @@ const STATES = {
   'berlin-0': 'Berlin',
 };
 
-//Function which sends an email to welcome the user to our expedition
+// Function which sends an email to welcome the user to our expedition
 const sendMail = (email, campaignCode, userId) => {
   // Only run the script if the environment is prod
   if (process.env.STAGE === 'prod') {
@@ -44,6 +45,8 @@ const sendMail = (email, campaignCode, userId) => {
 
     return transporter.sendMail(mailOptions);
   }
+
+  return null;
 };
 
 module.exports = sendMail;

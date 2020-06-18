@@ -5,6 +5,7 @@ const {
 } = require('../../shared/signatures/contentfulApi');
 const { getUser } = require('../../shared/users');
 const { getSignatureCountOfAllLists } = require('../../shared/signatures');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
@@ -22,13 +23,13 @@ module.exports.handler = async event => {
 
     // We want to save the campaign for which there was a scan today
     let campaignToday;
-    for (let list of signatureLists) {
+    for (const list of signatureLists) {
       // loop through the scan array and check if there were new
       // scans during the last 24h
       let dailyCount = 0;
       let totalCount = 0;
 
-      for (let scan of list.received) {
+      for (const scan of list.received) {
         // we have to bring the date into the same format (UNIX time) as now
         const scannedAt = Date.parse(scan.timestamp);
         const oneDay = 24 * 60 * 60 * 1000;
@@ -82,13 +83,13 @@ module.exports.handler = async event => {
     // Use the same function as in getSignatureCount to get total count
     const totalCountForAllUsers = await getSignatureCountOfAllLists();
 
-    //go through the user map to send a mail to every user
-    //of whom we have scanned a list during the last day
-    for (let key in usersMap) {
+    // go through the user map to send a mail to every user
+    // of whom we have scanned a list during the last day
+    for (const key in usersMap) {
       if (usersMap[key].dailyCount > 0) {
         let totalCountForThisCampaign =
           totalCountForAllUsers[usersMap[key].campaign.code].computed;
-        let contentfulCountForThisCampaign =
+        const contentfulCountForThisCampaign =
           contentfulCounts[usersMap[key].campaign.code];
 
         console.log('contetful count', contentfulCounts);
@@ -104,7 +105,7 @@ module.exports.handler = async event => {
             contentfulCountForThisCampaign.addToSignatureCount;
         }
 
-        //if the minimum contentful signature count is more, use that number
+        // if the minimum contentful signature count is more, use that number
         if (contentfulCountForThisCampaign.minimum) {
           totalCountForThisCampaign = Math.max(
             totalCountForThisCampaign,
@@ -128,9 +129,11 @@ module.exports.handler = async event => {
   } catch (error) {
     console.log('error', error);
   }
+
+  return event;
 };
 
-//function to get all signature lists, where there is a received key
+// function to get all signature lists, where there is a received key
 const getReceivedSignatureLists = async (
   signatureLists = [],
   startKey = null
@@ -144,14 +147,13 @@ const getReceivedSignatureLists = async (
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return getReceivedSignatureLists(signatureLists, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return signatureLists;
   }
+  // otherwise return the array
+  return signatureLists;
 };

@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
+
 const ses = new AWS.SES({ region: 'eu-central-1' });
 
 const htmlMail = require('./mailTemplate.html').default;
@@ -41,8 +42,8 @@ const sendMail = ({ email, username, cognitoId }, campaign) => {
 const customMail = (userId, username, campaign) => {
   let greeting;
 
-  //if there is a username we want to have a specific greeting
-  //username might be in different forms, definitely need to refactor
+  // if there is a username we want to have a specific greeting
+  // username might be in different forms, definitely need to refactor
   if (typeof username !== 'undefined') {
     greeting = `Hallo ${username},`;
   } else {

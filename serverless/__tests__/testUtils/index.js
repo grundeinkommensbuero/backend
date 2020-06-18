@@ -7,6 +7,7 @@ const {
   ADMIN_REFRESH_TOKEN,
 } = require('../testConfig');
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
