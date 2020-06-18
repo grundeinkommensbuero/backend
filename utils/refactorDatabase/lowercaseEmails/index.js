@@ -1,11 +1,17 @@
-const { getAllCognitoUsers } = require('../../shared/users/getUsers');
+const {
+  getAllCognitoUsers,
+  getAllVerifiedCognitoUsers,
+} = require('../../shared/users/getUsers');
+const { confirmUser } = require('../../shared/users/createUsers');
+const fs = require('fs');
+
 const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const Bottleneck = require('bottleneck');
-const limiter = new Bottleneck({ minTime: 50, maxConcurrent: 5 });
+const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 2 });
 
 const { PROD_USERS_TABLE_NAME, PROD_USER_POOL_ID } = require('../../config');
 
@@ -74,7 +80,10 @@ const updateCognitoUser = (userPoolId, userId, email) => {
   const params = {
     UserPoolId: userPoolId,
     Username: userId,
-    UserAttributes: [{ Name: 'email', Value: email }],
+    UserAttributes: [
+      { Name: 'email', Value: email },
+      { Name: 'email_verified', Value: 'true' },
+    ],
   };
 
   return cognito.adminUpdateUserAttributes(params).promise();
