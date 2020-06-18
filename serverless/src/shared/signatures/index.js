@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
@@ -9,13 +10,13 @@ const getSignatureList = id => {
   const params = {
     TableName: tableName,
     Key: {
-      id: id,
+      id,
     },
   };
   return ddb.get(params).promise();
 };
 
-//function to get signature lists for this particular user
+// function to get signature lists for this particular user
 const getSignatureListsOfUser = async (userId, campaignCode = null) => {
   const params = {
     TableName: tableName,
@@ -48,7 +49,7 @@ const getScannedSignatureListsOfUser = async userId => {
   return ddb.query(params).promise();
 };
 
-//function to get all signature lists, where there is a received key
+// function to get all signature lists, where there is a received key
 const getScannedSignatureLists = async (
   signatureLists = [],
   startKey = null
@@ -64,22 +65,21 @@ const getScannedSignatureLists = async (
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getScannedSignatureLists(
       signatureLists,
       result.LastEvaluatedKey
     );
-  } else {
-    //otherwise return the array
-    return signatureLists;
   }
+  // otherwise return the array
+  return signatureLists;
 };
 
-//function to get all signature lists
+// function to get all signature lists
 const getAllSignatureLists = async (signatureLists = [], startKey = null) => {
   const params = {
     TableName: tableName,
@@ -89,36 +89,35 @@ const getAllSignatureLists = async (signatureLists = [], startKey = null) => {
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     console.log('call get lists recursively');
     return getAllSignatureLists(signatureLists, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return signatureLists;
   }
+  // otherwise return the array
+  return signatureLists;
 };
 
-//Checks, if the passed id already exists in the signatures table (returns true or false)
+// Checks, if the passed id already exists in the signatures table (returns true or false)
 const checkIfIdExists = async id => {
   const params = {
     TableName: tableName,
     Key: {
-      id: id,
+      id,
     },
     ProjectionExpression: 'id',
   };
   const result = await ddb.get(params).promise();
-  //if there is Item in result, there was an entry found
+  // if there is Item in result, there was an entry found
   return 'Item' in result && typeof result.Item !== 'undefined';
 };
 
 // Function to compute the stats for all lists (every User)
 const getSignatureCountOfAllLists = async () => {
-  let stats = {};
+  const stats = {};
 
   // Get all lists with received attribute and
   // make api call to contentful to later compute the total number of signatures
@@ -129,7 +128,7 @@ const getSignatureCountOfAllLists = async () => {
   ]);
 
   // loop through lists to compute the stats for each campaign
-  for (let list of signatureLists) {
+  for (const list of signatureLists) {
     const campaign = list.campaign.code;
 
     // check if campaign  is already in stats
@@ -143,18 +142,18 @@ const getSignatureCountOfAllLists = async () => {
       };
     }
 
-    let scans = [];
+    const scans = [];
     if ('received' in list && list.received !== 0) {
       // loop through scans for this list and add the count
-      for (let scan of list.received) {
+      for (const scan of list.received) {
         // if there were signatures on this list, which belong to
         // different "Ämters" (mixed), only add the count to withMixed
         // This is only important for schleswig-holstein
         if (!scan.mixed) {
-          stats[campaign].withoutMixed += parseInt(scan.count);
+          stats[campaign].withoutMixed += parseInt(scan.count, 10);
         }
 
-        stats[campaign].withMixed += parseInt(scan.count);
+        stats[campaign].withMixed += parseInt(scan.count, 10);
 
         // Needed for computation of approximated count of signatures
         scans.push({ ...scan, isReceived: true });
@@ -163,8 +162,8 @@ const getSignatureCountOfAllLists = async () => {
 
     // same for scannedByUser
     if ('scannedByUser' in list) {
-      for (let scan of list.scannedByUser) {
-        stats[campaign].scannedByUser += parseInt(scan.count);
+      for (const scan of list.scannedByUser) {
+        stats[campaign].scannedByUser += parseInt(scan.count, 10);
 
         // Needed for computation of approximated count of signatures
         scans.push({ ...scan, isReceived: false });
@@ -175,22 +174,24 @@ const getSignatureCountOfAllLists = async () => {
   }
 
   // Add contentful numbers to each campaign
-  for (let campaign in stats) {
-    stats[campaign].withContentful = stats[campaign].computed;
+  for (const campaign in stats) {
+    if (Object.prototype.hasOwnProperty.call(stats, campaign)) {
+      stats[campaign].withContentful = stats[campaign].computed;
 
-    // addToSignatureCount is a sort of a base number
-    // which is defined in contentful
-    if (contentfulCounts[campaign].addToSignatureCount) {
-      stats[campaign].withContentful +=
-        contentfulCounts[campaign].addToSignatureCount;
-    }
+      // addToSignatureCount is a sort of a base number
+      // which is defined in contentful
+      if (contentfulCounts[campaign].addToSignatureCount) {
+        stats[campaign].withContentful +=
+          contentfulCounts[campaign].addToSignatureCount;
+      }
 
-    //if the minimum contentful signature count is more, use that number
-    if (contentfulCounts[campaign].minimum) {
-      stats[campaign].withContentful = Math.max(
-        stats[campaign].withContentful,
-        contentfulCounts[campaign].minimum
-      );
+      // if the minimum contentful signature count is more, use that number
+      if (contentfulCounts[campaign].minimum) {
+        stats[campaign].withContentful = Math.max(
+          stats[campaign].withContentful,
+          contentfulCounts[campaign].minimum
+        );
+      }
     }
   }
 
@@ -207,8 +208,8 @@ const getComputedCountForList = scans => {
   let received = 0;
   let count = 0;
 
-  for (let scan of scans) {
-    scanCount = parseInt(scan.count);
+  for (const scan of scans) {
+    const scanCount = parseInt(scan.count, 10);
 
     if (!scan.isReceived) {
       count += scanCount;

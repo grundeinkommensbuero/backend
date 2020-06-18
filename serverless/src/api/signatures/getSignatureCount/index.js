@@ -82,18 +82,18 @@ module.exports.handler = async event => {
 const getScansOfUser = async (user, campaignCode) => {
   const userId = user.cognitoId;
 
-  let stats = {
+  const stats = {
     received: 0,
     scannedByUser: 0,
     receivedList: [],
     scannedByUserList: [],
   };
 
-  //get all lists of this user with received attribute
+  // get all lists of this user with received attribute
   const result = await getScannedSignatureListsOfUser(userId);
 
   // For each list push the arrays to the general array
-  for (let list of result.Items) {
+  for (const list of result.Items) {
     // Only add scans, if the list was from the campaign
     // If no campaign is provided we want every scan
     if (
@@ -101,8 +101,8 @@ const getScansOfUser = async (user, campaignCode) => {
       typeof campaignCode === 'undefined'
     ) {
       if ('received' in list) {
-        for (let scan of list.received) {
-          stats.received += parseInt(scan.count);
+        for (const scan of list.received) {
+          stats.received += parseInt(scan.count, 10);
 
           // add campaign to scan
           scan.campaign = list.campaign;
@@ -116,14 +116,14 @@ const getScansOfUser = async (user, campaignCode) => {
   // anymore by checking the lists, but we use the saved scans
   // inside the user record
   if ('scannedLists' in user) {
-    for (let scan of user.scannedLists) {
+    for (const scan of user.scannedLists) {
       // Only add scans, if the scan was for the campaign
       // If no campaign is provided we want every scan
       if (
         scan.campaign.code === campaignCode ||
         typeof campaignCode === 'undefined'
       ) {
-        stats.scannedByUser += parseInt(scan.count);
+        stats.scannedByUser += parseInt(scan.count, 10);
 
         stats.scannedByUserList.push(scan);
       }

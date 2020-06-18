@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const jimp = require('jimp/dist');
 const uuid = require('uuid/v4');
-const { getFileSuffix } = require('../../shared/utils');
+
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 const bucketUrl = process.env.S3_IMAGES_URL;

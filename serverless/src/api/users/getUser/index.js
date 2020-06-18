@@ -14,11 +14,11 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    //get user id from path parameter
+    // get user id from path parameter
     const userId = event.pathParameters.userId;
 
     const result = await getUser(userId);
-    //if user does not have Item as property, there was no user found
+    // if user does not have Item as property, there was no user found
     if (!('Item' in result) || typeof result.Item === 'undefined') {
       return errorResponse(404, 'No user found with the passed user id');
     }

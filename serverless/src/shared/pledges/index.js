@@ -1,18 +1,20 @@
 const AWS = require('aws-sdk');
+
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { constructCampaignId } = require('../../shared/utils');
+
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.savePledge = (userId, requestBody) => {
   const date = new Date();
   const timestamp = date.toISOString();
 
-  //check which pledge it is (e.g. pledgeId='brandenburg-1')
-  //create a (nice to later work with) object, which campaign it is
+  // check which pledge it is (e.g. pledgeId='brandenburg-1')
+  // create a (nice to later work with) object, which campaign it is
   const campaign = constructCampaignId(requestBody.pledgeId);
 
   const pledge = {
-    campaign: campaign,
+    campaign,
     createdAt: timestamp,
   };
   // For the state specific pledges a signature count was sent
@@ -26,7 +28,7 @@ module.exports.savePledge = (userId, requestBody) => {
   }
 
   const data = {
-    //needs to be array because append_list works with an array
+    // needs to be array because append_list works with an array
     ':pledge': [pledge],
     ':zipCode': 'zipCode' in requestBody ? requestBody.zipCode : 'empty',
     ':username':
@@ -36,7 +38,7 @@ module.exports.savePledge = (userId, requestBody) => {
     ':referral': 'referral' in requestBody ? requestBody.referral : 'empty',
     ':newsletterConsent': {
       value: requestBody.newsletterConsent,
-      timestamp: timestamp,
+      timestamp,
     },
     ':emptyList': [],
   };

@@ -3,6 +3,7 @@ const { authenticateAdmin } = require('../../../testUtils');
 
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
+
 const listId = '7525800';
 
 let token;

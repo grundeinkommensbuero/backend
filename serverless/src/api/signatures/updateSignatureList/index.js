@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
 const { getSignatureList } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUserByMail, getUser } = require('../../../shared/users');
 
+const ddb = new AWS.DynamoDB.DocumentClient();
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const usersTableName = process.env.USERS_TABLE_NAME;
 
@@ -14,18 +14,18 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    //get user id from path parameter
+    // get user id from path parameter
     const body = JSON.parse(event.body);
     const { listId } = event.pathParameters;
     const { email } = body;
     let { userId, count } = body;
 
-    //if the one of the needed params is somehow undefined return error
+    // if the one of the needed params is somehow undefined return error
     if (!validateParams(listId, count)) {
       return errorResponse(400, 'Params not provided or incorrect in request');
     }
 
-    count = parseInt(count);
+    count = parseInt(count, 10);
 
     let usedQrCode = false;
     let listNotFound = false;
@@ -46,7 +46,7 @@ module.exports.handler = async event => {
 
         if (result.Count === 0) {
           // Depending on whether the list was also not found we return different things
-          const body = listNotFound
+          const response = listNotFound
             ? {
                 message:
                   'No user with that email and no list with that id  found',
@@ -59,7 +59,7 @@ module.exports.handler = async event => {
 
           return {
             statusCode: 404,
-            body: JSON.stringify(body),
+            body: JSON.stringify(response),
             headers: responseHeaders,
             isBase64Encoded: false,
           };
@@ -72,7 +72,7 @@ module.exports.handler = async event => {
 
         if (!('Item' in result)) {
           // Depending on whether the list was also not found we return different things
-          const body = listNotFound
+          const response = listNotFound
             ? {
                 message:
                   'No user with that email and no list with that id  found',
@@ -85,7 +85,7 @@ module.exports.handler = async event => {
 
           return {
             statusCode: 404,
-            body: JSON.stringify(body),
+            body: JSON.stringify(response),
             headers: responseHeaders,
             isBase64Encoded: false,
           };
@@ -144,12 +144,12 @@ module.exports.handler = async event => {
   }
 };
 
-//function to set the count for the signature list
+// function to set the count for the signature list
 const updateSignatureList = (id, userId, count, usedQrCode) => {
-  //needs to be array because append_list works with an array
+  // needs to be array because append_list works with an array
   const countObject = [
     {
-      count: parseInt(count),
+      count: parseInt(count, 10),
       timestamp: new Date().toISOString(),
       userId,
       usedQrCode,
@@ -158,7 +158,7 @@ const updateSignatureList = (id, userId, count, usedQrCode) => {
 
   const params = {
     TableName: signaturesTableName,
-    Key: { id: id },
+    Key: { id },
     UpdateExpression:
       'SET scannedByUser = list_append(if_not_exists(scannedByUser, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
@@ -168,10 +168,10 @@ const updateSignatureList = (id, userId, count, usedQrCode) => {
 
 // Update user record to add the scan of this list
 const updateUser = (userId, listId, count, campaign) => {
-  //needs to be array because append_list works with an array
+  // needs to be array because append_list works with an array
   const countObject = [
     {
-      count: parseInt(count),
+      count: parseInt(count, 10),
       timestamp: new Date().toISOString(),
       listId,
       campaign,
@@ -193,7 +193,7 @@ const validateParams = (listId, count) => {
     return false;
   }
 
-  const parsedCount = parseInt(count);
+  const parsedCount = parseInt(count, 10);
   return (
     Number.isInteger(parsedCount) && parsedCount >= 0 && parsedCount < 1000
   );

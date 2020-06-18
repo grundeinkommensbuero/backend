@@ -1,8 +1,8 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
 const { getSignatureList } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
 
+const ddb = new AWS.DynamoDB.DocumentClient();
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,11 +11,11 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    //get user id from path parameter
+    // get user id from path parameter
     const { listId } = event.pathParameters;
     const { count, mixed } = JSON.parse(event.body);
 
-    //if the listId is somehow undefined or null return error
+    // if the listId is somehow undefined or null return error
     if (
       typeof listId === 'undefined' ||
       listId === null ||
@@ -26,15 +26,15 @@ module.exports.handler = async event => {
     }
 
     try {
-      //check if there even is a list with the id
-      //(update creates a new entry, if it does not exist)
+      // check if there even is a list with the id
+      // (update creates a new entry, if it does not exist)
       const result = await getSignatureList(listId);
-      //if user does not have Item as property, there was no user found
+      // if user does not have Item as property, there was no user found
       if (!('Item' in result)) {
         return errorResponse(404, 'No list found with the passed id');
       }
 
-      //otherwise proceed by updating dynamo resource
+      // otherwise proceed by updating dynamo resource
       try {
         await updateSignatureList(listId, count, mixed);
         // return message
@@ -62,19 +62,19 @@ module.exports.handler = async event => {
   }
 };
 
-//function to set the count for the signature list
+// function to set the count for the signature list
 const updateSignatureList = (id, count, mixed) => {
-  //needs to be array because append_list works with an array
+  // needs to be array because append_list works with an array
   const countObject = [
     {
-      count: parseInt(count),
+      count: parseInt(count, 10),
       mixed,
       timestamp: new Date().toISOString(),
     },
   ];
   const params = {
     TableName: signaturesTableName,
-    Key: { id: id },
+    Key: { id },
     UpdateExpression:
       'SET received = list_append(if_not_exists(received, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
