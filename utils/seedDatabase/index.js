@@ -10,6 +10,7 @@ const {
 } = require('../shared/users/createUsers');
 
 const CONFIG = require('../config');
+
 const tableName = CONFIG.DEV_TABLE_NAME;
 const userPoolId = CONFIG.DEV_USER_POOL_ID;
 
@@ -43,10 +44,10 @@ const createUser = async user => {
     console.log('new user', created);
     const userId = created.User.Username;
 
-    //confirm user (by setting fake password)
+    // confirm user (by setting fake password)
 
     await confirmUser(userPoolId, userId);
-    //create new entry in dynamo or recreate the old one
+    // create new entry in dynamo or recreate the old one
     return await createUserInDynamo(userId, user);
   });
   return response;
@@ -62,14 +63,14 @@ const createUserInDynamo = (userId, user) => {
       cognitoId: userId,
       email: user.email,
       createdAt: timestamp,
-      //username and zipCode might be undefined, the key will just be
-      //left out in dynamo
+      // username and zipCode might be undefined, the key will just be
+      // left out in dynamo
       username: user.username,
       zipCode: user.zipCode,
-      //the timestamp of the newsletter consent depends on the change data
+      // the timestamp of the newsletter consent depends on the change data
       newsletterConsent: {
         value: true,
-        timestamp: timestamp,
+        timestamp,
       },
       pledges: [
         {

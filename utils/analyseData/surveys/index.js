@@ -1,13 +1,14 @@
 const CONFIG = require('../../config');
 const { getUsersWithSurvey } = require('../../shared/users/getUsers');
+
 const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 
 const getSurveyResults = async () => {
   const users = await getUsersWithSurvey(tableName);
 
   const surveyResults = {};
-  for (let user of users) {
-    for (let survey of user.surveys) {
+  for (const user of users) {
+    for (const survey of user.surveys) {
       if (!(survey.code in surveyResults)) {
         surveyResults[survey.code] = {};
       }
