@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk');
 const fs = require('fs');
 const CONFIG = require('../config');
 const { getAllUsers } = require('../shared/users/getUsers');
@@ -21,9 +20,9 @@ const getUsersWithMessages = async () => {
   const usersWithMessages = [];
   const users = await getAllUsers(tableName);
 
-  for (let user of users) {
+  for (const user of users) {
     if ('pledges' in user) {
-      for (let pledge of user.pledges) {
+      for (const pledge of user.pledges) {
         if ('message' in pledge && pledge.message !== '') {
           usersWithMessages.push({
             email: user.email,
@@ -44,11 +43,11 @@ const generateCsv = users => {
 
   let dataString = 'Email, Name, Nachricht, Erstellt am\n';
 
-  for (let user of users) {
+  for (const user of users) {
     dataString += `${user.email},${user.username},"${user.message}",${user.createdAt}\n`;
   }
 
-  fs.writeFileSync(`messages.csv`, dataString);
+  fs.writeFileSync('messages.csv', dataString);
 };
 
 exportMessagesAsCsv();

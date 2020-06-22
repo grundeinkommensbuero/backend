@@ -1,14 +1,16 @@
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const { getAllUsers } = require('../shared/users/getUsers');
 const CONFIG = require('../config');
 
+// eslint-disable-next-line no-unused-vars
 const removeEmptyValues = async tableName => {
   try {
     const users = await getAllUsers(tableName);
 
-    for (let user of users) {
+    for (const user of users) {
       if (
         ('zipCode' in user && user.zipCode === 'empty') ||
         ('username' in user && user.username === 'empty') ||
@@ -47,12 +49,12 @@ const moveScansToUsers = async (usersTableName, signaturesTableName) => {
   try {
     const signatureLists = await getScannedSignatureLists(signaturesTableName);
 
-    for (let list of signatureLists) {
+    for (const list of signatureLists) {
       if (list.userId !== 'anonymous') {
         if ('scannedByUser' in list) {
           const scans = list.scannedByUser.map(scan => {
             return {
-              count: parseInt(scan.count),
+              count: parseInt(scan.count, 10),
               timestamp: scan.timestamp,
               campaign: list.campaign,
               listId: list.id,
@@ -97,20 +99,19 @@ const getScannedSignatureLists = async (
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getScannedSignatureLists(
       signaturesTableName,
       signatureLists,
       result.LastEvaluatedKey
     );
-  } else {
-    //otherwise return the array
-    return signatureLists;
   }
+  // otherwise return the array
+  return signatureLists;
 };
 
 moveScansToUsers(

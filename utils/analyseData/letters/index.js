@@ -2,6 +2,7 @@ const { getUserByMail } = require('../../shared/users/getUsers');
 const fs = require('fs');
 const parse = require('csv-parse');
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const PATH = './HH Ergebnisse Briefaktion.csv';
@@ -12,7 +13,7 @@ const analyse = async () => {
   let totalCount = 0;
   let hasSentCount = 0;
 
-  for (let user of users) {
+  for (const user of users) {
     const result = await getUserByMail('prod-users', user.email);
 
     if (result.Count > 0) {
@@ -22,9 +23,9 @@ const analyse = async () => {
 
       let receivedCount = 0;
 
-      for (let list of signatureLists) {
+      for (const list of signatureLists) {
         if (list.manually && 'received' in list) {
-          for (let scan of list.received) {
+          for (const scan of list.received) {
             receivedCount += scan.count;
           }
 
@@ -48,8 +49,8 @@ const analyse = async () => {
   console.log('average', totalCount / users.length);
 };
 
-//reads and parses the csv file and returns a promise containing
-//an array of the users
+// reads and parses the csv file and returns a promise containing
+// an array of the users
 const readCsv = () => {
   return new Promise(resolve => {
     const users = [];
@@ -59,7 +60,7 @@ const readCsv = () => {
       .pipe(parse({ delimiter: ',' }))
       .on('data', row => {
         let user;
-        //leave out headers
+        // leave out headers
         if (count > 0) {
           user = {
             email: row[12] === '' ? row[9] : row[12],
@@ -79,7 +80,7 @@ const readCsv = () => {
   });
 };
 
-//function to get signature lists for this particular user
+// function to get signature lists for this particular user
 const getSignatureListsOfUser = async (
   userId,
   campaignCode = null,
@@ -87,7 +88,7 @@ const getSignatureListsOfUser = async (
   startKey = null
 ) => {
   let filter;
-  let values = { ':userId': userId };
+  const values = { ':userId': userId };
   if (campaignCode) {
     filter = 'userId = :userId AND campaign.code = :campaignCode';
     values[':campaignCode'] = campaignCode;
@@ -105,10 +106,10 @@ const getSignatureListsOfUser = async (
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getSignatureListsOfUser(
       userId,
@@ -116,10 +117,10 @@ const getSignatureListsOfUser = async (
       signatureLists,
       result.LastEvaluatedKey
     );
-  } else {
-    //otherwise return the array
+  } 
+    // otherwise return the array
     return signatureLists;
-  }
+  
 };
 
 analyse();

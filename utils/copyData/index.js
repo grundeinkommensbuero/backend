@@ -1,19 +1,25 @@
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const pinpoint = new AWS.Pinpoint(config);
 
 const { getAllCognitoUsers, getUser } = require('../shared/users/getUsers');
+const { getSignatureLists } = require('../shared/signatures');
+
 const {
   createUserInCognito,
   createUserInDynamo,
+  confirmUser,
 } = require('../shared/users/createUsers');
 
 const Bottleneck = require('bottleneck');
+
 const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 const pinpointProjectId = '83c543b1094c4a91bf31731cd3f2f005';
 
 const CONFIG = require('../config');
+
 const tableName = CONFIG.PROD_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
@@ -27,8 +33,8 @@ const copyData = async () => {
     console.log('fetched cognito users');
 
     let copied = 0;
-    for (let cognitoUser of cognitoUsers) {
-      await limiter.schedule(async () => {
+    for (const cognitoUser of cognitoUsers) {
+      const userWasCopied = await limiter.schedule(async () => {
         const oldId = cognitoUser.Username;
         try {
           if (cognitoUser.UserStatus === 'CONFIRMED') {
@@ -43,24 +49,21 @@ const copyData = async () => {
 
             await confirmUser(userPoolId, newId);
 
-            //get old dynamo entry
+            // get old dynamo entry
             const dynamoUser = await getUser(tableName, oldId);
 
             await createUserInDynamo(tableName, newId, dynamoUser.Item);
 
             const signatureLists = await getSignatureListsByUser(oldId);
 
-            for (let list of signatureLists) {
+            for (const list of signatureLists) {
               await changeUserInList(list.id, newId);
             }
 
-            //delete old pinpoint entry
+            // delete old pinpoint entry
             await deleteEndpoint(oldId);
 
-            copied++;
-            if (copied % 20 === 0) {
-              console.log('Copied', copied);
-            }
+            return true;
           }
         } catch (error) {
           if (error.code === 'UsernameExistsException') {
@@ -69,7 +72,17 @@ const copyData = async () => {
             console.log('error', error);
           }
         }
+
+        return false;
       });
+
+      if (userWasCopied) {
+        copied++;
+
+        if (copied % 20 === 0) {
+          console.log('Copied', copied);
+        }
+      }
     }
 
     console.log('finished, copied ', copied);
@@ -78,7 +91,7 @@ const copyData = async () => {
   }
 };
 
-//function to get signature lists for this particular user
+// function to get signature lists for this particular user
 const getSignatureListsByUser = async (
   userId,
   signatureLists = [],
@@ -94,16 +107,15 @@ const getSignatureListsByUser = async (
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return getSignatureLists(userId, signatureLists, result.LastEvaluatedKey);
-  } else {
-    //otherwise return the array
-    return signatureLists;
   }
+  // otherwise return the array
+  return signatureLists;
 };
 
 const changeUserInList = (listId, userId) => {
@@ -119,7 +131,7 @@ const changeUserInList = (listId, userId) => {
 };
 
 const deleteEndpoint = async userId => {
-  var params = {
+  const params = {
     ApplicationId: pinpointProjectId,
     EndpointId: `email-endpoint-${userId}`,
   };

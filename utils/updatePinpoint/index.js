@@ -1,10 +1,12 @@
 const fs = require('fs');
 const AWS = require('aws-sdk');
+
 const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const parse = require('csv-parse');
 const CONFIG = require('../config');
 const { getUserByMail } = require('./../shared/users/getUsers');
+
 const paths = {
   'jetzt-erst-recht': './data/jetzt erst recht.csv',
   pausieren: './data/kampagne pausieren.csv',
@@ -18,12 +20,12 @@ const updatePinpoint = async () => {
   try {
     const users = await readCsv('listen-per-post');
     console.log(users.length);
-    for (let user of users) {
+    for (const user of users) {
       const result = await getUserByMail(tableName, user.email);
       if (result.Count > 0) {
         const userId = result.Items[0].cognitoId;
 
-        var params = {
+        const params = {
           ApplicationId: projectId,
           EndpointId: `email-endpoint-${userId}`,
           EndpointRequest: {
@@ -45,8 +47,8 @@ const updatePinpoint = async () => {
   }
 };
 
-//reads and parses the csv file and returns a promise containing
-//an array of the users
+// reads and parses the csv file and returns a promise containing
+// an array of the users
 const readCsv = source => {
   return new Promise(resolve => {
     const users = [];
@@ -56,7 +58,7 @@ const readCsv = source => {
       .pipe(parse({ delimiter: ',' }))
       .on('data', row => {
         let user;
-        //leave out headers
+        // leave out headers
         if (count > 0) {
           console.log('row', row);
           if (row[10] !== '' || row[13] !== '') {
