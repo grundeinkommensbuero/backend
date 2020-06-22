@@ -4,14 +4,14 @@ const {
 const {
   analyseSignatureLists,
 } = require('../../serverless/src/api/signatures/getSignatureListCount/analyseSignatureLists');
-const { generateCsv } = require('./generateCsv');
-var Table = require('cli-table3');
+// const { generateCsv } = require('./generateCsv');
+const Table = require('cli-table3');
 
 const runScript = async () => {
-  //Users stats
+  // Users stats
   const statsUsers = await analyseUsers();
 
-  tableUsers = new Table({
+  const tableUsers = new Table({
     head: [
       '',
       'Users Count',
@@ -22,20 +22,22 @@ const runScript = async () => {
     ],
   });
 
-  for (let campaignKey in statsUsers) {
-    const campaign = statsUsers[campaignKey];
-    tableUsers.push({
-      [campaignKey]: [
-        campaign.verifiedUsers.count,
-        campaign.verifiedUsers.signatures,
-        campaign.usersWithNewsletterConsent.count,
-        campaign.usersWithNewsletterConsent.signatures,
-        campaign.unverifiedUsers.count,
-      ],
-    });
+  for (const campaignKey in statsUsers) {
+    if (Object.prototype.hasOwnProperty.call(statsUsers, campaignKey)) {
+      const campaign = statsUsers[campaignKey];
+      tableUsers.push({
+        [campaignKey]: [
+          campaign.verifiedUsers.count,
+          campaign.verifiedUsers.signatures,
+          campaign.usersWithNewsletterConsent.count,
+          campaign.usersWithNewsletterConsent.signatures,
+          campaign.unverifiedUsers.count,
+        ],
+      });
+    }
   }
 
-  //Signature Lists Stats
+  // Signature Lists Stats
   const statsLists = await analyseSignatureLists();
 
   const tableLists = new Table({
@@ -50,18 +52,20 @@ const runScript = async () => {
     ],
   });
 
-  for (let campaignKey in statsLists) {
-    const campaign = statsLists[campaignKey];
-    tableLists.push({
-      [campaignKey]: [
-        campaign.total.lists,
-        campaign.total.downloads,
-        campaign.anonymous.lists,
-        campaign.anonymous.downloads,
-        campaign.byUser.lists,
-        campaign.byUser.downloads,
-      ],
-    });
+  for (const campaignKey in statsLists) {
+    if (Object.prototype.hasOwnProperty.call(statsLists, campaignKey)) {
+      const campaign = statsLists[campaignKey];
+      tableLists.push({
+        [campaignKey]: [
+          campaign.total.lists,
+          campaign.total.downloads,
+          campaign.anonymous.lists,
+          campaign.anonymous.downloads,
+          campaign.byUser.lists,
+          campaign.byUser.downloads,
+        ],
+      });
+    }
   }
 
   console.log('');
