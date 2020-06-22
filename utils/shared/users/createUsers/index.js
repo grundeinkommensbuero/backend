@@ -1,12 +1,13 @@
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const { getRandomString } = require('../../utils');
 
-//Create a new cognito user in our user pool
+// Create a new cognito user in our user pool
 module.exports.createUserInCognito = (userPoolId, email) => {
-  params = {
+  const params = {
     UserPoolId: userPoolId,
     Username: email,
     UserAttributes: [
@@ -19,14 +20,14 @@ module.exports.createUserInCognito = (userPoolId, email) => {
         Value: email,
       },
     ],
-    MessageAction: 'SUPPRESS', //we don't want to send an "invitation mail"
+    MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
   };
 
   return cognito.adminCreateUser(params).promise();
 };
 
-//confirm user by setting a random password
-//(need to do it this way, because user is in state force_reset_password)
+// confirm user by setting a random password
+// (need to do it this way, because user is in state force_reset_password)
 module.exports.confirmUser = (userPoolId, userId) => {
   const password = getRandomString(20);
   const setPasswordParams = {
@@ -36,7 +37,7 @@ module.exports.confirmUser = (userPoolId, userId) => {
     Permanent: true,
   };
 
-  //set fake password to confirm user
+  // set fake password to confirm user
   return cognito.adminSetUserPassword(setPasswordParams).promise();
 };
 

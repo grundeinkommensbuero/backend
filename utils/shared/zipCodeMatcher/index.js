@@ -4,17 +4,16 @@ const getStateByZipCode = zipCode => {
   const item = data.find(entry => zipCode.startsWith(entry.plz));
   if (typeof item !== 'undefined') {
     return item.bundesland;
-  } else {
-    return undefined;
   }
+
+  return undefined;
 };
 
 const getZipCodeByCity = city => {
   const item = data.find(entry => city === entry.ort);
   if (typeof item !== 'undefined') {
     return item.plz.toString();
-  } else {
-    return undefined;
   }
+  return undefined;
 };
 module.exports = { getStateByZipCode, getZipCodeByCity };

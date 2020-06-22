@@ -8,7 +8,7 @@ const getNewUserCountSinceDate = async date => {
 
   date = new Date(date);
 
-  newUsers = users.filter(user => new Date(user.createdAt) > date);
+  const newUsers = users.filter(user => new Date(user.createdAt) > date);
 
   console.log(`user count since ${date}`, newUsers.length);
 };

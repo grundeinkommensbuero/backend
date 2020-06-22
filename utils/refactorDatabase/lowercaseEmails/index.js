@@ -1,19 +1,13 @@
-const {
-  getAllCognitoUsers,
-  getAllVerifiedCognitoUsers,
-} = require('../../shared/users/getUsers');
-const { confirmUser } = require('../../shared/users/createUsers');
-const fs = require('fs');
-
+const { getAllCognitoUsers } = require('../../shared/users/getUsers');
 const AWS = require('aws-sdk');
+const Bottleneck = require('bottleneck');
+const { PROD_USERS_TABLE_NAME, PROD_USER_POOL_ID } = require('../../config');
+
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
-const Bottleneck = require('bottleneck');
 const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 2 });
-
-const { PROD_USERS_TABLE_NAME, PROD_USER_POOL_ID } = require('../../config');
 
 const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
   try {
@@ -24,7 +18,7 @@ const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
     const changedEmails = [];
     const duplicates = [];
     let count = 0;
-    for (let cognitoUser of cognitoUsers) {
+    for (const cognitoUser of cognitoUsers) {
       await limiter.schedule(async () => {
         const email = cognitoUser.Attributes[2].Value;
         const lowercaseEmail = email.toLowerCase();
@@ -59,10 +53,10 @@ const lowercaseEmailsInCognito = async (userPoolId, tableName) => {
             }
           }
         }
-
-        process.stdout.write(`processed ${count} users\r`);
-        count++;
       });
+
+      process.stdout.write(`processed ${count} users\r`);
+      count++;
     }
 
     console.log('Changed Emails', changedEmails);

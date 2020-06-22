@@ -11,7 +11,7 @@ copy(
     },
     log: true, // default false
   },
-  function(err, result) {
+  (err, result) => {
     if (err) {
       console.log(err);
     }

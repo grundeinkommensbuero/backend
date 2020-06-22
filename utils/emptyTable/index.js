@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const tableName = 'prod-signatures';
@@ -8,7 +9,7 @@ const emptyTable = async () => {
   try {
     const signatureLists = await getSignatureLists(tableName);
 
-    for (let list of signatureLists) {
+    for (const list of signatureLists) {
       await removeSignatureList(list.id);
       console.log('removed list', list.id);
     }
@@ -21,7 +22,7 @@ const removeSignatureList = id => {
   const params = {
     TableName: tableName,
     Key: {
-      id: id,
+      id,
     },
   };
 

@@ -1,14 +1,16 @@
 const CONFIG = require('../../config');
+
 const tableName = CONFIG.PROD_SIGNATURES_TABLE_NAME;
 const { getSignatureLists } = require('../../shared/signatures');
 
+// eslint-disable-next-line no-unused-vars
 const getListDownloadsSinceDate = async (date, campaignCode) => {
   const signatureLists = await getSignatureLists(tableName);
 
   const dateToCompare = Date.parse(date);
   const dailyDownloads = {};
 
-  for (let list of signatureLists) {
+  for (const list of signatureLists) {
     // Don't include lists from letter action
     if (!list.manually && list.campaign.code === campaignCode) {
       // we have to bring the date into the same format (UNIX time) as now
@@ -27,16 +29,17 @@ const getListDownloadsSinceDate = async (date, campaignCode) => {
   console.log(dailyDownloads);
 };
 
+// eslint-disable-next-line no-unused-vars
 const getScansByUsersSinceDate = async (date, campaignCode) => {
   const signatureLists = await getSignatureLists(tableName);
 
   const dateToCompare = Date.parse(date);
   const dailyScans = {};
 
-  for (let list of signatureLists) {
+  for (const list of signatureLists) {
     console.log('checking list', list.id);
     if ('scannedByUser' in list && list.campaign.code === campaignCode) {
-      for (let scan of list.scannedByUser) {
+      for (const scan of list.scannedByUser) {
         // we have to bring the date into the same format (UNIX time) as now
         const timestamp = Date.parse(scan.timestamp);
         if (timestamp > dateToCompare) {
@@ -53,8 +56,10 @@ const getScansByUsersSinceDate = async (date, campaignCode) => {
 
   console.log(dailyScans);
 
-  for (let day in dailyScans) {
-    console.log(day, dailyScans[day].users.size);
+  for (const day in dailyScans) {
+    if (Object.prototype.hasOwnProperty.call(dailyScans, day)) {
+      console.log(day, dailyScans[day].users.size);
+    }
   }
 };
 
@@ -64,10 +69,10 @@ const getReceivedSignaturesSinceDate = async (date, campaignCode) => {
   const dateToCompare = Date.parse(date);
   const dailyReceivedSignatures = {};
 
-  for (let list of signatureLists) {
+  for (const list of signatureLists) {
     console.log('checking list', list.id);
     if ('received' in list && list.campaign.code === campaignCode) {
-      for (let scan of list.received) {
+      for (const scan of list.received) {
         // we have to bring the date into the same format (UNIX time) as now
         const timestamp = Date.parse(scan.timestamp);
         if (timestamp > dateToCompare) {

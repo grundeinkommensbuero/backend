@@ -1,6 +1,7 @@
 const fs = require('fs');
 const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
+
 const paths = {
   mailerlite: './data/mailerlite_users.csv',
   change: './data/change_users.csv',
@@ -8,6 +9,7 @@ const paths = {
   typeform: './data/Ergebnisse Briefaktion.csv',
 };
 const AWS = require('aws-sdk');
+
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const {
@@ -17,6 +19,7 @@ const {
 } = require('../shared/users/createUsers');
 
 const CONFIG = require('../config');
+
 const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
 
@@ -24,13 +27,14 @@ const userPoolId = CONFIG.PROD_USER_POOL_ID;
 // https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html
 const cognitoLimiter = new Bottleneck({ minTime: 200, maxConcurrent: 1 });
 
-//if we want to "manually" add a single user (e.g. after someone asks as via mail)
+// if we want to "manually" add a single user (e.g. after someone asks as via mail)
+// eslint-disable-next-line no-unused-vars
 const addUser = async (email, username) => {
   const date = new Date();
   const timestamp = date.toISOString();
   const user = {
-    email: email,
-    username: username,
+    email,
+    username,
     source: 'manually',
     createdAt: timestamp,
   };
@@ -44,7 +48,7 @@ const migrateUsers = async () => {
 
     console.log('user', users[0]);
 
-    for (let user of users) {
+    for (const user of users) {
       try {
         await createUser(user);
       } catch (error) {
@@ -60,8 +64,8 @@ const migrateUsers = async () => {
   }
 };
 
-//reads and parses the csv file and returns a promise containing
-//an array of the users
+// reads and parses the csv file and returns a promise containing
+// an array of the users
 const readCsv = source => {
   return new Promise(resolve => {
     const users = [];
@@ -71,7 +75,7 @@ const readCsv = source => {
       .pipe(parse({ delimiter: ',' }))
       .on('data', row => {
         let user;
-        //leave out headers
+        // leave out headers
         if (count > 0) {
           console.log('row', row);
           if (source === 'typeform') {
@@ -88,7 +92,7 @@ const readCsv = source => {
               email: row[0],
               createdAt: new Date(row[4]).toISOString(),
               timestampConfirmation: new Date(row[9]).toISOString(),
-              source: source,
+              source,
             };
           }
 
@@ -117,15 +121,14 @@ const createUser = async (user, recreate = false) => {
 
     const userId = created.User.Username;
 
-    //confirm user (by setting fake password)
+    // confirm user (by setting fake password)
     await confirmUser(userPoolId, userId);
 
-    //create new entry in dynamo or recreate the old one
+    // create new entry in dynamo or recreate the old one
     if (recreate) {
       return await recreateUserInDynamo(tableName, userId, user);
-    } else {
-      return await createUserInDynamo(userId, user);
     }
+    return await createUserInDynamo(userId, user);
   });
   return response;
 };
@@ -139,11 +142,11 @@ const createUserInDynamo = (userId, user) => {
       cognitoId: userId,
       email: user.email.toLowerCase(),
       createdAt: timestamp,
-      //username and zipCode might be undefined, the key will just be
-      //left out in dynamo
+      // username and zipCode might be undefined, the key will just be
+      // left out in dynamo
       username: user.username,
       zipCode: user.zipCode,
-      //the timestamp of the newsletter consent depends on the change data
+      // the timestamp of the newsletter consent depends on the change data
       newsletterConsent: {
         value: true,
         timestamp:

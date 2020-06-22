@@ -8,6 +8,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@serverless/eslint-config": "^2.1.0",
+    "cli-table3": "^0.5.1",
     "aws-sdk": "^2.685.0",
     "babel-eslint": "^10.1.0",
     "bottleneck": "^2.19.5",
