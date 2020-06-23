@@ -52,7 +52,11 @@ module.exports.handler = async event => {
             if ('Item' in result) {
               const user = result.Item;
               // Get signature lists of this user and add it to user object
-              user.signatureLists = await getSignatureListsOfUser(userId);
+              const signatureListsResult = await getSignatureListsOfUser(
+                user.cognitoId
+              );
+
+              user.signatureLists = signatureListsResult.Items;
 
               // We also need to get the cognito user to check if the user is verified
               const { UserStatus } = await getCognitoUser(userId);
