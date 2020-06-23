@@ -649,7 +649,7 @@ functions:
         Action:
           - lambda:InvokeFunction
           - lambda:InvokeAsync
-        Resource: 'arn:aws:lambda:eu-central-1:550953582247:function:ubi-serverless-prod-fillPinpoint'
+        Resource: 'arn:aws:lambda:eu-central-1:550953582247:function:ubi-serverless-prod-fillMailjet'
       - Effect: 'Allow' # for the global secondary index of signatures table
         Action:
           - dynamodb:Query
