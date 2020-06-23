@@ -1,9 +1,6 @@
 const { apiKey, apiSecret } = require('../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-const htmlMail = require('./mailTemplate.html').default;
-const htmlMailHamburg = require('./mailTemplateHamburg.html').default;
-
 const GOALS = {
   'schleswig-holstein-1': '24000',
   'brandenburg-1': '24000',
@@ -26,7 +23,6 @@ const sendMail = (
   { email, username, userId, dailyCount, totalCount, campaign },
   totalCountForAllUsers
 ) => {
-
   console.log('about to send email');
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
