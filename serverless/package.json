@@ -32,7 +32,8 @@
     "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-webpack": "^5.3.2",
     "uuid": "^3.4.0",
-    "webpack": "^4.43.0"
+    "webpack": "^4.43.0",
+    "serverless-plugin-split-stacks": "^1.9.3"
   },
   "jest": {
     "modulePathIgnorePatterns": [
