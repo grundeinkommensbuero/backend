@@ -15,7 +15,6 @@
     "csv": "^5.3.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.2",
-    "serverless-plugin-split-stacks": "^1.9.3"
+    "eslint-plugin-import": "^2.20.2"
   }
 }
