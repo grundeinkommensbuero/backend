@@ -45,7 +45,7 @@ const sendMail = (
         },
         // TemplateErrorDeliver: true,
         Variables: {
-          username,
+          username: username ? username : '',
           dailyCount,
           totalCount,
           totalCountGreater5: totalCount > 5,
