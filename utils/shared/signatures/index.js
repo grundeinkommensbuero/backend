@@ -32,4 +32,26 @@ const getSignatureLists = async (
   }
 };
 
-module.exports = { getSignatureLists };
+//function to get signature lists for this particular user
+const getSignatureListsOfUser = async (
+  tableName,
+  userId,
+  campaignCode = null
+) => {
+  const params = {
+    TableName: tableName,
+    IndexName: 'userIdIndex',
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: { ':userId': userId },
+  };
+
+  // If a campaign code is provided add a filter expression
+  if (campaignCode) {
+    params.FilterExpression = 'campaign.code = :campaignCode';
+    params.ExpressionAttributeValues[':campaignCode'] = campaignCode;
+  }
+
+  return ddb.query(params).promise();
+};
+
+module.exports = { getSignatureLists, getSignatureListsOfUser };
