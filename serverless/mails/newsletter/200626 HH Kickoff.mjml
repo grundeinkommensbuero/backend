@@ -1,0 +1,107 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Unsere erfolgreiche Volksinitiative wird in der Hamburgischen Bürgerschaft verhandelt.
+      Was sagen wir dazu? Um das zu besprechen, treffen wir uns.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          <h2>Expedition Grundeinkommen: Es geht weiter.</h2>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          wieder einmal setzt Hamburg Maßstäbe: Schon bald wird es zum ersten Mal in einem
+          deutschen Landesparlament zu einer Anhörung und Diskussion über einen Grundeinkommens-Modellversuch kommen!
+          <br><br>
+          Wir als Expedition Grundeinkommen werden dabei eingeladen, im Sozialausschuss der Bürgerschaft
+          unsere Initiative darzustellen und unsere Argumente zu vertreten. Übernimmt die Hamburgische
+          Bürgerschaft unsere Gesetzesvorlage nicht, kommt es zur zweiten Direkten-Demokratie-Stufe: dem Volksbegehren.
+          <br><br>
+          Das alles wollen wir besprechen und vorbereiten. Daher laden wir dich ein zur großen
+          <br>
+        </mj-text>
+
+        <mj-text align="center">
+          <h3>
+            Expeditionsversammlung<br>
+            am 12. Juli 14 - 17 Uhr<br>
+            im Gewächshaus in der Wartenau 16 in Hamburg-Eilbek<br>
+          </h3>
+          (unter Beachtung der Corona-Auflagen)
+        </mj-text>
+
+        <mj-text>
+          <br>
+          Bitte sage uns, ob du kommen kannst:
+
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/danke/?surveyCode=hamburg-kickoff&answer=wants-to-come&userId={{User.UserId}}">
+          Da will ich dabei sein!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/danke/?surveyCode=hamburg-kickoff&answer=cannot-come&userId={{User.UserId}}">
+          Ich wär gern dabei, kann an diesem Tag aber leider nicht.
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/danke/?surveyCode=hamburg-kickoff&answer=videostream&userId={{User.UserId}}">
+          Ich bin per Videostream dabei.
+        </mj-button>
+        <mj-text>
+
+          Eine zweite Einladung mit den Themen und dem Ablauf erhältst du einige Tage vor der Versammlung.
+          <br><br>
+          Bei dem Treffen können wir uns wiedersehen, alle Fragen beantworten und auch die
+          Vertrauenspersonen bestimmen, die die Initiative in der zweiten Runde offiziell vertreten.
+          <br><br>
+          Du kannst dir vorstellen, in der zweiten Runde eine der drei Vertrauenspersonen zu sein?
+          Dann antworte bitte auf diese E-Mail, und wir nehmen Kontakt zu dir auf.
+          <br><br>
+          Wir freuen uns auf euch alle!
+          <br><br>
+          Laura, Joy und der Hamburger Initiator*innen-Kreis der Expedition Grundeinkommen
+        </mj-text>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/danke/?surveyCode=hamburg-kickoff&answer=wants-to-come&userId={{User.UserId}}">
+          Da will ich dabei sein!
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/danke/?surveyCode=hamburg-kickoff&answer=cannot-come&userId={{User.UserId}}">
+          Ich wär gern dabei, kann an diesem Tag aber leider nicht.
+        </mj-button>
+
+        <mj-button width="80%" align="center" padding-top="20px" padding-bottom="20px" href="https://expedition-grundeinkommen.de/danke/?surveyCode=hamburg-kickoff&answer=videostream&userId={{User.UserId}}">
+          Ich bin per Videostream dabei.
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          Wenn du uns monatlich unterstützen willst, kannst du das
+          per Dauerauftrag bei Paypal oder direkt auf unser Konto tun:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01
+        </mj-text>
+
+        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Paypal
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Wir sind gemeinnützig, das heißt: Du kannst deine Spende steuerlich absetzen.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
