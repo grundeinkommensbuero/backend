@@ -1,0 +1,69 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Wir legen los!
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo{{Attributes.UsernameWithSpace}},
+          <br><br>
+          vielen Dank an alle, die an der Kick-Off-Umfrage teilgenommen haben.
+          Wir freuen uns sehr, dass in Bremen der Spirit des Grundeinkommens blüht
+          und gedeiht! Darum wollen wir uns jetzt zeitnah alle kennenlernen,
+          um gemeinsam eine erfolgreiche Kampagne auf die Beine zu stellen.
+          <br><br>
+          Wir treffen uns am
+          <h3>Dienstag, 7. Juli um 19 Uhr</h3>
+          Bitte merk dir den Termin schon einmal im Kalender vor. Den Ort teilen wir mit, sobald er feststeht.
+          <br><br>
+          Wir werden bei dem Termin den Gesetzentwurf zum Modellversuch anschauen,
+          uns einen Überblick über den Prozess verschaffen und Learnings aus der
+          Expeditions-Kampagne in Hamburg teilen.
+          Daraus entwickeln wir gemeinsam einen “Schlachtplan” für unsere Unterschriftensammlung.
+          Drumherum gibt es natürlich viel Zeit zum Fragenstellen und Schnacken :)
+          <br><br>
+          Wenn du angegeben hast, dass du an dem Termin nicht kannst, oder dass ein Termin
+          vor Ort für dich nicht in Frage kommt, melden wir uns in den kommenden Tagen
+          noch einmal persönlich bei dir. Auch wenn du dich als mögliche Vertrauensperson
+          gemeldet hast, hörst du auf jeden Fall persönlich von uns.
+          <br><br>
+          Wir freuen uns riesig, dich kennenzulernen ‒ gemeinsam bringen wir das
+          Grundeinkommen in Bremen mit großen Schritten voran!
+          <br><br>
+          Herzlich<br>
+          Eure Joy & Laura
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+          Wenn du uns monatlich unterstützen willst, kannst du das
+          per Dauerauftrag bei Paypal oder direkt auf unser Konto tun:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01
+        </mj-text>
+
+        <mj-button color="#fef377" border="1px solid #fef377" align="left" padding-top="20px" padding-bottom="20px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url">
+          Paypal
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          Wir sind gemeinnützig, das heißt: Du kannst deine Spende steuerlich absetzen.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
