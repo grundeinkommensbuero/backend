@@ -173,6 +173,32 @@ const getAllUsers = async (tableName, users = [], startKey = null) => {
   }
 };
 
+//functions which gets all users with pledge and uses the lastEvaluatedKey
+//to make multiple requests
+const getUsersWithPledge = async (tableName, users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(pledges)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  //add elements to existing array
+  users.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getUsersWithPledge(tableName, users, result.LastEvaluatedKey);
+  } else {
+    //otherwise return the array
+    return users;
+  }
+};
+
 const getUsersWithSurvey = async (tableName, users = [], startKey = null) => {
   const params = {
     TableName: tableName,
@@ -244,4 +270,5 @@ module.exports = {
   getUsersWithSurvey,
   getCognitoUser,
   getAllVerifiedCognitoUsers,
+  getUsersWithPledge,
 };
