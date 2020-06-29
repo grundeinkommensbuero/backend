@@ -1,14 +1,14 @@
 const AWS = require('aws-sdk');
-const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const lambda = new AWS.Lambda();
-
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const {
   getAllUnverifiedCognitoUsers,
   isVerified,
 } = require('../../../shared/users');
 const { syncMailjetContact } = require('../');
+
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const lambda = new AWS.Lambda();
 
 const tableName = process.env.USERS_TABLE_NAME;
 
@@ -63,8 +63,8 @@ const processBatchOfUsers = async (
     const users = result.Items;
 
     let count = 0;
-    for (let user of users) {
-      //check if the user is verified
+    for (const user of users) {
+      // check if the user is verified
       const verified = isVerified(user, unverifiedCognitoUsers);
 
       // Get signature lists of this user and add it to user object
