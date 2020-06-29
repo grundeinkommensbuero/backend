@@ -1,6 +1,4 @@
 const AWS = require('aws-sdk');
-const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
 const { getAllUsers, getUserByMail } = require('../../shared/users/getUsers');
 const {
   deleteUserInCognito,
@@ -11,8 +9,10 @@ const {
   getSignatureListsOfUser,
   getScannedByUserSignatureLists,
 } = require('../../shared/signatures');
-
 const CONFIG = require('../../config');
+
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
 const usersTableName = CONFIG.PROD_USERS_TABLE_NAME;
 const signaturesTableName = CONFIG.PROD_SIGNATURES_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
@@ -86,7 +86,7 @@ const updateUserRecord = (user, duplicate) => {
     signatureCampaigns = user.signatureCampaigns;
 
     if (duplicate.signatureCampaigns) {
-      for (campaign of duplicate.signatureCampaigns) {
+      for (const campaign of duplicate.signatureCampaigns) {
         if (!signatureCampaigns.includes(campaign)) {
           signatureCampaigns.push(campaign);
         }
@@ -101,7 +101,7 @@ const updateUserRecord = (user, duplicate) => {
     surveys = user.surveys;
 
     if (duplicate.surveys) {
-      for (duplicateSurvey of duplicate.surveys) {
+      for (const duplicateSurvey of duplicate.surveys) {
         if (
           surveys.findIndex(survey => survey.code === duplicateSurvey.code) ===
           -1
@@ -206,7 +206,7 @@ const updateUserRecord = (user, duplicate) => {
     newsletterConsent = user.newsletterConsent;
   }
 
-  let createdAt =
+  const createdAt =
     new Date(user.createdAt) < new Date(duplicate.createdAt)
       ? user.createdAt
       : duplicate.createdAt;

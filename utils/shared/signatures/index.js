@@ -27,13 +27,12 @@ const getSignatureLists = async (
       signatureLists,
       result.LastEvaluatedKey
     );
-  } 
-    // otherwise return the array
-    return signatureLists;
-  
+  }
+  // otherwise return the array
+  return signatureLists;
 };
 
-//function to get signature lists for this particular user
+// function to get signature lists for this particular user
 const getSignatureListsOfUser = async (
   tableName,
   userId,
@@ -70,20 +69,20 @@ const getScannedByUserSignatureLists = async (
   }
 
   const result = await ddb.scan(params).promise();
-  //add elements to existing array
+  // add elements to existing array
   signatureLists.push(...result.Items);
 
-  //call same function again, if the whole table has not been scanned yet
+  // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getScannedByUserSignatureLists(
       tableName,
       signatureLists,
       result.LastEvaluatedKey
     );
-  } else {
-    //otherwise return the array
-    return signatureLists;
   }
+
+  // otherwise return the array
+  return signatureLists;
 };
 
 module.exports = {
