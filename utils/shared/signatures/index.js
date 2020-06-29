@@ -54,4 +54,39 @@ const getSignatureListsOfUser = async (
   return ddb.query(params).promise();
 };
 
-module.exports = { getSignatureLists, getSignatureListsOfUser };
+const getScannedByUserSignatureLists = async (
+  tableName,
+  signatureLists = [],
+  startKey = null
+) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(scannedByUser)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+  //add elements to existing array
+  signatureLists.push(...result.Items);
+
+  //call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getScannedByUserSignatureLists(
+      tableName,
+      signatureLists,
+      result.LastEvaluatedKey
+    );
+  } else {
+    //otherwise return the array
+    return signatureLists;
+  }
+};
+
+module.exports = {
+  getSignatureLists,
+  getSignatureListsOfUser,
+  getScannedByUserSignatureLists,
+};
