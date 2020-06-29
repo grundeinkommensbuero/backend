@@ -1,8 +1,9 @@
 const { PROD_USERS_TABLE_NAME } = require('../../config');
 const { getUserByMail } = require('../../shared/users/getUsers');
-const PATH = './startnext users.csv';
 const fs = require('fs');
 const parse = require('csv-parse');
+
+const PATH = './startnext users.csv';
 
 const checkDuplicates = async () => {
   const users = await readCsv();
@@ -10,7 +11,7 @@ const checkDuplicates = async () => {
   console.log('startnext users length', users.length);
   const withoutDuplicates = [];
 
-  for (let user of users) {
+  for (const user of users) {
     const result = await getUserByMail(PROD_USERS_TABLE_NAME, user.email);
 
     if (result.Count === 0) {
@@ -22,8 +23,8 @@ const checkDuplicates = async () => {
   generateCsv(withoutDuplicates);
 };
 
-//reads and parses the csv file and returns a promise containing
-//an array of the users
+// reads and parses the csv file and returns a promise containing
+// an array of the users
 const readCsv = () => {
   return new Promise(resolve => {
     const users = [];
@@ -33,7 +34,7 @@ const readCsv = () => {
       .pipe(parse({ delimiter: ';' }))
       .on('data', row => {
         let user;
-        //leave out headers
+        // leave out headers
         if (count > 0) {
           user = {
             email: row[4],
@@ -54,14 +55,14 @@ const readCsv = () => {
   });
 };
 
-//Parses the users array to a string and saves it as csv file
+// Parses the users array to a string and saves it as csv file
 const generateCsv = users => {
   let dataString = 'ChannelType,Address,Demographic.Make\n';
-  for (let user of users) {
-    //for now we just expect a user to only have one pledge
+  for (const user of users) {
+    // for now we just expect a user to only have one pledge
     dataString += `EMAIL,${user.email},${user.username}\n`;
   }
-  fs.writeFileSync(`without duplicates.csv`, dataString);
+  fs.writeFileSync('without duplicates.csv', dataString);
 };
 
 checkDuplicates();
