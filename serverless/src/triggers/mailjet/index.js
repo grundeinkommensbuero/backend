@@ -2,6 +2,7 @@ const { apiKey, apiSecret } = require('../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 const fetch = require('node-fetch').default;
 const zipCodeMatcher = require('../../shared/zipCodeMatcher');
+
 const createdSurveyAttributes = [];
 const contactListId = '10234980';
 
@@ -26,7 +27,7 @@ const syncMailjetContact = async (user, verified) => {
 
 // This function updates the user data in mailjet
 const updateMailjetContact = async ({
-  cognitoId: userId, //rename cognitoId to userId while destructuring
+  cognitoId: userId, // rename cognitoId to userId while destructuring
   email,
   zipCode,
   username,
@@ -60,9 +61,9 @@ const updateMailjetContact = async ({
   // Check how many signatures we already received from the user,
   // how many he*she has scanned and how many lists were downloaded
 
-  for (let list of signatureLists) {
+  for (const list of signatureLists) {
     if ('received' in list) {
-      for (let scan of list.received) {
+      for (const scan of list.received) {
         mailjetUser.receivedSignatureCount += scan.count;
       }
     }
@@ -75,13 +76,13 @@ const updateMailjetContact = async ({
   // Use the scan record in the user object,
   // because in includes scans for anonymous lists or lists of other users
   if (typeof scannedLists !== 'undefined') {
-    for (let scan of scannedLists) {
+    for (const scan of scannedLists) {
       mailjetUser.scannedSignatureCount += scan.count;
     }
   }
 
   if (typeof signatureCampaings !== 'undefined') {
-    for (let campaign of signatureCampaigns) {
+    for (const campaign of signatureCampaigns) {
       checkIfActiveInState(mailjetUser, campaign.state);
     }
   }
@@ -97,7 +98,7 @@ const updateMailjetContact = async ({
   }
 
   if (typeof pledges !== 'undefined') {
-    for (let pledge of pledges) {
+    for (const pledge of pledges) {
       if ('signatureCount' in pledge && pledge.signatureCount) {
         mailjetUser.pledgedSignatureCount = pledge.signatureCount;
       }
@@ -113,7 +114,7 @@ const updateMailjetContact = async ({
   }
 
   if (typeof surveys !== 'undefined') {
-    for (let survey of surveys) {
+    for (const survey of surveys) {
       // We need to strip the attribute of "-", because mailjet doesn't allow that
       const surveyName = `survey_${survey.code.replace('-', '')}`;
 
@@ -243,10 +244,10 @@ const createMailjetAttribute = async (attribute, datatype) => {
       Name: attribute,
       NameSpace: 'static',
     });
-  } else {
-    console.log('already created survey attribute', attribute);
-    return;
   }
+
+  console.log('already created survey attribute', attribute);
+  return null;
 };
 
 const checkIfActiveInState = (mailjetUser, state) => {
