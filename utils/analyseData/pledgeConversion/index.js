@@ -18,6 +18,8 @@ const getPledgeConversion = async (
     for (const pledge of user.pledges) {
       return pledge.campaign.code === campaignCode;
     }
+
+    return false;
   });
 
   let conversionSum = 0;
