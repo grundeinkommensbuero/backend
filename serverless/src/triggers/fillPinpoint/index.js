@@ -248,7 +248,7 @@ const updateEndpoint = async (user, verified) => {
         Region: region,
       },
       //if user is not yet verified opt out in pinpoint
-      OptOut: verified ? 'NONE' : 'ALL',
+      OptOut: verified && newsletterConsent ? 'NONE' : 'ALL',
       User: {
         UserId: userId,
       },
