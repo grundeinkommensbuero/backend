@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk');
 const { deleteMailjetContact, syncMailjetContact } = require('../');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { getUser, getCognitoUser } = require('../../../shared/users');
@@ -7,7 +6,7 @@ module.exports.handler = async event => {
   try {
     // Only run the script if the environment is prod
     if (process.env.STAGE === 'prod') {
-      for (let record of event.Records) {
+      for (const record of event.Records) {
         console.log({ record });
 
         // Check whether the stream came from users or signatures table
@@ -17,11 +16,9 @@ module.exports.handler = async event => {
         if ('cognitoId' in record.dynamodb.Keys) {
           cameFromUsersTable = true;
           userId = record.dynamodb.Keys.cognitoId.S;
-        } else {
+        } else if (record.eventName !== 'REMOVE') {
           // came from signatures table stream
-          if (record.eventName !== 'REMOVE') {
-            userId = record.dynamodb.NewImage.userId.S;
-          }
+          userId = record.dynamodb.NewImage.userId.S;
         }
 
         if (record.eventName === 'REMOVE') {
@@ -39,31 +36,29 @@ module.exports.handler = async event => {
               console.log('error deleting contact', error);
             }
           }
-        } else {
+        } else if (userId !== 'anonymous') {
           // Record was updated
-          if (userId !== 'anonymous') {
-            console.log('about to update user', userId);
-            console.log('came from users table', cameFromUsersTable);
+          console.log('about to update user', userId);
+          console.log('came from users table', cameFromUsersTable);
 
-            // We want to get the normal dynamo record to not have to deal
-            // with the weird data format of the stream
-            const result = await getUser(userId);
+          // We want to get the normal dynamo record to not have to deal
+          // with the weird data format of the stream
+          const result = await getUser(userId);
 
-            if ('Item' in result) {
-              const user = result.Item;
-              // Get signature lists of this user and add it to user object
-              const signatureListsResult = await getSignatureListsOfUser(
-                user.cognitoId
-              );
+          if ('Item' in result) {
+            const user = result.Item;
+            // Get signature lists of this user and add it to user object
+            const signatureListsResult = await getSignatureListsOfUser(
+              user.cognitoId
+            );
 
-              user.signatureLists = signatureListsResult.Items;
+            user.signatureLists = signatureListsResult.Items;
 
-              // We also need to get the cognito user to check if the user is verified
-              const { UserStatus } = await getCognitoUser(userId);
-              const verified = UserStatus === 'CONFIRMED';
+            // We also need to get the cognito user to check if the user is verified
+            const { UserStatus } = await getCognitoUser(userId);
+            const verified = UserStatus === 'CONFIRMED';
 
-              await syncMailjetContact(user, verified);
-            }
+            await syncMailjetContact(user, verified);
           }
         }
       }
@@ -73,5 +68,5 @@ module.exports.handler = async event => {
     console.log('error while updating mailjet', error);
   }
 
-  return;
+  return event;
 };
