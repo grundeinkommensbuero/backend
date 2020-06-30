@@ -1,10 +1,5 @@
-const AWS = require('aws-sdk');
-
-const ddb = new AWS.DynamoDB.DocumentClient();
-const { getUser } = require('../../../shared/users');
+const { getUser, updateNewsletterConsent } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
-
-const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
   try {
@@ -32,7 +27,7 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      await saveUser(userId, requestBody.newsletterConsent);
+      await updateNewsletterConsent(userId, requestBody.newsletterConsent);
 
       // updating user was successful, return appropriate json
       return {
@@ -61,31 +56,4 @@ const isAuthorized = event => {
   return (
     event.requestContext.authorizer.claims.sub === event.pathParameters.userId
   );
-};
-
-const saveUser = (userId, newsletterConsent) => {
-  const timestamp = new Date().toISOString();
-
-  const data = {
-    ':newsletterConsent': {
-      value:
-        // If there is no newsletter consent in the request we set it to true
-        typeof newsletterConsent !== 'undefined' ? newsletterConsent : true,
-      timestamp,
-    },
-    ':updatedAt': timestamp,
-  };
-
-  const updateExpression =
-    'set newsletterConsent = :newsletterConsent, updatedAt = :updatedAt';
-
-  return ddb
-    .update({
-      TableName: tableName,
-      Key: { cognitoId: userId },
-      UpdateExpression: updateExpression,
-      ExpressionAttributeValues: data,
-      ReturnValues: 'UPDATED_NEW',
-    })
-    .promise();
 };
