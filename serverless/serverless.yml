@@ -438,6 +438,28 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  unsubscribeUser:
+    handler: src/api/users/unsubscribeUser/index.handler
+    events:
+      - http:
+          path: users/unsubscribe-callback
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
+
   createSurveyAnswer:
     handler: src/api/users/createSurveyAnswer/index.handler
     events:
