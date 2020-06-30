@@ -9,4 +9,5 @@ contentfulConfig.js
 mailjetConfig.js
 secretConfig.js
 mailjetConfig.js
+basicAuth.js
 list*.pdf

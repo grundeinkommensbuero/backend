@@ -51,10 +51,9 @@ const getAllUsers = async (users = [], startKey = null) => {
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getAllUsers(users, result.LastEvaluatedKey);
-  } 
-    // otherwise return the array
-    return users;
-  
+  }
+  // otherwise return the array
+  return users;
 };
 
 // Checks, if the user is part of the unverified cognito users
@@ -92,9 +91,8 @@ const getAllUnverifiedCognitoUsers = async (
       unverifiedCognitoUsers,
       data.PaginationToken
     );
-  } 
-    return unverifiedCognitoUsers;
-  
+  }
+  return unverifiedCognitoUsers;
 };
 
 const getCognitoUser = userId => {
@@ -106,6 +104,33 @@ const getCognitoUser = userId => {
   return cognito.adminGetUser(params).promise();
 };
 
+const updateNewsletterConsent = (userId, newsletterConsent) => {
+  const timestamp = new Date().toISOString();
+
+  const data = {
+    ':newsletterConsent': {
+      value:
+        // If there is no newsletter consent in the request we set it to true
+        typeof newsletterConsent !== 'undefined' ? newsletterConsent : true,
+      timestamp,
+    },
+    ':updatedAt': timestamp,
+  };
+
+  const updateExpression =
+    'set newsletterConsent = :newsletterConsent, updatedAt = :updatedAt';
+
+  return ddb
+    .update({
+      TableName: tableName,
+      Key: { cognitoId: userId },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: data,
+      ReturnValues: 'UPDATED_NEW',
+    })
+    .promise();
+};
+
 module.exports = {
   getUser,
   getUserByMail,
@@ -113,4 +138,5 @@ module.exports = {
   isVerified,
   getAllUnverifiedCognitoUsers,
   getCognitoUser,
+  updateNewsletterConsent,
 };
