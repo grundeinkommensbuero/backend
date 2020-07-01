@@ -82,7 +82,7 @@ const updateMailjetContact = async ({
     }
   }
 
-  if (typeof signatureCampaings !== 'undefined') {
+  if (typeof signatureCampaigns !== 'undefined') {
     for (const campaign of signatureCampaigns) {
       checkIfActiveInState(mailjetUser, campaign.state);
     }
