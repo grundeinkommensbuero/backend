@@ -1,14 +1,16 @@
+const AWS = require('aws-sdk');
 const fs = require('fs');
 const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
+const zipCodeMatcher = require('../shared/zipCodeMatcher');
 
 const paths = {
   mailerlite: './data/mailerlite_users.csv',
   change: './data/change_users.csv',
+  'change-2': './data/change_users_2.csv',
   signaturesTest: './data/signatures_test_users.csv',
   typeform: './data/Ergebnisse Briefaktion.csv',
 };
-const AWS = require('aws-sdk');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
@@ -44,12 +46,11 @@ const addUser = async (email, username) => {
 
 const migrateUsers = async () => {
   try {
-    const users = await readCsv('typeform');
-
-    console.log('user', users[0]);
+    const users = await readCsv('change-2');
 
     for (const user of users) {
       try {
+        // console.log('user', user);
         await createUser(user);
       } catch (error) {
         if (error.code === 'UsernameExistsException') {
@@ -92,6 +93,14 @@ const readCsv = source => {
               email: row[0],
               createdAt: new Date(row[4]).toISOString(),
               timestampConfirmation: new Date(row[9]).toISOString(),
+              source,
+            };
+          } else if (source === 'change' || source === 'change-2') {
+            user = {
+              email: row[0],
+              username: row[2],
+              zipCode: zipCodeMatcher.getZipCodeByCity(row[11]),
+              createdAt: new Date(transformDate(row[10])).toISOString(),
               source,
             };
           }
