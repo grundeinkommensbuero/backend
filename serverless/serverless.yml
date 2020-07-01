@@ -637,6 +637,14 @@ functions:
           - cognito-idp:AdminGetUser
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
 
   fillMailjet:
     handler: src/triggers/mailjet/fillMailjet/index.handler
