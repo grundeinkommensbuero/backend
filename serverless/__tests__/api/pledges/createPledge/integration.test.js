@@ -17,7 +17,7 @@ describe('createPledge api test', () => {
         signatureCount: 6,
         newsletterConsent: true,
         zipCode: '72074',
-        username: 'Vali',
+        name: 'Vali',
       }),
     };
 
@@ -46,6 +46,7 @@ describe('createPledge api test', () => {
     const response = await fetch(`${INVOKE_URL}/pledges`, request);
 
     expect(response.status).toEqual(401);
+    console.log(await response.json());
   });
 
   it('should create general pledge with message', async () => {
