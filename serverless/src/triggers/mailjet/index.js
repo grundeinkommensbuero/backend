@@ -51,6 +51,7 @@ const updateMailjetContact = async ({
     activeInHamburg: false,
     surveyParams: [],
     migratedFrom: 'nowhere',
+    username: username || '',
   };
 
   // construct name with space before
@@ -148,6 +149,10 @@ const updateMailjetContact = async ({
       {
         Name: 'username_with_space',
         Value: mailjetUser.usernameWithSpace,
+      },
+      {
+        Name: 'username',
+        Value: mailjetUser.username,
       },
       {
         Name: 'active_in_berlin',
