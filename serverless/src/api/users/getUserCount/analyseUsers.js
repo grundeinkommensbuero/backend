@@ -83,7 +83,15 @@ module.exports.analyseUsers = async () => {
 
       // Also check if there is campaign code which was added when downloading list
       if ('signatureCampaigns' in user) {
-        for (const campaign of user.signatureCampaigns) {
+        // filter out duplicates
+        const signatureCampaigns = user.signatureCampaigns.filter(
+          (campaign, index) =>
+            user.signatureCampaigns.findIndex(
+              item => item.code === campaign.code
+            ) === index
+        );
+
+        for (const campaign of signatureCampaigns) {
           campaignsOfUser.push(campaign.code);
 
           if (!(campaign.code in campaignStats)) {
@@ -99,7 +107,10 @@ module.exports.analyseUsers = async () => {
         }
       }
 
-      for (const campaign of campaignsOfUser) {
+      // Filter out duplicates of campaignsOfUser
+      const uniqueCampaignsOfUser = [...new Set(campaignsOfUser)];
+
+      for (const campaign of uniqueCampaignsOfUser) {
         if (verified) {
           // General count for this campaign
           campaignStats[campaign].verifiedUsers.count++;
