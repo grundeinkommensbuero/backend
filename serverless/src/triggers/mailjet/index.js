@@ -72,6 +72,8 @@ const updateMailjetContact = async ({
     if (list.downloads) {
       mailjetUser.downloadedListCount += list.downloads;
     }
+
+    checkIfActiveInState(mailjetUser, list.campaign.state);
   }
 
   // Use the scan record in the user object,
