@@ -86,7 +86,7 @@ module.exports.handler = async event => {
     };
   } catch (error) {
     console.log('error while getting power users', error);
-    return errorResponse('error while getting power users');
+    return errorResponse(500, 'error while getting power users', error);
   }
 };
 
