@@ -1,4 +1,5 @@
 const { getAllSignatureLists } = require('../../../shared/signatures');
+const { errorResponse } = require('../../../shared/apiResponse');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -6,29 +7,34 @@ const responseHeaders = {
 };
 
 module.exports.handler = async event => {
-  let dateToCompare;
+  try {
+    let dateToCompare;
 
-  // Get date from on to get history from query params
-  if (event.queryStringParameters && event.queryStringParameters.date) {
-    dateToCompare = new Date(event.queryStringParameters.date);
-  } else {
-    // Default should just be the last 4 weeks
-    dateToCompare = new Date(new Date().getTime() - 28 * 24 * 60 * 60 * 1000);
+    // Get date from on to get history from query params
+    if (event.queryStringParameters && event.queryStringParameters.date) {
+      dateToCompare = new Date(event.queryStringParameters.date);
+    } else {
+      // Default should just be the last 4 weeks
+      dateToCompare = new Date(new Date().getTime() - 28 * 24 * 60 * 60 * 1000);
+    }
+
+    console.log('dateToCompare', dateToCompare);
+
+    const history = await getListDownloadsAndScansSinceDate(dateToCompare);
+
+    return {
+      statusCode: 200,
+      headers: responseHeaders,
+      isBase64Encoded: false,
+      body: JSON.stringify({
+        message: 'Successfully retrieved history of signature lists',
+        history,
+      }),
+    };
+  } catch (error) {
+    console.log('error while getting signature history', error);
+    return errorResponse(500, 'Error while getting signature history', error);
   }
-
-  console.log('dateToCompare', dateToCompare);
-
-  const history = await getListDownloadsAndScansSinceDate(dateToCompare);
-
-  return {
-    statusCode: 200,
-    headers: responseHeaders,
-    isBase64Encoded: false,
-    body: JSON.stringify({
-      message: 'Successfully retrieved history of signature lists',
-      history,
-    }),
-  };
 };
 
 const getListDownloadsAndScansSinceDate = async dateToCompare => {
