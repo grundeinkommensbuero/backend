@@ -1,7 +1,7 @@
 # Grundeinkommensbüro Backend
 
 This is the backend for our website. The backend is based on serverless lambda functions.
-It uses the Serverless Framework (https://www.serverless.com/) to define infrastructure as a code and deploy the codebase to AWS easily. Functions are bundled individally through webpack with help of the serverless-webpack package (https://github.com/serverless-heaven/serverless-webpack). It uses AWS Cognito for User Authentication and DynamoDB as a non-relational database. The stack can be deployed to multiple stages.
+It uses the [Serverless Framework](https://www.serverless.com/) to define infrastructure as a code and deploy the codebase to AWS easily. Functions are bundled individally through webpack with help of the [serverless-webpack](https://github.com/serverless-heaven/serverless-webpack) package. It uses AWS Cognito for User Authentication and DynamoDB as a non-relational database. The stack can be deployed to multiple stages. The API documentation can be viewed [here](https://grundeinkommensbuero.github.io/backend/index.html).
 
 ## Getting Started
 
