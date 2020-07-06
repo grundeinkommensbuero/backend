@@ -1016,7 +1016,7 @@ paths:
 
   /admin/signatures/{listId}:
     patch:
-      summary: Updates a signature list as an admin (register received signatures)
+      summary: Updates a signature list as an admin
       description: Through this endpoint received signatues can be registered
       security:
         - AdminApiKeyAuth: []
