@@ -1,99 +1,52 @@
-const { getUserByMail } = require('../../shared/users/getUsers');
-const fs = require('fs');
-const parse = require('csv-parse');
 const AWS = require('aws-sdk');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const PATH = './HH Ergebnisse Briefaktion.csv';
 
 const analyse = async () => {
-  const users = await readCsv();
+  let receivedListCount = 0;
 
-  let totalCount = 0;
-  let hasSentCount = 0;
+  const signatureLists = await getSignatureListsFromLetters('berlin-1');
 
-  for (const user of users) {
-    const result = await getUserByMail('prod-users', user.email);
+  let receivedSignatureCount = 0;
 
-    if (result.Count > 0) {
-      const signatureLists = await getSignatureListsOfUser(
-        result.Items[0].cognitoId
-      );
-
-      let receivedCount = 0;
-
-      for (const list of signatureLists) {
-        if (list.manually && 'received' in list) {
-          for (const scan of list.received) {
-            receivedCount += scan.count;
-          }
-
-          hasSentCount++;
-        }
-
-        if (!list.manually) {
-          console.log('user has not manual list');
-        }
+  for (const list of signatureLists) {
+    if ('received' in list) {
+      for (const scan of list.received) {
+        receivedSignatureCount += scan.count;
       }
 
-      console.log('receivedCount', user.email, receivedCount);
-
-      totalCount += receivedCount;
+      receivedListCount++;
     }
   }
 
-  console.log('users', users.length);
-  console.log('total count', totalCount);
-  console.log('has sent count', hasSentCount);
-  console.log('average', totalCount / users.length);
+  console.log('generated lists', signatureLists.length);
+  console.log('received lists', receivedListCount);
+  console.log('received signatures', receivedSignatureCount);
+  console.log(
+    'average for people who sent list',
+    receivedSignatureCount / receivedListCount
+  );
+
+  console.log(
+    'average for all',
+    receivedSignatureCount / signatureLists.length
+  );
 };
 
-// reads and parses the csv file and returns a promise containing
-// an array of the users
-const readCsv = () => {
-  return new Promise(resolve => {
-    const users = [];
-    let count = 0;
-
-    fs.createReadStream(PATH)
-      .pipe(parse({ delimiter: ',' }))
-      .on('data', row => {
-        let user;
-        // leave out headers
-        if (count > 0) {
-          user = {
-            email: row[12] === '' ? row[9] : row[12],
-          };
-
-          if (typeof user !== 'undefined' && user.email !== '') {
-            users.push(user);
-          }
-        }
-
-        count++;
-      })
-      .on('end', () => {
-        console.log('finished parsing');
-        resolve(users);
-      });
-  });
-};
-
-// function to get signature lists for this particular user
-const getSignatureListsOfUser = async (
-  userId,
+// function to get signature lists which were created for letters
+const getSignatureListsFromLetters = async (
   campaignCode = null,
   signatureLists = [],
   startKey = null
 ) => {
   let filter;
-  const values = { ':userId': userId };
+  const values = { ':manually': true };
   if (campaignCode) {
-    filter = 'userId = :userId AND campaign.code = :campaignCode';
+    filter = 'manually = :manually AND campaign.code = :campaignCode';
     values[':campaignCode'] = campaignCode;
   } else {
-    filter = 'userId = :userId';
+    filter = 'manually = :manually';
   }
 
   const params = {
@@ -101,6 +54,7 @@ const getSignatureListsOfUser = async (
     FilterExpression: filter,
     ExpressionAttributeValues: values,
   };
+
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
   }
@@ -111,16 +65,14 @@ const getSignatureListsOfUser = async (
 
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return await getSignatureListsOfUser(
-      userId,
+    return await getSignatureListsFromLetters(
       campaignCode,
       signatureLists,
       result.LastEvaluatedKey
     );
-  } 
-    // otherwise return the array
-    return signatureLists;
-  
+  }
+  // otherwise return the array
+  return signatureLists;
 };
 
 analyse();
