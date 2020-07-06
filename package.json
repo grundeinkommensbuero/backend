@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "This is a sample template for cognito-sam - Below is a brief explanation of what we have generated for you:",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "bundleDocumentation": "redoc-cli bundle docs/documentation.yml -o docs/documentation.html",
+    "serveDocumentation": "redoc-cli serve docs/documentation.yml"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",
@@ -18,6 +21,7 @@
     "csv": "^5.3.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint-plugin-import": "^2.20.2",
+    "redoc-cli": "^0.9.8"
   }
 }
