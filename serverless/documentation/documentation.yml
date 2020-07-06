@@ -1,0 +1,1448 @@
+openapi: 3.0.3
+info:
+  description: |
+    This is the documentation for the api of the open source web application part of the [Expedition Grundeinkommen](https://expedition-grundeinkommen.de) campaign. 
+
+    #### Github Repos:
+
+    Back End: https://github.com/grundeinkommensbuero/backend
+
+    Web Application: https://github.com/grundeinkommensbuero/website
+
+    Admin Panel: https://github.com/grundeinkommensbuero/admin
+  version: 1.0.0
+  title: Expedition Grundeinkommen API
+  contact:
+    email: info@expedition-grundeinkommen.de
+servers:
+  - url: https://2j0bcp5tr9.execute-api.eu-central-1.amazonaws.com/dev
+    description: Development server (uses test data)
+  - url: https://ag5gu1z06h.execute-api.eu-central-1.amazonaws.com/prod
+    description: Production server (uses live data)
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization # name of the header
+    AdminApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization # name of the header
+    BasicAuth:
+      type: http
+      scheme: basic
+paths:
+  /signatures:
+    post:
+      summary: Creates a new signature list
+      requestBody:
+        description: Object containing info for signature list
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - campaignCode
+              properties:
+                userId:
+                  type: string
+                email:
+                  type: string
+                campaignCode:
+                  type: string
+      responses:
+        '200':
+          description: Already existing signature list found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  signatureList:
+                    type: object
+                    description: List object containing id and url to pdf
+                    properties:
+                      id:
+                        type: string
+                      url:
+                        type: string
+        '201':
+          description: New signature list created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  signatureList:
+                    type: object
+                    description: List object containing id and url to pdf
+                    properties:
+                      id:
+                        type: string
+                      url:
+                        type: string
+        '401':
+          description: User does not have newsletter consent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /signatures/{listId}:
+    patch:
+      summary: Updates a signature list (register signatures)
+      parameters:
+        - in: path
+          name: listId
+          schema:
+            type: string
+          required: true
+          description: List id of the signature list to be changed
+      requestBody:
+        description: Object containing info about user and how many signatures to register
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - count
+              properties:
+                userId:
+                  type: string
+                email:
+                  type: string
+                count:
+                  type: integer
+      responses:
+        '204':
+          description: Signatures successfully registered
+        '404':
+          description: User or list not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users:
+    post:
+      summary: Creates a new user
+      requestBody:
+        description: User object that is created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - email
+              properties:
+                userId:
+                  type: string
+                email:
+                  type: string
+                newsletterConsent:
+                  type: boolean
+                referral:
+                  type: string
+      responses:
+        '201':
+          description: User was successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    description: User object only containing user id
+                    properties:
+                      userId:
+                        type: string
+        '401':
+          description: User already exists and cannot be overwritten
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/{userId}:
+    get:
+      summary: Gets user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user who should be retrieved
+      responses:
+        '200':
+          description: User successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      profilePictures:
+                        type: object
+                        description: Object containing links to images in various sizes
+                        properties:
+                          '200':
+                            type: string
+                          '500':
+                            type: string
+                          '900':
+                            type: string
+                          '1200':
+                            type: string
+                          original:
+                            type: string
+                      questions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            body:
+                              type: string
+                              description: Text of the question
+                            timestamp:
+                              type: string
+                      hasZipCode:
+                        type: boolean
+                      email:
+                        type: string
+                        description: Anonymized email address
+                      username:
+                        type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+    patch:
+      summary: Updates a user
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user whom should be updated
+      requestBody:
+        description: For now only newsletter consent can be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newsletterConsent:
+                  type: boolean
+                  description: If not provided it will be set to true in the user record
+      responses:
+        '204':
+          description: User was successfully updated
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/me:
+    get:
+      summary: Gets current authenticated user
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: User successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    description: User object containing everything
+        '401':
+          description: Not authorized to get user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/{userId}/signatures:
+    post:
+      summary: Creates a new signature list for a user
+      description: The newsletter consent is set to true when calling this endpoint
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id for whom we create a signature list
+      requestBody:
+        description: Object containing info for signature list
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - campaignCode
+              properties:
+                campaignCode:
+                  type: string
+      responses:
+        '200':
+          description: Already existing signature list found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  signatureList:
+                    type: object
+                    description: List object containing id and url to pdf
+                    properties:
+                      id:
+                        type: string
+                      url:
+                        type: string
+        '201':
+          description: New signature list created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  signatureList:
+                    type: object
+                    description: List object containing id and url to pdf
+                    properties:
+                      id:
+                        type: string
+                      url:
+                        type: string
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/{userId}/questions:
+    post:
+      summary: Creates a question to ubi for a specific user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user for whom a question should be created
+      requestBody:
+        description: Question object that is added
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+              properties:
+                question:
+                  type: string
+                name:
+                  type: string
+                zipCode:
+                  type: string
+      responses:
+        '201':
+          description: Question was successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  question:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/{userId}/surveys:
+    post:
+      summary: Creates a survey answer for a specific user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user for whom a survey answer should be created
+      requestBody:
+        description: Survey object that is created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - surveyCode
+                - answer
+              properties:
+                surveyCode:
+                  type: string
+                answer:
+                  type: string
+      responses:
+        '201':
+          description: Survey answer was successfully created
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Cannot create answer for same survey twice
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/unsubscribe-callback:
+    post:
+      summary: Mailjet callback to unsubscribe user
+      description: Special api function to serve as callback for (mailjet unsubscribe event)[https://dev.mailjet.com/email/guides/webhooks/]
+      security:
+        - BasicAuth: []
+      requestBody:
+        description: Event array coming from mailjet
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  email:
+                    type: string
+      responses:
+        '200':
+          description: User succesfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  question:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /pledges:
+    post:
+      summary: Creates a new pledge and a new user
+      requestBody:
+        description: Pledge object that is created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - email
+                - newsletterConsent
+                - pledgeId
+              properties:
+                userId:
+                  type: string
+                email:
+                  type: string
+                pledgeId:
+                  type: string
+                signatureCount:
+                  type: integer
+                newsletterConsent:
+                  type: boolean
+                zipCode:
+                  type: string
+                username:
+                  type: string
+                message:
+                  type: string
+                city:
+                  type: string
+                referral:
+                  type: string
+      responses:
+        '201':
+          description: Pledge was successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    description: User object only containing user id
+                    properties:
+                      userId:
+                        type: string
+        '401':
+          description: Pledge and user cannot be created twice
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /pledges/{userId}:
+    patch:
+      summary: Updates user by adding a new pledge
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user whose pledges should be updated
+      requestBody:
+        description: Pledge object that is added
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newsletterConsent
+                - pledgeId
+              properties:
+                pledgeId:
+                  type: string
+                signatureCount:
+                  type: integer
+                newsletterConsent:
+                  type: boolean
+                zipCode:
+                  type: string
+                username:
+                  type: string
+                message:
+                  type: string
+                city:
+                  type: string
+      responses:
+        '204':
+          description: Pledge was successfully added to user
+        '401':
+          description: Not authorized to update pledges
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /admin/users:
+    post:
+      summary: Creates a new user as admin
+      security:
+        - AdminApiKeyAuth: []
+      requestBody:
+        description: User object that is created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - campaignCode
+                - email
+              properties:
+                campaignCode:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: User was successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+        '200':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Not authorized to create user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+    get:
+      summary: Gets list of power users
+      security:
+        - AdminApiKeyAuth: []
+      parameters:
+        - in: query
+          name: minimum
+          schema:
+            type: integer
+          description: Users who have sent or registered more than minimum will be retrieved
+      responses:
+        '200':
+          description: Users successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                        email:
+                          type: string
+                        stillExists:
+                          type: boolean
+                        newsletterConsent:
+                          type: object
+                          properties:
+                            value:
+                              type: boolean
+                            timestamp:
+                              type: string
+                        username:
+                          type: string
+                        signatureCount:
+                          type: object
+                          properties:
+                            keyOfCampaign:
+                              description: Object containing signature counts for a campaign (key will be something like berlin-1)
+                              type: object
+                              properties:
+                                received:
+                                  type: integer
+                                  description: Count of received signatures
+                                scannedByUser:
+                                  type: integer
+                                  description: Count of signatures registered by user
+        '401':
+          description: Not authorized to get users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /admin/signatures/{listId}:
+    patch:
+      summary: Updates a signature list as an admin (register received signatures)
+      description: Through this endpoint received signatues can be registered
+      security:
+        - AdminApiKeyAuth: []
+      parameters:
+        - in: path
+          name: listId
+          schema:
+            type: string
+          required: true
+          description: List id of the signature list to be changed
+      requestBody:
+        description: Object containing info about user and how many signatures to register
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - count
+                - mixed
+              properties:
+                count:
+                  type: integer
+                mixed:
+                  type: boolean
+      responses:
+        '200':
+          description: Signatures successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isAnonymous:
+                    type: boolean
+                    description: Signature list was downloaded anonymously
+                  mailMissing:
+                    type: boolean
+                    description: Signature list was created as part of sending letters, recipient did not enter email address because of bug
+        '404':
+          description: List not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /images/upload-url:
+    post:
+      summary: Create a signed url to upload image
+      security:
+        - AdminApiKeyAuth: []
+      requestBody:
+        description: Object containing info for image
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - contentType
+              properties:
+                userId:
+                  type: string
+                contentType:
+                  type: string
+                  description: Content type of image (e.g. image/png)
+      responses:
+        '201':
+          description: Upload url successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadUrl:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/signatures?queryParam:
+    get:
+      summary: Gets signature counts for one user
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+          description: User id for whom we want to get the signature count
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Email of user for whom we want to get the signature count
+        - in: query
+          name: listId
+          schema:
+            type: string
+          description: List id which should belong to a user for whom we want to get the signature count
+      responses:
+        '200':
+          description: Signature count successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: integer
+                    description: Count of received signatures
+                  scannedByUser:
+                    type: integer
+                    description: Count of signatures registered by user
+                  receivedList:
+                    type: array
+                    description: Array of scan objects for received signatures
+                    items:
+                      type: object
+                      properties:
+                        count:
+                          type: integer
+                        mixed:
+                          type: boolean
+                        timestamp:
+                          type: string
+                        campaign:
+                          type: object
+                          properties:
+                            round:
+                              type: integer
+                            state:
+                              type: string
+                            code:
+                              type: string
+                  scannedByUserList:
+                    type: array
+                    description: Array of scan objects for signatures registered by user
+                    items:
+                      type: object
+                      properties:
+                        listId:
+                          type: string
+                        count:
+                          type: integer
+                        mixed:
+                          type: boolean
+                        timestamp:
+                          type: string
+                        campaign:
+                          type: object
+                          properties:
+                            round:
+                              type: integer
+                            state:
+                              type: string
+                            code:
+                              type: string
+        '404':
+          description: List or user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/signatures:
+    get:
+      summary: Gets signature counts for all campaigns
+      responses:
+        '200':
+          description: Signature count successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  keyOfCampaign:
+                    description: Object containing signature counts for a campaign (key will be something like berlin-1)
+                    type: object
+                    properties:
+                      withoutMixed:
+                        type: integer
+                      withMixed:
+                        type: integer
+                      scannedByUser:
+                        type: integer
+                      computed:
+                        type: integer
+                      withContentful:
+                        type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/signatures/history:
+    get:
+      summary: Get history of registered signatures
+      parameters:
+        - in: query
+          name: date
+          schema:
+            type: string
+          description: Date (YYYY-MM-DD) when the history should start, if not provided last 4 weeks
+      responses:
+        '200':
+          description: Signature history successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  keyOfCampaign:
+                    type: object
+                    description: Object containing history for a campaign (key will be something like berlin-1)
+                    properties:
+                      day:
+                        type: string
+                      downloads:
+                        type: integer
+                      usersWhoScanned:
+                        type: integer
+                      received:
+                        type: integer
+                      scanned:
+                        type: integer
+                      scannedLists:
+                        type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/users:
+    get:
+      summary: Get user count for all campaigns
+      responses:
+        '200':
+          description: User count successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: object
+                    properties:
+                      verifiedUsers:
+                        type: integer
+                      unverifiedUsers:
+                        type: integer
+                  keyOfCampaign:
+                    description: Object containing user count for a campaign (key will be something like berlin-1)
+                    type: object
+                    properties:
+                      verifiedUsers:
+                        type: object
+                        properties:
+                          count:
+                            type: integer
+                          signatures:
+                            type: integer
+                            description: Pledged signatures
+                          pledges:
+                            type: integer
+                            description: Count of pledges
+                          downloaders:
+                            type: integer
+                            description: Count of users who downloaded a list
+                      unverifiedUsers:
+                        type: object
+                        properties:
+                          count:
+                            type: integer
+                      usersWithNewsletterConsent:
+                        type: object
+                        properties:
+                          count:
+                            type: integer
+                          signatures:
+                            type: integer
+                            description: Pledged signatures
+                          pledges:
+                            type: integer
+                            description: Count of pledges
+                          downloaders:
+                            type: integer
+                            description: Count of users who downloaded a list
+                      pledgesMap:
+                        type: object
+                        description: Maps the count of people who have pledged a specific number of signatures to that number
+                        properties:
+                          keyOfSignatureCount:
+                            type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/signatures/lists:
+    get:
+      summary: Gets signature list counts for all campaigns
+      responses:
+        '200':
+          description: List count successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  keyOfCampaign:
+                    type: object
+                    description: Object containing list counts for a campaign (key will be something like berlin-1)
+                    properties:
+                      total:
+                        type: object
+                        properties:
+                          lists:
+                            type: integer
+                          downloads:
+                            type: integer
+                      anonymous:
+                        type: object
+                        properties:
+                          lists:
+                            type: integer
+                          downloads:
+                            type: integer
+                      byUser:
+                        type: object
+                        properties:
+                          lists:
+                            type: integer
+                          downloads:
+                            type: integer
+                      withMixed:
+                        type: integer
+                      scannedByUser:
+                        type: integer
+                      computed:
+                        type: integer
+                      withContentful:
+                        type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
