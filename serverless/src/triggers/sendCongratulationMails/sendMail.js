@@ -27,10 +27,6 @@ const sendMail = (
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
-        From: {
-          Email: 'support@expedition-grundeinkommen.de',
-          Name: 'Expedition Grundeinkommen',
-        },
         To: [
           {
             Email: email,
