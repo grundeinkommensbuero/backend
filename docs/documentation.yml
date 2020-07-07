@@ -337,7 +337,7 @@ paths:
           required: true
           description: User id of user whom should be updated
       requestBody:
-        description: For now only newsletter consent can be updated
+        description: For now only newsletter consent, zip code and username can be updated
         required: true
         content:
           application/json:
@@ -346,7 +346,10 @@ paths:
               properties:
                 newsletterConsent:
                   type: boolean
-                  description: If not provided it will be set to true in the user record
+                zipCode:
+                  type: string
+                username:
+                  type: string
       responses:
         '204':
           description: User was successfully updated
