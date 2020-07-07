@@ -15,7 +15,8 @@ module.exports.handler = async event => {
 
     return event;
   } else if (event.triggerSource === 'CustomMessage_ResendCode') {
-    const { email, codeParameter } = event.request.userAttributes;
+    const { email } = event.request.userAttributes;
+    const { codeParameter } = event.request;
 
     // customize email
     event.response.emailSubject =
