@@ -117,6 +117,7 @@ const handler = async event => {
     let userId;
     // we need the email to later send the pdf
     let email;
+    let username;
     if ('userId' in requestBody || event.pathParameters) {
       userId = requestBody.userId || event.pathParameters.userId;
 
@@ -146,6 +147,7 @@ const handler = async event => {
         }
 
         email = result.Item.email;
+        username = result.Item.username;
       } catch (error) {
         console.log('error', error);
         return errorResponse(500, 'Error while getting user', error);
@@ -171,6 +173,7 @@ const handler = async event => {
         }
 
         userId = result.Items[0].cognitoId;
+        username = result.Items[0].username;
       } catch (error) {
         console.log('error', error);
         return errorResponse(500, 'Error while getting user by email', error);
@@ -285,7 +288,7 @@ const handler = async event => {
                 requestBody.campaignCode
               );
 
-              await sendMail(email, attachments, campaign);
+              await sendMail(email, username, attachments, campaign);
             }
 
             return {
@@ -407,9 +410,9 @@ const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {
   }
 
   return Promise.resolve({
-    filename: attachment.filename,
-    content: Buffer.from(file, 'base64'),
-    contentType: 'application/pdf',
+    Filename: attachment.filename,
+    Base64Content: Buffer.from(file).toString('base64'),
+    ContentType: 'application/pdf',
   });
 };
 
