@@ -3,7 +3,10 @@ const randomBytes = require('crypto').randomBytes;
 // const sendMail = require('./sendMail');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
-const { getUserByMail } = require('../../../shared/users');
+const {
+  getUserByMail,
+  updateNewsletterConsent,
+} = require('../../../shared/users');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -77,7 +80,7 @@ module.exports.handler = async event => {
             );
           }
           // if not, we want to update the user
-          await updateNewsletterConsent(user.cognitoId);
+          await updateNewsletterConsent(user.cognitoId, true);
 
           return errorResponse(
             200,
@@ -151,26 +154,6 @@ const createUserInDynamo = (userId, email, campaignCode) => {
     },
   };
   return ddb.put(params).promise();
-};
-
-const updateNewsletterConsent = userId => {
-  const timestamp = new Date().toISOString();
-
-  const newsletterConsent = {
-    value: true,
-    timestamp,
-  };
-
-  const params = {
-    TableName: usersTableName,
-    Key: { cognitoId: userId },
-    UpdateExpression: 'SET newsletterConsent = :newsletterConsent',
-    ExpressionAttributeValues: {
-      ':newsletterConsent': newsletterConsent,
-    },
-  };
-
-  return ddb.update(params).promise();
 };
 
 // confirm user by setting a random password
