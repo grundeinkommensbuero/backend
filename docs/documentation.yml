@@ -396,6 +396,114 @@ paths:
                   user:
                     type: object
                     description: User object containing everything
+                    properties:
+                      cognitoId:
+                        type: string
+                      email:
+                        type: string
+                      createdAt:
+                        type: string
+                      updatedAt:
+                        type: string
+                      referral:
+                        type: string
+                      username:
+                        type: string
+                      city:
+                        type: string
+                      zipCode:
+                        type: string
+                      newsletterConsent:
+                        type: object
+                        properties:
+                          value:
+                            type: boolean
+                          timestamp:
+                            type: string
+                      pledges:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            createdAt:
+                              type: string
+                            signatureCount:
+                              type: integer
+                            campaign:
+                              type: object
+                              properties:
+                                round:
+                                  type: integer
+                                state:
+                                  type: string
+                                code:
+                                  type: string
+                      scannedLists:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            count:
+                              type: integer
+                            timestamp:
+                              type: string
+                            listId:
+                              type: string
+                            campaign:
+                              type: object
+                              properties:
+                                round:
+                                  type: integer
+                                state:
+                                  type: string
+                                code:
+                                  type: string
+                      signatureCampaigns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            round:
+                              type: integer
+                            state:
+                              type: string
+                            code:
+                              type: string
+                      surveys:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            answer:
+                              type: string
+                            code:
+                              type: string
+                            timestamp:
+                              type: string
+                      profilePictures:
+                        type: object
+                        description: Object containing links to images in various sizes
+                        properties:
+                          '200':
+                            type: string
+                          '500':
+                            type: string
+                          '900':
+                            type: string
+                          '1200':
+                            type: string
+                          original:
+                            type: string
+                      questions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            body:
+                              type: string
+                              description: Text of the question
+                            timestamp:
+                              type: string
         '401':
           description: Not authorized to get user
           content:
