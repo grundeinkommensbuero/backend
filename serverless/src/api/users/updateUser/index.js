@@ -1,5 +1,9 @@
-const { getUser, updateNewsletterConsent } = require('../../../shared/users');
+const AWS = require('aws-sdk');
+const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+
+const ddb = new AWS.DynamoDB.DocumentClient();
+const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
   try {
@@ -11,7 +15,7 @@ module.exports.handler = async event => {
 
     console.log('request body', requestBody);
 
-    if (!validateParams(event.pathParameters)) {
+    if (!validateParams(event.pathParameters, requestBody)) {
       return errorResponse(400, 'One or more parameters are missing');
     }
 
@@ -27,7 +31,7 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      await updateNewsletterConsent(userId, requestBody.newsletterConsent);
+      await updateUser(userId, requestBody);
 
       // updating user was successful, return appropriate json
       return {
@@ -48,12 +52,49 @@ module.exports.handler = async event => {
   }
 };
 
-const validateParams = pathParameters => {
-  return 'userId' in pathParameters;
+// Check if user id is in path params and request body is not empty
+const validateParams = (pathParameters, requestBody) => {
+  return 'userId' in pathParameters && Object.keys(requestBody).length !== 0;
 };
 
 const isAuthorized = event => {
   return (
     event.requestContext.authorizer.claims.sub === event.pathParameters.userId
   );
+};
+
+const updateUser = (userId, { username, zipCode, newsletterConsent }) => {
+  const timestamp = new Date().toISOString();
+
+  const data = {
+    ':updatedAt': timestamp,
+    ':username': username,
+    ':zipCode': zipCode,
+  };
+
+  if (typeof newsletterConsent !== 'undefined') {
+    data[':newsletterConsent'] = {
+      value: newsletterConsent,
+      timestamp,
+    };
+  }
+
+  const params = {
+    TableName: tableName,
+    Key: { cognitoId: userId },
+    UpdateExpression: `
+    SET ${
+      typeof newsletterConsent !== 'undefined'
+        ? 'newsletterConsent = :newsletterConsent,'
+        : ''
+    }
+    ${typeof username !== 'undefined' ? 'username = :username,' : ''}
+    ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
+    updatedAt = :updatedAt
+    `,
+    ExpressionAttributeValues: data,
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  return ddb.update(params).promise();
 };

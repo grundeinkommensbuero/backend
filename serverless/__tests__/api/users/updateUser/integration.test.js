@@ -21,6 +21,8 @@ describe('updatePledge api test', () => {
       },
       body: JSON.stringify({
         newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
       }),
     };
 
@@ -29,14 +31,68 @@ describe('updatePledge api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should be able to update user without newsletter consent', async () => {
+  it('should be able to update user with one missing param', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        newsletterConsent: true,
+        username: 'Vali',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
+  it('should be able to update only newsletter consent', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
+  it('should be able to update only username', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        username: 'Vali',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
+  it('should be able to update only zip code', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        zipCode: '12051',
+      }),
     };
 
     const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
@@ -60,6 +116,21 @@ describe('updatePledge api test', () => {
     const response = await fetch(`${INVOKE_URL}/users/${otherUserId}`, request);
 
     expect(response.status).toEqual(401);
+  });
+
+  it('should have missing params', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({}),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
   });
 
   it('should not be able to authorize', async () => {
