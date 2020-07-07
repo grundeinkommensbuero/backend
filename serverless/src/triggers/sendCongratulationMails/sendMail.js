@@ -34,7 +34,6 @@ const sendMail = (
         ],
         TemplateID: 1480788,
         TemplateLanguage: true,
-        Subject: `${dailyCount} Unterschriften sind eingegangen!`,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
           Name: 'Vali',
