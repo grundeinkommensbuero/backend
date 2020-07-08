@@ -15,22 +15,9 @@ describe('createUser api test', () => {
         email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
         referral: 'test-referral',
         newsletterConsent: true,
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/users`, request);
-
-    expect(response.status).toEqual(201);
-  });
-
-  it('should create a new user without newsletter consent', async () => {
-    const request = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        userId: uuid(),
-        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
-        referral: 'test-referral',
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
       }),
     };
 
@@ -47,11 +34,69 @@ describe('createUser api test', () => {
         userId,
         email: 'vali_schagerl@web.de',
         referral: 'test-referral',
+        newsletterConsent: true,
       }),
     };
 
     const response = await fetch(`${INVOKE_URL}/users`, request);
 
     expect(response.status).toEqual(401);
+  });
+
+  it('should have missing email', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing user id', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing newsletter consent', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
   });
 });

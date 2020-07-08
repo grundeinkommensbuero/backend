@@ -23,6 +23,7 @@ describe('updatePledge api test', () => {
         newsletterConsent: true,
         zipCode: '12051',
         username: 'Vali',
+        city: 'Berlin',
       }),
     };
 
@@ -41,6 +42,7 @@ describe('updatePledge api test', () => {
       body: JSON.stringify({
         newsletterConsent: true,
         username: 'Vali',
+        city: 'Berlin',
       }),
     };
 
