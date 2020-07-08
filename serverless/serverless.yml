@@ -40,14 +40,14 @@ functions:
     handler: src/api/pledges/createPledge/index.handler
     events:
       - http:
-          path: pledges
+          path: users/{userId}/pledges
           method: post
           cors: true
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
-          - dynamodb:PutItem
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
@@ -55,7 +55,7 @@ functions:
     handler: src/api/pledges/updatePledge/index.handler
     events:
       - http:
-          path: pledges/{userId}
+          path: users/{userId}/pledges
           method: patch
           cors: true
           request:

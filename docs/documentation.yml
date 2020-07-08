@@ -198,6 +198,7 @@ paths:
               required:
                 - userId
                 - email
+                - newsletterConsent
               properties:
                 userId:
                   type: string
@@ -206,6 +207,12 @@ paths:
                 newsletterConsent:
                   type: boolean
                 referral:
+                  type: string
+                name:
+                  type: string
+                city:
+                  type: string
+                zipCode:
                   type: string
       responses:
         '201':
@@ -337,7 +344,7 @@ paths:
           required: true
           description: User id of user whom should be updated
       requestBody:
-        description: For now only newsletter consent, zip code and username can be updated
+        description: For now only newsletter consent, zip code, username and city can be updated
         required: true
         content:
           application/json:
@@ -349,6 +356,8 @@ paths:
                 zipCode:
                   type: string
                 username:
+                  type: string
+                city:
                   type: string
       responses:
         '204':
@@ -822,9 +831,16 @@ paths:
                   error:
                     type: string
 
-  /pledges:
+  /users/{userId}/pledges:
     post:
       summary: Creates a new pledge and a new user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user whose pledges should be updated
       requestBody:
         description: Pledge object that is created
         required: true
@@ -833,30 +849,13 @@ paths:
             schema:
               type: object
               required:
-                - userId
-                - email
-                - newsletterConsent
                 - pledgeId
               properties:
-                userId:
-                  type: string
-                email:
-                  type: string
                 pledgeId:
                   type: string
                 signatureCount:
                   type: integer
-                newsletterConsent:
-                  type: boolean
-                zipCode:
-                  type: string
-                username:
-                  type: string
                 message:
-                  type: string
-                city:
-                  type: string
-                referral:
                   type: string
       responses:
         '201':
@@ -868,12 +867,25 @@ paths:
                 properties:
                   message:
                     type: string
-                  user:
+                  userId:
+                    type: string
+                  pledge:
                     type: object
-                    description: User object only containing user id
+                    description: Object containing newly created pledge
                     properties:
-                      userId:
+                      createdAt:
                         type: string
+                      signatureCount:
+                        type: integer
+                      campaign:
+                        type: object
+                        properties:
+                          round:
+                            type: integer
+                          state:
+                            type: string
+                          code:
+                            type: string
         '401':
           description: Pledge and user cannot be created twice
           content:
@@ -904,9 +916,9 @@ paths:
                   error:
                     type: string
 
-  /pledges/{userId}:
     patch:
       summary: Updates user by adding a new pledge
+      description: If a pledge for the passed pledgeId already exists it is updated, if not a new pledge is created
       security:
         - ApiKeyAuth: []
       parameters:
@@ -924,22 +936,13 @@ paths:
             schema:
               type: object
               required:
-                - newsletterConsent
                 - pledgeId
               properties:
                 pledgeId:
                   type: string
                 signatureCount:
                   type: integer
-                newsletterConsent:
-                  type: boolean
-                zipCode:
-                  type: string
-                username:
-                  type: string
                 message:
-                  type: string
-                city:
                   type: string
       responses:
         '204':
