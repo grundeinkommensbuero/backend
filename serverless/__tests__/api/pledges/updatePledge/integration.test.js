@@ -13,7 +13,7 @@ describe('updatePledge api test', () => {
     token = await authenticate();
   });
 
-  it('should be able to update user', async () => {
+  it('should be able to add new pledge', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -21,16 +21,36 @@ describe('updatePledge api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        userId,
         pledgeId: `${randomWords()}-${randomWords()}-1`,
         signatureCount: 13,
-        newsletterConsent: true,
-        zipCode: '72074',
-        name: randomWords(),
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/pledges/${userId}`, request);
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
+
+    expect(response.status).toEqual(204);
+  });
+
+  it('should be able to update existing pledge', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        pledgeId: 'berlin-1',
+        signatureCount: 13,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
 
     expect(response.status).toEqual(204);
   });
@@ -42,18 +62,14 @@ describe('updatePledge api test', () => {
       headers: {
         Authorization: token,
       },
-
       body: JSON.stringify({
-        userId,
         pledgeId: 'schleswig-holstein-1',
         signatureCount: 6,
-        newsletterConsent: true,
-        zipCode: '72074',
       }),
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/pledges/${otherUserId}`,
+      `${INVOKE_URL}/users/${otherUserId}/pledges`,
       request
     );
 
@@ -65,16 +81,36 @@ describe('updatePledge api test', () => {
       method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
         pledgeId: 'schleswig-holstein-1',
         signatureCount: 6,
-        newsletterConsent: true,
-        zipCode: '72074',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/pledges/${userId}`, request);
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
 
     expect(response.status).toEqual(401);
+  });
+
+  it('should have missing pledge id', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        signatureCount: 6,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
+
+    expect(response.status).toEqual(400);
   });
 });
