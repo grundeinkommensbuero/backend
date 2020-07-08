@@ -63,13 +63,14 @@ const isAuthorized = event => {
   );
 };
 
-const updateUser = (userId, { username, zipCode, newsletterConsent }) => {
+const updateUser = (userId, { username, zipCode, city, newsletterConsent }) => {
   const timestamp = new Date().toISOString();
 
   const data = {
     ':updatedAt': timestamp,
     ':username': username,
     ':zipCode': zipCode,
+    ':city': city,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -90,6 +91,7 @@ const updateUser = (userId, { username, zipCode, newsletterConsent }) => {
     }
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
+    ${typeof city !== 'undefined' ? 'city = :city,' : ''}
     updatedAt = :updatedAt
     `,
     ExpressionAttributeValues: data,
