@@ -25,10 +25,10 @@ module.exports.handler = async event => {
 
       // if user does not have Item as property, there was no user found
       if (result.Count === 0) {
-        return errorResponse(404, 'No user found with the passed user id');
+        console.log('No user found with the passed email');
+      } else {
+        await updateNewsletterConsent(result.Items[0].cognitoId, false);
       }
-
-      await updateNewsletterConsent(result.Items[0].cognitoId, false);
 
       // updating user was successful, return appropriate json
       return {
