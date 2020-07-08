@@ -1,52 +1,53 @@
-const { INVOKE_URL } = require('../../../testConfig');
+const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
+const AWS = require('aws-sdk');
 const fetch = require('node-fetch');
-const randomWords = require('random-words');
-const uuid = require('uuid/v4');
 
+const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 
 describe('createPledge api test', () => {
-  it('should create a new pledge/new user', async () => {
+  beforeAll(async () => {
+    await removePledges();
+  });
+
+  it('should create a new pledge for a user', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: uuid(),
-        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
-        pledgeId: `${randomWords()}-${randomWords()}-1`,
+        pledgeId: 'berlin-1',
         signatureCount: 6,
-        newsletterConsent: true,
-        zipCode: '72074',
-        name: 'Vali',
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/pledges`, request);
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
+
     const json = await response.json();
 
     expect(response.status).toEqual(201);
-    expect(json).toHaveProperty('user');
+    expect(json).toHaveProperty('userId');
+    expect(json).toHaveProperty('pledge');
   });
 
-  it('should not be able to create a new pledge', async () => {
+  it('should not be able to create the same pledge twice', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
-        email: 'vali_schagerl@web.de',
-        pledgeId: 'schleswig-holstein-1',
+        pledgeId: 'berlin-1',
         signatureCount: 6,
-        newsletterConsent: true,
-        zipCode: '72074',
-        name: randomWords(),
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/pledges`, request);
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
 
     expect(response.status).toEqual(401);
-    console.log(await response.json());
   });
 
   it('should create general pledge with message', async () => {
@@ -54,21 +55,46 @@ describe('createPledge api test', () => {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId: uuid(),
-        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
         pledgeId: 'general-1',
         message:
           'Ich habe eine ganz spezielle Frage an euch! Was macht ihr so am Wochenende?',
-        zipCode: '72074',
-        city: 'Tübingen',
-        newsletterConsent: true,
       }),
     };
 
-    const response = await fetch(`${INVOKE_URL}/pledges`, request);
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
     const json = await response.json();
 
     expect(response.status).toEqual(201);
-    expect(json).toHaveProperty('user');
+    expect(json).toHaveProperty('userId');
+    expect(json).toHaveProperty('pledge');
+  });
+
+  it('should have missing pledge id', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({}),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
+
+    expect(response.status).toEqual(400);
   });
 });
+
+const removePledges = async () => {
+  const params = {
+    TableName: DEV_USERS_TABLE,
+    Key: { cognitoId: userId },
+    UpdateExpression: 'REMOVE pledges',
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  return ddb.update(params).promise();
+};

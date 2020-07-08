@@ -52,34 +52,41 @@ module.exports.handler = async event => {
   }
 };
 
-const saveUser = ({ newsletterConsent, email, userId, referral }) => {
+const saveUser = ({
+  newsletterConsent,
+  email,
+  userId,
+  referral,
+  zipCode,
+  city,
+  name,
+}) => {
   const timestamp = new Date().toISOString();
-
-  const data = {
-    cognitoId: userId,
-    email: email.toLowerCase(),
-    newsletterConsent: {
-      value:
-        // If there is no newsletter consent in the request we set it to true
-        typeof newsletterConsent !== 'undefined' ? newsletterConsent : true,
-      timestamp,
-    },
-    createdAt: timestamp,
-  };
-
-  // if referral is undefined, don't add the key
-  if (typeof referral !== 'undefined') {
-    data.referral = referral;
-  }
 
   const params = {
     TableName: tableName,
-    Item: data,
+    Item: {
+      cognitoId: userId,
+      email: email.toLowerCase(),
+      newsletterConsent: {
+        value: newsletterConsent,
+        timestamp,
+      },
+      createdAt: timestamp,
+      zipCode,
+      referral,
+      city,
+      username: name,
+    },
   };
 
   return ddb.put(params).promise();
 };
 
 const validateParams = requestBody => {
-  return 'userId' in requestBody && 'email' in requestBody;
+  return (
+    'userId' in requestBody &&
+    'email' in requestBody &&
+    'newsletterConsent' in requestBody
+  );
 };
