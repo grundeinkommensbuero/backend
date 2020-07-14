@@ -5,7 +5,6 @@ const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 
 const ses = new AWS.SES({ region: 'eu-central-1' });
-
 const pathToDonors = './spendenbescheinigungen.csv';
 const file = fs.readFileSync('./vorlage.pdf');
 const logo = fs.readFileSync('./logo.jpg');
@@ -88,7 +87,7 @@ const generatePdf = async ({
 
   const filledPdf = await pdf.save();
 
-  fs.writeFileSync(`./pdfs/${firstname}${lastname}.pdf`, filledPdf);
+  fs.writeFileSync(`./pdfs/${firstname}${lastname}${zipCode}.pdf`, filledPdf);
 
   return filledPdf;
 };
@@ -160,20 +159,16 @@ const readCsv = () => {
 const customMail = firstname => `
 Hallo ${firstname},
 <br /><br />
-herzlichen Dank für deine Unterstützung unserer Crowdfundingkampagne "Jetzt
-erst recht: Volksentscheid zum Grundeinkommen!" auf Startnext. Damit hast du
-einen wichtigen Beitrag dazu geleistet, dass wir trotz Kontaktbeschränkungen
-weiter Unterschriften für den Modellversuch zum Grundeinkommen sammeln
-konnten.
+anbei findest du die Spendenbescheinigung für deine Unterstützung 
+unseres Crowdfundings "Jetzt erst recht: Volksentscheid zum Grundeinkommen!" auf Startnext.
 <br /><br />
-Damit du deine Spende steuerlich absetzen kannst, schicken wir dir heute
-deine Spendenbescheinigung. Unter diesem Link kannst du sie abrufen:
-[Downloadlink]
+Mit deiner Spende hast du einen wichtigen Beitrag dazu geleistet, 
+dass wir trotz Kontaktbeschränkungen weiter Unterschriften für 
+den Modellversuch zum Grundeinkommen sammeln konnten. Dafür noch einmal herzlichen Dank!
 <br /><br />
-Gemeinsam lassen wir den Modellversuch zum bedingungslosen Grundeinkommen
-politische Wirklichkeit werden!
+Gemeinsam lassen wir den Modellversuch zum bedingungslosen Grundeinkommen politische Wirklichkeit werden.
 <br /><br />
-Herzlich<br />
+Herzlich<br/>
 Dein Expeditionsteam
 `;
 
@@ -190,5 +185,8 @@ generateReceipts();
 //   amountInWords: 'Zweihundert',
 //   date: '25.11.1993',
 // }).then(pdf => {
-//   sendMail({'valentin@expedition-grundeinkommen.de', 'Vali'}, pdf);
+//   sendMail(
+//     { email: 'valentin@expedition-grundeinkommen.de', firstname: 'Vali' },
+//     pdf
+//   );
 // });
