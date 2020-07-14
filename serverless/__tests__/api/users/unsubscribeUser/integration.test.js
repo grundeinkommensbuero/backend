@@ -38,7 +38,7 @@ describe('unsubscribeUser api test', () => {
       request
     );
 
-    expect(response.status).toEqual(404);
+    expect(response.status).toEqual(200);
   });
 
   it('should have missing auth', async () => {
