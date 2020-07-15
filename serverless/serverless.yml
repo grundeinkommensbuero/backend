@@ -748,6 +748,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:UpdateItem
+          - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
       - Effect: Allow
@@ -756,6 +757,7 @@ functions:
           - s3:HeadObject
           - s3:PutObject
           - s3:PutObjectAcl
+          - s3:DeleteObject
         Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
 
   # getQuestions:
