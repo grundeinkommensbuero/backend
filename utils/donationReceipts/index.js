@@ -166,6 +166,9 @@ Mit deiner Spende hast du einen wichtigen Beitrag dazu geleistet,
 dass wir trotz Kontaktbeschränkungen weiter Unterschriften für 
 den Modellversuch zum Grundeinkommen sammeln konnten. Dafür noch einmal herzlichen Dank!
 <br /><br />
+Falls du noch nicht zu unserem Newsletter angemeldet bist, kannst du dich hier anmelden, 
+um informiert zu bleiben: <a href="https://expedition-grundeinkommen.de/newsletter" alt="Link zur Newsletteranmeldung">https://expedition-grundeinkommen.de/newsletter</a>.
+<br /><br />
 Gemeinsam lassen wir den Modellversuch zum bedingungslosen Grundeinkommen politische Wirklichkeit werden.
 <br /><br />
 Herzlich<br/>
