@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const jimp = require('jimp/dist');
 const uuid = require('uuid/v4');
+const { getUser } = require('../../shared/users');
 
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
@@ -48,6 +49,9 @@ module.exports.handler = async event => {
       [sizes[3]]: images[2].Location,
     };
 
+    // Delete the old images from s3
+    await deleteOldImages(userId);
+
     // Now save image urls in db
     await updateUser(userId, imageUrls);
 
@@ -56,6 +60,36 @@ module.exports.handler = async event => {
     console.log('Error', error);
     return event;
   }
+};
+
+// Get urls to old pictures to delete those if they exist
+const deleteOldImages = async userId => {
+  // Get urls
+  const result = await getUser(userId);
+
+  if ('Item' in result && 'profilePictures' in result.Item) {
+    const oldImageUrls = result.Item.profilePictures;
+
+    await Promise.all(
+      Object.keys(oldImageUrls).map(size => deleteImage(oldImageUrls[size]))
+    );
+  }
+};
+
+const deleteImage = url => {
+  // the filename is the three last parts of the url (e.g. dev/resized/12391.jpg)
+  const splitString = url.split('/');
+
+  const params = {
+    Bucket: bucket,
+    Key: `${splitString[splitString.length - 3]}/${
+      splitString[splitString.length - 2]
+    }/${splitString[splitString.length - 1]}`,
+  };
+
+  console.log('About to delete image', params);
+
+  return s3.deleteObject(params).promise();
 };
 
 // Updates user to save url of image
