@@ -112,6 +112,8 @@ const sendMail = async ({ email, firstname }, pdf) => {
     SES: ses,
   });
 
+  console.log('About to send email to', email);
+
   return transporter.sendMail(mailOptions);
 };
 
@@ -176,20 +178,3 @@ Dein Expeditionsteam
 `;
 
 generateReceipts();
-
-// generatePdf({
-//   firstname: 'Valentin',
-//   lastname: 'Schagerl',
-//   street: 'Emser Straße 66',
-//   zipCode: '12051',
-//   city: 'Berlin',
-//   company: 'Company',
-//   amount: '200',
-//   amountInWords: 'Zweihundert',
-//   date: '25.11.1993',
-// }).then(pdf => {
-//   sendMail(
-//     { email: 'valentin@expedition-grundeinkommen.de', firstname: 'Vali' },
-//     pdf
-//   );
-// });
