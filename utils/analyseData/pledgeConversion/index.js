@@ -16,14 +16,22 @@ const getPledgeConversion = async (
   // only users with pledges from hamburg
   const usersFromState = users.filter(user => {
     for (const pledge of user.pledges) {
-      return pledge.campaign.code === campaignCode;
+      if (pledge.campaign.code === campaignCode) {
+        return true;
+      }
     }
 
     return false;
   });
 
+  console.log('users from state', usersFromState.length);
+
   let conversionSum = 0;
+  let conversionWithoutPowerUsersWhoPledgedLess = 0;
   let usersWithoutReceivedSignaturesCount = 0;
+  let powerUsersWhoPledgedLess = 0;
+  let powerUsersWhoPledgedMore = 0;
+
   let receivedSignatureSum = 0;
 
   for (const user of usersFromState) {
@@ -60,6 +68,34 @@ const getPledgeConversion = async (
     if (conversion === 0) {
       usersWithoutReceivedSignaturesCount++;
     }
+
+    if (
+      receivedSignatureCount > 30 &&
+      pledgedSignatureCount >= receivedSignatureCount
+    ) {
+      powerUsersWhoPledgedMore++;
+      conversionWithoutPowerUsersWhoPledgedLess += conversion;
+
+      console.log(
+        'Power user',
+        { pledgedSignatureCount },
+        { receivedSignatureCount }
+      );
+    } else if (
+      receivedSignatureCount > 30 &&
+      pledgedSignatureCount < receivedSignatureCount
+    ) {
+      powerUsersWhoPledgedLess++;
+
+      console.log(
+        'Power user',
+        { pledgedSignatureCount },
+        { receivedSignatureCount }
+      );
+    } else {
+      conversionWithoutPowerUsersWhoPledgedLess += conversion;
+    }
+
     process.stdout.write(`conversion for user: ${conversion} \r`);
 
     conversionSum += conversion;
@@ -72,12 +108,59 @@ const getPledgeConversion = async (
     usersWithoutReceivedSignaturesCount
   );
 
+  console.log('Power users who pledged more: ', powerUsersWhoPledgedMore);
+
+  console.log('Power users who pledged less: ', powerUsersWhoPledgedLess);
+
   console.log(
     'Average received signatures',
     receivedSignatureSum / usersFromState.length
   );
 
+  console.log(
+    'Average conversion without 0 conversion: ',
+    conversionSum /
+      (usersFromState.length - usersWithoutReceivedSignaturesCount)
+  );
+
+  console.log(
+    'Average conversion without 0 conversion and power users who pledged less: ',
+    conversionWithoutPowerUsersWhoPledgedLess /
+      (usersFromState.length -
+        usersWithoutReceivedSignaturesCount -
+        powerUsersWhoPledgedLess)
+  );
+
+  console.log(
+    'Average conversion without power users who pledged less: ',
+    conversionWithoutPowerUsersWhoPledgedLess /
+      (usersFromState.length - powerUsersWhoPledgedLess)
+  );
+
   console.log('Average conversion: ', conversionSum / usersFromState.length);
+};
+
+const getAnonymousSignatureCount = async (
+  signaturesTableName,
+  campaignCode
+) => {
+  const result = await getSignatureListsOfUser(
+    signaturesTableName,
+    'anonymous',
+    campaignCode
+  );
+
+  let receivedSignatureCount = 0;
+
+  for (const signatureList of result.Items) {
+    if ('received' in signatureList) {
+      for (const scan of signatureList.received) {
+        receivedSignatureCount += scan.count;
+      }
+    }
+  }
+
+  console.log('Anonymous signature count', receivedSignatureCount);
 };
 
 getPledgeConversion(
@@ -85,3 +168,5 @@ getPledgeConversion(
   PROD_SIGNATURES_TABLE_NAME,
   'hamburg-1'
 );
+
+getAnonymousSignatureCount(PROD_SIGNATURES_TABLE_NAME, 'hamburg-1');
