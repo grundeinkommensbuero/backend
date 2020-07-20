@@ -157,23 +157,23 @@ const updateMailjetContact = async ({
         Value: mailjetUser.username,
       },
       {
-        Name: 'active_in_berlin',
+        Name: 'subscribed_in_berlin',
         Value: mailjetUser.activeInBerlin,
       },
       {
-        Name: 'active_in_schleswig_holstein',
+        Name: 'subscribed_in_schleswig_holstein',
         Value: mailjetUser.activeInSchleswigHolstein,
       },
       {
-        Name: 'active_in_brandenburg',
+        Name: 'subscribed_in_brandenburg',
         Value: mailjetUser.activeInBrandenburg,
       },
       {
-        Name: 'active_in_hamburg',
+        Name: 'subscribed_in_hamburg',
         Value: mailjetUser.activeInHamburg,
       },
       {
-        Name: 'active_in_bremen',
+        Name: 'subscribed_in_bremen',
         Value: mailjetUser.activeInBremen,
       },
       {
