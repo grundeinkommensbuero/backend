@@ -27,4 +27,8 @@
   li {
     margin-bottom: 25px;
   }
+
+  .small-text {
+    font-size: 13px;
+  }
 </mj-style>

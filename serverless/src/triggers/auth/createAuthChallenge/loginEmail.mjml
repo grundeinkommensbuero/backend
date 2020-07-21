@@ -16,6 +16,11 @@
             <br>
             <p class="code">[[SECRET_CODE]]</p>
           </p>
+          <br>
+          <p class="small-text">
+            Falls du keinen Code angefordert hast, kannst du diese E-Mail ignorieren.
+            Sollte dies öfter vorkommen, melde dich bitte bei <a href="mailto:support@expedition-grundeinkommen.de">support@expedition-grundeinkommen.de</a>.
+          </p>
         </mj-text>
       </mj-column>
     </mj-section>
