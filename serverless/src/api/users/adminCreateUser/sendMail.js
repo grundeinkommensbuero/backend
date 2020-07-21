@@ -1,9 +1,5 @@
-const AWS = require('aws-sdk');
-const nodemailer = require('nodemailer');
-
-const ses = new AWS.SES({ region: 'eu-central-1' });
-
-const htmlMail = require('./mailTemplate.html').default;
+const { apiKey, apiSecret } = require('../../../../mailjetConfig');
+const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const CAMPAIGN_SLUGS = {
   'schleswig-holstein-1': 'schleswig-holstein',
@@ -25,28 +21,30 @@ const STATES = {
 
 // Function which sends an email to welcome the user to our expedition
 const sendMail = (email, campaignCode, userId) => {
-  // Only run the script if the environment is prod
-  if (process.env.STAGE === 'prod') {
-    const mailOptions = {
-      from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
-      subject: 'Danke für deine Unterschrift!',
-      html: htmlMail
-        .replace(/\[\[CAMPAIGN_CODE\]\]/gi, campaignCode)
-        .replace(/\[\[CAMPAIGN_SLUG\]\]/gi, CAMPAIGN_SLUGS[campaignCode])
-        .replace(/\[\[STATE\]\]/gi, STATES[campaignCode])
-        .replace(/\[\[USER_ID\]\]/gi, userId),
-      to: email,
-    };
-
-    // create Nodemailer SES transporter
-    const transporter = nodemailer.createTransport({
-      SES: ses,
-    });
-
-    return transporter.sendMail(mailOptions);
-  }
-
-  return null;
+  return mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        TemplateID: 1583647,
+        TemplateLanguage: true,
+        TemplateErrorReporting: {
+          Email: 'valentin@expedition-grundeinkommen.de',
+          Name: 'Vali',
+        },
+        // TemplateErrorDeliver: true,
+        Variables: {
+          userId,
+          campaignCode,
+          campaignSlug: CAMPAIGN_SLUGS[campaignCode],
+          state: STATES[campaignCode],
+        },
+      },
+    ],
+  });
 };
 
 module.exports = sendMail;
