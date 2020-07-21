@@ -1,9 +1,6 @@
 const crypto = require('crypto-secure-random-digit');
-const AWS = require('aws-sdk');
-
-const ses = new AWS.SES();
-
-const htmlMail = require('./loginEmail.html').default;
+const { apiKey, apiSecret } = require('../../../../mailjetConfig');
+const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 exports.handler = async event => {
   let secretLoginCode;
@@ -34,30 +31,27 @@ exports.handler = async event => {
   event.response.challengeMetadata = `CODE-${secretLoginCode}`;
   return event;
 };
-async function sendEmail(emailAddress, secretLoginCode) {
-  const params = {
-    Destination: { ToAddresses: [emailAddress] },
-    Message: {
-      Body: {
-        Html: {
-          Charset: 'UTF-8',
-          Data: customEmail(secretLoginCode),
-        },
-        Text: {
-          Charset: 'UTF-8',
-          Data: `Dein geheimer Login-Code: ${secretLoginCode}`,
-        },
-      },
-      Subject: {
-        Charset: 'UTF-8',
-        Data: `Dein geheimer Login-Code: ${secretLoginCode}`,
-      },
-    },
-    Source: `Expedition Grundeinkommen <${process.env.SES_FROM_ADDRESS}>`,
-  };
-  await ses.sendEmail(params).promise();
-}
 
-const customEmail = code => {
-  return htmlMail.replace(/\[\[SECRET_CODE\]\]/gi, code);
+const sendEmail = (email, code) => {
+  return mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        TemplateID: 1583518,
+        TemplateLanguage: true,
+        TemplateErrorReporting: {
+          Email: 'valentin@expedition-grundeinkommen.de',
+          Name: 'Vali',
+        },
+        // TemplateErrorDeliver: true,
+        Variables: {
+          code,
+        },
+      },
+    ],
+  });
 };
