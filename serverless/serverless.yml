@@ -521,8 +521,8 @@ functions:
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
-  getPowerUsers:
-    handler: src/api/users/getPowerUsers/index.handler
+  adminGetUsers:
+    handler: src/api/users/adminGetUsers/index.handler
     events:
       - http:
           path: admin/users
@@ -540,6 +540,22 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
       - Effect: 'Allow'
         Action:
           - dynamodb:Scan
