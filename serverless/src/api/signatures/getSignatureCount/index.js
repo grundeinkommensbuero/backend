@@ -1,7 +1,7 @@
 const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getSignatureList,
-  getScannedSignatureListsOfUser,
+  getScansOfUser,
   getSignatureCountOfAllLists,
 } = require('../../../shared/signatures');
 const { getUserByMail, getUser } = require('../../../shared/users');
@@ -76,59 +76,4 @@ module.exports.handler = async event => {
     console.log('error while computing stats', error);
     return errorResponse(500, 'Error while computing stats', error);
   }
-};
-
-// Returns a list of all scans (received or byUser) for this user
-const getScansOfUser = async (user, campaignCode) => {
-  const userId = user.cognitoId;
-
-  const stats = {
-    received: 0,
-    scannedByUser: 0,
-    receivedList: [],
-    scannedByUserList: [],
-  };
-
-  // get all lists of this user with received attribute
-  const result = await getScannedSignatureListsOfUser(userId);
-
-  // For each list push the arrays to the general array
-  for (const list of result.Items) {
-    // Only add scans, if the list was from the campaign
-    // If no campaign is provided we want every scan
-    if (
-      list.campaign.code === campaignCode ||
-      typeof campaignCode === 'undefined'
-    ) {
-      if ('received' in list) {
-        for (const scan of list.received) {
-          stats.received += parseInt(scan.count, 10);
-
-          // add campaign to scan
-          scan.campaign = list.campaign;
-          stats.receivedList.push(scan);
-        }
-      }
-    }
-  }
-
-  // New algorithm: we don't compute the scanned by user
-  // anymore by checking the lists, but we use the saved scans
-  // inside the user record
-  if ('scannedLists' in user) {
-    for (const scan of user.scannedLists) {
-      // Only add scans, if the scan was for the campaign
-      // If no campaign is provided we want every scan
-      if (
-        scan.campaign.code === campaignCode ||
-        typeof campaignCode === 'undefined'
-      ) {
-        stats.scannedByUser += parseInt(scan.count, 10);
-
-        stats.scannedByUserList.push(scan);
-      }
-    }
-  }
-
-  return stats;
 };
