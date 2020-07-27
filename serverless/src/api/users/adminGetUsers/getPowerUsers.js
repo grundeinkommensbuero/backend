@@ -1,5 +1,5 @@
-const { getScannedSignatureLists } = require('../../../../shared/signatures');
-const { getUser } = require('../../../../shared/users');
+const { getScannedSignatureLists } = require('../../../shared/signatures');
+const { getUser } = require('../../../shared/users');
 
 const getPowerUsers = async signaturesMinimum => {
   // user object will contain signature count for a specific user id
