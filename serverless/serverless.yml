@@ -561,6 +561,11 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [SignaturesTable, Arn]
 
   sendVerificationMail:
     handler: src/triggers/auth/sendVerificationMail/index.handler
