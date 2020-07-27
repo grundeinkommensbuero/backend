@@ -23,50 +23,50 @@ module.exports.handler = async ({ queryStringParameters }) => {
       if (queryStringParameters.filter === 'powerusers') {
         // If there is a query param use it as threshold, otherwise the default
         const signaturesMinimum =
-          queryStringParameters && 'minimum' in queryStringParameters
+          'minimum' in queryStringParameters
             ? queryStringParameters.minimum
             : defaultSignaturesMininmum;
 
         users = await getPowerUsers(signaturesMinimum);
-      }
+      } else {
+        // If email or list id was passed we search for user by email
+        // or by searching for the list first
+        const { email, listId } = queryStringParameters;
 
-      // If email or list id was passed we search for user by email
-      // or by searching for the list first
-      const { email, listId } = queryStringParameters;
+        if (typeof email !== 'undefined') {
+          const result = await getUserByMail(email);
 
-      if (typeof email !== 'undefined') {
-        const result = await getUserByMail(email);
+          if (result.Count === 0) {
+            return errorResponse(404, 'No user found');
+          }
 
-        if (result.Count === 0) {
-          return errorResponse(404, 'No user found');
+          users = result.Items;
+        } else if (typeof listId !== 'undefined') {
+          const signatureListResult = await getSignatureList(listId);
+
+          if (!('Item' in signatureListResult)) {
+            return errorResponse(404, 'No list found');
+          }
+
+          const userResult = await getUser(signatureListResult.Item.userId);
+
+          if (!('Item' in userResult)) {
+            return errorResponse(404, 'No user found for this list');
+          }
+
+          users = [userResult.Item];
         }
 
-        users = result.Items;
-      } else if (typeof listId !== 'undefined') {
-        const signatureListResult = await getSignatureList(listId);
+        for (const user of users) {
+          // Get signature count of user
+          user.signatureCount = await getScansOfUser(user);
 
-        if (!('Item' in signatureListResult)) {
-          return errorResponse(404, 'No list found');
+          // Get lists owned by user
+          const signatureListResult = await getSignatureListsOfUser(
+            user.cognitoId
+          );
+          user.signatureLists = signatureListResult.Items;
         }
-
-        const userResult = await getUser(signatureListResult.Item.userId);
-
-        if (!('Item' in userResult)) {
-          return errorResponse(404, 'No user found for this list');
-        }
-
-        users = [userResult.Item];
-      }
-
-      for (const user of users) {
-        // Get signature count of user
-        user.signatureCount = await getScansOfUser(user);
-
-        // Get lists owned by user
-        const signatureListResult = await getSignatureListsOfUser(
-          user.cognitoId
-        );
-        user.signatureLists = signatureListResult.Items;
       }
     }
 
