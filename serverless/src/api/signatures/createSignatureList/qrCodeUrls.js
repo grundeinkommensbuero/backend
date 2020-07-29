@@ -4,5 +4,6 @@ module.exports = {
   hamburg: 'https://xbge.de/qr/hh/?listId=',
   bremen: 'https://xbge.de/qr/hb/?listId=',
   berlin: 'https://xbge.de/qr/b/?listId=',
+  dibb: 'https://xbge.de/',
   default: 'https://xbge.de/qr/default/?listId=',
 };

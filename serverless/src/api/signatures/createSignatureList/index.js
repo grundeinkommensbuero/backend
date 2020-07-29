@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk');
 const generatePdf = require('./createPDF');
 const sendMail = require('./sendMail');
-const fs = require('fs');
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { checkIfIdExists } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
+const mailAttachments = require('./attachments');
 const qrCodeUrls = require('./qrCodeUrls');
 const {
   constructCampaignId,
@@ -21,73 +21,6 @@ const usersTableName = process.env.USERS_TABLE_NAME || 'prod-users';
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
-};
-
-const MAIL_ATTACHMENTS = {
-  'berlin-1': [
-    {
-      filename: 'Liste_schwarz-weiss.pdf',
-      type: 'SINGLE_SW',
-    },
-    {
-      filename: 'Liste_farbig.pdf',
-      type: 'SINGLE',
-    },
-  ],
-  'hamburg-1': [
-    {
-      filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/TIPPS.pdf`),
-    },
-    {
-      filename: 'Liste_schwarz-weiss.pdf',
-      type: 'SINGLE_SW',
-    },
-    {
-      filename: 'Liste_Farbig.pdf',
-      type: 'SINGLE',
-    },
-    {
-      filename: 'Newsletter.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/NEWSLETTER.pdf`),
-    },
-    {
-      filename: 'Gesetzestext.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/GESETZ.pdf`),
-    },
-  ],
-  'brandenburg-1': [
-    {
-      filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/brandenburg-1/TIPPS.pdf`),
-    },
-    {
-      filename: 'Liste.pdf',
-      type: 'MULTI',
-    },
-  ],
-  'schleswig-holstein-1': [
-    {
-      filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/sh-1/TIPPS.pdf`),
-    },
-    {
-      filename: 'Liste_1er_SW.pdf',
-      type: 'SINGLE_SW',
-    },
-    {
-      filename: 'Liste_5er_SW.pdf',
-      type: 'MULTI_SW',
-    },
-    {
-      filename: 'Liste_1er_Farbe.pdf',
-      type: 'SINGLE',
-    },
-    {
-      filename: 'Liste_5er_Farbe.pdf',
-      type: 'MULTI',
-    },
-  ],
 };
 
 /*  Model for signature lists in db
@@ -137,8 +70,10 @@ const handler = async event => {
         }
 
         // Otherwise (not authenticated route) if user does not have
-        // newsletter consent we want to return 401
+        // newsletter consent we want to return 401.
+        // We don't want this behaviour for the bb plattform.
         if (
+          requestBody.campaignCode !== 'dibb-1' &&
           !event.pathParameters &&
           (!('newsletterConsent' in result.Item) ||
             !result.Item.newsletterConsent.value)
@@ -164,10 +99,12 @@ const handler = async event => {
           return errorResponse(404, 'No user found with the passed email');
         }
 
-        // If user does not have newsletter consent we want to return 401
+        // If user does not have newsletter consent we want to return 401.
+        // We don't want this behaviour for the bb plattform.
         if (
-          !('newsletterConsent' in result.Items[0]) ||
-          !result.Items[0].newsletterConsent.value
+          requestBody.campaignCode !== 'dibb-1' &&
+          (!('newsletterConsent' in result.Items[0]) ||
+            !result.Items[0].newsletterConsent.value)
         ) {
           return errorResponse(401, 'User does not have newsletter consent');
         }
@@ -282,7 +219,7 @@ const handler = async event => {
             // if the download was not anonymous send a mail with the attached pdf
             if (userId !== 'anonymous') {
               const attachments = await generateAttachments(
-                MAIL_ATTACHMENTS[requestBody.campaignCode],
+                mailAttachments[requestBody.campaignCode],
                 qrCodeUrl,
                 pdfId,
                 requestBody.campaignCode
