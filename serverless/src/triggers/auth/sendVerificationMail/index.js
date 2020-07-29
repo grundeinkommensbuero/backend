@@ -1,17 +1,20 @@
-const htmlMail = require('./mailTemplate.html').default;
+const htmlMailDefault = require('./mailTemplate.html').default;
+const htmlMailBBPlatform = require('./mailBBPlatform.html').default;
 
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo
 module.exports.handler = async event => {
   // Identify why was this function invoked
   if (event.triggerSource === 'CustomMessage_SignUp') {
-    const { email } = event.request.userAttributes;
+    // We need to retrieve the source attribute to be able to send a different mail
+    // for the bb platform
+    const { email, 'custom:source': source } = event.request.userAttributes;
     const { codeParameter } = event.request;
 
     // customize email
     event.response.emailSubject =
       'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
-    event.response.emailMessage = customEmail(email, codeParameter);
+    event.response.emailMessage = customEmail(email, codeParameter, source);
 
     return event;
   } else if (event.triggerSource === 'CustomMessage_ResendCode') {
@@ -31,8 +34,13 @@ module.exports.handler = async event => {
   return event;
 };
 
-const customEmail = (email, codeParameter) => {
+const customEmail = (email, codeParameter, source) => {
   const link = `https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}`;
+
+  // If source is dibb we want to send a different mail (for the bb platform)
+  const htmlMail =
+    source === 'bb-platform' ? htmlMailBBPlatform : htmlMailDefault;
+
   return htmlMail.replace(/\[\[VERIFICATION_LINK\]\]/gi, link);
 };
 

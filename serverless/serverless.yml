@@ -945,6 +945,11 @@ resources:
         AutoVerifiedAttributes:
           - email
           - phone_number
+        Schema:
+          - Name: source
+            Mutable: true
+            Required: false
+            AttributeDataType: String
         EmailConfiguration:
           EmailSendingAccount: DEVELOPER
           SourceArn: arn:aws:ses:eu-west-1:550953582247:identity/support@expedition-grundeinkommen.de
