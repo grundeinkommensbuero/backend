@@ -60,6 +60,7 @@ const saveUser = ({
   zipCode,
   city,
   username,
+  source,
 }) => {
   const timestamp = new Date().toISOString();
 
@@ -77,6 +78,7 @@ const saveUser = ({
       referral,
       city,
       username,
+      source,
     },
   };
 
