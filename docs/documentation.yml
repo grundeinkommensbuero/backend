@@ -361,6 +361,8 @@ paths:
                   type: string
                 city:
                   type: string
+                updatedOnXbge:
+                  type: boolean
       responses:
         '204':
           description: User was successfully updated

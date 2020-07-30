@@ -102,6 +102,23 @@ describe('updatePledge api test', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('should be able to update user from bb platform', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        updatedOnXbge: true,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
   it('should not be able to change other user', async () => {
     const request = {
       method: 'PATCH',
