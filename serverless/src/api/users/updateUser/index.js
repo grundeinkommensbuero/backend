@@ -31,7 +31,7 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      await updateUser(userId, requestBody);
+      await updateUser(userId, requestBody, result.Item);
 
       // updating user was successful, return appropriate json
       return {
@@ -63,7 +63,11 @@ const isAuthorized = event => {
   );
 };
 
-const updateUser = (userId, { username, zipCode, city, newsletterConsent }) => {
+const updateUser = (
+  userId,
+  { username, zipCode, city, newsletterConsent },
+  user
+) => {
   const timestamp = new Date().toISOString();
 
   const data = {
@@ -80,6 +84,13 @@ const updateUser = (userId, { username, zipCode, city, newsletterConsent }) => {
     };
   }
 
+  // We want to check if the user was created at the bb platform.
+  // In that case we want to set a flag that the user was updated on
+  // expedition-grundeinkommen.de
+  if (user.source === 'bb-platform') {
+    data[':updatedOnXbge'] = true;
+  }
+
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
@@ -92,6 +103,7 @@ const updateUser = (userId, { username, zipCode, city, newsletterConsent }) => {
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
+    ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
     ExpressionAttributeValues: data,
