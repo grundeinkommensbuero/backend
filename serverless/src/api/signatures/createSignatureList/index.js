@@ -138,7 +138,9 @@ const handler = async event => {
 
         // Otherwise (not authenticated route) if user does not have
         // newsletter consent we want to return 401
+        // we only want to this if the endpoint was not triggered by an admin
         if (
+          !requestBody.triggeredByAdmin &&
           !event.pathParameters &&
           (!('newsletterConsent' in result.Item) ||
             !result.Item.newsletterConsent.value)
@@ -165,9 +167,11 @@ const handler = async event => {
         }
 
         // If user does not have newsletter consent we want to return 401
+        // we only want to this if the endpoint was not triggered by an admin
         if (
-          !('newsletterConsent' in result.Items[0]) ||
-          !result.Items[0].newsletterConsent.value
+          !requestBody.triggeredByAdmin &&
+          (!('newsletterConsent' in result.Items[0]) ||
+            !result.Items[0].newsletterConsent.value)
         ) {
           return errorResponse(401, 'User does not have newsletter consent');
         }
@@ -280,7 +284,8 @@ const handler = async event => {
 
           try {
             // if the download was not anonymous send a mail with the attached pdf
-            if (userId !== 'anonymous') {
+            // we only want to this if the endpoint was not triggered by an admin
+            if (userId !== 'anonymous' && !requestBody.triggeredByAdmin) {
               const attachments = await generateAttachments(
                 MAIL_ATTACHMENTS[requestBody.campaignCode],
                 qrCodeUrl,
