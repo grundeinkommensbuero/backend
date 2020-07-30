@@ -214,6 +214,8 @@ paths:
                   type: string
                 zipCode:
                   type: string
+                source:
+                  type: string
       responses:
         '201':
           description: User was successfully created
