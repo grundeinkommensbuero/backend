@@ -57,6 +57,7 @@ function getBarcode(text) {
     height: 10,
     includetext: true,
     textxalign: 'center',
+    backgroundcolor: 'ffffff',
   });
 }
 
@@ -67,6 +68,7 @@ function getQrCode(text) {
     scale: 3,
     height: 100,
     width: 100,
+    backgroundcolor: 'ffffff',
   });
 }
 
