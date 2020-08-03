@@ -37,6 +37,8 @@ const updateMailjetContact = async ({
   signatureCampaigns,
   pledges,
   surveys,
+  source,
+  updatedOnXbge,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -49,6 +51,8 @@ const updateMailjetContact = async ({
     activeInBrandenburg: false,
     activeInBremen: false,
     activeInHamburg: false,
+    activeOnBrandenburgPlatform: false,
+    activeOnXbge: false,
     surveyParams: [],
     migratedFrom: 'nowhere',
     username: username || '',
@@ -146,6 +150,18 @@ const updateMailjetContact = async ({
     }
   }
 
+  // Check if the user was active on the brandenburg platform
+  // and/or expedition-grundeinkommen.de
+  if (source !== 'bb-platform') {
+    mailjetUser.activeOnXbge = true;
+  } else {
+    mailjetUser.activeOnBrandenburgPlatform = true;
+
+    if (updatedOnXbge) {
+      mailjetUser.activeOnXbge = true;
+    }
+  }
+
   const requestParams = {
     Data: [
       {
@@ -175,6 +191,14 @@ const updateMailjetContact = async ({
       {
         Name: 'subscribed_in_bremen',
         Value: mailjetUser.activeInBremen,
+      },
+      {
+        Name: 'subscribed_on_bb_platform',
+        Value: mailjetUser.activeOnBrandenburgPlatform,
+      },
+      {
+        Name: 'subscribed_on_xbge',
+        Value: mailjetUser.activeOnXbge,
       },
       {
         Name: 'migrated_from',
@@ -260,22 +284,31 @@ const createMailjetAttribute = async (attribute, datatype) => {
 const checkIfActiveInState = (mailjetUser, state) => {
   if (state === 'berlin') {
     mailjetUser.activeInBerlin = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'schleswig-holstein') {
     mailjetUser.activeInSchleswigHolstein = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'brandenburg') {
     mailjetUser.activeInBrandenburg = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'bremen') {
     mailjetUser.activeInBremen = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'hamburg') {
     mailjetUser.activeInHamburg = true;
+    mailjetUser.activeOnXbge = true;
+  }
+
+  if (state === 'dibb') {
+    mailjetUser.activeOnBrandenburgPlatform = true;
   }
 };
 
