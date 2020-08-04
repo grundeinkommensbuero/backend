@@ -14,8 +14,10 @@ module.exports.handler = async event => {
     if (event.queryStringParameters && event.queryStringParameters.date) {
       dateToCompare = new Date(event.queryStringParameters.date);
     } else {
-      // Default should just be the last 4 weeks
-      dateToCompare = new Date(new Date().getTime() - 28 * 24 * 60 * 60 * 1000);
+      // Default should just be the last 6 weeks
+      dateToCompare = new Date(
+        new Date().getTime() - 6 * 7 * 24 * 60 * 60 * 1000
+      );
     }
 
     console.log('dateToCompare', dateToCompare);
