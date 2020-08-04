@@ -8,21 +8,28 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
-    let dateToCompare;
+    let startDate;
+    let endDate;
 
     // Get date from on to get history from query params
-    if (event.queryStringParameters && event.queryStringParameters.date) {
-      dateToCompare = new Date(event.queryStringParameters.date);
+    if (event.queryStringParameters && event.queryStringParameters.start) {
+      startDate = new Date(event.queryStringParameters.start);
     } else {
       // Default should just be the last 6 weeks
-      dateToCompare = new Date(
-        new Date().getTime() - 6 * 7 * 24 * 60 * 60 * 1000
-      );
+      startDate = new Date(new Date().getTime() - 6 * 7 * 24 * 60 * 60 * 1000);
     }
 
-    console.log('dateToCompare', dateToCompare);
+    if (event.queryStringParameters && event.queryStringParameters.end) {
+      endDate = new Date(event.queryStringParameters.end);
+    } else {
+      // Default should just be now
+      endDate = new Date();
+    }
 
-    const history = await getListDownloadsAndScansSinceDate(dateToCompare);
+    const history = await getListDownloadsAndScansForTimespan(
+      startDate,
+      endDate
+    );
 
     return {
       statusCode: 200,
@@ -39,7 +46,7 @@ module.exports.handler = async event => {
   }
 };
 
-const getListDownloadsAndScansSinceDate = async dateToCompare => {
+const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
   const signatureLists = await getAllSignatureLists();
 
   const stats = {};
@@ -58,7 +65,7 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
       // we have to bring the date into the same format (UNIX time) as now
       const createdAt = Date.parse(list.createdAt);
 
-      if (createdAt > dateToCompare) {
+      if (createdAt > startDate && createdAt < endDate) {
         if (!(list.createdAt in stats[list.campaign.code].history)) {
           stats[list.campaign.code].history[list.createdAt] = {
             downloads: 0,
@@ -81,7 +88,7 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
         // we have to bring the date into the same format (UNIX time) as now
         const timestamp = Date.parse(scan.timestamp);
 
-        if (timestamp > dateToCompare) {
+        if (timestamp > startDate && timestamp < endDate) {
           const day = scan.timestamp.substring(0, 10);
 
           if (!(day in stats[list.campaign.code].history)) {
@@ -110,7 +117,7 @@ const getListDownloadsAndScansSinceDate = async dateToCompare => {
         // we have to bring the date into the same format (UNIX time) as now
         const timestamp = Date.parse(scan.timestamp);
 
-        if (timestamp > dateToCompare) {
+        if (timestamp > startDate && timestamp < endDate) {
           const day = scan.timestamp.substring(0, 10);
 
           if (!(day in stats[list.campaign.code].history)) {
