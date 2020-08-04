@@ -88,6 +88,12 @@ const MAIL_ATTACHMENTS = {
       type: 'MULTI',
     },
   ],
+  'bremen-1': [
+    {
+      filename: 'Liste.pdf',
+      type: 'COMBINED',
+    },
+  ],
 };
 
 /*  Model for signature lists in db
