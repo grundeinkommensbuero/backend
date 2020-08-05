@@ -79,8 +79,8 @@ const CODE_POSITIONS = {
     QRCODE: {
       x: 360.5,
       y: 46,
-      width: 36,
-      height: 36,
+      width: 37,
+      height: 37,
     },
   },
 };
