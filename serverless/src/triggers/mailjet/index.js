@@ -4,7 +4,8 @@ const fetch = require('node-fetch').default;
 const zipCodeMatcher = require('../../shared/zipCodeMatcher');
 
 const createdSurveyAttributes = [];
-const contactListId = '10234980';
+const contactListIdXbge = '10234980';
+const contactListIdBBPlatform = '10240805';
 
 // This function creates new mailjet contact (if mailjet contact does not exist)
 // and updated the user data and subscription status
@@ -16,10 +17,15 @@ const syncMailjetContact = async (user, verified) => {
   }
 
   try {
-    await Promise.all([
-      updateMailjetContact(user),
-      updateMailjetSubscription(user, verified),
-    ]);
+    const mailjetUser = await updateMailjetContact(user);
+
+    if (mailjetUser.activeOnXbge) {
+      await updateMailjetSubscription(user, verified, contactListIdXbge);
+    }
+
+    if (mailjetUser.activeOnBrandenburgPlatform) {
+      await updateMailjetSubscription(user, verified, contactListIdBBPlatform);
+    }
   } catch (error) {
     console.log('error updating contact', error);
   }
@@ -193,14 +199,6 @@ const updateMailjetContact = async ({
         Value: mailjetUser.activeInBremen,
       },
       {
-        Name: 'subscribed_on_bb_platform',
-        Value: mailjetUser.activeOnBrandenburgPlatform,
-      },
-      {
-        Name: 'subscribed_on_xbge',
-        Value: mailjetUser.activeOnXbge,
-      },
-      {
         Name: 'migrated_from',
         Value: mailjetUser.migratedFrom,
       },
@@ -228,18 +226,20 @@ const updateMailjetContact = async ({
     ],
   };
 
-  // We have to make two requests to update the contact data and add or remove user to/from contact list
-  return mailjet
+  await mailjet
     .put('contactdata', { version: 'v3' })
     .id(encodeURIComponent(email))
     .request(requestParams);
+
+  return mailjetUser;
 };
 
 // This function updates the subscription status
 // by unsubbing or subbing to contact list
 const updateMailjetSubscription = async (
   { email, newsletterConsent },
-  verified
+  verified,
+  contactListId
 ) => {
   return mailjet
     .post('contact', { version: 'v3' })
