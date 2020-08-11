@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const generatePdf = require('./createPDF');
 const sendMail = require('./sendMail');
+const createSignatureList = require('./createListInDynamo');
 const fs = require('fs');
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { checkIfIdExists } = require('../../../shared/signatures');
@@ -357,37 +358,6 @@ const getSignatureList = async (userId, timestamp, campaignCode) => {
   return ddb.query(params).promise();
 };
 
-// function to create new signature list, userId can be null (anonymous list)
-const createSignatureList = (
-  id,
-  timestamp,
-  url,
-  campaign,
-  manually,
-  mailMissing,
-  userId = null
-) => {
-  const params = {
-    TableName: signaturesTableName,
-    Item: {
-      id,
-      pdfUrl: url,
-      downloads: 1,
-      campaign,
-      createdAt: timestamp,
-      mailMissing,
-      manually,
-    },
-  };
-
-  // if the list is not supposed to be anonymous, append user id
-  if (userId !== null) {
-    params.Item.userId = userId;
-  }
-
-  return ddb.put(params).promise();
-};
-
 // updates entry in signature lists db to increment the download (the current download count is passed)
 const incrementDownloads = (id, downloads) => {
   downloads++;
@@ -461,7 +431,6 @@ const isAuthorized = event => {
 };
 
 module.exports = {
-  createSignatureList,
   uploadPDF,
   handler,
 };

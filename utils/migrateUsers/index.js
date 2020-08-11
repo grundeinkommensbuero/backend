@@ -21,6 +21,7 @@ const {
 } = require('../shared/users/createUsers');
 
 const CONFIG = require('../config');
+const { transformDate } = require('../shared/utils');
 
 const tableName = CONFIG.PROD_USERS_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
@@ -44,6 +45,7 @@ const addUser = async (email, username) => {
   await createUser(user);
 };
 
+// eslint-disable-next-line no-unused-vars
 const migrateUsers = async () => {
   try {
     const users = await readCsv('change-2');
@@ -169,10 +171,4 @@ const createUserInDynamo = (userId, user) => {
   return ddb.put(params).promise();
 };
 
-// Transforms date from e.g. 13.02.2020 00:52:51 to 02.13.2020 00:52:51
-const transformDate = date => {
-  const dateArray = date.split('.');
-  return `${dateArray[1]}.${dateArray[0]}.${dateArray[2]}`;
-};
-
-migrateUsers();
+module.exports = { createUser };
