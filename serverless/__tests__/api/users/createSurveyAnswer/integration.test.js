@@ -23,12 +23,12 @@ describe('createSurveyAnswer api test', () => {
     expect(response.status).toEqual(201);
   });
 
-  it('should not be able to create survey answer for same surveys', async () => {
+  it('should be able to create survey answer for same surveys', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        answer: 'answer-1',
+        answer: 'answer-2',
         surveyCode: 'survey-1',
       }),
     };
@@ -38,7 +38,7 @@ describe('createSurveyAnswer api test', () => {
       request
     );
 
-    expect(response.status).toEqual(401);
+    expect(response.status).toEqual(201);
   });
 
   it('should have missing params', async () => {
