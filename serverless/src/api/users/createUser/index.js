@@ -3,6 +3,12 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const {
+  validateZipCode,
+  validatePhoneNumber,
+  formatPhoneNumber,
+  validateEmail,
+} = require('../../../shared/utils');
 
 const tableName = process.env.USERS_TABLE_NAME;
 
@@ -61,6 +67,7 @@ const saveUser = ({
   city,
   username,
   source,
+  phoneNumber,
 }) => {
   const timestamp = new Date().toISOString();
 
@@ -74,21 +81,36 @@ const saveUser = ({
         timestamp,
       },
       createdAt: timestamp,
-      zipCode,
+      zipCode: zipCode ? zipCode.toString() : undefined, // Parse to string if is number
       referral,
       city,
       username,
       source,
+      phoneNumber: phoneNumber ? formatPhoneNumber(phoneNumber) : undefined, // Format it to all digit
     },
   };
 
   return ddb.put(params).promise();
 };
 
+// Validates if zip code and phone number are correct (if passed)
+// and if the needed params are there
 const validateParams = requestBody => {
+  if ('zipCode' in requestBody && !validateZipCode(requestBody.zipCode)) {
+    return false;
+  }
+
+  if (
+    'phoneNumber' in requestBody &&
+    !validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))
+  ) {
+    return false;
+  }
+
   return (
     'userId' in requestBody &&
     'email' in requestBody &&
-    'newsletterConsent' in requestBody
+    'newsletterConsent' in requestBody &&
+    validateEmail(requestBody.email)
   );
 };
