@@ -102,6 +102,67 @@ describe('createUser api test', () => {
     expect(response.status).toEqual(400);
   });
 
+  it('should have wrong email', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have wrong phone number', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '0151a7953677',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have wrong zip code', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '2074',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
   it('should have missing newsletter consent', async () => {
     const request = {
       method: 'POST',
