@@ -1,0 +1,14 @@
+<mj-section padding-top="40px" padding-bottom="40px">
+  <mj-column>
+    <mj-text color="#19505C" font-size="13px">
+
+      Vertrauensgesellschaft e.V.<br>
+      Karl-Marx-Strasse 50<br>
+      12043 Berlin
+      <br><br>
+      <a href="https://expedition-grundeinkommen.de/" class="link">expedition-grundeinkommen.de</a><br />
+      <a href="https://expedition-grundeinkommen.de/impressum/" class="link">Impressum</a>
+      <a href="https://expedition-grundeinkommen.de/datenschutz/" class="link">Datenschutz</a>
+    </mj-text>
+  </mj-column>
+</mj-section>
