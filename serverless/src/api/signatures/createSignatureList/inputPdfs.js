@@ -367,5 +367,20 @@ module.exports = {
         },
       ],
     },
+    SINGLE_SW: {
+      file: fs.readFileSync(__dirname + '/pdf/bremen-1/8er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.HB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.HB.QRCODE,
+        },
+      ],
+    },
   },
 };

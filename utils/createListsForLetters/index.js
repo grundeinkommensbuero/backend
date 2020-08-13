@@ -10,7 +10,7 @@ const MAPPING = {
   'hamburg-1': {
     URL: 'https://xbge.de/qr/hh/?listId=',
     SHORT: 'hh',
-    COUNT_INDEX: 14,
+    COUNT_INDEX: 16,
   },
   'schleswig-holstein-1': {
     URL: 'https://xbge.de/qr/sh/?listId=',
@@ -26,6 +26,11 @@ const MAPPING = {
     URL: 'https://xbge.de/qr/b/?listId=',
     SHORT: 'b',
     COUNT_INDEX: 17,
+  },
+  'bremen-1': {
+    URL: 'https://xbge.de/qr/hb/?listId=',
+    SHORT: 'hb',
+    COUNT_INDEX: 14,
   },
 };
 
@@ -103,6 +108,10 @@ const readCsv = () => {
             countHH:
               row[MAPPING['hamburg-1'].COUNT_INDEX] !== ''
                 ? parseInt(row[MAPPING['hamburg-1'].COUNT_INDEX], 10)
+                : 0,
+            countHB:
+              row[MAPPING['bremen-1'].COUNT_INDEX] !== ''
+                ? parseInt(row[MAPPING['bremen-1'].COUNT_INDEX], 10)
                 : 0,
             needsEnvelope: row[19].startsWith('Ja'),
           };

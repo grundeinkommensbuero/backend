@@ -13,6 +13,7 @@ module.exports = async (userId, user) => {
 
   const lists = [];
   let isDuplex = false;
+  console.log(user);
 
   if (user.countB > 0) {
     lists.push(await constructListConfig('berlin-1', user.countB));
@@ -29,6 +30,11 @@ module.exports = async (userId, user) => {
 
   if (user.countSH > 0) {
     lists.push(await constructListConfig('schleswig-holstein-1', user.countSH));
+  }
+
+  if (user.countHB > 0) {
+    lists.push(await constructListConfig('bremen-1', user.countHB));
+    isDuplex = true;
   }
 
   const mailMissing =
