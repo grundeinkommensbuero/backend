@@ -443,6 +443,27 @@ describe('updateUser api test', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('should be able to update user with phone number', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '004964423893023',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
   it('should be able to update only zip code', async () => {
     const request = {
       method: 'PATCH',
@@ -503,6 +524,27 @@ describe('updateUser api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({}),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have incorrect phone number', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '00496a423893023',
+      }),
     };
 
     const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
