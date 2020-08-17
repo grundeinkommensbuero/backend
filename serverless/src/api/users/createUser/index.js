@@ -81,12 +81,15 @@ const saveUser = ({
         timestamp,
       },
       createdAt: timestamp,
-      zipCode: zipCode ? zipCode.toString() : undefined, // Parse to string if is number
+      zipCode: typeof zipCode !== 'undefined' ? zipCode.toString() : undefined, // Parse to string if is number
       referral,
       city,
       username,
       source,
-      phoneNumber: phoneNumber ? formatPhoneNumber(phoneNumber) : undefined, // Format it to all digit
+      phoneNumber:
+        typeof phoneNumber !== 'undefined'
+          ? formatPhoneNumber(phoneNumber)
+          : undefined, // Format it to all digit
     },
   };
 
