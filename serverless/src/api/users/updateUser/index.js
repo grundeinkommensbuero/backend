@@ -1,6 +1,11 @@
 const AWS = require('aws-sdk');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const {
+  validateZipCode,
+  formatPhoneNumber,
+  validatePhoneNumber,
+} = require('../../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -54,6 +59,17 @@ module.exports.handler = async event => {
 
 // Check if user id is in path params and request body is not empty
 const validateParams = (pathParameters, requestBody) => {
+  if ('zipCode' in requestBody && !validateZipCode(requestBody.zipCode)) {
+    return false;
+  }
+
+  if (
+    'phoneNumber' in requestBody &&
+    !validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))
+  ) {
+    return false;
+  }
+
   return 'userId' in pathParameters && Object.keys(requestBody).length !== 0;
 };
 
@@ -65,7 +81,7 @@ const isAuthorized = event => {
 
 const updateUser = (
   userId,
-  { username, zipCode, city, newsletterConsent },
+  { username, zipCode, city, newsletterConsent, phoneNumber },
   user
 ) => {
   const timestamp = new Date().toISOString();
@@ -73,8 +89,12 @@ const updateUser = (
   const data = {
     ':updatedAt': timestamp,
     ':username': username,
-    ':zipCode': zipCode,
+    ':zipCode': typeof zipCode !== 'undefined' ? zipCode.toString() : undefined, // Parse to string if is number
     ':city': city,
+    ':phoneNumber':
+      typeof phoneNumber !== 'undefined'
+        ? formatPhoneNumber(phoneNumber)
+        : undefined, // Format it to all digit
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -103,6 +123,7 @@ const updateUser = (
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
+    ${typeof phoneNumber !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
