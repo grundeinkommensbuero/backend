@@ -7,7 +7,7 @@ const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
 let token;
 
-describe('updatePledge api test', () => {
+describe('updateUser api test', () => {
   beforeAll(async () => {
     token = await authenticate();
   });
@@ -32,7 +32,28 @@ describe('updatePledge api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should be able to update user with one missing param', async () => {
+  it('should be able to update user with phone number', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '004964423893023',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
+  it('should be able to update user with missing zip code', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -145,6 +166,27 @@ describe('updatePledge api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({}),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have incorrect phone number', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '00496a423893023',
+      }),
     };
 
     const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
