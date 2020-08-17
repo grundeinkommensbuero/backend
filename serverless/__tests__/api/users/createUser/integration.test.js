@@ -54,6 +54,27 @@ describe('createUser api test', () => {
     expect(response.status).toEqual(201);
   });
 
+  it('should create a new user with phone number', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '004964423893023',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(201);
+  });
+
   it('should create a new user with newsletter consent and source', async () => {
     const request = {
       method: 'POST',
