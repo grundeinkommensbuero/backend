@@ -12,6 +12,11 @@ const uuid = require('uuid/v4');
 const sendMail = require('./sendMail');
 const sendLotteryMail = require('./sendLotteryMail');
 const { computeDebitDate } = require('./computeDebitDate');
+const {
+  validateZipCode,
+  formatPhoneNumber,
+  validatePhoneNumber,
+} = require('../../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -179,6 +184,17 @@ const validateParams = (pathParameters, requestBody) => {
     return false;
   }
 
+  if ('zipCode' in requestBody && !validateZipCode(requestBody.zipCode)) {
+    return false;
+  }
+
+  if (
+    'phoneNumber' in requestBody &&
+    !validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))
+  ) {
+    return false;
+  }
+
   return 'userId' in pathParameters && Object.keys(requestBody).length !== 0;
 };
 
@@ -206,6 +222,7 @@ const updateUser = async (
     lottery,
     store,
     listFlow,
+    phoneNumber,
   },
   user,
   ipAddress,
@@ -265,11 +282,15 @@ const updateUser = async (
     ':email': email,
     ':updatedAt': timestamp,
     ':username': username,
-    ':zipCode': zipCode,
+    ':zipCode': typeof zipCode !== 'undefined' ? zipCode.toString() : undefined, // Parse to string if is number
     ':city': city,
     ':customNewsletters': customNewslettersArray,
     ':store': newStore,
     ':listFlow': newListFlow,
+    ':phoneNumber':
+      typeof phoneNumber !== 'undefined'
+        ? formatPhoneNumber(phoneNumber) // Format it to all digit
+        : undefined,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -358,6 +379,7 @@ const updateUser = async (
     ${typeof listFlow !== 'undefined' ? 'listFlow = :listFlow,' : ''} 
     ${typeof lottery !== 'undefined' ? 'lottery = :lottery,' : ''} 
     ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
+    ${typeof phoneNumber !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
