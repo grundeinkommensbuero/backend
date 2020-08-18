@@ -844,6 +844,11 @@ functions:
           - ses:SendEmail
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: Allow
+        Action:
+          - 'sns:Publish'
+        Resource:
+          - '*'
 
   defineAuthChallenge:
     handler: src/triggers/auth/defineAuthChallenge/index.handler
