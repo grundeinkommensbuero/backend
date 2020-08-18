@@ -1,6 +1,9 @@
 const crypto = require('crypto-secure-random-digit');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+const AWS = require('aws-sdk');
+
+const sns = new AWS.SNS();
 
 exports.handler = async event => {
   let secretLoginCode;
@@ -8,7 +11,16 @@ exports.handler = async event => {
     // This is a new auth session
     // Generate a new secret login code and mail it to the user
     secretLoginCode = crypto.randomDigits(6).join('');
-    await sendEmail(event.request.userAttributes.email, secretLoginCode);
+
+    console.log('request', event.request);
+    console.log('attributes', event.request.userAttributes);
+
+    // If there is a phone number we want to send to code via sms
+    if (event.request.userAttributes.phone_number) {
+      await sendSms(event.request.userAttributes.phone_number, secretLoginCode);
+    } else {
+      await sendEmail(event.request.userAttributes.email, secretLoginCode);
+    }
   } else {
     // There's an existing session. Don't generate new digits but
     // re-use the code from the current session. This allows the user to
@@ -32,6 +44,7 @@ exports.handler = async event => {
   return event;
 };
 
+// Sends the login code via email through mailjet
 const sendEmail = (email, code) => {
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -54,4 +67,14 @@ const sendEmail = (email, code) => {
       },
     ],
   });
+};
+
+// Sends the login code via sms
+const sendSms = (phoneNumber, code) => {
+  const params = {
+    Message: `Fast geschafft – gib einfach den folgenden Code in das Feld auf unserer Webseite ein und schon bist du eingeloggt: ${code}`,
+    PhoneNumber: phoneNumber,
+  };
+
+  return sns.publish(params).promise();
 };
