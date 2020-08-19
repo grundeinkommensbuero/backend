@@ -4,7 +4,8 @@ const fetch = require('node-fetch').default;
 const zipCodeMatcher = require('../../shared/zipCodeMatcher');
 
 const createdSurveyAttributes = [];
-const contactListId = '10234980';
+const contactListIdXbge = '10234980';
+const contactListIdBBPlatform = '10240805';
 
 // This function creates new mailjet contact (if mailjet contact does not exist)
 // and updated the user data and subscription status
@@ -16,10 +17,15 @@ const syncMailjetContact = async (user, verified) => {
   }
 
   try {
-    await Promise.all([
-      updateMailjetContact(user),
-      updateMailjetSubscription(user, verified),
-    ]);
+    const mailjetUser = await updateMailjetContact(user);
+
+    if (mailjetUser.activeOnXbge) {
+      await updateMailjetSubscription(user, verified, contactListIdXbge);
+    }
+
+    if (mailjetUser.activeOnBrandenburgPlatform) {
+      await updateMailjetSubscription(user, verified, contactListIdBBPlatform);
+    }
   } catch (error) {
     console.log('error updating contact', error);
   }
@@ -37,6 +43,8 @@ const updateMailjetContact = async ({
   signatureCampaigns,
   pledges,
   surveys,
+  source,
+  updatedOnXbge,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -49,6 +57,8 @@ const updateMailjetContact = async ({
     activeInBrandenburg: false,
     activeInBremen: false,
     activeInHamburg: false,
+    activeOnBrandenburgPlatform: false,
+    activeOnXbge: false,
     surveyParams: [],
     migratedFrom: 'nowhere',
     username: username || '',
@@ -146,6 +156,18 @@ const updateMailjetContact = async ({
     }
   }
 
+  // Check if the user was active on the brandenburg platform
+  // and/or expedition-grundeinkommen.de
+  if (source !== 'bb-platform') {
+    mailjetUser.activeOnXbge = true;
+  } else {
+    mailjetUser.activeOnBrandenburgPlatform = true;
+
+    if (updatedOnXbge) {
+      mailjetUser.activeOnXbge = true;
+    }
+  }
+
   const requestParams = {
     Data: [
       {
@@ -204,18 +226,20 @@ const updateMailjetContact = async ({
     ],
   };
 
-  // We have to make two requests to update the contact data and add or remove user to/from contact list
-  return mailjet
+  await mailjet
     .put('contactdata', { version: 'v3' })
     .id(encodeURIComponent(email))
     .request(requestParams);
+
+  return mailjetUser;
 };
 
 // This function updates the subscription status
 // by unsubbing or subbing to contact list
 const updateMailjetSubscription = async (
   { email, newsletterConsent },
-  verified
+  verified,
+  contactListId
 ) => {
   return mailjet
     .post('contact', { version: 'v3' })
@@ -260,22 +284,31 @@ const createMailjetAttribute = async (attribute, datatype) => {
 const checkIfActiveInState = (mailjetUser, state) => {
   if (state === 'berlin') {
     mailjetUser.activeInBerlin = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'schleswig-holstein') {
     mailjetUser.activeInSchleswigHolstein = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'brandenburg') {
     mailjetUser.activeInBrandenburg = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'bremen') {
     mailjetUser.activeInBremen = true;
+    mailjetUser.activeOnXbge = true;
   }
 
   if (state === 'hamburg') {
     mailjetUser.activeInHamburg = true;
+    mailjetUser.activeOnXbge = true;
+  }
+
+  if (state === 'dibb') {
+    mailjetUser.activeOnBrandenburgPlatform = true;
   }
 };
 
