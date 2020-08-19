@@ -65,6 +65,12 @@ module.exports = {
       type: 'MULTI',
     },
   ],
+  'bremen-1': [
+    {
+      filename: 'Liste.pdf',
+      type: 'COMBINED',
+    },
+  ],
   'dibb-1': [
     {
       filename: 'Listen.pdf',
