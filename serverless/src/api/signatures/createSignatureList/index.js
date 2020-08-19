@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk');
 const generatePdf = require('./createPDF');
 const sendMail = require('./sendMail');
+const createSignatureList = require('./createListInDynamo');
+const fs = require('fs');
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { checkIfIdExists } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
@@ -22,6 +24,7 @@ const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 };
+
 
 /*  Model for signature lists in db
 
@@ -70,10 +73,11 @@ const handler = async event => {
         }
 
         // Otherwise (not authenticated route) if user does not have
-        // newsletter consent we want to return 401.
-        // We don't want this behaviour for the bb plattform.
+        // newsletter consent we want to return 401
+        // we only want to do this if the endpoint was not triggered by an admin
+        // and if it is not the bb platform
         if (
-          requestBody.campaignCode !== 'dibb-1' &&
+          requestBody.campaignCode !== 'dibb-1' && !requestBody.triggeredByAdmin &&
           !event.pathParameters &&
           (!('newsletterConsent' in result.Item) ||
             !result.Item.newsletterConsent.value)
@@ -99,10 +103,12 @@ const handler = async event => {
           return errorResponse(404, 'No user found with the passed email');
         }
 
-        // If user does not have newsletter consent we want to return 401.
-        // We don't want this behaviour for the bb plattform.
+        // Otherwise (not authenticated route) if user does not have
+        // newsletter consent we want to return 401
+        // we only want to do this if the endpoint was not triggered by an admin
+        // and if it is not the bb platform
         if (
-          requestBody.campaignCode !== 'dibb-1' &&
+          requestBody.campaignCode !== 'dibb-1' && !requestBody.triggeredByAdmin &&
           (!('newsletterConsent' in result.Items[0]) ||
             !result.Items[0].newsletterConsent.value)
         ) {
@@ -217,7 +223,8 @@ const handler = async event => {
 
           try {
             // if the download was not anonymous send a mail with the attached pdf
-            if (userId !== 'anonymous') {
+            // we only want to this if the endpoint was not triggered by an admin
+            if (userId !== 'anonymous' && !requestBody.triggeredByAdmin) {
               const attachments = await generateAttachments(
                 mailAttachments[requestBody.campaignCode],
                 qrCodeUrl,
@@ -281,37 +288,6 @@ const getSignatureList = async (userId, timestamp, campaignCode) => {
   };
 
   return ddb.query(params).promise();
-};
-
-// function to create new signature list, userId can be null (anonymous list)
-const createSignatureList = (
-  id,
-  timestamp,
-  url,
-  campaign,
-  manually,
-  mailMissing,
-  userId = null
-) => {
-  const params = {
-    TableName: signaturesTableName,
-    Item: {
-      id,
-      pdfUrl: url,
-      downloads: 1,
-      campaign,
-      createdAt: timestamp,
-      mailMissing,
-      manually,
-    },
-  };
-
-  // if the list is not supposed to be anonymous, append user id
-  if (userId !== null) {
-    params.Item.userId = userId;
-  }
-
-  return ddb.put(params).promise();
 };
 
 // updates entry in signature lists db to increment the download (the current download count is passed)
@@ -387,7 +363,6 @@ const isAuthorized = event => {
 };
 
 module.exports = {
-  createSignatureList,
   uploadPDF,
   handler,
 };

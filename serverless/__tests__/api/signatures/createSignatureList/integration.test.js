@@ -79,7 +79,42 @@ describe('createSignatureList api test', () => {
 
     expect(response.status).toBeLessThan(202);
     expect(json).toHaveProperty('signatureList');
-    console.log(json);
+  });
+    
+
+  it('should create a new signature list for hb via userId', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId,
+        campaignCode: 'bremen-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should create a new signature list via userId triggered by admin', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId,
+        campaignCode: 'brandenburg-1',
+        triggeredByAdmin: true,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
   });
 
   it('should create a new signature list via email', async () => {

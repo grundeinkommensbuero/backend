@@ -12,6 +12,11 @@ module.exports = async function createPDFLetter({
     ({ campaignCode }) => campaignCode === 'brandenburg-1'
   );
 
+  // Special case for bremen because of the entire law being printed
+  const isBremen = !!lists.find(
+    ({ campaignCode }) => campaignCode === 'bremen-1'
+  );
+
   const letter = await createPDF(
     'foo',
     'foo',
@@ -38,6 +43,18 @@ module.exports = async function createPDFLetter({
     letter.addPage(mailMissingAdditionPage);
   } else if (isDuplex) {
     letter.addPage();
+  }
+
+  if (isBremen) {
+    letter.addPage();
+
+    const lawBytes = fs.readFileSync(`${__dirname}/pdf/bremen-1/GESETZ.pdf`);
+    const lawDoc = await pdfLib.PDFDocument.load(lawBytes);
+    const copiedPages = await letter.copyPages(lawDoc, lawDoc.getPageIndices());
+
+    for (const page of copiedPages) {
+      letter.addPage(page);
+    }
   }
 
   for (const { campaignCode, listCount, code, state } of lists) {
@@ -78,6 +95,7 @@ module.exports = async function createPDFLetter({
       }
     }
   }
+
   const pdfBytes = await letter.save();
   return pdfBytes;
 };
