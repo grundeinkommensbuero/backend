@@ -26,17 +26,6 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      const user = result.Item;
-
-      // Check if this survey has already been answered
-      if ('surveys' in user) {
-        for (const survey of user.surveys) {
-          if (survey.code === requestBody.surveyCode) {
-            return errorResponse(401, 'Cannot answer same survey twice');
-          }
-        }
-      }
-
       await saveUser(userId, requestBody);
 
       // updating user was successful, return appropriate json

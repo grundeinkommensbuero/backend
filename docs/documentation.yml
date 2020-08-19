@@ -214,6 +214,8 @@ paths:
                   type: string
                 zipCode:
                   type: string
+                source:
+                  type: string
       responses:
         '201':
           description: User was successfully created
@@ -359,6 +361,8 @@ paths:
                   type: string
                 city:
                   type: string
+                updatedOnXbge:
+                  type: boolean
       responses:
         '204':
           description: User was successfully updated
@@ -1392,10 +1396,15 @@ paths:
       summary: Get history of registered signatures
       parameters:
         - in: query
-          name: date
+          name: start
           schema:
             type: string
-          description: Date (YYYY-MM-DD) when the history should start, if not provided last 4 weeks
+          description: Date (YYYY-MM-DD) when the history should start, if not provided 6 weeks ago
+        - in: query
+          name: end
+          schema:
+            type: string
+          description: Date (YYYY-MM-DD) when the history should end, if not provided now
       responses:
         '200':
           description: Signature history successfully retrieved

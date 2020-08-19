@@ -85,6 +85,20 @@ const CODE_POSITIONS = {
       height: 39,
     },
   },
+  HB: {
+    BARCODE: {
+      x: 435,
+      y: 35,
+      width: 120,
+      height: 55,
+    },
+    QRCODE: {
+      x: 360.5,
+      y: 46,
+      width: 37,
+      height: 37,
+    },
+  },
 };
 
 // Here we define on which pages the qr and barcodes should be placed
@@ -105,6 +119,7 @@ module.exports = {
       ],
     },
   },
+
   'berlin-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er.pdf'),
@@ -152,6 +167,7 @@ module.exports = {
       ],
     },
   },
+
   'hamburg-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/hamburg-1/ALLES.pdf'),
@@ -199,6 +215,7 @@ module.exports = {
       ],
     },
   },
+
   'brandenburg-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/ALLES.pdf'),
@@ -263,6 +280,7 @@ module.exports = {
       ],
     },
   },
+
   'schleswig-holstein-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES_sw.pdf'),
@@ -350,6 +368,7 @@ module.exports = {
       ],
     },
   },
+
   'dibb-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdf/dibb-1/ALLES.pdf'),
@@ -363,6 +382,39 @@ module.exports = {
           type: 'QR',
           page: 1,
           position: CODE_POSITIONS.BB.QRCODE,
+         },
+      ]
+     },
+    },
+
+  'bremen-1': {
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdf/bremen-1/ALLES.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 5,
+          position: CODE_POSITIONS.HB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 5,
+          position: CODE_POSITIONS.HB.QRCODE,
+        },
+      ],
+    },
+    SINGLE_SW: {
+      file: fs.readFileSync(__dirname + '/pdf/bremen-1/8er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.HB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.HB.QRCODE,
         },
       ],
     },
