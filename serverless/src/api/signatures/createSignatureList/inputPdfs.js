@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+// Configuration for positions where the qr and barcodes
+// should be placed for each campaign and their corresponding pdfs.
 const CODE_POSITIONS = {
   B: {
     BARCODE: {
@@ -69,6 +71,20 @@ const CODE_POSITIONS = {
       height: 39,
     },
   },
+  DIBB: {
+    BARCODE: {
+      x: 545,
+      y: 29,
+      width: 120,
+      height: 60,
+    },
+    QRCODE: {
+      x: 693.5,
+      y: 472.5,
+      width: 39,
+      height: 39,
+    },
+  },
   HB: {
     BARCODE: {
       x: 435,
@@ -85,6 +101,8 @@ const CODE_POSITIONS = {
   },
 };
 
+// Here we define on which pages the qr and barcodes should be placed
+// using the config above. There can be multiple different pdfs for each campaign.
 module.exports = {
   anschreiben: {
     ANSCHREIBEN_GENERAL: {
@@ -350,6 +368,24 @@ module.exports = {
       ],
     },
   },
+
+  'dibb-1': {
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdf/dibb-1/ALLES.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.BB.QRCODE,
+         },
+      ]
+     },
+    },
 
   'bremen-1': {
     COMBINED: {

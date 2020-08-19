@@ -2,6 +2,10 @@ const pdfLib = require('pdf-lib');
 const bwipjs = require('bwip-js');
 const inputPdfs = require('./inputPdfs');
 
+// Generates pdfs by creating barcodes and qr codes with the passed code
+// and adds those to the pdf using pdf-lib.
+// The config for where the qr and barcodes should be places can be found
+// in ./inputPdfs.
 module.exports = async function generatePdf(
   url,
   code,

@@ -3,6 +3,10 @@
   <mj-section full-width="full-width" padding-bottom="50px" />
   <mj-class name="section-red" background-color="#fc484c" />
   <mj-class name="section-red-text" color="#fef377" />
+
+  <mj-class name="section-grey" background-color="#f3f3f3" />
+  <mj-class name="section-grey-text" color="#19505C" font-weight="normal" />
+
   <mj-class name="hidden" display="none" />
   <mj-button border-radius="50px" background-color="transparent" color="#fc484c" font-weight="bold" border="1px solid #fc484c" font-size="22px" />
 </mj-attributes>

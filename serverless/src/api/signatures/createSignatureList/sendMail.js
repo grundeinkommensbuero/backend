@@ -1,12 +1,16 @@
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
+const TEMPLATE_ID_DEFAULT = 1549991;
+const TEMPLATE_ID_BB_PLATFORM = 1596886;
+
 const STATES = {
   'schleswig-holstein': 'Schleswig-Holstein',
   brandenburg: 'Brandenburg',
   hamburg: 'Hamburg',
   berlin: 'Berlin',
   bremen: 'Bremen',
+  dibb: 'Brandenburg',
 };
 
 // Functions which sends an email with the attached pdf and returns a promise
@@ -19,7 +23,10 @@ const sendMail = (email, username, attachments, campaign) => {
             Email: email,
           },
         ],
-        TemplateID: 1549991,
+        TemplateID:
+          campaign.code === 'dibb-1'
+            ? TEMPLATE_ID_BB_PLATFORM
+            : TEMPLATE_ID_DEFAULT,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',

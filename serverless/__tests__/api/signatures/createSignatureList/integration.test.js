@@ -64,6 +64,24 @@ describe('createSignatureList api test', () => {
     expect(json).toHaveProperty('signatureList');
   });
 
+  it('should create a new signature list for dibb via userId', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId,
+        campaignCode: 'dibb-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+    
+
   it('should create a new signature list for hb via userId', async () => {
     const request = {
       method: 'POST',
@@ -171,6 +189,30 @@ describe('createSignatureList api test', () => {
       },
       body: JSON.stringify({
         campaignCode: 'schleswig-holstein-1',
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/signatures`,
+      request
+    );
+    const json = await response.json();
+
+    console.log(json);
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should create a new signature list for dibb via authenticated route', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        campaignCode: 'dibb-1',
       }),
     };
 

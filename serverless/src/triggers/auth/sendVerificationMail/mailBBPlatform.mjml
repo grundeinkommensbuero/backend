@@ -1,0 +1,36 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../../../../mails/includes/head.mjml" />
+  </mj-head>
+
+  <mj-body background-color="#ffffff">
+    <mj-include path="../../../../mails/includes/header.mjml" />
+    <mj-section mj-class="section-grey">
+      <mj-column>
+        <mj-text mj-class="section-grey-text">
+          <p><b>Hallo,<b></p>
+          <p>
+            fast geschafft – schön, dass du dabei bist! Ein letzter Schritt, und dann bist du an Bord.
+            Bitte bestätige noch deine E-Mail-Adresse, indem du auf den folgenden Link klickst:
+          </p>
+        </mj-text>
+
+        <mj-button color="#008B8B" border="1px solid #008B8B" align="left" padding-top="20px" padding-bottom="30px" href="[[VERIFICATION_LINK]]">
+          Email-Adresse bestätigen
+        </mj-button>
+
+        <mj-text mj-class="section-grey-text">
+          Gemeinsam gestalten wir die Demokratie in Brandenburg!
+          <br><br>
+          Deine Expedition Grundeinkommen, Verkehrswende Brandenburg und Volksinitiative Klimanotstand
+          <br><br>
+          Klappt nicht? Kopiere folgenden Link in deinen Browser: <br><a class="link" href="[[VERIFICATION_LINK]]">[[VERIFICATION_LINK]]</a>
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="../../../../mails/includes/footer-bb-platform.mjml" />
+  </mj-body>
+</mjml>
