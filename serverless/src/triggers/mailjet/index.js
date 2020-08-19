@@ -226,6 +226,13 @@ const updateMailjetContact = async ({
     ],
   };
 
+  if (typeof zipCode !== 'undefined') {
+    requestParams.Data.push({
+      Name: 'user_address_zip',
+      Value: parseInt(zipCode, 10),
+    });
+  }
+
   await mailjet
     .put('contactdata', { version: 'v3' })
     .id(encodeURIComponent(email))
