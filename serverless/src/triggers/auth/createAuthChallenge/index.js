@@ -73,6 +73,12 @@ const sendEmail = (email, code) => {
 const sendSms = (phoneNumber, code) => {
   const params = {
     Message: `Fast geschafft – gib einfach den folgenden Code in das Feld auf unserer Webseite ein und schon bist du eingeloggt: ${code}`,
+    MessageAttributes: {
+      'AWS.SNS.SMS.SenderID': {
+        DataType: 'String',
+        StringValue: 'Expedition',
+      },
+    },
     PhoneNumber: phoneNumber,
   };
 
