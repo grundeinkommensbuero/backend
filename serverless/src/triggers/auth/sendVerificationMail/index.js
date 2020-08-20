@@ -35,7 +35,10 @@ module.exports.handler = async event => {
 };
 
 const customEmail = (email, codeParameter, source) => {
-  const link = `https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}`;
+  const link =
+    source === 'bb-platform'
+      ? `https://brandenburg-mitbestimmen.de/verifizierung/?email=${email}&code=${codeParameter}`
+      : `https://expedition-grundeinkommen.de/verifizierung/?email=${email}&code=${codeParameter}`;
 
   // If source is dibb we want to send a different mail (for the bb platform)
   const htmlMail =
