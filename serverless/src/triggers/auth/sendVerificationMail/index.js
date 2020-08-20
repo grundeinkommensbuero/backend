@@ -13,7 +13,9 @@ module.exports.handler = async event => {
 
     // customize email
     event.response.emailSubject =
-      'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
+      source === 'bb-platform'
+        ? 'Bitte bestätige deine E-Mail-Adresse für die Demokratie in Brandenburg!'
+        : 'Bitte bestätige deine E-Mail-Adresse für die Expedition Grundeinkommen!';
     event.response.emailMessage = customEmail(email, codeParameter, source);
 
     return event;
