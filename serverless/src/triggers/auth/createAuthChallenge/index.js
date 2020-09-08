@@ -7,6 +7,10 @@ const sns = new AWS.SNS();
 
 exports.handler = async event => {
   let secretLoginCode;
+
+  // We use this variable to send back to client whether the code
+  // was sent via email or SMS
+  let method;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
     // Generate a new secret login code and mail it to the user
@@ -17,9 +21,20 @@ exports.handler = async event => {
 
     // If there is a phone number we want to send to code via sms
     if (event.request.userAttributes.phone_number) {
-      await sendSms(event.request.userAttributes.phone_number, secretLoginCode);
+      try {
+        await sendSms(
+          event.request.userAttributes.phone_number,
+          secretLoginCode
+        );
+        method = 'sms';
+      } catch (error) {
+        // If sending the sms was not successful, send an email
+        await sendEmail(event.request.userAttributes.email, secretLoginCode);
+        method = 'email';
+      }
     } else {
       await sendEmail(event.request.userAttributes.email, secretLoginCode);
+      method = 'email';
     }
   } else {
     // There's an existing session. Don't generate new digits but
@@ -41,6 +56,7 @@ exports.handler = async event => {
   // Add the secret login code to the session so it is available
   // in a next invocation of the "Create Auth Challenge" trigger
   event.response.challengeMetadata = `CODE-${secretLoginCode}`;
+  event.response.publicChallengeParameters = { method };
   return event;
 };
 
