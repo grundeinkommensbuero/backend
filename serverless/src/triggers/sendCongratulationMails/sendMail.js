@@ -5,7 +5,7 @@ const GOALS = {
   'schleswig-holstein-1': '24000',
   'brandenburg-1': '24000',
   'hamburg-1': '12000',
-  'bremen-1': '6000',
+  'bremen-1': '5000',
   'berlin-1': '24000',
 };
 
