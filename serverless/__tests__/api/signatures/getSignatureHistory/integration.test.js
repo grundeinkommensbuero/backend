@@ -59,7 +59,7 @@ describe('getSignatureHistory api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/analytics/signatures/history?end=2020-07-20`,
+      `${INVOKE_URL}/analytics/signatures/history?end=2020-09-07`,
       request
     );
     const json = await response.json();
