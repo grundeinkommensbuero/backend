@@ -3,6 +3,7 @@ const parse = require('csv-parse');
 const pdfLib = require('pdf-lib');
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
+const inWords = require('in-words').de;
 
 const ses = new AWS.SES({ region: 'eu-central-1' });
 const pathToDonors = './spendenbescheinigungen.csv';
@@ -14,7 +15,6 @@ const generateReceipts = async () => {
 
   for (const user of users) {
     const pdf = await generatePdf(user);
-
     await sendMail(user, pdf);
   }
 };
@@ -28,8 +28,8 @@ const generatePdf = async ({
   country,
   company,
   amount,
-  amountInWords,
   date,
+  index,
 }) => {
   const pdf = await pdfLib.PDFDocument.load(file);
   const page = pdf.getPage(0);
@@ -51,15 +51,31 @@ const generatePdf = async ({
     { x: 45, y: height - 160, ...options }
   );
 
-  page.drawText(`${amount} Euro`, {
+  const splitAmount = amount.split(',');
+  const euroInWords = inWords(splitAmount[0]);
+  // Transform something like ,2 to ,20
+  let cents;
+  if (splitAmount[1]) {
+    cents = splitAmount[1].length > 1 ? splitAmount[1] : `${splitAmount[1]}0`;
+  } else {
+    cents = null;
+  }
+
+  const centsInWords = cents ? inWords(cents) : null;
+
+  page.drawText(`${splitAmount[0]}${cents ? `,${cents}` : ''} Euro`, {
     x: 50,
     y: height - 235,
     ...options,
   });
 
   page.drawText(
-    `${amountInWords.charAt(0).toUpperCase()}${amountInWords.slice(1)} ${
-      amountInWords.includes('Euro') ? '' : 'Euro'
+    `${euroInWords.charAt(0).toUpperCase()}${euroInWords.slice(1)} Euro${
+      centsInWords
+        ? ` ${centsInWords.charAt(0).toUpperCase()}${centsInWords.slice(
+            1
+          )} Cent`
+        : ''
     }`,
     {
       x: 180,
@@ -68,7 +84,7 @@ const generatePdf = async ({
     }
   );
 
-  page.drawText(`${date.replace('.20', '.2020')}`, {
+  page.drawText(`${date}`, {
     x: 435,
     y: height - 235,
     ...options,
@@ -87,7 +103,10 @@ const generatePdf = async ({
 
   const filledPdf = await pdf.save();
 
-  fs.writeFileSync(`./pdfs/${firstname}${lastname}${zipCode}.pdf`, filledPdf);
+  fs.writeFileSync(
+    `./pdfs/${firstname}${lastname.replace('/', '')}${index}.pdf`,
+    filledPdf
+  );
 
   return filledPdf;
 };
@@ -129,17 +148,17 @@ const readCsv = () => {
         if (count > 0) {
           console.log('row', row);
           user = {
-            email: row[0],
-            firstname: row[1],
-            lastname: row[2],
-            company: row[3],
-            street: row[4],
-            zipCode: row[5],
-            city: row[6],
-            country: row[7],
-            date: row[8],
-            amount: row[9],
-            amountInWords: row[10],
+            email: row[1],
+            firstname: row[2],
+            lastname: row[3],
+            company: row[4],
+            street: row[5],
+            zipCode: row[6],
+            city: row[7],
+            country: row[8],
+            date: row[18],
+            amount: row[17],
+            index: count,
           };
 
           if (typeof user !== 'undefined') {
