@@ -5,10 +5,10 @@
   </mj-head>
 
   <mj-body background-color="#ffffff">
-    <mj-include path="../../../../mails/includes/header.mjml" />
-    <mj-section mj-class="section-grey">
+    <mj-include path="../../../../mails/includes/header-bb-platform.mjml" />
+    <mj-section mj-class="section-blue">
       <mj-column>
-        <mj-text mj-class="section-grey-text">
+        <mj-text mj-class="section-blue-text">
           <p><b>Hallo,<b></p>
           <p>
             fast geschafft – schön, dass du dabei bist! Ein letzter Schritt, und dann bist du an Bord.
@@ -16,11 +16,11 @@
           </p>
         </mj-text>
 
-        <mj-button color="#008B8B" border="1px solid #008B8B" align="left" padding-top="20px" padding-bottom="30px" href="[[VERIFICATION_LINK]]">
+        <mj-button color="#fff" background-color="#ff3b3b" align="left" padding-top="20px" padding-bottom="30px" href="[[VERIFICATION_LINK]]">
           Email-Adresse bestätigen
         </mj-button>
 
-        <mj-text mj-class="section-grey-text">
+        <mj-text mj-class="section-blue-text">
           Gemeinsam gestalten wir die Demokratie in Brandenburg!
           <br><br>
           Deine Expedition Grundeinkommen, Verkehrswende Brandenburg und Volksinitiative Klimanotstand
