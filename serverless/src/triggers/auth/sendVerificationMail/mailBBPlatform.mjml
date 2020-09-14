@@ -6,7 +6,8 @@
 
   <mj-body background-color="#ffffff">
     <mj-include path="../../../../mails/includes/header-bb-platform.mjml" />
-    <mj-section mj-class="section-blue">
+    <mj-section mj-class="section-blue" padding-bottom="10px">
+
       <mj-column>
         <mj-text mj-class="section-blue-text">
           <p><b>Hallo,<b></p>
@@ -22,13 +23,51 @@
 
         <mj-text mj-class="section-blue-text">
           Gemeinsam gestalten wir die Demokratie in Brandenburg!
-          <br><br>
-          Deine Expedition Grundeinkommen, Verkehrswende Brandenburg und Volksinitiative Klimanotstand
-          <br><br>
+        </mj-text>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-section mj-class="section-blue" padding-bottom="10px">
+
+      <mj-column>
+        <mj-text mj-class="section-blue-text">
+
+          Expedition Grundeinkommen
+        </mj-text>
+        <mj-image alt="Expedition Grundeinkommen Logo" align="left" width="200px" src="https://brandenburg-mitbestimmen.de/mailgraphics/logo-expedition.png" />
+      </mj-column>
+
+      <mj-column>
+
+        <mj-text mj-class="section-blue-text">
+
+          Verkehrswende Brandenburg
+        </mj-text>
+        <mj-image alt="Verkehrswende Brandenburg Logo" align="left" width="200px" src="https://brandenburg-mitbestimmen.de/mailgraphics/logo-verkehrswende.jpg" />
+      </mj-column>
+
+      <mj-column>
+
+        <mj-text mj-class="section-blue-text">
+
+          Volksinitiative Klimanotstand
+        </mj-text>
+        <mj-image alt="Verkehrswende Brandenburg Logo" align="left" width="200px" src="https://brandenburg-mitbestimmen.de/mailgraphics/logo-klimanotstand.png" />
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-blue">
+
+      <mj-column>
+        <mj-text mj-class="section-blue-text">
           Klappt nicht? Kopiere folgenden Link in deinen Browser: <br><a class="link" href="[[VERIFICATION_LINK]]">[[VERIFICATION_LINK]]</a>
         </mj-text>
-
       </mj-column>
+
+    </mj-section>
+
+    </mj-column>
     </mj-section>
 
     <mj-include path="../../../../mails/includes/footer-bb-platform.mjml" />
