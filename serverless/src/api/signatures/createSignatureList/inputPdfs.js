@@ -118,6 +118,20 @@ module.exports = {
         },
       ],
     },
+
+    ANSCHREIBEN_BB_PLATTFORM: {
+      file: fs.readFileSync(__dirname + '/pdf/letters/ANSCHREIBEN.pdf'),
+      codes: [
+        {
+          type: 'ADDRESS',
+          page: 0,
+          position: {
+            x: 85,
+            y: 680,
+          },
+        },
+      ],
+    },
   },
 
   'berlin-1': {
@@ -382,10 +396,27 @@ module.exports = {
           type: 'QR',
           page: 1,
           position: CODE_POSITIONS.BB.QRCODE,
-         },
-      ]
-     },
+        },
+      ],
     },
+    SINGLE_SW_ROTATED_LAW_FOR_PIN: {
+      file: fs.readFileSync(
+        __dirname + '/pdf/brandenburg-1/5er_rotated_for_pin.pdf'
+      ),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.BB.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 0,
+          position: CODE_POSITIONS.BB.QRCODE,
+        },
+      ],
+    },
+  },
 
   'bremen-1': {
     COMBINED: {

@@ -36,9 +36,20 @@ const MAPPING = {
 
 const PATH = './Ergebnisse Briefaktion.csv';
 
-const createLists = async () => {
+// eslint-disable-next-line no-unused-vars
+const createListsForXbge = async () => {
+  await createLists('xbge');
+};
+
+// eslint-disable-next-line no-unused-vars
+const createListsForBBPlatfrom = async () => {
+  await createLists('bb-platform');
+};
+
+const createLists = async platform => {
   try {
-    const users = await readCsv();
+    const users =
+      platform === 'bb-platform' ? await readBBPlatformCsv() : await readCsv();
 
     for (const user of users) {
       try {
@@ -115,6 +126,69 @@ const readCsv = () => {
                 : 0,
             needsEnvelope: row[19].startsWith('Ja'),
           };
+
+          if (typeof user !== 'undefined' && user.email !== '') {
+            users.push(user);
+          }
+        }
+
+        count++;
+      })
+      .on('end', () => {
+        console.log('finished parsing');
+        resolve(users);
+      });
+  });
+};
+
+// reads and parses the csv file and returns a promise containing
+// an array of the users
+const readBBPlatformCsv = () => {
+  return new Promise(resolve => {
+    const users = [];
+    let count = 0;
+
+    fs.createReadStream(PATH)
+      .pipe(parse({ delimiter: ',' }))
+      .on('data', row => {
+        let user;
+        // leave out headers
+        if (count > 0) {
+          user = {
+            address: {
+              name: `${row[4]} ${row[5]}`,
+              street: row[6],
+              zipCode: row[7],
+              city: row[8],
+            },
+            email: row[12] !== '' ? row[12] : row[9],
+            zipCode: row[7],
+            createdAt: new Date(transformDate(row[20])).toISOString(),
+            source: 'typeform-bb-platform',
+            needsEnvelope: row[19].startsWith('Ja'),
+          };
+
+          if (row[0].includes('Grundeinkommen')) {
+            user.countDibb = 4;
+            user.countVerkehrswende = 1;
+            user.countKlimanotstand = 1;
+          } else if (row[0].includes('Verkehrswende')) {
+            user.countDibb = 1;
+            user.countVerkehrswende = 4;
+            user.countKlimanotstand = 1;
+          } else if (row[0].includes('Klimanotstand')) {
+            user.countDibb = 1;
+            user.countVerkehrswende = 1;
+            user.countKlimanotstand = 4;
+          } else if (row[0].includes('5')) {
+            user.countDibb = 5;
+            user.countVerkehrswende = 5;
+            user.countKlimanotstand = 5;
+          } else {
+            user.countDibb = 2;
+            user.countVerkehrswende = 2;
+            user.countKlimanotstand = 2;
+          }
 
           if (typeof user !== 'undefined' && user.email !== '') {
             users.push(user);
