@@ -7,20 +7,13 @@ module.exports = async function createPDFLetter({
   lists,
   address,
   needsMailMissingAddition,
+  isDuplex,
+  isBBPlatform,
 }) {
-  const isDuplex = !!lists.find(
-    ({ campaignCode }) => campaignCode === 'brandenburg-1'
-  );
-
-  // Special case for bremen because of the entire law being printed
-  const isBremen = !!lists.find(
-    ({ campaignCode }) => campaignCode === 'bremen-1'
-  );
-
   const letter = await createPDF(
     'foo',
     'foo',
-    'ANSCHREIBEN_GENERAL',
+    isBBPlatform ? 'ANSCHREIBEN_BB_PLATTFORM' : 'ANSCHREIBEN_GENERAL',
     'anschreiben',
     address,
     'PDFDOC'
@@ -45,50 +38,74 @@ module.exports = async function createPDFLetter({
     letter.addPage();
   }
 
-  if (isBremen) {
-    letter.addPage();
-
-    const lawBytes = fs.readFileSync(`${__dirname}/pdf/bremen-1/GESETZ.pdf`);
-    const lawDoc = await pdfLib.PDFDocument.load(lawBytes);
-    const copiedPages = await letter.copyPages(lawDoc, lawDoc.getPageIndices());
-
-    for (const page of copiedPages) {
-      letter.addPage(page);
-    }
-  }
-
   for (const { campaignCode, listCount, code, state } of lists) {
     let documentType;
 
     if (campaignCode === 'schleswig-holstein-1') {
       documentType = 'MULTI_SW';
-    } else if (campaignCode === 'brandenburg-1') {
+    } else if (campaignCode === 'brandenburg-1' || campaignCode === 'dibb-1') {
       documentType = 'SINGLE_SW_ROTATED_LAW_FOR_PIN';
     } else {
       documentType = 'SINGLE_SW';
     }
 
-    const listDoc = await createPDF(
-      qrCodeUrls[state],
-      code,
-      documentType,
-      campaignCode,
-      address,
-      'PDFDOC'
-    );
+    // If Bremen we want to add the gesetzestext before the lists
+    if (campaignCode === 'bremen-1') {
+      letter.addPage();
+
+      const lawBytes = fs.readFileSync(`${__dirname}/pdf/bremen-1/GESETZ.pdf`);
+      const lawDoc = await pdfLib.PDFDocument.load(lawBytes);
+      const copiedPages = await letter.copyPages(
+        lawDoc,
+        lawDoc.getPageIndices()
+      );
+
+      for (const page of copiedPages) {
+        letter.addPage(page);
+      }
+    }
+
+    let listDoc;
+    // For the lists of Verkehrswende and Klimanotstand we don't
+    // need to generate a list with codes
+    if (campaignCode === 'verkehrswende-1') {
+      const bytes = fs.readFileSync(
+        `${__dirname}/pdf/dibb-1/VERKEHRSWENDE.pdf`
+      );
+      listDoc = await pdfLib.PDFDocument.load(bytes);
+    } else if (campaignCode === 'klimanotstand-1') {
+      const bytes = fs.readFileSync(
+        `${__dirname}/pdf/dibb-1/KLIMANOTSTAND.pdf`
+      );
+      listDoc = await pdfLib.PDFDocument.load(bytes);
+    } else {
+      listDoc = await createPDF(
+        qrCodeUrls[state],
+        code,
+        documentType,
+        campaignCode,
+        address,
+        'PDFDOC'
+      );
+    }
 
     // for some campaign reason, in berlin the lists are on the second page
     const pageNumberOfList = campaignCode === 'berlin-1' ? 1 : 0;
 
     for (let i = 0; i < listCount; i++) {
-      if (isDuplex && letter.getPageCount() % 2) {
+      // Bremen is printed duplex, but we don't want empty pages in between
+      if (
+        isDuplex &&
+        campaignCode !== 'bremen-1' &&
+        letter.getPageCount() % 2
+      ) {
         letter.addPage();
       }
 
       const [listPage] = await letter.copyPages(listDoc, [pageNumberOfList]);
       letter.addPage(listPage);
 
-      if (campaignCode === 'brandenburg-1') {
+      if (campaignCode === 'brandenburg-1' || campaignCode === 'dibb-1') {
         // needs the gesetzestext on the back side if it is brandenburg
         const [lawPage] = await letter.copyPages(listDoc, [1]);
         letter.addPage(lawPage);

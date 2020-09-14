@@ -126,7 +126,8 @@ const createUser = async (user, recreate = false) => {
   const response = await cognitoLimiter.schedule(async () => {
     const created = await createUserInCognito(
       userPoolId,
-      user.email.toLowerCase()
+      user.email.toLowerCase(),
+      user.source === 'typeform-bb-platform' ? 'bb-platform' : null
     );
     console.log('new user', created);
 
@@ -166,6 +167,11 @@ const createUserInDynamo = (userId, user) => {
             : user.timestampConfirmation,
       },
       migrated: { source: user.source, createdAtSource: user.createdAt },
+      // If the user is being migrated from the typeform for
+      // lists via mail for the bb platform then we also need to define the
+      // sign up source, otherwise there might be issues on xbge.de
+      source:
+        user.source === 'typeform-bb-platform' ? 'bb-platform' : undefined,
     },
   };
   return ddb.put(params).promise();

@@ -6,7 +6,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const { getRandomString } = require('../../utils');
 
 // Create a new cognito user in our user pool
-module.exports.createUserInCognito = (userPoolId, email) => {
+module.exports.createUserInCognito = (userPoolId, email, source) => {
   const params = {
     UserPoolId: userPoolId,
     Username: email,
@@ -22,6 +22,10 @@ module.exports.createUserInCognito = (userPoolId, email) => {
     ],
     MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
   };
+
+  if (source) {
+    params.UserAttributes.push({ Name: 'custom:source', Value: source });
+  }
 
   return cognito.adminCreateUser(params).promise();
 };

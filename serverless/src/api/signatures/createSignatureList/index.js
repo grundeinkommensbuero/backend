@@ -25,7 +25,6 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-
 /*  Model for signature lists in db
 
   id: string (of 7 digits)
@@ -77,7 +76,8 @@ const handler = async event => {
         // we only want to do this if the endpoint was not triggered by an admin
         // and if it is not the bb platform
         if (
-          requestBody.campaignCode !== 'dibb-1' && !requestBody.triggeredByAdmin &&
+          requestBody.campaignCode !== 'dibb-1' &&
+          !requestBody.triggeredByAdmin &&
           !event.pathParameters &&
           (!('newsletterConsent' in result.Item) ||
             !result.Item.newsletterConsent.value)
@@ -108,7 +108,8 @@ const handler = async event => {
         // we only want to do this if the endpoint was not triggered by an admin
         // and if it is not the bb platform
         if (
-          requestBody.campaignCode !== 'dibb-1' && !requestBody.triggeredByAdmin &&
+          requestBody.campaignCode !== 'dibb-1' &&
+          !requestBody.triggeredByAdmin &&
           (!('newsletterConsent' in result.Items[0]) ||
             !result.Items[0].newsletterConsent.value)
         ) {
