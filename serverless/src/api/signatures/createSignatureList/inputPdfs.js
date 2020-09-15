@@ -389,12 +389,12 @@ module.exports = {
       codes: [
         {
           type: 'BAR',
-          page: 1,
+          page: 2,
           position: CODE_POSITIONS.BB.BARCODE,
         },
         {
           type: 'QR',
-          page: 1,
+          page: 2,
           position: CODE_POSITIONS.BB.QRCODE,
         },
       ],
