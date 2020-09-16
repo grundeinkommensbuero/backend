@@ -173,24 +173,37 @@ const getSignatureCountOfAllLists = async () => {
     stats[campaign].computed += getComputedCountForList(scans);
   }
 
+  // We have to add the numbers from the bb platform to
+  // the normal brandenburg campaign
+  if ('dibb-1' in stats && 'brandenburg-1' in stats) {
+    stats['brandenburg-1'].withoutMixed += stats['dibb-1'].withoutMixed;
+    stats['brandenburg-1'].withMixed += stats['dibb-1'].withMixed;
+    stats['brandenburg-1'].computed += stats['dibb-1'].computed;
+    stats['brandenburg-1'].scannedByUser += stats['dibb-1'].scannedByUser;
+  }
+
   // Add contentful numbers to each campaign
   for (const campaign in stats) {
     if (Object.prototype.hasOwnProperty.call(stats, campaign)) {
       stats[campaign].withContentful = stats[campaign].computed;
 
-      // addToSignatureCount is a sort of a base number
-      // which is defined in contentful
-      if (contentfulCounts[campaign].addToSignatureCount) {
-        stats[campaign].withContentful +=
-          contentfulCounts[campaign].addToSignatureCount;
-      }
+      // Check if there is even a campaign defined in contentful
+      // for example not the case for dibb
+      if (campaign in contentfulCounts) {
+        // addToSignatureCount is a sort of a base number
+        // which is defined in contentful
+        if (contentfulCounts[campaign].addToSignatureCount) {
+          stats[campaign].withContentful +=
+            contentfulCounts[campaign].addToSignatureCount;
+        }
 
-      // if the minimum contentful signature count is more, use that number
-      if (contentfulCounts[campaign].minimum) {
-        stats[campaign].withContentful = Math.max(
-          stats[campaign].withContentful,
-          contentfulCounts[campaign].minimum
-        );
+        // if the minimum contentful signature count is more, use that number
+        if (contentfulCounts[campaign].minimum) {
+          stats[campaign].withContentful = Math.max(
+            stats[campaign].withContentful,
+            contentfulCounts[campaign].minimum
+          );
+        }
       }
     }
   }
