@@ -38,7 +38,10 @@ module.exports = async function createPDFLetter({
     letter.addPage();
   }
 
-  for (const { campaignCode, listCount, code, state } of lists) {
+  for (const [
+    index,
+    { campaignCode, listCount, code, state },
+  ] of lists.entries()) {
     let documentType;
 
     if (campaignCode === 'schleswig-holstein-1') {
@@ -51,7 +54,10 @@ module.exports = async function createPDFLetter({
 
     // If Bremen we want to add the gesetzestext before the lists
     if (campaignCode === 'bremen-1') {
-      letter.addPage();
+      // Only add the empty page, if it is not the first list
+      if (index !== 0) {
+        letter.addPage();
+      }
 
       const lawBytes = fs.readFileSync(`${__dirname}/pdf/bremen-1/GESETZ.pdf`);
       const lawDoc = await pdfLib.PDFDocument.load(lawBytes);
