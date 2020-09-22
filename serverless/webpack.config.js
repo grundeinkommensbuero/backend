@@ -14,7 +14,7 @@ const functionsWithStaticFiles = [
   'sendReminderMails',
 ];
 
-// We need this to only copy html and pdf files for the corresponding function.
+// We need this to only copy pdf files for the corresponding function.
 // Based on https://github.com/serverless-heaven/serverless-webpack/issues/425
 // We only copy the files for each corresponding function
 const copyStaticFilesPlugin = () => ({
