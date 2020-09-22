@@ -1,14 +1,11 @@
-const AWS = require('aws-sdk');
-const nodemailer = require('nodemailer');
-
-const ses = new AWS.SES({ region: 'eu-central-1' });
-
-const htmlMail = require('./mailTemplate.html').default;
+const { apiKey, apiSecret } = require('../../../mailjetConfig');
+const { formatNumber } = require('../../shared/utils');
+const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const CAMPAIGN_SHORTS = {
   'schleswig-holstein-1': 'sh',
   'brandenburg-1': 'bb',
-  'berlin-1': 'be',
+  'berlin-1': 'b',
   'hamburg-1': 'hh',
   'bremen-1': 'hb',
 };
@@ -21,40 +18,62 @@ const STATES = {
   bremen: 'Bremen',
 };
 
-// Function which sends an email to remind user to send signature lists
-const sendMail = ({ email, username, cognitoId }, campaign) => {
-  const mailOptions = {
-    from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
-    subject: 'Erinnerung: Schick uns deine Unterschriftenliste!',
-    html: customMail(cognitoId, username, campaign),
-    to: email,
-  };
-
-  // create Nodemailer SES transporter
-  const transporter = nodemailer.createTransport({
-    SES: ses,
-  });
-
-  return transporter.sendMail(mailOptions);
+const GOALS = {
+  'schleswig-holstein-1': '24.000',
+  'brandenburg-1': '24.000',
+  'hamburg-1': '12.000',
+  'bremen-1': '5.000',
+  'berlin-1': '24.000',
 };
 
-// construct an email with the passed username
-const customMail = (userId, username, campaign) => {
-  let greeting;
-
-  // if there is a username we want to have a specific greeting
-  // username might be in different forms, definitely need to refactor
-  if (typeof username !== 'undefined') {
-    greeting = `Hallo ${username},`;
-  } else {
-    greeting = 'Hallo,';
-  }
-
-  return htmlMail
-    .replace(/\[\[CUSTOM_GREETING\]\]/gi, greeting)
-    .replace(/\[\[USER_ID\]\]/gi, userId)
-    .replace(/\[\[STATE\]\]/gi, STATES[campaign.state])
-    .replace(/\[\[CAMPAIGN_SHORT\]\]/gi, CAMPAIGN_SHORTS[campaign.code]);
+// Function which sends an email to remind user to send signature lists
+// gets a user object, which is why we destructure the object
+const sendMail = (
+  { email, username, cognitoId: userId },
+  listId,
+  campaign,
+  daysAgoListWasDownloaded,
+  signatureCounts,
+  listCounts,
+  attachments
+) => {
+  return mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        TemplateID: 1698024,
+        TemplateLanguage: true,
+        TemplateErrorReporting: {
+          Email: 'valentin@expedition-grundeinkommen.de',
+          Name: 'Vali',
+        },
+        // TemplateErrorDeliver: true,
+        Variables: {
+          username,
+          userId,
+          campaignCode: campaign.code,
+          campaignShort: CAMPAIGN_SHORTS[campaign.code],
+          state: STATES[campaign.state],
+          days: daysAgoListWasDownloaded,
+          signatureCount:
+            campaign.code in signatureCounts
+              ? formatNumber(signatureCounts[campaign.code].computed)
+              : '',
+          listCount:
+            campaign.code in listCounts
+              ? formatNumber(listCounts[campaign.code].total.downloads)
+              : '',
+          goal: GOALS[campaign.code],
+          listId,
+        },
+        Attachments: attachments,
+      },
+    ],
+  });
 };
 
 module.exports = sendMail;

@@ -49,7 +49,7 @@ const getScannedSignatureListsOfUser = async userId => {
   return ddb.query(params).promise();
 };
 
-// function to get all signature lists, where there is a received key
+// function to get all signature lists, where there is a received or scannedByUser key
 const getScannedSignatureLists = async (
   signatureLists = [],
   startKey = null
@@ -58,6 +58,36 @@ const getScannedSignatureLists = async (
     TableName: tableName,
     FilterExpression:
       'attribute_exists(received) OR attribute_exists(scannedByUser)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+  // add elements to existing array
+  signatureLists.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getScannedSignatureLists(
+      signatureLists,
+      result.LastEvaluatedKey
+    );
+  }
+  // otherwise return the array
+  return signatureLists;
+};
+
+// function to get all signature lists, where there is no received or scannedByUser key
+const getNotScannedSignatureLists = async (
+  signatureLists = [],
+  startKey = null
+) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression:
+      'attribute_not_exists(received) AND attribute_not_exists(scannedByUser)',
   };
 
   if (startKey !== null) {
@@ -269,8 +299,9 @@ const getScansOfUser = async (user, campaignCode) => {
         for (const scan of list.received) {
           stats.received += parseInt(scan.count, 10);
 
-          // add campaign to scan
+          // add campaign and list id to scan
           scan.campaign = list.campaign;
+          scan.listId = list.id;
           stats.receivedList.push(scan);
         }
       }
@@ -303,6 +334,7 @@ module.exports = {
   getSignatureListsOfUser,
   getScannedSignatureListsOfUser,
   getScannedSignatureLists,
+  getNotScannedSignatureLists,
   checkIfIdExists,
   getSignatureCountOfAllLists,
   getAllSignatureLists,

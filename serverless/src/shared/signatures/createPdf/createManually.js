@@ -1,10 +1,7 @@
 const fs = require('fs');
-const {
-  generateRandomId,
-  constructCampaignId,
-} = require('../../../shared/utils');
-const { checkIfIdExists } = require('../../../shared/signatures');
-const createSignatureList = require('./createListInDynamo');
+const { generateRandomId, constructCampaignId } = require('../../utils');
+const { checkIfIdExists } = require('..');
+const createSignatureList = require('../../../api/signatures/createSignatureList/createListInDynamo');
 const generatePdfLetter = require('./createPDFLetter');
 
 module.exports = async (userId, user) => {
