@@ -1,13 +1,13 @@
 const AWS = require('aws-sdk');
-const generatePdf = require('./createPDF');
+const generatePdf = require('../../../shared/signatures/createPdf/createPDF');
+const generateAttachments = require('../../../shared/signatures/createPdf/generateAttachments');
 const sendMail = require('./sendMail');
 const createSignatureList = require('./createListInDynamo');
-const fs = require('fs');
 const { getUser, getUserByMail } = require('../../../shared/users');
 const { checkIfIdExists } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
-const mailAttachments = require('./attachments');
-const qrCodeUrls = require('./qrCodeUrls');
+const mailAttachments = require('../../../shared/signatures/createPdf/attachments');
+const qrCodeUrls = require('../../../shared/signatures/createPdf/qrCodeUrls');
 const {
   constructCampaignId,
   generateRandomId,
@@ -314,28 +314,6 @@ const uploadPDF = (id, pdf) => {
       ContentType: 'application/pdf',
     })
     .promise();
-};
-
-const getAttachment = async (attachment, qrCodeUrl, pdfId, campaignCode) => {
-  let file = attachment.file;
-
-  if (!file) {
-    file = await generatePdf(qrCodeUrl, pdfId, attachment.type, campaignCode);
-  }
-
-  return Promise.resolve({
-    Filename: attachment.filename,
-    Base64Content: Buffer.from(file).toString('base64'),
-    ContentType: 'application/pdf',
-  });
-};
-
-const generateAttachments = (attachments, qrCodeUrl, pdfId, campaignCode) => {
-  return Promise.all(
-    attachments.map(attachment =>
-      getAttachment(attachment, qrCodeUrl, pdfId, campaignCode)
-    )
-  );
 };
 
 const updateUser = (userId, campaign) => {
