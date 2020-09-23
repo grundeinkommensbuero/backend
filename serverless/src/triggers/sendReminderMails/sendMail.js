@@ -26,6 +26,16 @@ const GOALS = {
   'berlin-1': '24.000',
 };
 
+const NUM_TO_WORD = {
+  2: 'zwei',
+  3: 'drei',
+  4: 'vier',
+  5: 'fünf',
+  6: 'sechs',
+  7: 'sieben',
+  8: 'acht',
+};
+
 // Function which sends an email to remind user to send signature lists
 // gets a user object, which is why we destructure the object
 const sendMail = (
@@ -33,8 +43,10 @@ const sendMail = (
   listId,
   campaign,
   daysAgoListWasDownloaded,
+  mailType,
   signatureCounts,
   listCounts,
+  registeredSignatures,
   attachments
 ) => {
   return mailjet.post('send', { version: 'v3.1' }).request({
@@ -45,7 +57,14 @@ const sendMail = (
             Email: email,
           },
         ],
-        TemplateID: 1698024,
+        // The final mails (mailType === 'ultimate' || 'penultimate') have a different template entirely
+        TemplateID: mailType ? 1709553 : 1698024,
+        Subject:
+          mailType === 'ultimate'
+            ? `Letzte Erinnerung: Bitte schick uns jetzt deine Unterschriften für ${
+                STATES[campaign.state]
+              } soll Grundeinkommen testen!`
+            : undefined,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
@@ -59,6 +78,8 @@ const sendMail = (
           campaignShort: CAMPAIGN_SHORTS[campaign.code],
           state: STATES[campaign.state],
           days: daysAgoListWasDownloaded,
+          // Compute how many weeks ago the list was sent
+          weeks: NUM_TO_WORD[Math.round(daysAgoListWasDownloaded / 7)],
           signatureCount:
             campaign.code in signatureCounts
               ? formatNumber(signatureCounts[campaign.code].computed)
@@ -69,6 +90,7 @@ const sendMail = (
               : '',
           goal: GOALS[campaign.code],
           listId,
+          registeredSignatures,
         },
         Attachments: attachments,
       },
