@@ -80,14 +80,13 @@ const getScannedSignatureLists = async (
 };
 
 // function to get all signature lists, where there is no received or scannedByUser key
-const getNotScannedSignatureLists = async (
+const getNotReceivedSignatureLists = async (
   signatureLists = [],
   startKey = null
 ) => {
   const params = {
     TableName: tableName,
-    FilterExpression:
-      'attribute_not_exists(received) AND attribute_not_exists(scannedByUser)',
+    FilterExpression: 'attribute_not_exists(received)',
   };
 
   if (startKey !== null) {
@@ -100,7 +99,7 @@ const getNotScannedSignatureLists = async (
 
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return await getScannedSignatureLists(
+    return await getNotReceivedSignatureLists(
       signatureLists,
       result.LastEvaluatedKey
     );
@@ -334,7 +333,7 @@ module.exports = {
   getSignatureListsOfUser,
   getScannedSignatureListsOfUser,
   getScannedSignatureLists,
-  getNotScannedSignatureLists,
+  getNotReceivedSignatureLists,
   checkIfIdExists,
   getSignatureCountOfAllLists,
   getAllSignatureLists,
