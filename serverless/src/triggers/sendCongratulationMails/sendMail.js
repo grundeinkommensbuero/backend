@@ -20,7 +20,7 @@ const STATES = {
 // Function which sends an email to congratulate for the reception of list(s)
 // gets a user object, which is why we destructure the object
 const sendMail = (
-  { email, username, userId, dailyCount, totalCount, campaign },
+  { email, username, userId, dailyCount, totalCount, campaign, pdfUrl },
   totalCountForAllUsers
 ) => {
   console.log('about to send email');
@@ -40,7 +40,7 @@ const sendMail = (
         },
         // TemplateErrorDeliver: true,
         Variables: {
-          username: username || '',
+          username,
           dailyCount,
           totalCount,
           totalCountGreater5: totalCount > 5,
@@ -49,6 +49,7 @@ const sendMail = (
           totalCountForAllUsers,
           totalCountGoal: GOALS[campaign.code],
           state: STATES[campaign.state],
+          pdfUrl,
         },
       },
     ],

@@ -66,6 +66,7 @@ module.exports.handler = async event => {
               username: result.Item.username,
               userId: result.Item.cognitoId,
               campaign: campaignToday,
+              pdfUrl: list.pdfUrl,
             };
           }
         } else {
