@@ -16,6 +16,7 @@ const STATES = {
   hamburg: 'Hamburg',
   berlin: 'Berlin',
   bremen: 'Bremen',
+  dibb: 'Brandenburg',
 };
 
 const GOALS = {
@@ -49,6 +50,10 @@ const sendMail = (
   registeredSignatures,
   attachments
 ) => {
+  // If the list was from brandenburg plattform we want to pass the same info as brandenburg
+  const campaignCode =
+    campaign.code === 'dibb-1' ? 'brandenburg-1' : campaign.code;
+
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -74,21 +79,20 @@ const sendMail = (
         Variables: {
           username,
           userId,
-          campaignCode: campaign.code,
-          campaignShort: CAMPAIGN_SHORTS[campaign.code],
+          campaignShort: CAMPAIGN_SHORTS[campaignCode],
           state: STATES[campaign.state],
           days: daysAgoListWasDownloaded,
           // Compute how many weeks ago the list was sent
           weeks: NUM_TO_WORD[Math.round(daysAgoListWasDownloaded / 7)],
           signatureCount:
-            campaign.code in signatureCounts
-              ? formatNumber(signatureCounts[campaign.code].computed)
+            campaignCode in signatureCounts
+              ? formatNumber(signatureCounts[campaignCode].computed)
               : '',
           listCount:
-            campaign.code in listCounts
-              ? formatNumber(listCounts[campaign.code].total.downloads)
+            campaignCode in listCounts
+              ? formatNumber(listCounts[campaignCode].total.downloads)
               : '',
-          goal: GOALS[campaign.code],
+          goal: GOALS[campaignCode],
           listId,
           registeredSignatures,
         },
