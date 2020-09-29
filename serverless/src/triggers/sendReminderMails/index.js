@@ -70,8 +70,6 @@ module.exports.handler = async event => {
           // The last reminder will be different and will be the only one
           // being sent, if the the list is only not received (but can be scanned by user)
           if ((!mailType && !('scannedByUser' in list)) || mailType) {
-            console.log('same date', list.createdAt, timestamps, list);
-
             // Get user from users table to get email
             const result = await getUser(list.userId);
 
@@ -113,10 +111,6 @@ module.exports.handler = async event => {
                 ) {
                   shouldSendMail = false;
                 }
-              }
-
-              if (list.id === '1893799') {
-                console.log('should send mail', shouldSendMail);
               }
 
               if (shouldSendMail) {
