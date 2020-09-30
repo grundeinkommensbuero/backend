@@ -3,7 +3,7 @@ const fs = require('fs');
 const parse = require('csv-parse');
 const { createUser } = require('../migrateUsers');
 const { getUserByMail } = require('../shared/users/getUsers');
-const createListManually = require('../../serverless/src/api/signatures/createSignatureList/createManually');
+const createListManually = require('../../serverless/src/shared/signatures/createPdf/createManually');
 const { PROD_USERS_TABLE_NAME } = require('../config');
 
 const MAPPING = {
@@ -156,16 +156,16 @@ const readBBPlatformCsv = () => {
         if (count > 0) {
           user = {
             address: {
-              name: `${row[4]} ${row[5]}`,
-              street: row[6],
-              zipCode: row[7],
-              city: row[8],
+              name: `${row[2]} ${row[3]}`,
+              street: row[4],
+              zipCode: row[6],
+              city: row[7],
             },
-            email: row[12] !== '' ? row[12] : row[9],
-            zipCode: row[7],
-            createdAt: new Date(transformDate(row[20])).toISOString(),
+            email: row[11] !== '' ? row[11] : row[8],
+            zipCode: row[6],
+            createdAt: new Date(transformDate(row[13])).toISOString(),
             source: 'typeform-bb-platform',
-            needsEnvelope: row[19].startsWith('Ja'),
+            needsEnvelope: row[1].startsWith('Ja'),
           };
 
           if (row[0].includes('Grundeinkommen')) {
@@ -204,4 +204,4 @@ const readBBPlatformCsv = () => {
   });
 };
 
-createLists();
+createListsForBBPlatfrom();

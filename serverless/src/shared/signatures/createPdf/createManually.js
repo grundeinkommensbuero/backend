@@ -79,15 +79,20 @@ module.exports = async (userId, user) => {
   });
 
   for (const list of lists) {
-    await createSignatureList(
-      list.code,
-      timestamp,
-      undefined,
-      constructCampaignId(list.campaignCode),
-      true,
-      mailMissing,
-      userId
-    );
+    if (
+      list.campaignCode !== 'klimanotstand-1' &&
+      list.campaignCode !== 'verkehrswende-1'
+    ) {
+      await createSignatureList(
+        list.code,
+        timestamp,
+        undefined,
+        constructCampaignId(list.campaignCode),
+        true,
+        mailMissing,
+        userId
+      );
+    }
   }
 
   // Remove "/" from names for saving to file
