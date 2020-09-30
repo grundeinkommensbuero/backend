@@ -6,6 +6,7 @@ module.exports = {
     'prefer-template': 'off',
     'no-restricted-syntax': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'no-unused-vars': 1,
   },
   env: {
     es6: true,
