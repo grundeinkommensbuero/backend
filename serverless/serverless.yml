@@ -797,7 +797,7 @@ functions:
 
   sendReminderMails:
     handler: src/triggers/sendReminderMails/index.handler
-    timeout: 50 # Timeout for this specific function.
+    timeout: 900 # Timeout for this specific function. Takes a while...
     events: # Call this function every day at 7 pm (via cloudwatch event)
       - schedule: cron(0 18 * * ? *)
     iamRoleStatements:
