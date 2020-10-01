@@ -120,7 +120,9 @@ module.exports = {
     },
 
     ANSCHREIBEN_BB_PLATTFORM: {
-      file: fs.readFileSync(__dirname + '/pdf/letters/ANSCHREIBEN.pdf'),
+      file: fs.readFileSync(
+        __dirname + '/pdf/letters/ANSCHREIBEN_BB_PLATTFORM.pdf'
+      ),
       codes: [
         {
           type: 'ADDRESS',
