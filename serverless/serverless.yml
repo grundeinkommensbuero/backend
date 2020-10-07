@@ -727,6 +727,14 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
       - Effect: 'Allow'
         Action:
           - ses:SendEmail
