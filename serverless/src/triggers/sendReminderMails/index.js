@@ -75,7 +75,9 @@ module.exports.handler = async event => {
             if (
               'Item' in result &&
               'newsletterConsent' in result.Item &&
-              result.Item.newsletterConsent.value
+              result.Item.newsletterConsent.value &&
+              (!('transactionalConsent' in result.Item) ||
+                result.Item.transactionalConsent.value !== false)
             ) {
               const user = result.Item;
 
