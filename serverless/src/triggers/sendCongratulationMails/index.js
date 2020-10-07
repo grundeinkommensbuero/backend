@@ -4,7 +4,10 @@ const {
   getSignatureCountFromContentful,
 } = require('../../shared/signatures/contentfulApi');
 const { getUser } = require('../../shared/users');
-const { getSignatureCountOfAllLists } = require('../../shared/signatures');
+const {
+  getSignatureCountOfAllLists,
+  getSignatureListsOfUser,
+} = require('../../shared/signatures');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
@@ -113,6 +116,16 @@ module.exports.handler = async event => {
             contentfulCountForThisCampaign.minimum
           );
         }
+
+        // If there is no pdf url (e.g. user has ordered list via mail)
+        // get the url for the latest anonymous list
+        if (!usersMap[key].pdfUrl) {
+          const mostRecentList = await getMostRecentAnonymousList(
+            usersMap[key].campaign.code
+          );
+          usersMap[key].pdfUrl = mostRecentList ? mostRecentList.pdfUrl : '';
+        }
+
         try {
           console.log(await sendMail(usersMap[key], totalCountForThisCampaign));
           console.log(
@@ -157,4 +170,17 @@ const getReceivedSignatureLists = async (
   }
   // otherwise return the array
   return signatureLists;
+};
+
+const getMostRecentAnonymousList = async campaignCode => {
+  const result = await getSignatureListsOfUser('anonymous', campaignCode);
+
+  const signatureLists = result.Items;
+
+  // Sort signature lists by date (most recent first)
+  signatureLists.sort(
+    (list1, list2) => new Date(list2.createdAt) - new Date(list1.createdAt)
+  );
+
+  return signatureLists[0];
 };
