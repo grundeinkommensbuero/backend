@@ -59,7 +59,7 @@ describe('getSignatureHistory api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/analytics/signatures/history?end=2020-09-07`,
+      `${INVOKE_URL}/analytics/signatures/history?end=2020-10-10`,
       request
     );
     const json = await response.json();
@@ -70,6 +70,7 @@ describe('getSignatureHistory api test', () => {
     expect(json.history).toHaveProperty('berlin-1');
     expect(json.history['berlin-1'].length).toBeGreaterThan(0);
   });
+
   it('should get signature history with start and end date', async () => {
     const request = {
       method: 'GET',
