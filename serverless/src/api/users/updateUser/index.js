@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const IBAN = require('iban');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -54,6 +55,23 @@ module.exports.handler = async event => {
 
 // Check if user id is in path params and request body is not empty
 const validateParams = (pathParameters, requestBody) => {
+  // Check if donation object is correct
+  if ('donation' in requestBody) {
+    const { donation } = requestBody;
+    if (
+      !('amount' in donation) ||
+      typeof donation.amount !== 'number' ||
+      !('recurring' in donation) ||
+      typeof donation.recurring !== 'boolean' ||
+      !('firstname' in donation) ||
+      !('lastname' in donation) ||
+      !('iban' in donation) ||
+      !IBAN.isValid(donation.iban)
+    ) {
+      return false;
+    }
+  }
+
   return 'userId' in pathParameters && Object.keys(requestBody).length !== 0;
 };
 
@@ -65,7 +83,7 @@ const isAuthorized = event => {
 
 const updateUser = (
   userId,
-  { username, zipCode, city, newsletterConsent },
+  { username, zipCode, city, newsletterConsent, donation },
   user
 ) => {
   const timestamp = new Date().toISOString();
@@ -81,6 +99,15 @@ const updateUser = (
     data[':newsletterConsent'] = {
       value: newsletterConsent,
       timestamp,
+    };
+  }
+
+  // Check if donation object was passed to alter iban
+  if (typeof donation !== 'undefined') {
+    const { iban, ...rest } = donation;
+    data[':donation'] = {
+      iban: iban.replace(/ /g, ''),
+      ...rest,
     };
   }
 
@@ -103,6 +130,7 @@ const updateUser = (
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
+    ${typeof donation !== 'undefined' ? 'donation = :donation,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
