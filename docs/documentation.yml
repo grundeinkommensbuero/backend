@@ -443,6 +443,8 @@ paths:
                   type: string
                 city:
                   type: string
+                confirmed:
+                  type: boolean
                 donation:
                   type: object
                   properties:

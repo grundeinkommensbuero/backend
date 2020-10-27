@@ -97,7 +97,7 @@ const isAuthorized = event => {
 
 const updateUser = (
   userId,
-  { username, zipCode, city, newsletterConsent, donation },
+  { username, zipCode, city, newsletterConsent, donation, confirmed },
   user
 ) => {
   const timestamp = new Date().toISOString();
@@ -121,6 +121,14 @@ const updateUser = (
     data[':donations'] = constructDonationObject(donation, user, timestamp);
   }
 
+  // Check if confirmed flag was passed and is true
+  if (confirmed) {
+    data[':confirmed'] = {
+      value: true,
+      timestamp,
+    };
+  }
+
   // We want to check if the user was created at the bb platform.
   // In that case we want to set a flag that the user was updated on
   // expedition-grundeinkommen.de
@@ -141,6 +149,7 @@ const updateUser = (
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
     ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''} 
+    ${confirmed ? 'confirmed = :confirmed,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
