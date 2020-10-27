@@ -1,19 +1,25 @@
 const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
 const AWS = require('aws-sdk');
 const fetch = require('node-fetch');
+const { authenticate } = require('../../../testUtils');
 
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+let token;
 
 describe('createPledge api test', () => {
   beforeAll(async () => {
     await removePledges();
+    token = await authenticate();
   });
 
   it('should create a new pledge for a user', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
       body: JSON.stringify({
         pledgeId: 'berlin-1',
         signatureCount: 6,
@@ -36,6 +42,9 @@ describe('createPledge api test', () => {
     const request = {
       method: 'POST',
       mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
       body: JSON.stringify({
         pledgeId: 'berlin-1',
         signatureCount: 6,
@@ -54,6 +63,9 @@ describe('createPledge api test', () => {
     const request = {
       method: 'POST',
       mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
       body: JSON.stringify({
         pledgeId: 'general-1',
         message:
@@ -75,6 +87,9 @@ describe('createPledge api test', () => {
   it('should have missing pledge id', async () => {
     const request = {
       method: 'POST',
+      headers: {
+        Authorization: token,
+      },
       mode: 'cors',
       body: JSON.stringify({}),
     };

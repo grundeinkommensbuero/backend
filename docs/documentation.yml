@@ -39,7 +39,7 @@ components:
 paths:
   /signatures:
     post:
-      summary: Creates a new signature list
+      summary: Creates a new anonymous signature list
       requestBody:
         description: Object containing info for signature list
         required: true
@@ -50,10 +50,6 @@ paths:
               required:
                 - campaignCode
               properties:
-                userId:
-                  type: string
-                email:
-                  type: string
                 campaignCode:
                   type: string
       responses:
@@ -978,6 +974,8 @@ paths:
   /users/{userId}/pledges:
     post:
       summary: Creates a new pledge and a new user
+      security:
+        - ApiKeyAuth: []
       parameters:
         - in: path
           name: userId
