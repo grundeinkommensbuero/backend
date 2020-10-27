@@ -12,12 +12,11 @@ describe('createSignatureList api test', () => {
     token = await authenticate();
   });
 
-  it('should create a new signature list for sh via userId', async () => {
+  it('should create a new anonymous signature list for sh', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
         campaignCode: 'schleswig-holstein-1',
       }),
     };
@@ -30,12 +29,11 @@ describe('createSignatureList api test', () => {
     console.log(json);
   });
 
-  it('should create a new signature list for ber via userId', async () => {
+  it('should create a new anonymous signature list for ber', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
         campaignCode: 'berlin-1',
       }),
     };
@@ -47,12 +45,11 @@ describe('createSignatureList api test', () => {
     expect(json).toHaveProperty('signatureList');
   });
 
-  it('should create a new signature list for bb via userId', async () => {
+  it('should create a new anonymous signature list for bb', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
         campaignCode: 'brandenburg-1',
       }),
     };
@@ -64,12 +61,11 @@ describe('createSignatureList api test', () => {
     expect(json).toHaveProperty('signatureList');
   });
 
-  it('should create a new signature list for dibb via userId', async () => {
+  it('should create a new anonymous signature list for dibb', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
         campaignCode: 'dibb-1',
       }),
     };
@@ -80,14 +76,12 @@ describe('createSignatureList api test', () => {
     expect(response.status).toBeLessThan(202);
     expect(json).toHaveProperty('signatureList');
   });
-    
 
-  it('should create a new signature list for hb via userId', async () => {
+  it('should create a new anonymous signature list for hb', async () => {
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
-        userId,
         campaignCode: 'bremen-1',
       }),
     };
@@ -115,69 +109,6 @@ describe('createSignatureList api test', () => {
 
     expect(response.status).toBeLessThan(202);
     expect(json).toHaveProperty('signatureList');
-  });
-
-  it('should create a new signature list via email', async () => {
-    const request = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        email: 'vali_schagerl@web.de',
-        campaignCode: 'brandenburg-1',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
-    const json = await response.json();
-
-    expect(response.status).toBeLessThan(202);
-    expect(json).toHaveProperty('signatureList');
-  });
-
-  it('should create a new anonymous signature list', async () => {
-    const request = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        campaignCode: 'schleswig-holstein-1',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
-    const json = await response.json();
-
-    expect(response.status).toBeLessThan(202);
-    expect(json).toHaveProperty('signatureList');
-  });
-
-  it('should not find user via user id', async () => {
-    const request = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        userId: '123456789',
-        campaignCode: 'schleswig-holstein-1',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
-
-    expect(response.status).toEqual(404);
-  });
-
-  it('should not find user via email', async () => {
-    const request = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        email: 'wrongMail@web.de',
-        campaignCode: 'schleswig-holstein-1',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/signatures`, request);
-
-    expect(response.status).toEqual(404);
   });
 
   it('should create a new signature list via authenticated route', async () => {
