@@ -1,9 +1,5 @@
 const AWS = require('aws-sdk');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
-const {
-  getAllUnverifiedCognitoUsers,
-  isVerified,
-} = require('../../../shared/users');
 const { syncMailjetContact } = require('../');
 
 const config = { region: 'eu-central-1' };
@@ -28,9 +24,7 @@ const fillMailjet = async (event, context) => {
     const startKey = event.startKey || null;
     console.log('startkey of new lambda', startKey);
 
-    const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
-
-    await processBatchOfUsers(event, context, unverifiedCognitoUsers, startKey);
+    await processBatchOfUsers(event, context, startKey);
   } catch (error) {
     console.log('error', error);
   }
@@ -49,12 +43,7 @@ const getBatchOfUsers = (startKey = null) => {
   return ddb.scan(params).promise();
 };
 
-const processBatchOfUsers = async (
-  event,
-  context,
-  unverifiedCognitoUsers,
-  startKey
-) => {
+const processBatchOfUsers = async (event, context, startKey) => {
   console.log('processing another batch with startKey', startKey);
 
   const result = await getBatchOfUsers(startKey);
@@ -65,7 +54,7 @@ const processBatchOfUsers = async (
     let count = 0;
     for (const user of users) {
       // check if the user is verified
-      const verified = isVerified(user, unverifiedCognitoUsers);
+      const verified = 'confirmed' in user && user.confirmed.value;
 
       // Get signature lists of this user and add it to user object
       const signatureListsResult = await getSignatureListsOfUser(
@@ -88,12 +77,7 @@ const processBatchOfUsers = async (
     if ('LastEvaluatedKey' in result) {
       // If the remaining time is more than x minutes start a new batch
       if (context.getRemainingTimeInMillis() > 400000) {
-        await processBatchOfUsers(
-          event,
-          context,
-          unverifiedCognitoUsers,
-          result.LastEvaluatedKey
-        );
+        await processBatchOfUsers(event, context, result.LastEvaluatedKey);
       } else {
         // Start new lambda function
         // First of all create a new event object with the start key

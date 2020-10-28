@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const Bottleneck = require('bottleneck');
-const { getAllUnverifiedCognitoUsers } = require('../../shared/users');
+const { getAllUnconfirmedUsers } = require('../../shared/users');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -23,14 +23,14 @@ module.exports.handler = async event => {
 
 const deleteUsers = async () => {
   // get all users, which are not verified from user pool
-  const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
+  const unconfirmedUsers = await getAllUnconfirmedUsers();
 
   // filter users to check if the creation of the user was more than
   // x days ago
   const date = new Date();
   const tenDays = 10 * 24 * 60 * 60 * 1000;
-  const filteredUsers = unverifiedCognitoUsers.filter(
-    user => date - user.UserCreateDate > tenDays
+  const filteredUsers = unconfirmedUsers.filter(
+    user => date - user.createdAt > tenDays
   );
 
   console.log(
@@ -55,7 +55,7 @@ const deleteUserInCognito = user => {
   console.log('deleting user in cognito', user.Username);
   const params = {
     UserPoolId: userPoolId,
-    Username: user.Username, // Username is the id of cognito
+    Username: user.cognitoId, // Username is the id of cognito
   };
 
   return cognito.adminDeleteUser(params).promise();
@@ -66,7 +66,7 @@ const deleteUserInDynamo = user => {
   const params = {
     TableName: tableName,
     Key: {
-      cognitoId: user.Username, // Username is the id of cognito
+      cognitoId: user.cognitoId, // Username is the id of cognito
     },
   };
 
