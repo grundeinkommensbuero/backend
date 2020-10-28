@@ -56,43 +56,30 @@ const getAllUsers = async (users = [], startKey = null) => {
   return users;
 };
 
-// Checks, if the user is part of the unverified cognito users
-// array, returns true if user is verified
-const isVerified = (user, unverifiedCognitoUsers) => {
-  let verified = true;
-
-  for (const cognitoUser of unverifiedCognitoUsers) {
-    // sub is the first attribute
-    if (user.cognitoId === cognitoUser.Attributes[0].Value) {
-      verified = false;
-    }
-  }
-
-  return verified;
-};
-
-const getAllUnverifiedCognitoUsers = async (
-  unverifiedCognitoUsers = [],
-  paginationToken = null
-) => {
+const getAllUnconfirmedUsers = async (users = [], startKey = null) => {
   const params = {
-    UserPoolId: userPoolId,
-    Filter: 'cognito:user_status = "UNCONFIRMED"',
-    PaginationToken: paginationToken,
+    TableName: tableName,
+    FilterExpression:
+      'attribute_not_exists(confirmed) OR #confirmed = :confirmed',
+    ExpressionAttributeNames: { '#confirmed': 'confirmed.value' },
+    ExpressionAttributeValues: { ':confirmed': false },
   };
 
-  const data = await cognito.listUsers(params).promise();
-
-  // add elements of user array
-  unverifiedCognitoUsers.push(...data.Users);
-
-  if ('PaginationToken' in data) {
-    return await getAllUnverifiedCognitoUsers(
-      unverifiedCognitoUsers,
-      data.PaginationToken
-    );
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
   }
-  return unverifiedCognitoUsers;
+
+  const result = await ddb.scan(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getAllUnconfirmedUsers(users, result.LastEvaluatedKey);
+  }
+  // otherwise return the array
+  return users;
 };
 
 const getCognitoUser = userId => {
@@ -135,8 +122,7 @@ module.exports = {
   getUser,
   getUserByMail,
   getAllUsers,
-  isVerified,
-  getAllUnverifiedCognitoUsers,
+  getAllUnconfirmedUsers,
   getCognitoUser,
   updateNewsletterConsent,
 };
