@@ -121,12 +121,18 @@ const updateUser = (
     data[':donations'] = constructDonationObject(donation, user, timestamp);
   }
 
-  // Check if confirmed flag was passed and is true
-  if (confirmed) {
-    data[':confirmed'] = {
-      value: true,
-      timestamp,
-    };
+  // We only want to confirm the user  if not yet confirmed
+  if (
+    ('confirmed' in user && !user.confirmed.value) ||
+    !('confirmed' in user)
+  ) {
+    // Check if confirmed flag was passed and is true
+    if (confirmed) {
+      data[':confirmed'] = {
+        value: true,
+        timestamp,
+      };
+    }
   }
 
   // We want to check if the user was created at the bb platform.
@@ -149,7 +155,7 @@ const updateUser = (
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
     ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''} 
-    ${confirmed ? 'confirmed = :confirmed,' : ''} 
+    ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
