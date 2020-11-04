@@ -50,8 +50,12 @@ module.exports.handler = async event => {
     // Loop through lists to check if a list was created x days ago
     for (const list of signatureLists) {
       // We only need to check lists of users and lists which were not part of letter action.
-      // Also we want to deactivate the dibb lists for now...
-      if (list.userId !== 'anonymous' && !list.manually) {
+      // Also we want to deactivate the berlin lists for now...
+      if (
+        list.userId !== 'anonymous' &&
+        !list.manually &&
+        list.campaign.code !== 'berlin-1'
+      ) {
         // Check if list was created x days ago, then we send a reminder mail
         let index = timestamps.indexOf(list.createdAt);
 
