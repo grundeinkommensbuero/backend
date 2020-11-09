@@ -370,10 +370,10 @@ paths:
                     recurring:
                       type: boolean
                       required: true
-                    firstname:
+                    firstName:
                       type: string
                       required: true
-                    lastname:
+                    lastName:
                       type: string
                       required: true
                     iban:
@@ -539,6 +539,41 @@ paths:
                               description: Text of the question
                             timestamp:
                               type: string
+                      donations:
+                        type: object
+                        properties:
+                          recurringDonation:
+                            type: object
+                            properties:
+                              firstName:
+                                type: string
+                              lastName:
+                                type: string
+                              iban:
+                                type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                              amount:
+                                type: number
+                          onetimeDonations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                firstName:
+                                  type: string
+                                lastName:
+                                  type: string
+                                iban:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                amount:
+                                  type: number
+                                id:
+                                  type: string
         '401':
           description: Not authorized to get user
           content:

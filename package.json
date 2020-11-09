@@ -4,8 +4,8 @@
   "description": "This is a sample template for cognito-sam - Below is a brief explanation of what we have generated for you:",
   "main": "index.js",
   "scripts": {
-    "bundleDocumentation": "redoc-cli bundle docs/documentation.yml -o docs/index.html",
-    "serveDocumentation": "redoc-cli serve docs/documentation.yml"
+    "bundleDocs": "redoc-cli bundle docs/documentation.yml -o docs/index.html",
+    "serveDocs": "redoc-cli serve docs/documentation.yml"
   },
   "keywords": [],
   "author": "",
