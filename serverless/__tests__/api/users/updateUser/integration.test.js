@@ -10,7 +10,6 @@ let token;
 describe('updateUser api test', () => {
   beforeAll(async () => {
     token = await authenticate();
-    console.log(token);
   });
 
   it('should be able to update user', async () => {
