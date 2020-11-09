@@ -10,6 +10,7 @@ let token;
 describe('updateUser api test', () => {
   beforeAll(async () => {
     token = await authenticate();
+    console.log(token);
   });
 
   it('should be able to update user', async () => {
@@ -32,7 +33,7 @@ describe('updateUser api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should be able to update donation', async () => {
+  it('should be able to update recurring donation', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -42,9 +43,9 @@ describe('updateUser api test', () => {
       body: JSON.stringify({
         donation: {
           amount: 50,
-          recurring: false,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          recurring: true,
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: 'DE26641500200001294334',
         },
       }),
@@ -55,7 +56,7 @@ describe('updateUser api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should be able to update donation', async () => {
+  it('should be able to create one time donation', async () => {
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -66,8 +67,8 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: false,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
         },
       }),
@@ -88,8 +89,8 @@ describe('updateUser api test', () => {
       body: JSON.stringify({
         donation: {
           amount: 50,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
         },
       }),
@@ -111,8 +112,8 @@ describe('updateUser api test', () => {
         donation: {
           amount: '50',
           recurring: false,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
         },
       }),
@@ -134,8 +135,8 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: 'blub',
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
         },
       }),
@@ -157,7 +158,7 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: false,
-          lastname: 'Schagerl',
+          lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
         },
       }),
@@ -179,7 +180,7 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: false,
-          firstname: 'Valentin',
+          firstName: 'Valentin',
           iban: 'DE26 6415 0020 0001 2943 34',
         },
       }),
@@ -201,8 +202,8 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: false,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
         },
       }),
     };
@@ -223,8 +224,8 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: false,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: '12312931',
         },
       }),
@@ -246,8 +247,8 @@ describe('updateUser api test', () => {
         donation: {
           amount: 50,
           recurring: false,
-          firstname: 'Valentin',
-          lastname: 'Schagerl',
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
           iban: 'DX26 6415 0020 0001 2943 34',
         },
       }),
