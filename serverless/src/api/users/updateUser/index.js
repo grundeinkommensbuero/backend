@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const IBAN = require('iban');
+const uuid = require('uuid/v4');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -63,8 +64,8 @@ const validateParams = (pathParameters, requestBody) => {
       typeof donation.amount !== 'number' ||
       !('recurring' in donation) ||
       typeof donation.recurring !== 'boolean' ||
-      !('firstname' in donation) ||
-      !('lastname' in donation) ||
+      !('firstName' in donation) ||
+      !('lastName' in donation) ||
       !('iban' in donation) ||
       !IBAN.isValid(donation.iban)
     ) {
@@ -104,11 +105,7 @@ const updateUser = (
 
   // Check if donation object was passed to alter iban
   if (typeof donation !== 'undefined') {
-    const { iban, ...rest } = donation;
-    data[':donation'] = {
-      iban: iban.replace(/ /g, ''),
-      ...rest,
-    };
+    data[':donations'] = constructDonationObject(donation, user, timestamp);
   }
 
   // We want to check if the user was created at the bb platform.
@@ -130,7 +127,7 @@ const updateUser = (
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
-    ${typeof donation !== 'undefined' ? 'donation = :donation,' : ''} 
+    ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
@@ -139,4 +136,46 @@ const updateUser = (
   };
 
   return ddb.update(params).promise();
+};
+
+const constructDonationObject = (donation, user, timestamp) => {
+  const { iban, recurring, ...rest } = donation;
+  const normalizedIban = iban.replace(/ /g, '');
+
+  // Get existing donation object of user to alter it
+  const donations = 'donations' in user ? user.donations : {};
+
+  // If the donation is recurring we want to set/update recurringDonation
+  if (recurring) {
+    if ('recurringDonation' in donations) {
+      donations.recurringDonation = {
+        iban: normalizedIban,
+        updatedAt: timestamp,
+        createdAt: donations.recurringDonation.createdAt,
+        ...rest,
+      };
+    } else {
+      donations.recurringDonation = {
+        iban: normalizedIban,
+        createdAt: timestamp,
+        ...rest,
+      };
+    }
+  } else {
+    // Otherwise we add the one time donation to an array
+    const onetimeDonation = {
+      iban: normalizedIban,
+      createdAt: timestamp,
+      id: uuid(),
+      ...rest,
+    };
+
+    if ('onetimeDonations' in donations) {
+      donations.onetimeDonations.push(onetimeDonation);
+    } else {
+      donations.onetimeDonations = [onetimeDonation];
+    }
+  }
+
+  return donations;
 };
