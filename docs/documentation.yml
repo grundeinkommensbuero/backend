@@ -29,6 +29,10 @@ components:
       type: apiKey
       in: header
       name: Authorization # name of the header
+    ParamApiKeyAuth:
+      type: apiKey
+      in: query
+      name: token
     BasicAuth:
       type: http
       scheme: basic
@@ -241,6 +245,88 @@ paths:
                 properties:
                   message:
                     type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/external-signup:
+    post:
+      summary: Creates a new user from an external source
+      security:
+        - ParamApiKeyAuth: []
+      requestBody:
+        description: User object that is going to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                username:
+                  type: string
+                ags:
+                  type: string
+                zipCode:
+                  type: string
+                campaignSource:
+                  type: string
+                  description: Where did the user come from before signing up?
+      responses:
+        '201':
+          description: User was successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    description: Object only containing user id
+                    properties:
+                      userId:
+                        type: string
+        '200':
+          description: User had already signed up for communal campaign
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    description: Object only containing user id
+                    properties:
+                      userId:
+                        type: string
         '400':
           description: Error in request
           content:
@@ -1612,6 +1698,104 @@ paths:
                         type: integer
                       withContentful:
                         type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/places:
+    get:
+      summary: Gets statistics for municipalities
+      description: Takes ags as query param to get stats for a specific municipalities
+      parameters:
+        - in: query
+          name: ags
+          schema:
+            type: string
+          description: Allgemeiner Gemeindeschlüssel to get stats for specific municipality
+      responses:
+        '200':
+          description: Stats successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      signups:
+                        type: integer
+                        description: Count of signups
+                      percentToGoal:
+                        type: integer
+                        description: Percentage of the goal which is already reached
+        '404':
+          description: Municipality was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /places:
+    get:
+      summary: Gets all places (municipalities)
+      description: Municipalities might be duplicated because of different zip codes
+      responses:
+        '200':
+          description: Places successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        longitude:
+                          type: integer
+                        latitude:
+                          type: integer
+                        ags:
+                          type: string
+                          description: Allgemeiner Gemeindeschlüssel as key for municipality (not unique in this dataset)
+                        name:
+                          type: string
+                        zipCode:
+                          type: string
+                          description: Is unique in this dataset
+                        district:
+                          type: string
+                          description: Landkreis
+                        state:
+                          type: string
+                          description: Bundesland
+                        population:
+                          type: number
+                        goal:
+                          type: number
         '500':
           description: Server error
           content:
