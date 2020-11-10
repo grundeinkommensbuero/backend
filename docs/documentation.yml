@@ -1785,7 +1785,7 @@ paths:
                           type: string
                         zipCode:
                           type: string
-                          description: Is unique in this dataset
+                          description: Also not unique in this dataset because one zipCode can be in multiple municipalities
                         district:
                           type: string
                           description: Landkreis
