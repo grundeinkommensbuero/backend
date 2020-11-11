@@ -1,0 +1,362 @@
+[
+  {
+    "longitude": 11.241370, 
+    "latitude:": 51.061850,
+    "ags": "16071102",
+    "name": "Am Ettersberg",
+    "zipCode": "99439",
+    "district": "Landkreis Weimarer Land",
+    "state": "Thüringen",
+    "population": 7097 
+  },
+  {
+    "longitude": 11.185280, 
+    "latitude:": 51.302170,
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06556",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "population": 6039
+  },
+  {
+    "longitude": 11.185280, 
+    "latitude:": 51.302170,
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06577",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "population": 6039
+  },
+  {
+    "longitude": 11.185280, 
+    "latitude:": 51.302170,
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06578",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "population": 6039
+  },
+  {
+    "longitude": 11.290650, 
+    "latitude:": 51.364990,
+    "ags": "16065086",
+    "name": "Artern",
+    "zipCode": "06556",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "population": 6799
+  },
+  {
+    "longitude": 12.698670, 
+    "latitude:": 50.587110,
+    "ags": "14521035",
+    "name": "Aue-Bad Schlema",
+    "zipCode": "08280",
+    "district": "Erzgebirgskreis",
+    "state": "Sachsen",
+    "population": 20519
+  },
+  {
+    "longitude": 12.698670, 
+    "latitude:": 50.587110,
+    "ags": "14521035",
+    "name": "Aue-Bad Schlema",
+    "zipCode": "08301",
+    "district": "Erzgebirgskreis",
+    "state": "Sachsen",
+    "population": 20519
+  },
+  {
+    "longitude": 10.568800, 
+    "latitude:": 51.438300,
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99735",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "population": 10419
+  },
+  {
+    "longitude": 10.568800, 
+    "latitude:": 51.438300,
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99752",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "population": 10419
+  },
+  {
+    "longitude": 10.568800, 
+    "latitude:": 51.438300,
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99759",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "population": 10419
+  },
+  {
+    "longitude": 11.4221276, 
+    "latitude:": 51.1221,
+    "ags": "16068063",
+    "name": "Buttstädt",
+    "zipCode": "99628",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "population": 6707
+  },
+  {
+    "longitude": 10.3145229, 
+    "latitude:": 51.3152411,
+    "ags": "16061118",
+    "name": "Dingelstädt",
+    "zipCode": "37351",
+    "district": "Landkreis Eichsfeld",
+    "state": "Thüringen",
+    "population": 6893
+  },
+  {
+    "longitude": 12.6035754, 
+    "latitude:": 53.3770328,
+    "ags": "13071175",
+    "name": "Eldetal",
+    "zipCode": "17209",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 925
+  },
+  {
+    "longitude": 10.8021682, 
+    "latitude:": 50.7461446,
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "98716",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "population": 8963
+  },
+  {
+    "longitude": 10.8021682, 
+    "latitude:": 50.7461446,
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "99330",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "population": 8963
+  },
+  {
+    "longitude": 10.8021682, 
+    "latitude:": 50.7461446,
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "99338",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "population": 8963
+  },
+  {
+    "longitude": 0, 
+    "latitude:": 0,
+    "ags": "16070058",
+    "name": "Großbreitenbach",
+    "zipCode": "98701",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "population": 0
+  },
+  {
+    "longitude": 11.011655, 
+    "latitude:": 50.5846491,
+    "ags": "16069063",
+    "name": "Heldburg",
+    "zipCode": "98663",
+    "district": "Landkreis Hildburghausen",
+    "state": "Thüringen",
+    "population": 6352
+  },
+  {
+    "longitude": 10.1557526, 
+    "latitude:": 50.6046209,
+    "ags": "16066095",
+    "name": "Kaltennordheim",
+    "zipCode": "36452",
+    "district": "Landkreis Schmalkalden-Meiningen",
+    "state": "Thüringen",
+    "population": 5853
+  },
+  {
+    "longitude": 10.1557526, 
+    "latitude:": 50.6046209,
+    "ags": "16066095",
+    "name": "Kaltennordheim",
+    "zipCode": "98634",
+    "district": "Landkreis Schmalkalden-Meiningen",
+    "state": "Thüringen",
+    "population": 5853
+  },
+  {
+    "longitude": 13.5220209, 
+    "latitude:": 53.9502599,
+    "ags": "13075156",
+    "name": "Karlsburg",
+    "zipCode": "17495",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 1827
+  },
+  {
+    "longitude": 11.0889613, 
+    "latitude:": 51.26108,
+    "ags": "16068064",
+    "name": "Kindelbrück",
+    "zipCode": "06578",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "population": 3846
+  },
+  {
+    "longitude": 11.0889613, 
+    "latitude:": 51.26108,
+    "ags": "16068064",
+    "name": "Kindelbrück",
+    "zipCode": "99638",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "population": 3846
+  },
+  {
+    "longitude": 10.6559513, 
+    "latitude:": 50.99334,
+    "ags": "16067091",
+    "name": "Nessetal",
+    "zipCode": "99869",
+    "district": "Landkreis Gotha",
+    "state": "Thüringen",
+    "population": 7999
+  },
+  {
+    "longitude": 11.6951079, 
+    "latitude:": 50.4015527,
+    "ags": "16075136",
+    "name": "Rosenthal am Rennsteig",
+    "zipCode": "07366",
+    "district": "Saale-Orla-Kreis",
+    "state": "Thüringen",
+    "population": 3.996
+  },
+  {
+    "longitude": 11.4277447, 
+    "latitude:": 51.2948339,
+    "ags": "16065087",
+    "name": "Roßleben-Wiehe",
+    "zipCode": "06571",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "population": 7595
+  },
+  {
+    "longitude": 12.0280596, 
+    "latitude:": 53.4624677,
+    "ags": "13076168",
+    "name": "Ruhner Berge",
+    "zipCode": "19376",
+    "district": "Landkreis Ludwigslust-Parchim",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 1851
+  },
+  {
+    "longitude": 11.1412759, 
+    "latitude:": 50.5830593,
+    "ags": "16073113",
+    "name": "Schwarzatal",
+    "zipCode": "98744",
+    "district": "Landkreis Saalfeld-Rudolstadt",
+    "state": "Thüringen",
+    "population": 3622
+  },
+  {
+    "longitude": 10.9308861, 
+    "latitude:": 53.8455231,
+    "ags": "13074094",
+    "name": "Siemz-Niendorf",
+    "zipCode": "23923",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 613
+  },
+  {
+    "longitude": 12.6035754, 
+    "latitude:": 53.3770328,
+    "ags": "13071176",
+    "name": "Südmüritz",
+    "zipCode": "17207",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 884
+  },
+  {
+    "longitude": 12.6035754, 
+    "latitude:": 53.3770328,
+    "ags": "13071176",
+    "name": "Südmüritz",
+    "zipCode": "17209",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 884
+  },
+  {
+    "longitude": 11.1931665, 
+    "latitude:": 53.4293967,
+    "ags": "13076169",
+    "name": "Toddin",
+    "zipCode": "19230",
+    "district": "Landkreis Ludwigslust-Parchim",
+    "state": "Mecklenburg-Vorpommern",
+    "population": 927
+  },
+  {
+    "longitude": 10.5603813, 
+    "latitude:": 51.14814,
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99947",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "population": 5174
+  },
+  {
+    "longitude": 10.5603813, 
+    "latitude:": 51.14814,
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99986",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "population": 5174
+  },
+  {
+    "longitude": 10.5603813, 
+    "latitude:": 51.14814,
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99991",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "population": 5174
+  },
+  {
+    "longitude": 10.0665225, 
+    "latitude:": 50.9390463,
+    "ags": "16063103",
+    "name": "Werra-Suhl-Tal",
+    "zipCode": "99837",
+    "district": "Wartburgkreis",
+    "state": "Thüringen",
+    "population": 6411
+  }
+]
