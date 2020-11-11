@@ -1780,12 +1780,14 @@ paths:
                           type: integer
                         ags:
                           type: string
-                          description: Allgemeiner Gemeindeschlüssel as key for municipality (not unique in this dataset)
+                          description: Allgemeiner Gemeindeschlüssel as key for municipality (unique in this dataset)
                         name:
                           type: string
-                        zipCode:
-                          type: string
-                          description: Also not unique in this dataset because one zipCode can be in multiple municipalities
+                        zipCodes:
+                          type: array
+                          description: Every zip code existing in this municipality (same zip code can exist in other munic.)
+                          items:
+                            type: string
                         district:
                           type: string
                           description: Landkreis
