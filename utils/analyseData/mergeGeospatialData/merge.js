@@ -166,7 +166,38 @@ const mergeFiles = async () => {
     return result;
   });
 
-  const flatData = [...mergedMatches, ...manualData];
+  let flatData = [...mergedMatches, ...manualData];
+
+  // ---- Updates --------------------------------------------------------------------------
+
+  const dataToReplace = updateData.filter(
+    x => x.replace && x.replace.length > 0
+  );
+
+  dataToReplace.forEach(e => {
+    const { replace, replaceBy } = e;
+    const replaceIndexes = flatData.reduce((acc, cur, i) => {
+      if (cur[replaceBy] === e[replaceBy]) {
+        acc.push(i);
+      }
+      return acc;
+    }, []);
+    replace.forEach(r => {
+      replaceIndexes.forEach(index => {
+        flatData[index][r] = e[r];
+      });
+    });
+  });
+
+  const dataToAdd = updateData
+    .filter(x => x.add)
+    .map(x => {
+      const { add, ...rest } = x;
+      return rest;
+    });
+  if (dataToAdd.length > 0) {
+    flatData = [...flatData, dataToAdd];
+  }
 
   // ---- Tests ----------------------------------------------------------------------------
   console.log('-- Tests:');

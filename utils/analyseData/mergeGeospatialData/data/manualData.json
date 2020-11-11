@@ -1,7 +1,7 @@
 [
   {
     "longitude": 11.241370, 
-    "latitude:": 51.061850,
+    "latitude": 51.061850,
     "ags": "16071102",
     "name": "Am Ettersberg",
     "zipCode": "99439",
@@ -11,7 +11,7 @@
   },
   {
     "longitude": 11.185280, 
-    "latitude:": 51.302170,
+    "latitude": 51.302170,
     "ags": "16065088",
     "name": "An der Schmücke",
     "zipCode": "06556",
@@ -21,7 +21,7 @@
   },
   {
     "longitude": 11.185280, 
-    "latitude:": 51.302170,
+    "latitude": 51.302170,
     "ags": "16065088",
     "name": "An der Schmücke",
     "zipCode": "06577",
@@ -31,7 +31,7 @@
   },
   {
     "longitude": 11.185280, 
-    "latitude:": 51.302170,
+    "latitude": 51.302170,
     "ags": "16065088",
     "name": "An der Schmücke",
     "zipCode": "06578",
@@ -41,7 +41,7 @@
   },
   {
     "longitude": 11.290650, 
-    "latitude:": 51.364990,
+    "latitude": 51.364990,
     "ags": "16065086",
     "name": "Artern",
     "zipCode": "06556",
@@ -51,7 +51,7 @@
   },
   {
     "longitude": 12.698670, 
-    "latitude:": 50.587110,
+    "latitude": 50.587110,
     "ags": "14521035",
     "name": "Aue-Bad Schlema",
     "zipCode": "08280",
@@ -61,7 +61,7 @@
   },
   {
     "longitude": 12.698670, 
-    "latitude:": 50.587110,
+    "latitude": 50.587110,
     "ags": "14521035",
     "name": "Aue-Bad Schlema",
     "zipCode": "08301",
@@ -71,7 +71,7 @@
   },
   {
     "longitude": 10.568800, 
-    "latitude:": 51.438300,
+    "latitude": 51.438300,
     "ags": "16062066",
     "name": "Bleicherode",
     "zipCode": "99735",
@@ -81,7 +81,7 @@
   },
   {
     "longitude": 10.568800, 
-    "latitude:": 51.438300,
+    "latitude": 51.438300,
     "ags": "16062066",
     "name": "Bleicherode",
     "zipCode": "99752",
@@ -91,7 +91,7 @@
   },
   {
     "longitude": 10.568800, 
-    "latitude:": 51.438300,
+    "latitude": 51.438300,
     "ags": "16062066",
     "name": "Bleicherode",
     "zipCode": "99759",
@@ -101,7 +101,7 @@
   },
   {
     "longitude": 11.4221276, 
-    "latitude:": 51.1221,
+    "latitude": 51.1221,
     "ags": "16068063",
     "name": "Buttstädt",
     "zipCode": "99628",
@@ -111,7 +111,7 @@
   },
   {
     "longitude": 10.3145229, 
-    "latitude:": 51.3152411,
+    "latitude": 51.3152411,
     "ags": "16061118",
     "name": "Dingelstädt",
     "zipCode": "37351",
@@ -121,7 +121,7 @@
   },
   {
     "longitude": 12.6035754, 
-    "latitude:": 53.3770328,
+    "latitude": 53.3770328,
     "ags": "13071175",
     "name": "Eldetal",
     "zipCode": "17209",
@@ -131,7 +131,7 @@
   },
   {
     "longitude": 10.8021682, 
-    "latitude:": 50.7461446,
+    "latitude": 50.7461446,
     "ags": "16070057",
     "name": "Geratal",
     "zipCode": "98716",
@@ -141,7 +141,7 @@
   },
   {
     "longitude": 10.8021682, 
-    "latitude:": 50.7461446,
+    "latitude": 50.7461446,
     "ags": "16070057",
     "name": "Geratal",
     "zipCode": "99330",
@@ -151,7 +151,7 @@
   },
   {
     "longitude": 10.8021682, 
-    "latitude:": 50.7461446,
+    "latitude": 50.7461446,
     "ags": "16070057",
     "name": "Geratal",
     "zipCode": "99338",
@@ -161,7 +161,7 @@
   },
   {
     "longitude": 0, 
-    "latitude:": 0,
+    "latitude": 0,
     "ags": "16070058",
     "name": "Großbreitenbach",
     "zipCode": "98701",
@@ -171,7 +171,7 @@
   },
   {
     "longitude": 11.011655, 
-    "latitude:": 50.5846491,
+    "latitude": 50.5846491,
     "ags": "16069063",
     "name": "Heldburg",
     "zipCode": "98663",
@@ -181,7 +181,7 @@
   },
   {
     "longitude": 10.1557526, 
-    "latitude:": 50.6046209,
+    "latitude": 50.6046209,
     "ags": "16066095",
     "name": "Kaltennordheim",
     "zipCode": "36452",
@@ -191,7 +191,7 @@
   },
   {
     "longitude": 10.1557526, 
-    "latitude:": 50.6046209,
+    "latitude": 50.6046209,
     "ags": "16066095",
     "name": "Kaltennordheim",
     "zipCode": "98634",
@@ -201,7 +201,7 @@
   },
   {
     "longitude": 13.5220209, 
-    "latitude:": 53.9502599,
+    "latitude": 53.9502599,
     "ags": "13075156",
     "name": "Karlsburg",
     "zipCode": "17495",
@@ -211,7 +211,7 @@
   },
   {
     "longitude": 11.0889613, 
-    "latitude:": 51.26108,
+    "latitude": 51.26108,
     "ags": "16068064",
     "name": "Kindelbrück",
     "zipCode": "06578",
@@ -221,7 +221,7 @@
   },
   {
     "longitude": 11.0889613, 
-    "latitude:": 51.26108,
+    "latitude": 51.26108,
     "ags": "16068064",
     "name": "Kindelbrück",
     "zipCode": "99638",
@@ -231,7 +231,7 @@
   },
   {
     "longitude": 10.6559513, 
-    "latitude:": 50.99334,
+    "latitude": 50.99334,
     "ags": "16067091",
     "name": "Nessetal",
     "zipCode": "99869",
@@ -241,7 +241,7 @@
   },
   {
     "longitude": 11.6951079, 
-    "latitude:": 50.4015527,
+    "latitude": 50.4015527,
     "ags": "16075136",
     "name": "Rosenthal am Rennsteig",
     "zipCode": "07366",
@@ -251,7 +251,7 @@
   },
   {
     "longitude": 11.4277447, 
-    "latitude:": 51.2948339,
+    "latitude": 51.2948339,
     "ags": "16065087",
     "name": "Roßleben-Wiehe",
     "zipCode": "06571",
@@ -261,7 +261,7 @@
   },
   {
     "longitude": 12.0280596, 
-    "latitude:": 53.4624677,
+    "latitude": 53.4624677,
     "ags": "13076168",
     "name": "Ruhner Berge",
     "zipCode": "19376",
@@ -271,7 +271,7 @@
   },
   {
     "longitude": 11.1412759, 
-    "latitude:": 50.5830593,
+    "latitude": 50.5830593,
     "ags": "16073113",
     "name": "Schwarzatal",
     "zipCode": "98744",
@@ -281,7 +281,7 @@
   },
   {
     "longitude": 10.9308861, 
-    "latitude:": 53.8455231,
+    "latitude": 53.8455231,
     "ags": "13074094",
     "name": "Siemz-Niendorf",
     "zipCode": "23923",
@@ -291,7 +291,7 @@
   },
   {
     "longitude": 12.6035754, 
-    "latitude:": 53.3770328,
+    "latitude": 53.3770328,
     "ags": "13071176",
     "name": "Südmüritz",
     "zipCode": "17207",
@@ -301,7 +301,7 @@
   },
   {
     "longitude": 12.6035754, 
-    "latitude:": 53.3770328,
+    "latitude": 53.3770328,
     "ags": "13071176",
     "name": "Südmüritz",
     "zipCode": "17209",
@@ -311,7 +311,7 @@
   },
   {
     "longitude": 11.1931665, 
-    "latitude:": 53.4293967,
+    "latitude": 53.4293967,
     "ags": "13076169",
     "name": "Toddin",
     "zipCode": "19230",
@@ -321,7 +321,7 @@
   },
   {
     "longitude": 10.5603813, 
-    "latitude:": 51.14814,
+    "latitude": 51.14814,
     "ags": "16064076",
     "name": "Unstrut-Hainich",
     "zipCode": "99947",
@@ -331,7 +331,7 @@
   },
   {
     "longitude": 10.5603813, 
-    "latitude:": 51.14814,
+    "latitude": 51.14814,
     "ags": "16064076",
     "name": "Unstrut-Hainich",
     "zipCode": "99986",
@@ -341,7 +341,7 @@
   },
   {
     "longitude": 10.5603813, 
-    "latitude:": 51.14814,
+    "latitude": 51.14814,
     "ags": "16064076",
     "name": "Unstrut-Hainich",
     "zipCode": "99991",
@@ -351,7 +351,7 @@
   },
   {
     "longitude": 10.0665225, 
-    "latitude:": 50.9390463,
+    "latitude": 50.9390463,
     "ags": "16063103",
     "name": "Werra-Suhl-Tal",
     "zipCode": "99837",
