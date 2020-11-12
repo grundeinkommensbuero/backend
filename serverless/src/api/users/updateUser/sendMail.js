@@ -2,7 +2,11 @@ const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 // Function which sends an email to the user after donation was changed
-const sendMail = (email, { recurring, amount, firstName, lastName, iban }) => {
+const sendMail = (
+  email,
+  { recurring, amount, firstName, lastName, iban },
+  recurringDonationExisted
+) => {
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -19,7 +23,8 @@ const sendMail = (email, { recurring, amount, firstName, lastName, iban }) => {
         },
         // TemplateErrorDeliver: true,
         Variables: {
-          recurring: recurring || undefined,
+          recurring,
+          recurringDonationExisted,
           amount,
           firstName,
           lastName,
