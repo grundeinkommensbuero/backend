@@ -479,6 +479,14 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  getPlaces:
+    handler: src/api/places/getPlaces/index.handler
+    events:
+      - http:
+          path: places
+          method: get
+          cors: true
+
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
     events:
@@ -961,6 +969,16 @@ resources:
             Mutable: true
             Required: false
             AttributeDataType: String
+            # verified and confirmed should not be used,
+            # cannot be deleted though because cognito sucks
+          - Name: confirmed
+            Mutable: true
+            Required: false
+            AttributeDataType: Boolean
+          - Name: verified
+            Mutable: true
+            Required: false
+            AttributeDataType: Number
         EmailConfiguration:
           EmailSendingAccount: DEVELOPER
           SourceArn: arn:aws:ses:eu-west-1:550953582247:identity/support@expedition-grundeinkommen.de
