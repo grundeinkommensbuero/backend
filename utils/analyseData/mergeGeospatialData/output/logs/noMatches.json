@@ -1,0 +1,290 @@
+[
+  {
+    "ags": "16071102",
+    "name": "Am Ettersberg",
+    "zipCode": "99439",
+    "district": "Landkreis Weimarer Land",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06556",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06577",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06578",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065086",
+    "name": "Artern",
+    "zipCode": "06556",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "14521035",
+    "name": "Aue-Bad Schlema",
+    "zipCode": "08280",
+    "district": "Erzgebirgskreis",
+    "state": "Sachsen",
+    "agsMatch": []
+  },
+  {
+    "ags": "14521035",
+    "name": "Aue-Bad Schlema",
+    "zipCode": "08301",
+    "district": "Erzgebirgskreis",
+    "state": "Sachsen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99735",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99752",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99759",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16068063",
+    "name": "Buttstädt",
+    "zipCode": "99628",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16061118",
+    "name": "Dingelstädt",
+    "zipCode": "37351",
+    "district": "Landkreis Eichsfeld",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13071175",
+    "name": "Eldetal",
+    "zipCode": "17209",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "98716",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "99330",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "99338",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16070058",
+    "name": "Großbreitenbach",
+    "zipCode": "98701",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16069063",
+    "name": "Heldburg",
+    "zipCode": "98663",
+    "district": "Landkreis Hildburghausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16066095",
+    "name": "Kaltennordheim",
+    "zipCode": "36452",
+    "district": "Landkreis Schmalkalden-Meiningen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16066095",
+    "name": "Kaltennordheim",
+    "zipCode": "98634",
+    "district": "Landkreis Schmalkalden-Meiningen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13075156",
+    "name": "Karlsburg",
+    "zipCode": "17495",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "16068064",
+    "name": "Kindelbrück",
+    "zipCode": "06578",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16068064",
+    "name": "Kindelbrück",
+    "zipCode": "99638",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16067091",
+    "name": "Nessetal",
+    "zipCode": "99869",
+    "district": "Landkreis Gotha",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16075136",
+    "name": "Rosenthal am Rennsteig",
+    "zipCode": "07366",
+    "district": "Saale-Orla-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065087",
+    "name": "Roßleben-Wiehe",
+    "zipCode": "06571",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13076168",
+    "name": "Ruhner Berge",
+    "zipCode": "19376",
+    "district": "Landkreis Ludwigslust-Parchim",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "16073113",
+    "name": "Schwarzatal",
+    "zipCode": "98744",
+    "district": "Landkreis Saalfeld-Rudolstadt",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13074094",
+    "name": "Siemz-Niendorf",
+    "zipCode": "23923",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "13071176",
+    "name": "Südmüritz",
+    "zipCode": "17207",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "13071176",
+    "name": "Südmüritz",
+    "zipCode": "17209",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "13076169",
+    "name": "Toddin",
+    "zipCode": "19230",
+    "district": "Landkreis Ludwigslust-Parchim",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99947",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99986",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99991",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16063103",
+    "name": "Werra-Suhl-Tal",
+    "zipCode": "99837",
+    "district": "Wartburgkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  }
+]
