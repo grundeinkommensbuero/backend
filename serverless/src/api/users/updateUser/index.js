@@ -3,6 +3,7 @@ const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const IBAN = require('iban');
 const uuid = require('uuid/v4');
+const sendMail = require('./sendMail');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -26,14 +27,17 @@ module.exports.handler = async event => {
       const { userId } = event.pathParameters;
       const result = await getUser(userId);
 
-      console.log('user', result);
-
       // if user does not have Item as property, there was no user found
       if (!('Item' in result) || typeof result.Item === 'undefined') {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
       await updateUser(userId, requestBody, result.Item);
+
+      // Check if donation was updated to send an email
+      if ('donation' in requestBody) {
+        await sendMail(result.Item.email, requestBody.donation);
+      }
 
       // updating user was successful, return appropriate json
       return {
