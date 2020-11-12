@@ -1,0 +1,8290 @@
+[
+  {
+    "ags": "08335002",
+    "name": "Allensbach",
+    "zipCode": "78476",
+    "district": "Landkreis Konstanz",
+    "state": "Baden-Württemberg",
+    "agsMatch": [
+      {
+        "ags": "08335002",
+        "name": "Allensbach",
+        "longitude": 9.070194,
+        "latitude": 47.715742,
+        "zipCode": "78476",
+        "population": 7087
+      },
+      {
+        "ags": "08335002",
+        "name": "Allensbach",
+        "longitude": 9.070194,
+        "latitude": 47.715742,
+        "zipCode": "78476",
+        "population": 7087
+      }
+    ]
+  },
+  {
+    "ags": "01058004",
+    "name": "Altenhof",
+    "zipCode": "24340",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058004",
+        "name": "Altenhof",
+        "longitude": 9.875234,
+        "latitude": 54.434745,
+        "zipCode": "24340",
+        "population": 300
+      },
+      {
+        "ags": "01058004",
+        "name": "Altenhof",
+        "longitude": 9.875234,
+        "latitude": 54.434745,
+        "zipCode": "24340",
+        "population": 300
+      }
+    ]
+  },
+  {
+    "ags": "13075003",
+    "name": "Altwarp",
+    "zipCode": "17375",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075003",
+        "name": "Altwarp",
+        "longitude": 14.262179,
+        "latitude": 53.743961,
+        "zipCode": "17375",
+        "population": 458
+      },
+      {
+        "ags": "13075003",
+        "name": "Altwarp",
+        "longitude": 14.262179,
+        "latitude": 53.743961,
+        "zipCode": "17375",
+        "population": 458
+      }
+    ]
+  },
+  {
+    "ags": "16071102",
+    "name": "Am Ettersberg",
+    "zipCode": "99439",
+    "district": "Landkreis Weimarer Land",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06556",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06577",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065088",
+    "name": "An der Schmücke",
+    "zipCode": "06578",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13075005",
+    "name": "Anklam",
+    "zipCode": "17389",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075005",
+        "name": "Anklam",
+        "longitude": 13.693003,
+        "latitude": 53.855297,
+        "zipCode": "17389",
+        "population": 12385
+      },
+      {
+        "ags": "13075005",
+        "name": "Anklam",
+        "longitude": 13.693003,
+        "latitude": 53.855297,
+        "zipCode": "17389",
+        "population": 12385
+      }
+    ]
+  },
+  {
+    "ags": "01059002",
+    "name": "Arnis",
+    "zipCode": "24399",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059002",
+        "name": "Arnis",
+        "longitude": 9.932332,
+        "latitude": 54.630563,
+        "zipCode": "24399",
+        "population": 284
+      },
+      {
+        "ags": "01059002",
+        "name": "Arnis",
+        "longitude": 9.932332,
+        "latitude": 54.630563,
+        "zipCode": "24399",
+        "population": 284
+      }
+    ]
+  },
+  {
+    "ags": "16065086",
+    "name": "Artern",
+    "zipCode": "06556",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "14521035",
+    "name": "Aue-Bad Schlema",
+    "zipCode": "08280",
+    "district": "Erzgebirgskreis",
+    "state": "Sachsen",
+    "agsMatch": []
+  },
+  {
+    "ags": "14521035",
+    "name": "Aue-Bad Schlema",
+    "zipCode": "08301",
+    "district": "Erzgebirgskreis",
+    "state": "Sachsen",
+    "agsMatch": []
+  },
+  {
+    "ags": "03359004",
+    "name": "Balje",
+    "zipCode": "21730",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359004",
+        "name": "Balje",
+        "longitude": 9.133598,
+        "latitude": 53.831509,
+        "zipCode": "21730",
+        "population": 959
+      },
+      {
+        "ags": "03359004",
+        "name": "Balje",
+        "longitude": 9.133598,
+        "latitude": 53.831509,
+        "zipCode": "21730",
+        "population": 959
+      }
+    ]
+  },
+  {
+    "ags": "03452002",
+    "name": "Baltrum",
+    "zipCode": "26579",
+    "district": "Landkreis Aurich",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03452002",
+        "name": "Baltrum",
+        "longitude": 7.369884,
+        "latitude": 53.727447,
+        "zipCode": "26579",
+        "population": 652
+      },
+      {
+        "ags": "03452002",
+        "name": "Baltrum",
+        "longitude": 7.369884,
+        "latitude": 53.727447,
+        "zipCode": "26579",
+        "population": 652
+      }
+    ]
+  },
+  {
+    "ags": "13075007",
+    "name": "Bargischow",
+    "zipCode": "17398",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075007",
+        "name": "Bargischow",
+        "longitude": 13.755669,
+        "latitude": 53.832819,
+        "zipCode": "17398",
+        "population": 302
+      },
+      {
+        "ags": "13075007",
+        "name": "Bargischow",
+        "longitude": 13.755669,
+        "latitude": 53.832819,
+        "zipCode": "17398",
+        "population": 302
+      }
+    ]
+  },
+  {
+    "ags": "13073009",
+    "name": "Barth",
+    "zipCode": "18356",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073009",
+        "name": "Barth",
+        "longitude": 12.72658,
+        "latitude": 54.36871,
+        "zipCode": "18356",
+        "population": 8658
+      },
+      {
+        "ags": "13073009",
+        "name": "Barth",
+        "longitude": 12.72658,
+        "latitude": 54.36871,
+        "zipCode": "18356",
+        "population": 8658
+      }
+    ]
+  },
+  {
+    "ags": "03352004",
+    "name": "Belum",
+    "zipCode": "21785",
+    "district": "Landkreis Cuxhaven",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03352004",
+        "name": "Belum",
+        "longitude": 8.994205,
+        "latitude": 53.816223,
+        "zipCode": "21785",
+        "population": 822
+      },
+      {
+        "ags": "03352004",
+        "name": "Belum",
+        "longitude": 8.994205,
+        "latitude": 53.816223,
+        "zipCode": "21785",
+        "population": 822
+      }
+    ]
+  },
+  {
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99735",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99752",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16062066",
+    "name": "Bleicherode",
+    "zipCode": "99759",
+    "district": "Landkreis Nordhausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13074010",
+    "name": "Boltenhagen",
+    "zipCode": "23946",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074010",
+        "name": "Boltenhagen",
+        "longitude": 11.20109,
+        "latitude": 53.989162,
+        "zipCode": "23946",
+        "population": 2464
+      },
+      {
+        "ags": "13074010",
+        "name": "Boltenhagen",
+        "longitude": 11.20109,
+        "latitude": 53.989162,
+        "zipCode": "23946",
+        "population": 2464
+      }
+    ]
+  },
+  {
+    "ags": "01059187",
+    "name": "Boren",
+    "zipCode": "24392",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059187",
+        "name": "Boren",
+        "longitude": 9.820225,
+        "latitude": 54.614506,
+        "zipCode": "24392",
+        "population": 1153
+      },
+      {
+        "ags": "01059187",
+        "name": "Boren",
+        "longitude": 9.820225,
+        "latitude": 54.614506,
+        "zipCode": "24392",
+        "population": 1153
+      }
+    ]
+  },
+  {
+    "ags": "01059012",
+    "name": "Borgwedel",
+    "zipCode": "24857",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059012",
+        "name": "Borgwedel",
+        "longitude": 9.666821,
+        "latitude": 54.500272,
+        "zipCode": "24857",
+        "population": 659
+      },
+      {
+        "ags": "01059012",
+        "name": "Borgwedel",
+        "longitude": 9.666821,
+        "latitude": 54.500272,
+        "zipCode": "24857",
+        "population": 659
+      }
+    ]
+  },
+  {
+    "ags": "03457002",
+    "name": "Borkum",
+    "zipCode": "26757",
+    "district": "Landkreis Leer",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03457002",
+        "name": "Borkum",
+        "longitude": 6.664597,
+        "latitude": 53.588001,
+        "zipCode": "26757",
+        "population": 5125
+      },
+      {
+        "ags": "03457002",
+        "name": "Borkum",
+        "longitude": 6.664597,
+        "latitude": 53.588001,
+        "zipCode": "26757",
+        "population": 5125
+      }
+    ]
+  },
+  {
+    "ags": "13073012",
+    "name": "Born a. Darß",
+    "zipCode": "18375",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073012",
+        "name": "Born a. Darß",
+        "longitude": 12.5366,
+        "latitude": 54.390631,
+        "zipCode": "18375",
+        "population": 1170
+      },
+      {
+        "ags": "13073012",
+        "name": "Born a. Darß",
+        "longitude": 12.5366,
+        "latitude": 54.390631,
+        "zipCode": "18375",
+        "population": 1170
+      }
+    ]
+  },
+  {
+    "ags": "01061015",
+    "name": "Borsfleth",
+    "zipCode": "25376",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061015",
+        "name": "Borsfleth",
+        "longitude": 9.430284,
+        "latitude": 53.825372,
+        "zipCode": "25376",
+        "population": 717
+      },
+      {
+        "ags": "01061015",
+        "name": "Borsfleth",
+        "longitude": 9.430284,
+        "latitude": 53.825372,
+        "zipCode": "25376",
+        "population": 717
+      }
+    ]
+  },
+  {
+    "ags": "13073013",
+    "name": "Breege",
+    "zipCode": "18556",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073013",
+        "name": "Breege",
+        "longitude": 13.366538,
+        "latitude": 54.616185,
+        "zipCode": "18556",
+        "population": 629
+      },
+      {
+        "ags": "13073013",
+        "name": "Breege",
+        "longitude": 13.366538,
+        "latitude": 54.616185,
+        "zipCode": "18556",
+        "population": 629
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "27568",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28195",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28197",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28199",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28201",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28203",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28205",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28207",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28209",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28211",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28213",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28215",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28217",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28219",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28237",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28239",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28259",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28277",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28279",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28307",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28309",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28325",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28327",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28329",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28355",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28357",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28359",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28717",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28719",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28755",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28757",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28759",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28777",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04011000",
+    "name": "Bremen",
+    "zipCode": "28779",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      },
+      {
+        "ags": "04011000",
+        "name": "Bremen",
+        "longitude": 8.809338,
+        "latitude": 53.075606,
+        "zipCode": "28195",
+        "population": 569352
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27568",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27570",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27572",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27574",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27576",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27578",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "04012000",
+    "name": "Bremerhaven",
+    "zipCode": "27580",
+    "district": "",
+    "state": "Bremen",
+    "agsMatch": [
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      },
+      {
+        "ags": "04012000",
+        "name": "Bremerhaven",
+        "longitude": 8.578068,
+        "latitude": 53.543032,
+        "zipCode": "27576",
+        "population": 113634
+      }
+    ]
+  },
+  {
+    "ags": "01059189",
+    "name": "Brodersby-Goltoft",
+    "zipCode": "24864",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059189",
+        "name": "Brodersby-Goltoft",
+        "longitude": 9.714558,
+        "latitude": 54.538183,
+        "zipCode": "24864",
+        "population": 685
+      },
+      {
+        "ags": "01059189",
+        "name": "Brodersby-Goltoft",
+        "longitude": 9.714558,
+        "latitude": 54.538183,
+        "zipCode": "24864",
+        "population": 685
+      }
+    ]
+  },
+  {
+    "ags": "01061018",
+    "name": "Brokdorf",
+    "zipCode": "25554",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061018",
+        "name": "Brokdorf",
+        "longitude": 9.331781,
+        "latitude": 53.861364,
+        "zipCode": "25576",
+        "population": 974
+      },
+      {
+        "ags": "01061018",
+        "name": "Brokdorf",
+        "longitude": 9.331781,
+        "latitude": 53.861364,
+        "zipCode": "25576",
+        "population": 974
+      }
+    ]
+  },
+  {
+    "ags": "01061018",
+    "name": "Brokdorf",
+    "zipCode": "25576",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061018",
+        "name": "Brokdorf",
+        "longitude": 9.331781,
+        "latitude": 53.861364,
+        "zipCode": "25576",
+        "population": 974
+      },
+      {
+        "ags": "01061018",
+        "name": "Brokdorf",
+        "longitude": 9.331781,
+        "latitude": 53.861364,
+        "zipCode": "25576",
+        "population": 974
+      }
+    ]
+  },
+  {
+    "ags": "01051011",
+    "name": "Brunsbüttel",
+    "zipCode": "25541",
+    "district": "Kreis Dithmarschen",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01051011",
+        "name": "Brunsbüttel",
+        "longitude": 9.13735,
+        "latitude": 53.896932,
+        "zipCode": "25541",
+        "population": 12554
+      },
+      {
+        "ags": "01051011",
+        "name": "Brunsbüttel",
+        "longitude": 9.13735,
+        "latitude": 53.896932,
+        "zipCode": "25541",
+        "population": 12554
+      }
+    ]
+  },
+  {
+    "ags": "13075018",
+    "name": "Brünzow",
+    "zipCode": "17509",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075018",
+        "name": "Brünzow",
+        "longitude": 13.565365,
+        "latitude": 54.104731,
+        "zipCode": "17509",
+        "population": 620
+      },
+      {
+        "ags": "13075018",
+        "name": "Brünzow",
+        "longitude": 13.565365,
+        "latitude": 54.104731,
+        "zipCode": "17509",
+        "population": 620
+      }
+    ]
+  },
+  {
+    "ags": "13075020",
+    "name": "Bugewitz",
+    "zipCode": "17398",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075020",
+        "name": "Bugewitz",
+        "longitude": 13.830724,
+        "latitude": 53.790407,
+        "zipCode": "17398",
+        "population": 239
+      },
+      {
+        "ags": "13075020",
+        "name": "Bugewitz",
+        "longitude": 13.830724,
+        "latitude": 53.790407,
+        "zipCode": "17398",
+        "population": 239
+      }
+    ]
+  },
+  {
+    "ags": "03457024",
+    "name": "Bunde",
+    "zipCode": "26831",
+    "district": "Landkreis Leer",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03457024",
+        "name": "Bunde",
+        "longitude": 7.269253,
+        "latitude": 53.184408,
+        "zipCode": "26831",
+        "population": 7662
+      },
+      {
+        "ags": "03457024",
+        "name": "Bunde",
+        "longitude": 7.269253,
+        "latitude": 53.184408,
+        "zipCode": "26831",
+        "population": 7662
+      }
+    ]
+  },
+  {
+    "ags": "01051013",
+    "name": "Büsum",
+    "zipCode": "25761",
+    "district": "Kreis Dithmarschen",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01051013",
+        "name": "Büsum",
+        "longitude": 8.859577,
+        "latitude": 54.130341,
+        "zipCode": "25761",
+        "population": 4928
+      },
+      {
+        "ags": "01051013",
+        "name": "Büsum",
+        "longitude": 8.859577,
+        "latitude": 54.130341,
+        "zipCode": "25761",
+        "population": 4928
+      }
+    ]
+  },
+  {
+    "ags": "01061020",
+    "name": "Büttel",
+    "zipCode": "25572",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061020",
+        "name": "Büttel",
+        "longitude": 9.229071,
+        "latitude": 53.899717,
+        "zipCode": "25572",
+        "population": 42
+      },
+      {
+        "ags": "01061020",
+        "name": "Büttel",
+        "longitude": 9.229071,
+        "latitude": 53.899717,
+        "zipCode": "25572",
+        "population": 42
+      }
+    ]
+  },
+  {
+    "ags": "16068063",
+    "name": "Buttstädt",
+    "zipCode": "99628",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01058040",
+    "name": "Damp",
+    "zipCode": "24351",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058040",
+        "name": "Damp",
+        "longitude": 9.984161,
+        "latitude": 54.578215,
+        "zipCode": "24351",
+        "population": 1424
+      },
+      {
+        "ags": "01058040",
+        "name": "Damp",
+        "longitude": 9.984161,
+        "latitude": 54.578215,
+        "zipCode": "24351",
+        "population": 1424
+      }
+    ]
+  },
+  {
+    "ags": "16061118",
+    "name": "Dingelstädt",
+    "zipCode": "37351",
+    "district": "Landkreis Eichsfeld",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13073019",
+    "name": "Dranske",
+    "zipCode": "18556",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073019",
+        "name": "Dranske",
+        "longitude": 13.230991,
+        "latitude": 54.629914,
+        "zipCode": "18556",
+        "population": 1117
+      },
+      {
+        "ags": "13073019",
+        "name": "Dranske",
+        "longitude": 13.230991,
+        "latitude": 54.629914,
+        "zipCode": "18556",
+        "population": 1117
+      }
+    ]
+  },
+  {
+    "ags": "03359013",
+    "name": "Drochtersen",
+    "zipCode": "21706",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359013",
+        "name": "Drochtersen",
+        "longitude": 9.385084,
+        "latitude": 53.709623,
+        "zipCode": "21706",
+        "population": 11184
+      },
+      {
+        "ags": "03359013",
+        "name": "Drochtersen",
+        "longitude": 9.385084,
+        "latitude": 53.709623,
+        "zipCode": "21706",
+        "population": 11184
+      }
+    ]
+  },
+  {
+    "ags": "01058043",
+    "name": "Eckernförde",
+    "zipCode": "24340",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058043",
+        "name": "Eckernförde",
+        "longitude": 9.837037,
+        "latitude": 54.472791,
+        "zipCode": "24340",
+        "population": 21902
+      },
+      {
+        "ags": "01058043",
+        "name": "Eckernförde",
+        "longitude": 9.837037,
+        "latitude": 54.472791,
+        "zipCode": "24340",
+        "population": 21902
+      }
+    ]
+  },
+  {
+    "ags": "13071175",
+    "name": "Eldetal",
+    "zipCode": "17209",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "03402000",
+    "name": "Emden",
+    "zipCode": "26721",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03402000",
+        "name": "Emden",
+        "longitude": 7.205946,
+        "latitude": 53.370558,
+        "zipCode": "26721",
+        "population": 50195
+      },
+      {
+        "ags": "03402000",
+        "name": "Emden",
+        "longitude": 7.205946,
+        "latitude": 53.370558,
+        "zipCode": "26721",
+        "population": 50195
+      }
+    ]
+  },
+  {
+    "ags": "03402000",
+    "name": "Emden",
+    "zipCode": "26723",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03402000",
+        "name": "Emden",
+        "longitude": 7.205946,
+        "latitude": 53.370558,
+        "zipCode": "26721",
+        "population": 50195
+      },
+      {
+        "ags": "03402000",
+        "name": "Emden",
+        "longitude": 7.205946,
+        "latitude": 53.370558,
+        "zipCode": "26721",
+        "population": 50195
+      }
+    ]
+  },
+  {
+    "ags": "03402000",
+    "name": "Emden",
+    "zipCode": "26725",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03402000",
+        "name": "Emden",
+        "longitude": 7.205946,
+        "latitude": 53.370558,
+        "zipCode": "26721",
+        "population": 50195
+      },
+      {
+        "ags": "03402000",
+        "name": "Emden",
+        "longitude": 7.205946,
+        "latitude": 53.370558,
+        "zipCode": "26721",
+        "population": 50195
+      }
+    ]
+  },
+  {
+    "ags": "01059026",
+    "name": "Fahrdorf",
+    "zipCode": "24857",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059026",
+        "name": "Fahrdorf",
+        "longitude": 9.599017,
+        "latitude": 54.504653,
+        "zipCode": "24857",
+        "population": 2546
+      },
+      {
+        "ags": "01059026",
+        "name": "Fahrdorf",
+        "longitude": 9.599017,
+        "latitude": 54.504653,
+        "zipCode": "24857",
+        "population": 2546
+      }
+    ]
+  },
+  {
+    "ags": "01055046",
+    "name": "Fehmarn",
+    "zipCode": "23769",
+    "district": "Kreis Ostholstein",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01055046",
+        "name": "Fehmarn",
+        "longitude": 11.197614,
+        "latitude": 54.4387,
+        "zipCode": "23769",
+        "population": 12592
+      },
+      {
+        "ags": "01055046",
+        "name": "Fehmarn",
+        "longitude": 11.197614,
+        "latitude": 54.4387,
+        "zipCode": "23769",
+        "population": 12592
+      }
+    ]
+  },
+  {
+    "ags": "01058052",
+    "name": "Fleckeby",
+    "zipCode": "24357",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058052",
+        "name": "Fleckeby",
+        "longitude": 9.696337,
+        "latitude": 54.48232,
+        "zipCode": "24357",
+        "population": 2178
+      },
+      {
+        "ags": "01058052",
+        "name": "Fleckeby",
+        "longitude": 9.696337,
+        "latitude": 54.48232,
+        "zipCode": "24357",
+        "population": 2178
+      }
+    ]
+  },
+  {
+    "ags": "01001000",
+    "name": "Flensburg",
+    "zipCode": "24937",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      },
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      }
+    ]
+  },
+  {
+    "ags": "01001000",
+    "name": "Flensburg",
+    "zipCode": "24939",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      },
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      }
+    ]
+  },
+  {
+    "ags": "01001000",
+    "name": "Flensburg",
+    "zipCode": "24941",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      },
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      }
+    ]
+  },
+  {
+    "ags": "01001000",
+    "name": "Flensburg",
+    "zipCode": "24943",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      },
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      }
+    ]
+  },
+  {
+    "ags": "01001000",
+    "name": "Flensburg",
+    "zipCode": "24944",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      },
+      {
+        "ags": "01001000",
+        "name": "Flensburg",
+        "longitude": 9.43751,
+        "latitude": 54.78252,
+        "zipCode": "24937",
+        "population": 89504
+      }
+    ]
+  },
+  {
+    "ags": "03359018",
+    "name": "Freiburg (Elbe)",
+    "zipCode": "21729",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359018",
+        "name": "Freiburg (Elbe)",
+        "longitude": 9.287803,
+        "latitude": 53.824052,
+        "zipCode": "21729",
+        "population": 1881
+      },
+      {
+        "ags": "03359018",
+        "name": "Freiburg (Elbe)",
+        "longitude": 9.287803,
+        "latitude": 53.824052,
+        "zipCode": "21729",
+        "population": 1881
+      }
+    ]
+  },
+  {
+    "ags": "01051034",
+    "name": "Friedrichskoog",
+    "zipCode": "25718",
+    "district": "Kreis Dithmarschen",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01051034",
+        "name": "Friedrichskoog",
+        "longitude": 8.89741,
+        "latitude": 54.013926,
+        "zipCode": "25718",
+        "population": 2574
+      },
+      {
+        "ags": "01051034",
+        "name": "Friedrichskoog",
+        "longitude": 8.89741,
+        "latitude": 54.013926,
+        "zipCode": "25718",
+        "population": 2574
+      }
+    ]
+  },
+  {
+    "ags": "01059112",
+    "name": "Gelting",
+    "zipCode": "24395",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059112",
+        "name": "Gelting",
+        "longitude": 9.89717,
+        "latitude": 54.746312,
+        "zipCode": "24395",
+        "population": 1992
+      },
+      {
+        "ags": "01059112",
+        "name": "Gelting",
+        "longitude": 9.89717,
+        "latitude": 54.746312,
+        "zipCode": "24395",
+        "population": 1992
+      }
+    ]
+  },
+  {
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "98716",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "99330",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16070057",
+    "name": "Geratal",
+    "zipCode": "99338",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01059113",
+    "name": "Glücksburg",
+    "zipCode": "24960",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059113",
+        "name": "Glücksburg (Ostsee)",
+        "longitude": 9.550997,
+        "latitude": 54.836858,
+        "zipCode": "24960",
+        "population": 6124
+      },
+      {
+        "ags": "01059113",
+        "name": "Glücksburg (Ostsee)",
+        "longitude": 9.550997,
+        "latitude": 54.836858,
+        "zipCode": "24960",
+        "population": 6124
+      }
+    ]
+  },
+  {
+    "ags": "01061029",
+    "name": "Glückstadt",
+    "zipCode": "25348",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061029",
+        "name": "Glückstadt",
+        "longitude": 9.423724,
+        "latitude": 53.787808,
+        "zipCode": "25348",
+        "population": 11069
+      },
+      {
+        "ags": "01061029",
+        "name": "Glückstadt",
+        "longitude": 9.423724,
+        "latitude": 53.787808,
+        "zipCode": "25348",
+        "population": 11069
+      }
+    ]
+  },
+  {
+    "ags": "13075037",
+    "name": "Grambin",
+    "zipCode": "17375",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075037",
+        "name": "Grambin",
+        "longitude": 14.01457,
+        "latitude": 53.756939,
+        "zipCode": "17375",
+        "population": 430
+      },
+      {
+        "ags": "13075037",
+        "name": "Grambin",
+        "longitude": 14.01457,
+        "latitude": 53.756939,
+        "zipCode": "17375",
+        "population": 430
+      }
+    ]
+  },
+  {
+    "ags": "13075039",
+    "name": "Greifswald",
+    "zipCode": "17489",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075039",
+        "name": "Greifswald",
+        "longitude": 13.379627,
+        "latitude": 54.09581,
+        "zipCode": "17489",
+        "population": 59382
+      },
+      {
+        "ags": "13075039",
+        "name": "Greifswald",
+        "longitude": 13.379627,
+        "latitude": 54.09581,
+        "zipCode": "17489",
+        "population": 59382
+      }
+    ]
+  },
+  {
+    "ags": "13075039",
+    "name": "Greifswald",
+    "zipCode": "17491",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075039",
+        "name": "Greifswald",
+        "longitude": 13.379627,
+        "latitude": 54.09581,
+        "zipCode": "17489",
+        "population": 59382
+      },
+      {
+        "ags": "13075039",
+        "name": "Greifswald",
+        "longitude": 13.379627,
+        "latitude": 54.09581,
+        "zipCode": "17489",
+        "population": 59382
+      }
+    ]
+  },
+  {
+    "ags": "13075039",
+    "name": "Greifswald",
+    "zipCode": "17493",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075039",
+        "name": "Greifswald",
+        "longitude": 13.379627,
+        "latitude": 54.09581,
+        "zipCode": "17489",
+        "population": 59382
+      },
+      {
+        "ags": "13075039",
+        "name": "Greifswald",
+        "longitude": 13.379627,
+        "latitude": 54.09581,
+        "zipCode": "17489",
+        "population": 59382
+      }
+    ]
+  },
+  {
+    "ags": "01054039",
+    "name": "Gröde",
+    "zipCode": "25869",
+    "district": "Kreis Nordfriesland",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01054039",
+        "name": "Gröde",
+        "longitude": 8.717443,
+        "latitude": 54.631686,
+        "zipCode": "25869",
+        "population": 7
+      },
+      {
+        "ags": "01054039",
+        "name": "Gröde",
+        "longitude": 8.717443,
+        "latitude": 54.631686,
+        "zipCode": "25869",
+        "population": 7
+      }
+    ]
+  },
+  {
+    "ags": "01059034",
+    "name": "Grödersby",
+    "zipCode": "24376",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059034",
+        "name": "Grödersby",
+        "longitude": 9.91842,
+        "latitude": 54.637617,
+        "zipCode": "24376",
+        "population": 218
+      },
+      {
+        "ags": "01059034",
+        "name": "Grödersby",
+        "longitude": 9.91842,
+        "latitude": 54.637617,
+        "zipCode": "24376",
+        "population": 218
+      }
+    ]
+  },
+  {
+    "ags": "01059034",
+    "name": "Grödersby",
+    "zipCode": "24399",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059034",
+        "name": "Grödersby",
+        "longitude": 9.91842,
+        "latitude": 54.637617,
+        "zipCode": "24376",
+        "population": 218
+      },
+      {
+        "ags": "01059034",
+        "name": "Grödersby",
+        "longitude": 9.91842,
+        "latitude": 54.637617,
+        "zipCode": "24376",
+        "population": 218
+      }
+    ]
+  },
+  {
+    "ags": "01055016",
+    "name": "Grömitz",
+    "zipCode": "23743",
+    "district": "Kreis Ostholstein",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01055016",
+        "name": "Grömitz",
+        "longitude": 10.961101,
+        "latitude": 54.149249,
+        "zipCode": "23743",
+        "population": 7236
+      },
+      {
+        "ags": "01055016",
+        "name": "Grömitz",
+        "longitude": 10.961101,
+        "latitude": 54.149249,
+        "zipCode": "23743",
+        "population": 7236
+      }
+    ]
+  },
+  {
+    "ags": "16070058",
+    "name": "Großbreitenbach",
+    "zipCode": "98701",
+    "district": "Ilm-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01055017",
+    "name": "Großenbrode",
+    "zipCode": "23775",
+    "district": "Kreis Ostholstein",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01055017",
+        "name": "Großenbrode",
+        "longitude": 11.08427,
+        "latitude": 54.369696,
+        "zipCode": "23775",
+        "population": 2186
+      },
+      {
+        "ags": "01055017",
+        "name": "Großenbrode",
+        "longitude": 11.08427,
+        "latitude": 54.369696,
+        "zipCode": "23775",
+        "population": 2186
+      }
+    ]
+  },
+  {
+    "ags": "03359020",
+    "name": "Grünendeich",
+    "zipCode": "21720",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359020",
+        "name": "Grünendeich",
+        "longitude": 9.622879,
+        "latitude": 53.568752,
+        "zipCode": "21720",
+        "population": 1869
+      },
+      {
+        "ags": "03359020",
+        "name": "Grünendeich",
+        "longitude": 9.622879,
+        "latitude": 53.568752,
+        "zipCode": "21720",
+        "population": 1869
+      }
+    ]
+  },
+  {
+    "ags": "01058067",
+    "name": "Güby",
+    "zipCode": "24357",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058067",
+        "name": "Güby",
+        "longitude": 9.66656,
+        "latitude": 54.48596,
+        "zipCode": "24357",
+        "population": 738
+      },
+      {
+        "ags": "01058067",
+        "name": "Güby",
+        "longitude": 9.66656,
+        "latitude": 54.48596,
+        "zipCode": "24357",
+        "population": 738
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20095",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20097",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20099",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20144",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20146",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20148",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20149",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20249",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20251",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20253",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20255",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20257",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20259",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20354",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20355",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20357",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20359",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20457",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20459",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20535",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20537",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "20539",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21029",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21031",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21033",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21035",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21037",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21039",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21073",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21075",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21077",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21079",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21107",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21109",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21129",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21147",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "21149",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22041",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22043",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22045",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22047",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22049",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22081",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22083",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22085",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22087",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22089",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22111",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22113",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22115",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22117",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22119",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22143",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22145",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22147",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22149",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22159",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22175",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22177",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22179",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22297",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22299",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22301",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22303",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22305",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22307",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22309",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22335",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22337",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22339",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22359",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22391",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22393",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22395",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22397",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22399",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22415",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22417",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22419",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22453",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22455",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22457",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22459",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22523",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22525",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22527",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22529",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22547",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22549",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22559",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22587",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22589",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22605",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22607",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22609",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22761",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22763",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22765",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22767",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "22769",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "02000000",
+    "name": "Hamburg",
+    "zipCode": "27499",
+    "district": "",
+    "state": "Hamburg",
+    "agsMatch": [
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      },
+      {
+        "ags": "02000000",
+        "name": "Hamburg",
+        "longitude": 9.99697,
+        "latitude": 53.550678,
+        "zipCode": "20038",
+        "population": 1841179
+      }
+    ]
+  },
+  {
+    "ags": "01059120",
+    "name": "Harrislee",
+    "zipCode": "24955",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059120",
+        "name": "Harrislee",
+        "longitude": 9.383175,
+        "latitude": 54.804241,
+        "zipCode": "24955",
+        "population": 11531
+      },
+      {
+        "ags": "01059120",
+        "name": "Harrislee",
+        "longitude": 9.383175,
+        "latitude": 54.804241,
+        "zipCode": "24955",
+        "population": 11531
+      }
+    ]
+  },
+  {
+    "ags": "01056019",
+    "name": "Haselau",
+    "zipCode": "25489",
+    "district": "Kreis Pinneberg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01056019",
+        "name": "Haselau",
+        "longitude": 9.623636,
+        "latitude": 53.660647,
+        "zipCode": "25489",
+        "population": 1063
+      },
+      {
+        "ags": "01056019",
+        "name": "Haselau",
+        "longitude": 9.623636,
+        "latitude": 53.660647,
+        "zipCode": "25489",
+        "population": 1063
+      }
+    ]
+  },
+  {
+    "ags": "01055021",
+    "name": "Heiligenhafen",
+    "zipCode": "23774",
+    "district": "Kreis Ostholstein",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01055021",
+        "name": "Heiligenhafen",
+        "longitude": 10.974623,
+        "latitude": 54.373048,
+        "zipCode": "23774",
+        "population": 9211
+      },
+      {
+        "ags": "01055021",
+        "name": "Heiligenhafen",
+        "longitude": 10.974623,
+        "latitude": 54.373048,
+        "zipCode": "23774",
+        "population": 9211
+      }
+    ]
+  },
+  {
+    "ags": "16069063",
+    "name": "Heldburg",
+    "zipCode": "98663",
+    "district": "Landkreis Hildburghausen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01056025",
+    "name": "Helgoland",
+    "zipCode": "27498",
+    "district": "Kreis Pinneberg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01056025",
+        "name": "Helgoland",
+        "longitude": 7.887147,
+        "latitude": 54.181561,
+        "zipCode": "27498",
+        "population": 1265
+      },
+      {
+        "ags": "01056025",
+        "name": "Helgoland",
+        "longitude": 7.887147,
+        "latitude": 54.181561,
+        "zipCode": "27498",
+        "population": 1265
+      }
+    ]
+  },
+  {
+    "ags": "01056027",
+    "name": "Hetlingen",
+    "zipCode": "25491",
+    "district": "Kreis Pinneberg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01056027",
+        "name": "Hetlingen",
+        "longitude": 9.63544,
+        "latitude": 53.607678,
+        "zipCode": "25491",
+        "population": 1364
+      },
+      {
+        "ags": "01056027",
+        "name": "Hetlingen",
+        "longitude": 9.63544,
+        "latitude": 53.607678,
+        "zipCode": "25491",
+        "population": 1364
+      }
+    ]
+  },
+  {
+    "ags": "13074032",
+    "name": "Hohenkirchen",
+    "zipCode": "23968",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074032",
+        "name": "Hohenkirchen",
+        "longitude": 11.306226,
+        "latitude": 53.915746,
+        "zipCode": "23968",
+        "population": 1264
+      },
+      {
+        "ags": "13074032",
+        "name": "Hohenkirchen",
+        "longitude": 11.306226,
+        "latitude": 53.915746,
+        "zipCode": "23968",
+        "population": 1264
+      }
+    ]
+  },
+  {
+    "ags": "03359026",
+    "name": "Hollern-Twielenfleth",
+    "zipCode": "21723",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359026",
+        "name": "Hollern-Twielenfleth",
+        "longitude": 9.550708,
+        "latitude": 53.592055,
+        "zipCode": "21723",
+        "population": 3373
+      },
+      {
+        "ags": "03359026",
+        "name": "Hollern-Twielenfleth",
+        "longitude": 9.550708,
+        "latitude": 53.592055,
+        "zipCode": "21723",
+        "population": 3373
+      }
+    ]
+  },
+  {
+    "ags": "01054056",
+    "name": "Husum",
+    "zipCode": "25813",
+    "district": "Kreis Nordfriesland",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01054056",
+        "name": "Husum",
+        "longitude": 9.057178,
+        "latitude": 54.477143,
+        "zipCode": "25813",
+        "population": 23158
+      },
+      {
+        "ags": "01054056",
+        "name": "Husum",
+        "longitude": 9.057178,
+        "latitude": 54.477143,
+        "zipCode": "25813",
+        "population": 23158
+      }
+    ]
+  },
+  {
+    "ags": "03457012",
+    "name": "Jemgum",
+    "zipCode": "26844",
+    "district": "Landkreis Leer",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03457012",
+        "name": "Jemgum",
+        "longitude": 7.382705,
+        "latitude": 53.265053,
+        "zipCode": "26844",
+        "population": 3581
+      },
+      {
+        "ags": "03457012",
+        "name": "Jemgum",
+        "longitude": 7.382705,
+        "latitude": 53.265053,
+        "zipCode": "26844",
+        "population": 3581
+      }
+    ]
+  },
+  {
+    "ags": "03359028",
+    "name": "Jork",
+    "zipCode": "21635",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359028",
+        "name": "Jork",
+        "longitude": 9.680838,
+        "latitude": 53.53298,
+        "zipCode": "21635",
+        "population": 12183
+      },
+      {
+        "ags": "03359028",
+        "name": "Jork",
+        "longitude": 9.680838,
+        "latitude": 53.53298,
+        "zipCode": "21635",
+        "population": 12183
+      }
+    ]
+  },
+  {
+    "ags": "01051057",
+    "name": "Kaiser-Wilhelm-Koog",
+    "zipCode": "25709",
+    "district": "Kreis Dithmarschen",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01051057",
+        "name": "Kaiser-Wilhelm-Koog",
+        "longitude": 8.926364,
+        "latitude": 53.942933,
+        "zipCode": "25709",
+        "population": 354
+      },
+      {
+        "ags": "01051057",
+        "name": "Kaiser-Wilhelm-Koog",
+        "longitude": 8.926364,
+        "latitude": 53.942933,
+        "zipCode": "25709",
+        "population": 354
+      }
+    ]
+  },
+  {
+    "ags": "16066095",
+    "name": "Kaltennordheim",
+    "zipCode": "36452",
+    "district": "Landkreis Schmalkalden-Meiningen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16066095",
+    "name": "Kaltennordheim",
+    "zipCode": "98634",
+    "district": "Landkreis Schmalkalden-Meiningen",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01059045",
+    "name": "Kappeln",
+    "zipCode": "24376",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059045",
+        "name": "Kappeln",
+        "longitude": 9.931158,
+        "latitude": 54.659144,
+        "zipCode": "24376",
+        "population": 8619
+      },
+      {
+        "ags": "01059045",
+        "name": "Kappeln",
+        "longitude": 9.931158,
+        "latitude": 54.659144,
+        "zipCode": "24376",
+        "population": 8619
+      }
+    ]
+  },
+  {
+    "ags": "01059045",
+    "name": "Kappeln",
+    "zipCode": "24404",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059045",
+        "name": "Kappeln",
+        "longitude": 9.931158,
+        "latitude": 54.659144,
+        "zipCode": "24376",
+        "population": 8619
+      },
+      {
+        "ags": "01059045",
+        "name": "Kappeln",
+        "longitude": 9.931158,
+        "latitude": 54.659144,
+        "zipCode": "24376",
+        "population": 8619
+      }
+    ]
+  },
+  {
+    "ags": "13075156",
+    "name": "Karlsburg",
+    "zipCode": "17495",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24103",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24105",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24106",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24107",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24109",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24111",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24113",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24114",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24116",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24118",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24143",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24145",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24146",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24147",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24148",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24149",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "01002000",
+    "name": "Kiel",
+    "zipCode": "24159",
+    "district": "",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      },
+      {
+        "ags": "01002000",
+        "name": "Kiel",
+        "longitude": 10.13727,
+        "latitude": 54.321775,
+        "zipCode": "24103",
+        "population": 247548
+      }
+    ]
+  },
+  {
+    "ags": "16068064",
+    "name": "Kindelbrück",
+    "zipCode": "06578",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16068064",
+    "name": "Kindelbrück",
+    "zipCode": "99638",
+    "district": "Landkreis Sömmerda",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13074039",
+    "name": "Klütz",
+    "zipCode": "23946",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074039",
+        "name": "Klütz",
+        "longitude": 11.166952,
+        "latitude": 53.965698,
+        "zipCode": "23948",
+        "population": 3114
+      },
+      {
+        "ags": "13074039",
+        "name": "Klütz",
+        "longitude": 11.166952,
+        "latitude": 53.965698,
+        "zipCode": "23948",
+        "population": 3114
+      }
+    ]
+  },
+  {
+    "ags": "13074039",
+    "name": "Klütz",
+    "zipCode": "23948",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074039",
+        "name": "Klütz",
+        "longitude": 11.166952,
+        "latitude": 53.965698,
+        "zipCode": "23948",
+        "population": 3114
+      },
+      {
+        "ags": "13074039",
+        "name": "Klütz",
+        "longitude": 11.166952,
+        "latitude": 53.965698,
+        "zipCode": "23948",
+        "population": 3114
+      }
+    ]
+  },
+  {
+    "ags": "01061118",
+    "name": "Kollmar",
+    "zipCode": "25377",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061118",
+        "name": "Kollmar",
+        "longitude": 9.494978,
+        "latitude": 53.732667,
+        "zipCode": "25377",
+        "population": 1674
+      },
+      {
+        "ags": "01061118",
+        "name": "Kollmar",
+        "longitude": 9.494978,
+        "latitude": 53.732667,
+        "zipCode": "25377",
+        "population": 1674
+      }
+    ]
+  },
+  {
+    "ags": "01058090",
+    "name": "Kosel",
+    "zipCode": "24354",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058090",
+        "name": "Kosel",
+        "longitude": 9.754483,
+        "latitude": 54.505335,
+        "zipCode": "24354",
+        "population": 1370
+      },
+      {
+        "ags": "01058090",
+        "name": "Kosel",
+        "longitude": 9.754483,
+        "latitude": 54.505335,
+        "zipCode": "24354",
+        "population": 1370
+      }
+    ]
+  },
+  {
+    "ags": "13073046",
+    "name": "Kramerhof",
+    "zipCode": "18445",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073046",
+        "name": "Kramerhof",
+        "longitude": 13.054042,
+        "latitude": 54.3537,
+        "zipCode": "18445",
+        "population": 1885
+      },
+      {
+        "ags": "13073046",
+        "name": "Kramerhof",
+        "longitude": 13.054042,
+        "latitude": 54.3537,
+        "zipCode": "18445",
+        "population": 1885
+      }
+    ]
+  },
+  {
+    "ags": "13075069",
+    "name": "Kröslin",
+    "zipCode": "17440",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075069",
+        "name": "Kröslin",
+        "longitude": 13.752524,
+        "latitude": 54.117831,
+        "zipCode": "17440",
+        "population": 1787
+      },
+      {
+        "ags": "13075069",
+        "name": "Kröslin",
+        "longitude": 13.752524,
+        "latitude": 54.117831,
+        "zipCode": "17440",
+        "population": 1787
+      }
+    ]
+  },
+  {
+    "ags": "03359030",
+    "name": "Krummendeich",
+    "zipCode": "21732",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359030",
+        "name": "Krummendeich",
+        "longitude": 9.207587,
+        "latitude": 53.830008,
+        "zipCode": "21732",
+        "population": 474
+      },
+      {
+        "ags": "03359030",
+        "name": "Krummendeich",
+        "longitude": 9.207587,
+        "latitude": 53.830008,
+        "zipCode": "21732",
+        "population": 474
+      }
+    ]
+  },
+  {
+    "ags": "03452014",
+    "name": "Krummhörn",
+    "zipCode": "26736",
+    "district": "Landkreis Aurich",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03452014",
+        "name": "Krummhörn",
+        "longitude": 7.097865,
+        "latitude": 53.434097,
+        "zipCode": "26736",
+        "population": 11997
+      },
+      {
+        "ags": "03452014",
+        "name": "Krummhörn",
+        "longitude": 7.097865,
+        "latitude": 53.434097,
+        "zipCode": "26736",
+        "population": 11997
+      }
+    ]
+  },
+  {
+    "ags": "01057043",
+    "name": "Laboe",
+    "zipCode": "24235",
+    "district": "Kreis Plön",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01057043",
+        "name": "Laboe",
+        "longitude": 10.224323,
+        "latitude": 54.404031,
+        "zipCode": "24235",
+        "population": 4976
+      },
+      {
+        "ags": "01057043",
+        "name": "Laboe",
+        "longitude": 10.224323,
+        "latitude": 54.404031,
+        "zipCode": "24235",
+        "population": 4976
+      }
+    ]
+  },
+  {
+    "ags": "01059137",
+    "name": "Langballig",
+    "zipCode": "24977",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059137",
+        "name": "Langballig",
+        "longitude": 9.637034,
+        "latitude": 54.799385,
+        "zipCode": "24977",
+        "population": 1523
+      },
+      {
+        "ags": "01059137",
+        "name": "Langballig",
+        "longitude": 9.637034,
+        "latitude": 54.799385,
+        "zipCode": "24977",
+        "population": 1523
+      }
+    ]
+  },
+  {
+    "ags": "01054074",
+    "name": "Langeneß",
+    "zipCode": "25863",
+    "district": "Kreis Nordfriesland",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01054074",
+        "name": "Langeneß",
+        "longitude": 8.594129,
+        "latitude": 54.637917,
+        "zipCode": "25863",
+        "population": 139
+      },
+      {
+        "ags": "01054074",
+        "name": "Langeneß",
+        "longitude": 8.594129,
+        "latitude": 54.637917,
+        "zipCode": "25863",
+        "population": 139
+      }
+    ]
+  },
+  {
+    "ags": "01054074",
+    "name": "Langeneß",
+    "zipCode": "25867",
+    "district": "Kreis Nordfriesland",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01054074",
+        "name": "Langeneß",
+        "longitude": 8.594129,
+        "latitude": 54.637917,
+        "zipCode": "25863",
+        "population": 139
+      },
+      {
+        "ags": "01054074",
+        "name": "Langeneß",
+        "longitude": 8.594129,
+        "latitude": 54.637917,
+        "zipCode": "25863",
+        "population": 139
+      }
+    ]
+  },
+  {
+    "ags": "03462007",
+    "name": "Langeoog",
+    "zipCode": "26465",
+    "district": "Landkreis Wittmund",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03462007",
+        "name": "Langeoog",
+        "longitude": 7.479321,
+        "latitude": 53.747016,
+        "zipCode": "26465",
+        "population": 1816
+      },
+      {
+        "ags": "03462007",
+        "name": "Langeoog",
+        "longitude": 7.479321,
+        "latitude": 53.747016,
+        "zipCode": "26465",
+        "population": 1816
+      }
+    ]
+  },
+  {
+    "ags": "13075083",
+    "name": "Lubmin",
+    "zipCode": "17509",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075083",
+        "name": "Lubmin",
+        "longitude": 13.613919,
+        "latitude": 54.135129,
+        "zipCode": "17509",
+        "population": 2081
+      },
+      {
+        "ags": "13075083",
+        "name": "Lubmin",
+        "longitude": 13.613919,
+        "latitude": 54.135129,
+        "zipCode": "17509",
+        "population": 2081
+      }
+    ]
+  },
+  {
+    "ags": "13075085",
+    "name": "Luckow",
+    "zipCode": "17375",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075085",
+        "name": "Luckow",
+        "longitude": 14.156459,
+        "latitude": 53.7068,
+        "zipCode": "17375",
+        "population": 572
+      },
+      {
+        "ags": "13075085",
+        "name": "Luckow",
+        "longitude": 14.156459,
+        "latitude": 53.7068,
+        "zipCode": "17375",
+        "population": 572
+      }
+    ]
+  },
+  {
+    "ags": "01059142",
+    "name": "Maasholm",
+    "zipCode": "24404",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059142",
+        "name": "Maasholm",
+        "longitude": 9.990992,
+        "latitude": 54.684233,
+        "zipCode": "24404",
+        "population": 583
+      },
+      {
+        "ags": "01059142",
+        "name": "Maasholm",
+        "longitude": 9.990992,
+        "latitude": 54.684233,
+        "zipCode": "24404",
+        "population": 583
+      }
+    ]
+  },
+  {
+    "ags": "13075093",
+    "name": "Mönkebude",
+    "zipCode": "17375",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075093",
+        "name": "Mönkebude",
+        "longitude": 13.962037,
+        "latitude": 53.766872,
+        "zipCode": "17375",
+        "population": 745
+      },
+      {
+        "ags": "13075093",
+        "name": "Mönkebude",
+        "longitude": 13.962037,
+        "latitude": 53.766872,
+        "zipCode": "17375",
+        "population": 745
+      }
+    ]
+  },
+  {
+    "ags": "01059145",
+    "name": "Munkbrarup",
+    "zipCode": "24960",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059145",
+        "name": "Munkbrarup",
+        "longitude": 9.561132,
+        "latitude": 54.8032,
+        "zipCode": "24960",
+        "population": 1149
+      },
+      {
+        "ags": "01059145",
+        "name": "Munkbrarup",
+        "longitude": 9.561132,
+        "latitude": 54.8032,
+        "zipCode": "24960",
+        "population": 1149
+      }
+    ]
+  },
+  {
+    "ags": "13075094",
+    "name": "Murchin",
+    "zipCode": "17390",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075094",
+        "name": "Murchin",
+        "longitude": 13.74274,
+        "latitude": 53.905543,
+        "zipCode": "17390",
+        "population": 762
+      },
+      {
+        "ags": "13075094",
+        "name": "Murchin",
+        "longitude": 13.74274,
+        "latitude": 53.905543,
+        "zipCode": "17390",
+        "population": 762
+      }
+    ]
+  },
+  {
+    "ags": "16067091",
+    "name": "Nessetal",
+    "zipCode": "99869",
+    "district": "Landkreis Gotha",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01061074",
+    "name": "Neuendorf bei Elmshorn",
+    "zipCode": "25335",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061074",
+        "name": "Neuendorf b. Elmshorn",
+        "longitude": 9.562834,
+        "latitude": 53.737583,
+        "zipCode": "25335",
+        "population": 839
+      },
+      {
+        "ags": "01061074",
+        "name": "Neuendorf b. Elmshorn",
+        "longitude": 9.562834,
+        "latitude": 53.737583,
+        "zipCode": "25335",
+        "population": 839
+      }
+    ]
+  },
+  {
+    "ags": "13075102",
+    "name": "Neuenkirchen",
+    "zipCode": "17498",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075102",
+        "name": "Neuenkirchen",
+        "longitude": 13.374534,
+        "latitude": 54.120382,
+        "zipCode": "17498",
+        "population": 2422
+      },
+      {
+        "ags": "13075102",
+        "name": "Neuenkirchen",
+        "longitude": 13.374534,
+        "latitude": 54.120382,
+        "zipCode": "17498",
+        "population": 2422
+      }
+    ]
+  },
+  {
+    "ags": "01051077",
+    "name": "Neufelderkoog",
+    "zipCode": "25724",
+    "district": "Kreis Dithmarschen",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01051077",
+        "name": "Neufelderkoog",
+        "longitude": 8.968827,
+        "latitude": 53.906958,
+        "zipCode": "25724",
+        "population": 126
+      },
+      {
+        "ags": "01051077",
+        "name": "Neufelderkoog",
+        "longitude": 8.968827,
+        "latitude": 53.906958,
+        "zipCode": "25724",
+        "population": 126
+      }
+    ]
+  },
+  {
+    "ags": "01055031",
+    "name": "Neukirchen",
+    "zipCode": "23779",
+    "district": "Kreis Ostholstein",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01055031",
+        "name": "Neukirchen",
+        "longitude": 11.015153,
+        "latitude": 54.323811,
+        "zipCode": "23779",
+        "population": 1175
+      },
+      {
+        "ags": "01055031",
+        "name": "Neukirchen",
+        "longitude": 11.015153,
+        "latitude": 54.323811,
+        "zipCode": "23779",
+        "population": 1175
+      }
+    ]
+  },
+  {
+    "ags": "01055032",
+    "name": "Neustadt in Holstein",
+    "zipCode": "23730",
+    "district": "Kreis Ostholstein",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01055032",
+        "name": "Neustadt in Holstein",
+        "longitude": 10.816351,
+        "latitude": 54.10563,
+        "zipCode": "23730",
+        "population": 15093
+      },
+      {
+        "ags": "01055032",
+        "name": "Neustadt in Holstein",
+        "longitude": 10.816351,
+        "latitude": 54.10563,
+        "zipCode": "23730",
+        "population": 15093
+      }
+    ]
+  },
+  {
+    "ags": "01059148",
+    "name": "Niesgrau",
+    "zipCode": "24395",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059148",
+        "name": "Niesgrau",
+        "longitude": 9.812919,
+        "latitude": 54.744112,
+        "zipCode": "24395",
+        "population": 537
+      },
+      {
+        "ags": "01059148",
+        "name": "Niesgrau",
+        "longitude": 9.812919,
+        "latitude": 54.744112,
+        "zipCode": "24395",
+        "population": 537
+      }
+    ]
+  },
+  {
+    "ags": "03452019",
+    "name": "Norden",
+    "zipCode": "26506",
+    "district": "Landkreis Aurich",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03452019",
+        "name": "Norden",
+        "longitude": 7.202462,
+        "latitude": 53.59498,
+        "zipCode": "26506",
+        "population": 25060
+      },
+      {
+        "ags": "03452019",
+        "name": "Norden",
+        "longitude": 7.202462,
+        "latitude": 53.59498,
+        "zipCode": "26506",
+        "population": 25060
+      }
+    ]
+  },
+  {
+    "ags": "03452020",
+    "name": "Norderney",
+    "zipCode": "26548",
+    "district": "Landkreis Aurich",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03452020",
+        "name": "Norderney",
+        "longitude": 7.145431,
+        "latitude": 53.707276,
+        "zipCode": "26548",
+        "population": 6089
+      },
+      {
+        "ags": "03452020",
+        "name": "Norderney",
+        "longitude": 7.145431,
+        "latitude": 53.707276,
+        "zipCode": "26548",
+        "population": 6089
+      }
+    ]
+  },
+  {
+    "ags": "13075106",
+    "name": "Peenemünde",
+    "zipCode": "17449",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075106",
+        "name": "Peenemünde",
+        "longitude": 13.769464,
+        "latitude": 54.135818,
+        "zipCode": "17449",
+        "population": 323
+      },
+      {
+        "ags": "13075106",
+        "name": "Peenemünde",
+        "longitude": 13.769464,
+        "latitude": 54.135818,
+        "zipCode": "17449",
+        "population": 323
+      }
+    ]
+  },
+  {
+    "ags": "13073070",
+    "name": "Putbus",
+    "zipCode": "18581",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073070",
+        "name": "Putbus",
+        "longitude": 13.47642,
+        "latitude": 54.35431,
+        "zipCode": "18581",
+        "population": 4364
+      },
+      {
+        "ags": "13073070",
+        "name": "Putbus",
+        "longitude": 13.47642,
+        "latitude": 54.35431,
+        "zipCode": "18581",
+        "population": 4364
+      }
+    ]
+  },
+  {
+    "ags": "01059154",
+    "name": "Rabel",
+    "zipCode": "24376",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059154",
+        "name": "Rabel",
+        "longitude": 9.950086,
+        "latitude": 54.690345,
+        "zipCode": "24376",
+        "population": 628
+      },
+      {
+        "ags": "01059154",
+        "name": "Rabel",
+        "longitude": 9.950086,
+        "latitude": 54.690345,
+        "zipCode": "24376",
+        "population": 628
+      }
+    ]
+  },
+  {
+    "ags": "01059068",
+    "name": "Rabenkirchen-Faulück",
+    "zipCode": "24407",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059068",
+        "name": "Rabenkirchen-Faulück",
+        "longitude": 9.87348,
+        "latitude": 54.635833,
+        "zipCode": "24407",
+        "population": 632
+      },
+      {
+        "ags": "01059068",
+        "name": "Rabenkirchen-Faulück",
+        "longitude": 9.87348,
+        "latitude": 54.635833,
+        "zipCode": "24407",
+        "population": 632
+      }
+    ]
+  },
+  {
+    "ags": "08335063",
+    "name": "Radolfzell",
+    "zipCode": "78315",
+    "district": "Landkreis Konstanz",
+    "state": "Baden-Württemberg",
+    "agsMatch": [
+      {
+        "ags": "08335063",
+        "name": "Radolfzell am Bodensee",
+        "longitude": 8.968663,
+        "latitude": 47.739107,
+        "zipCode": "78315",
+        "population": 31203
+      },
+      {
+        "ags": "08335063",
+        "name": "Radolfzell am Bodensee",
+        "longitude": 8.968663,
+        "latitude": 47.739107,
+        "zipCode": "78315",
+        "population": 31203
+      }
+    ]
+  },
+  {
+    "ags": "13073072",
+    "name": "Ralswiek",
+    "zipCode": "18528",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073072",
+        "name": "Ralswiek",
+        "longitude": 13.446593,
+        "latitude": 54.473774,
+        "zipCode": "18528",
+        "population": 245
+      },
+      {
+        "ags": "13073072",
+        "name": "Ralswiek",
+        "longitude": 13.446593,
+        "latitude": 54.473774,
+        "zipCode": "18528",
+        "population": 245
+      }
+    ]
+  },
+  {
+    "ags": "08335066",
+    "name": "Reichenau",
+    "zipCode": "78479",
+    "district": "Landkreis Konstanz",
+    "state": "Baden-Württemberg",
+    "agsMatch": [
+      {
+        "ags": "08335066",
+        "name": "Reichenau",
+        "longitude": 9.060705,
+        "latitude": 47.698036,
+        "zipCode": "78479",
+        "population": 5307
+      },
+      {
+        "ags": "08335066",
+        "name": "Reichenau",
+        "longitude": 9.060705,
+        "latitude": 47.698036,
+        "zipCode": "78479",
+        "population": 5307
+      }
+    ]
+  },
+  {
+    "ags": "13072085",
+    "name": "Rerik",
+    "zipCode": "18230",
+    "district": "Landkreis Rostock",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13072085",
+        "name": "Rerik",
+        "longitude": 11.613548,
+        "latitude": 54.105655,
+        "zipCode": "18230",
+        "population": 2142
+      },
+      {
+        "ags": "13072085",
+        "name": "Rerik",
+        "longitude": 11.613548,
+        "latitude": 54.105655,
+        "zipCode": "18230",
+        "population": 2142
+      }
+    ]
+  },
+  {
+    "ags": "13073075",
+    "name": "Ribnitz-Damgarten",
+    "zipCode": "18311",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073075",
+        "name": "Ribnitz-Damgarten",
+        "longitude": 12.431833,
+        "latitude": 54.243021,
+        "zipCode": "18311",
+        "population": 15167
+      },
+      {
+        "ags": "13073075",
+        "name": "Ribnitz-Damgarten",
+        "longitude": 12.431833,
+        "latitude": 54.243021,
+        "zipCode": "18311",
+        "population": 15167
+      }
+    ]
+  },
+  {
+    "ags": "01058137",
+    "name": "Rieseby",
+    "zipCode": "24354",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058137",
+        "name": "Rieseby",
+        "longitude": 9.812995,
+        "latitude": 54.541709,
+        "zipCode": "24354",
+        "population": 2696
+      },
+      {
+        "ags": "01058137",
+        "name": "Rieseby",
+        "longitude": 9.812995,
+        "latitude": 54.541709,
+        "zipCode": "24354",
+        "population": 2696
+      }
+    ]
+  },
+  {
+    "ags": "16075136",
+    "name": "Rosenthal am Rennsteig",
+    "zipCode": "07366",
+    "district": "Saale-Orla-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16065087",
+    "name": "Roßleben-Wiehe",
+    "zipCode": "06571",
+    "district": "Kyffhäuserkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18055",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18057",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18059",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18069",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18106",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18107",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18109",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18119",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18146",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18147",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18181",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13003000",
+    "name": "Rostock",
+    "zipCode": "18182",
+    "district": "",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      },
+      {
+        "ags": "13003000",
+        "name": "Rostock",
+        "longitude": 12.135993,
+        "latitude": 54.088548,
+        "zipCode": "18055",
+        "population": 208886
+      }
+    ]
+  },
+  {
+    "ags": "13076168",
+    "name": "Ruhner Berge",
+    "zipCode": "19376",
+    "district": "Landkreis Ludwigslust-Parchim",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "01061095",
+    "name": "Sankt Margarethen",
+    "zipCode": "25572",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061095",
+        "name": "Sankt Margarethen",
+        "longitude": 9.256234,
+        "latitude": 53.889309,
+        "zipCode": "25572",
+        "population": 820
+      },
+      {
+        "ags": "01061095",
+        "name": "Sankt Margarethen",
+        "longitude": 9.256234,
+        "latitude": 53.889309,
+        "zipCode": "25572",
+        "population": 820
+      }
+    ]
+  },
+  {
+    "ags": "13073080",
+    "name": "Sassnitz",
+    "zipCode": "18546",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073080",
+        "name": "Sassnitz",
+        "longitude": 13.634476,
+        "latitude": 54.51304,
+        "zipCode": "18546",
+        "population": 9320
+      },
+      {
+        "ags": "13073080",
+        "name": "Sassnitz",
+        "longitude": 13.634476,
+        "latitude": 54.51304,
+        "zipCode": "18546",
+        "population": 9320
+      }
+    ]
+  },
+  {
+    "ags": "01059073",
+    "name": "Schaalby",
+    "zipCode": "24882",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059073",
+        "name": "Schaalby",
+        "longitude": 9.63988,
+        "latitude": 54.549079,
+        "zipCode": "24882",
+        "population": 1555
+      },
+      {
+        "ags": "01059073",
+        "name": "Schaalby",
+        "longitude": 9.63988,
+        "latitude": 54.549079,
+        "zipCode": "24882",
+        "population": 1555
+      }
+    ]
+  },
+  {
+    "ags": "01059075",
+    "name": "Schleswig",
+    "zipCode": "24837",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059075",
+        "name": "Schleswig",
+        "longitude": 9.566657,
+        "latitude": 54.514941,
+        "zipCode": "24837",
+        "population": 25276
+      },
+      {
+        "ags": "01059075",
+        "name": "Schleswig",
+        "longitude": 9.566657,
+        "latitude": 54.514941,
+        "zipCode": "24837",
+        "population": 25276
+      }
+    ]
+  },
+  {
+    "ags": "16073113",
+    "name": "Schwarzatal",
+    "zipCode": "98744",
+    "district": "Landkreis Saalfeld-Rudolstadt",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01056045",
+    "name": "Seestermühe",
+    "zipCode": "25371",
+    "district": "Kreis Pinneberg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01056045",
+        "name": "Seestermühe",
+        "longitude": 9.56628,
+        "latitude": 53.704049,
+        "zipCode": "25371",
+        "population": 883
+      },
+      {
+        "ags": "01056045",
+        "name": "Seestermühe",
+        "longitude": 9.56628,
+        "latitude": 53.704049,
+        "zipCode": "25371",
+        "population": 883
+      }
+    ]
+  },
+  {
+    "ags": "13073084",
+    "name": "Sellin",
+    "zipCode": "18586",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073084",
+        "name": "Sellin",
+        "longitude": 13.692482,
+        "latitude": 54.378093,
+        "zipCode": "18586",
+        "population": 2623
+      },
+      {
+        "ags": "13073084",
+        "name": "Sellin",
+        "longitude": 13.692482,
+        "latitude": 54.378093,
+        "zipCode": "18586",
+        "population": 2623
+      }
+    ]
+  },
+  {
+    "ags": "13074094",
+    "name": "Siemz-Niendorf",
+    "zipCode": "23923",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "03462014",
+    "name": "Spiekeroog",
+    "zipCode": "26474",
+    "district": "Landkreis Wittmund",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03462014",
+        "name": "Spiekeroog",
+        "longitude": 7.696086,
+        "latitude": 53.770745,
+        "zipCode": "26474",
+        "population": 806
+      },
+      {
+        "ags": "03462014",
+        "name": "Spiekeroog",
+        "longitude": 7.696086,
+        "latitude": 53.770745,
+        "zipCode": "26474",
+        "population": 806
+      }
+    ]
+  },
+  {
+    "ags": "03359038",
+    "name": "Stade",
+    "zipCode": "21680",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      },
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      }
+    ]
+  },
+  {
+    "ags": "03359038",
+    "name": "Stade",
+    "zipCode": "21682",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      },
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      }
+    ]
+  },
+  {
+    "ags": "03359038",
+    "name": "Stade",
+    "zipCode": "21683",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      },
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      }
+    ]
+  },
+  {
+    "ags": "03359038",
+    "name": "Stade",
+    "zipCode": "21684",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      },
+      {
+        "ags": "03359038",
+        "name": "Stade",
+        "longitude": 9.475977,
+        "latitude": 53.601302,
+        "zipCode": "21682",
+        "population": 47533
+      }
+    ]
+  },
+  {
+    "ags": "01059164",
+    "name": "Steinberg",
+    "zipCode": "24972",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059164",
+        "name": "Steinberg",
+        "longitude": 9.782276,
+        "latitude": 54.756137,
+        "zipCode": "24972",
+        "population": 810
+      },
+      {
+        "ags": "01059164",
+        "name": "Steinberg",
+        "longitude": 9.782276,
+        "latitude": 54.756137,
+        "zipCode": "24972",
+        "population": 810
+      }
+    ]
+  },
+  {
+    "ags": "01059186",
+    "name": "Steinbergkirche",
+    "zipCode": "24972",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059186",
+        "name": "Steinbergkirche",
+        "longitude": 9.759969,
+        "latitude": 54.7544,
+        "zipCode": "24972",
+        "population": 2703
+      },
+      {
+        "ags": "01059186",
+        "name": "Steinbergkirche",
+        "longitude": 9.759969,
+        "latitude": 54.7544,
+        "zipCode": "24972",
+        "population": 2703
+      }
+    ]
+  },
+  {
+    "ags": "03359039",
+    "name": "Steinkirchen",
+    "zipCode": "21720",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359039",
+        "name": "Steinkirchen",
+        "longitude": 9.610086,
+        "latitude": 53.565364,
+        "zipCode": "21720",
+        "population": 1736
+      },
+      {
+        "ags": "03359039",
+        "name": "Steinkirchen",
+        "longitude": 9.610086,
+        "latitude": 53.565364,
+        "zipCode": "21720",
+        "population": 1736
+      }
+    ]
+  },
+  {
+    "ags": "13073088",
+    "name": "Stralsund",
+    "zipCode": "18435",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073088",
+        "name": "Stralsund",
+        "longitude": 13.089973,
+        "latitude": 54.313975,
+        "zipCode": "18439",
+        "population": 59421
+      },
+      {
+        "ags": "13073088",
+        "name": "Stralsund",
+        "longitude": 13.089973,
+        "latitude": 54.313975,
+        "zipCode": "18439",
+        "population": 59421
+      }
+    ]
+  },
+  {
+    "ags": "13073088",
+    "name": "Stralsund",
+    "zipCode": "18437",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073088",
+        "name": "Stralsund",
+        "longitude": 13.089973,
+        "latitude": 54.313975,
+        "zipCode": "18439",
+        "population": 59421
+      },
+      {
+        "ags": "13073088",
+        "name": "Stralsund",
+        "longitude": 13.089973,
+        "latitude": 54.313975,
+        "zipCode": "18439",
+        "population": 59421
+      }
+    ]
+  },
+  {
+    "ags": "13073088",
+    "name": "Stralsund",
+    "zipCode": "18439",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073088",
+        "name": "Stralsund",
+        "longitude": 13.089973,
+        "latitude": 54.313975,
+        "zipCode": "18439",
+        "population": 59421
+      },
+      {
+        "ags": "13073088",
+        "name": "Stralsund",
+        "longitude": 13.089973,
+        "latitude": 54.313975,
+        "zipCode": "18439",
+        "population": 59421
+      }
+    ]
+  },
+  {
+    "ags": "13071176",
+    "name": "Südmüritz",
+    "zipCode": "17207",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "13071176",
+    "name": "Südmüritz",
+    "zipCode": "17209",
+    "district": "Landkreis Mecklenburgische Seenplatte",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "01058162",
+    "name": "Thumby",
+    "zipCode": "24351",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058162",
+        "name": "Thumby",
+        "longitude": 9.910273,
+        "latitude": 54.585574,
+        "zipCode": "24351",
+        "population": 395
+      },
+      {
+        "ags": "01058162",
+        "name": "Thumby",
+        "longitude": 9.910273,
+        "latitude": 54.585574,
+        "zipCode": "24351",
+        "population": 395
+      }
+    ]
+  },
+  {
+    "ags": "13076169",
+    "name": "Toddin",
+    "zipCode": "19230",
+    "district": "Landkreis Ludwigslust-Parchim",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": []
+  },
+  {
+    "ags": "13075135",
+    "name": "Ückeritz",
+    "zipCode": "17459",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075135",
+        "name": "Ückeritz",
+        "longitude": 14.046749,
+        "latitude": 54.013567,
+        "zipCode": "17459",
+        "population": 1033
+      },
+      {
+        "ags": "13075135",
+        "name": "Ückeritz",
+        "longitude": 14.046749,
+        "latitude": 54.013567,
+        "zipCode": "17459",
+        "population": 1033
+      }
+    ]
+  },
+  {
+    "ags": "13075136",
+    "name": "Ueckermünde",
+    "zipCode": "17373",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075136",
+        "name": "Ueckermünde",
+        "longitude": 14.046489,
+        "latitude": 53.736513,
+        "zipCode": "17373",
+        "population": 8591
+      },
+      {
+        "ags": "13075136",
+        "name": "Ueckermünde",
+        "longitude": 14.046489,
+        "latitude": 53.736513,
+        "zipCode": "17373",
+        "population": 8591
+      }
+    ]
+  },
+  {
+    "ags": "01059094",
+    "name": "Ulsnis",
+    "zipCode": "24897",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059094",
+        "name": "Ulsnis",
+        "longitude": 9.747452,
+        "latitude": 54.56921,
+        "zipCode": "24897",
+        "population": 658
+      },
+      {
+        "ags": "01059094",
+        "name": "Ulsnis",
+        "longitude": 9.747452,
+        "latitude": 54.56921,
+        "zipCode": "24897",
+        "population": 658
+      }
+    ]
+  },
+  {
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99947",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99986",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "16064076",
+    "name": "Unstrut-Hainich",
+    "zipCode": "99991",
+    "district": "Unstrut-Hainich-Kreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "13075137",
+    "name": "Usedom",
+    "zipCode": "17406",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075137",
+        "name": "Usedom",
+        "longitude": 13.92045,
+        "latitude": 53.874003,
+        "zipCode": "17406",
+        "population": 1747
+      },
+      {
+        "ags": "13075137",
+        "name": "Usedom",
+        "longitude": 13.92045,
+        "latitude": 53.874003,
+        "zipCode": "17406",
+        "population": 1747
+      }
+    ]
+  },
+  {
+    "ags": "13075139",
+    "name": "Vogelsang-Warsin",
+    "zipCode": "17375",
+    "district": "Landkreis Vorpommern-Greifswald",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13075139",
+        "name": "Vogelsang-Warsin",
+        "longitude": 14.163569,
+        "latitude": 53.723365,
+        "zipCode": "17375",
+        "population": 345
+      },
+      {
+        "ags": "13075139",
+        "name": "Vogelsang-Warsin",
+        "longitude": 14.163569,
+        "latitude": 53.723365,
+        "zipCode": "17375",
+        "population": 345
+      }
+    ]
+  },
+  {
+    "ags": "03455020",
+    "name": "Wangerland",
+    "zipCode": "26434",
+    "district": "Landkreis Friesland",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03455020",
+        "name": "Wangerland",
+        "longitude": 7.915526,
+        "latitude": 53.662516,
+        "zipCode": "26434",
+        "population": 9190
+      },
+      {
+        "ags": "03455020",
+        "name": "Wangerland",
+        "longitude": 7.915526,
+        "latitude": 53.662516,
+        "zipCode": "26434",
+        "population": 9190
+      }
+    ]
+  },
+  {
+    "ags": "03455021",
+    "name": "Wangerooge",
+    "zipCode": "26486",
+    "district": "Landkreis Friesland",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03455021",
+        "name": "Wangerooge",
+        "longitude": 7.899863,
+        "latitude": 53.791535,
+        "zipCode": "26486",
+        "population": 1263
+      },
+      {
+        "ags": "03455021",
+        "name": "Wangerooge",
+        "longitude": 7.899863,
+        "latitude": 53.791535,
+        "zipCode": "26486",
+        "population": 1263
+      }
+    ]
+  },
+  {
+    "ags": "01056050",
+    "name": "Wedel",
+    "zipCode": "22880",
+    "district": "Kreis Pinneberg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01056050",
+        "name": "Wedel",
+        "longitude": 9.705419,
+        "latitude": 53.577353,
+        "zipCode": "22880",
+        "population": 33547
+      },
+      {
+        "ags": "01056050",
+        "name": "Wedel",
+        "longitude": 9.705419,
+        "latitude": 53.577353,
+        "zipCode": "22880",
+        "population": 33547
+      }
+    ]
+  },
+  {
+    "ags": "01057087",
+    "name": "Wendtorf",
+    "zipCode": "24235",
+    "district": "Kreis Plön",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01057087",
+        "name": "Wendtorf",
+        "longitude": 10.292376,
+        "latitude": 54.409817,
+        "zipCode": "24235",
+        "population": 968
+      },
+      {
+        "ags": "01057087",
+        "name": "Wendtorf",
+        "longitude": 10.292376,
+        "latitude": 54.409817,
+        "zipCode": "24235",
+        "population": 968
+      }
+    ]
+  },
+  {
+    "ags": "16063103",
+    "name": "Werra-Suhl-Tal",
+    "zipCode": "99837",
+    "district": "Wartburgkreis",
+    "state": "Thüringen",
+    "agsMatch": []
+  },
+  {
+    "ags": "01059178",
+    "name": "Westerholz",
+    "zipCode": "24977",
+    "district": "Kreis Schleswig-Flensburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01059178",
+        "name": "Westerholz",
+        "longitude": 9.668774,
+        "latitude": 54.817328,
+        "zipCode": "24977",
+        "population": 731
+      },
+      {
+        "ags": "01059178",
+        "name": "Westerholz",
+        "longitude": 9.668774,
+        "latitude": 54.817328,
+        "zipCode": "24977",
+        "population": 731
+      }
+    ]
+  },
+  {
+    "ags": "01061110",
+    "name": "Wewelsfleth",
+    "zipCode": "25599",
+    "district": "Kreis Steinburg",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01061110",
+        "name": "Wewelsfleth",
+        "longitude": 9.399714,
+        "latitude": 53.842946,
+        "zipCode": "25599",
+        "population": 1305
+      },
+      {
+        "ags": "01061110",
+        "name": "Wewelsfleth",
+        "longitude": 9.399714,
+        "latitude": 53.842946,
+        "zipCode": "25599",
+        "population": 1305
+      }
+    ]
+  },
+  {
+    "ags": "13073101",
+    "name": "Wiek",
+    "zipCode": "18556",
+    "district": "Landkreis Vorpommern-Rügen",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13073101",
+        "name": "Wiek",
+        "longitude": 13.290399,
+        "latitude": 54.621252,
+        "zipCode": "18556",
+        "population": 1045
+      },
+      {
+        "ags": "13073101",
+        "name": "Wiek",
+        "longitude": 13.290399,
+        "latitude": 54.621252,
+        "zipCode": "18556",
+        "population": 1045
+      }
+    ]
+  },
+  {
+    "ags": "03405000",
+    "name": "Wilhelmshaven",
+    "zipCode": "26382",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      },
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      }
+    ]
+  },
+  {
+    "ags": "03405000",
+    "name": "Wilhelmshaven",
+    "zipCode": "26384",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      },
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      }
+    ]
+  },
+  {
+    "ags": "03405000",
+    "name": "Wilhelmshaven",
+    "zipCode": "26386",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      },
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      }
+    ]
+  },
+  {
+    "ags": "03405000",
+    "name": "Wilhelmshaven",
+    "zipCode": "26388",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      },
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      }
+    ]
+  },
+  {
+    "ags": "03405000",
+    "name": "Wilhelmshaven",
+    "zipCode": "26389",
+    "district": "",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      },
+      {
+        "ags": "03405000",
+        "name": "Wilhelmshaven",
+        "longitude": 8.111156,
+        "latitude": 53.520302,
+        "zipCode": "26382",
+        "population": 76278
+      }
+    ]
+  },
+  {
+    "ags": "01058174",
+    "name": "Winnemark",
+    "zipCode": "24398",
+    "district": "Kreis Rendsburg-Eckernförde",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01058174",
+        "name": "Winnemark",
+        "longitude": 9.922134,
+        "latitude": 54.615886,
+        "zipCode": "24398",
+        "population": 526
+      },
+      {
+        "ags": "01058174",
+        "name": "Winnemark",
+        "longitude": 9.922134,
+        "latitude": 54.615886,
+        "zipCode": "24398",
+        "population": 526
+      }
+    ]
+  },
+  {
+    "ags": "03359040",
+    "name": "Wischhafen",
+    "zipCode": "21737",
+    "district": "Landkreis Stade",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03359040",
+        "name": "Wischhafen",
+        "longitude": 9.319527,
+        "latitude": 53.774789,
+        "zipCode": "21737",
+        "population": 2976
+      },
+      {
+        "ags": "03359040",
+        "name": "Wischhafen",
+        "longitude": 9.319527,
+        "latitude": 53.774789,
+        "zipCode": "21737",
+        "population": 2976
+      }
+    ]
+  },
+  {
+    "ags": "13074087",
+    "name": "Wismar",
+    "zipCode": "23966",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074087",
+        "name": "Wismar",
+        "longitude": 11.466024,
+        "latitude": 53.891577,
+        "zipCode": "23952",
+        "population": 42550
+      },
+      {
+        "ags": "13074087",
+        "name": "Wismar",
+        "longitude": 11.466024,
+        "latitude": 53.891577,
+        "zipCode": "23952",
+        "population": 42550
+      }
+    ]
+  },
+  {
+    "ags": "13074087",
+    "name": "Wismar",
+    "zipCode": "23968",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074087",
+        "name": "Wismar",
+        "longitude": 11.466024,
+        "latitude": 53.891577,
+        "zipCode": "23952",
+        "population": 42550
+      },
+      {
+        "ags": "13074087",
+        "name": "Wismar",
+        "longitude": 11.466024,
+        "latitude": 53.891577,
+        "zipCode": "23952",
+        "population": 42550
+      }
+    ]
+  },
+  {
+    "ags": "13074087",
+    "name": "Wismar",
+    "zipCode": "23970",
+    "district": "Landkreis Nordwestmecklenburg",
+    "state": "Mecklenburg-Vorpommern",
+    "agsMatch": [
+      {
+        "ags": "13074087",
+        "name": "Wismar",
+        "longitude": 11.466024,
+        "latitude": 53.891577,
+        "zipCode": "23952",
+        "population": 42550
+      },
+      {
+        "ags": "13074087",
+        "name": "Wismar",
+        "longitude": 11.466024,
+        "latitude": 53.891577,
+        "zipCode": "23952",
+        "population": 42550
+      }
+    ]
+  },
+  {
+    "ags": "03462019",
+    "name": "Wittmund",
+    "zipCode": "26409",
+    "district": "Landkreis Wittmund",
+    "state": "Niedersachsen",
+    "agsMatch": [
+      {
+        "ags": "03462019",
+        "name": "Wittmund",
+        "longitude": 7.780018,
+        "latitude": 53.575515,
+        "zipCode": "26409",
+        "population": 20321
+      },
+      {
+        "ags": "03462019",
+        "name": "Wittmund",
+        "longitude": 7.780018,
+        "latitude": 53.575515,
+        "zipCode": "26409",
+        "population": 20321
+      }
+    ]
+  },
+  {
+    "ags": "01054164",
+    "name": "Wyk auf Föhr",
+    "zipCode": "25938",
+    "district": "Kreis Nordfriesland",
+    "state": "Schleswig-Holstein",
+    "agsMatch": [
+      {
+        "ags": "01054164",
+        "name": "Wyk auf Föhr",
+        "longitude": 8.567212,
+        "latitude": 54.691093,
+        "zipCode": "25938",
+        "population": 4218
+      },
+      {
+        "ags": "01054164",
+        "name": "Wyk auf Föhr",
+        "longitude": 8.567212,
+        "latitude": 54.691093,
+        "zipCode": "25938",
+        "population": 4218
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "ags": "16071102",
+    "name": "*Replace Test*",
+    "replace": ["name"],
+    "replaceBy": "ags"
+  },
+  {
+    "longitude": 0, 
+    "latitude": 0,
+    "ags": "*0*",
+    "name": "*Add Test*",
+    "zipCode": "*Add Test*",
+    "district": "*Add Test*",
+    "state": "*Add Test*",
+    "population": 0,
+    "add": true
+  }
+]
