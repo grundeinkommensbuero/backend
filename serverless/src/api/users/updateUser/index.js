@@ -32,12 +32,21 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      await updateUser(userId, requestBody, result.Item);
-
       // Check if donation was updated to send an email
       if ('donation' in requestBody) {
-        await sendMail(result.Item.email, requestBody.donation);
+        // Check if there already was a recurring donation
+        const recurringDonationExisted =
+          'donations' in result.Item &&
+          'recurringDonation' in result.Item.donations;
+
+        await sendMail(
+          result.Item.email,
+          requestBody.donation,
+          recurringDonationExisted
+        );
       }
+
+      await updateUser(userId, requestBody, result.Item);
 
       // updating user was successful, return appropriate json
       return {
