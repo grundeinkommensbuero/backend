@@ -445,6 +445,9 @@ paths:
                   type: string
                 confirmed:
                   type: boolean
+                code:
+                  type: string
+                  description: The code used for double opt in, needs to be saved when confirming user
                 donation:
                   type: object
                   properties:
