@@ -13,7 +13,6 @@ module.exports.handler = async event => {
     if (!isAuthorized(event)) {
       return errorResponse(401, 'No permission to override other user');
     }
-
     const requestBody = JSON.parse(event.body);
 
     console.log('request body', requestBody);
@@ -46,7 +45,10 @@ module.exports.handler = async event => {
         );
       }
 
-      await updateUser(userId, requestBody, result.Item);
+      // Get ip address from request
+      const ipAddress = event.requestContext.identity.sourceIp;
+
+      await updateUser(userId, requestBody, result.Item, ipAddress);
 
       // updating user was successful, return appropriate json
       return {
@@ -97,8 +99,9 @@ const isAuthorized = event => {
 
 const updateUser = (
   userId,
-  { username, zipCode, city, newsletterConsent, donation, confirmed },
-  user
+  { username, zipCode, city, newsletterConsent, donation, confirmed, code },
+  user,
+  ipAddress
 ) => {
   const timestamp = new Date().toISOString();
 
@@ -128,9 +131,13 @@ const updateUser = (
   ) {
     // Check if confirmed flag was passed and is true
     if (confirmed) {
+      // For double opt in we also need to save ip address and code
+      // used for verification
       data[':confirmed'] = {
         value: true,
         timestamp,
+        code,
+        ipAddress,
       };
     }
   }
