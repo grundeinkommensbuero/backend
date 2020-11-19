@@ -33,14 +33,14 @@ const CODE_POSITIONS = {
   },
   BB: {
     BARCODE: {
-      x: 545,
-      y: 29,
+      x: 540,
+      y: 27,
       width: 120,
       height: 60,
     },
     QRCODE: {
-      x: 693.5,
-      y: 472.5,
+      x: 685,
+      y: 464,
       width: 39,
       height: 39,
     },

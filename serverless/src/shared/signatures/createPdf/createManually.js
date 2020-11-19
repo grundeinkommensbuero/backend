@@ -83,6 +83,7 @@ module.exports = async (userId, user) => {
       list.campaignCode !== 'klimanotstand-1' &&
       list.campaignCode !== 'verkehrswende-1'
     ) {
+      console.log('created list', list.code);
       await createSignatureList(
         list.code,
         timestamp,
