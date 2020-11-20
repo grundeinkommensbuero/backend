@@ -8,7 +8,16 @@ exports.handler = async event => {
     // This is a new auth session
     // Generate a new secret login code and mail it to the user
     secretLoginCode = crypto.randomDigits(6).join('');
-    await sendEmail(event.request.userAttributes.email, secretLoginCode);
+
+    // If user was created via BB plattform we want to send a different mail
+    const signedUpOnBBPlatform =
+      event.request.userAttributes['custom:source'] === 'bb-platform';
+
+    await sendEmail(
+      event.request.userAttributes.email,
+      secretLoginCode,
+      signedUpOnBBPlatform
+    );
   } else {
     // There's an existing session. Don't generate new digits but
     // re-use the code from the current session. This allows the user to
@@ -32,7 +41,7 @@ exports.handler = async event => {
   return event;
 };
 
-const sendEmail = (email, code) => {
+const sendEmail = (email, code, signedUpOnBBPlatform) => {
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -41,7 +50,7 @@ const sendEmail = (email, code) => {
             Email: email,
           },
         ],
-        TemplateID: 1583518,
+        TemplateID: signedUpOnBBPlatform ? 1945264 : 1583518,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
