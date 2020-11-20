@@ -41,6 +41,7 @@ describe('updateUser api test', () => {
       },
       body: JSON.stringify({
         confirmed: true,
+        code: '213232',
       }),
     };
 
