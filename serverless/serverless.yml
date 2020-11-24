@@ -11,6 +11,7 @@ custom:
   # The table name is based on the stage we are deploying to
   usersTableName: ${self:custom.stage}-users
   signaturesTableName: ${self:custom.stage}-signatures
+  municipalitiesTableName: ${self:custom.stage}-municipalities
 
 provider:
   name: aws
@@ -24,6 +25,7 @@ provider:
   environment:
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
+    MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     STAGE: ${self:custom.stage}
     IMAGE_BUCKET: xbge-profile-pictures
 
@@ -366,6 +368,45 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+
+  createUserExternal:
+    handler: src/api/users/createUserExternal/index.handler
+    events:
+      - http:
+          path: users/external-signup
+          method: post
+          cors: true
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminCreateUser
+          - cognito-idp:AdminSetUserPassword
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   getUser:
     handler: src/api/users/getUser/index.handler
@@ -960,6 +1001,20 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 5
               WriteCapacityUnits: 5
+
+    MunicipalitiesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.municipalitiesTableName}
+        AttributeDefinitions:
+          - AttributeName: ags
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ags
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name

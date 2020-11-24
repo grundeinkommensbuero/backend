@@ -7,6 +7,7 @@ module.exports = {
   USER_POOL_ID: 'eu-central-1_SYtDaO0qH',
   ADMIN_POOL_ID: 'eu-central-1_R7ucfhvJM',
   DEV_USERS_TABLE: 'dev-users',
+  DEV_MUNICIPALITIES_TABLE: 'dev-municipalities',
   CLIENT_ID: SECRET_CONFIG.CLIENT_ID,
   ADMIN_CLIENT_ID: SECRET_CONFIG.ADMIN_CLIENT_ID,
   USER_ID: '53b95dd2-74b8-49f4-abeb-add9c950c7d9',
