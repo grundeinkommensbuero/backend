@@ -294,7 +294,7 @@ paths:
                   description: Where did the user come from before signing up?
       responses:
         '201':
-          description: User was successfully created
+          description: User was successfully created or municipality was added to existing user
           content:
             application/json:
               schema:
@@ -309,7 +309,7 @@ paths:
                       userId:
                         type: string
         '200':
-          description: User had already signed up for communal campaign
+          description: User had already signed up for this municipality
           content:
             application/json:
               schema:
@@ -325,6 +325,15 @@ paths:
                         type: string
         '400':
           description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Query token not provided or incorrect
           content:
             application/json:
               schema:
