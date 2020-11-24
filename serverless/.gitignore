@@ -10,4 +10,5 @@ mailjetConfig.js
 secretConfig.js
 mailjetConfig.js
 basicAuth.js
+queryToken.js
 list*.pdf

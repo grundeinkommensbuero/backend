@@ -1,3 +1,5 @@
+const randomBytes = require('crypto').randomBytes;
+
 // Construct campaign identifier, so we know, from where the user comes
 const constructCampaignId = campaignCode => {
   const campaign = {};
@@ -32,9 +34,15 @@ const formatNumber = num => {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 };
 
+// Generates a random string (e.g. for generating random password)
+const getRandomString = length => {
+  return randomBytes(length).toString('hex');
+};
+
 module.exports = {
   constructCampaignId,
   generateRandomId,
   getFileSuffix,
   formatNumber,
+  getRandomString,
 };
