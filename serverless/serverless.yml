@@ -536,6 +536,21 @@ functions:
           method: get
           cors: true
 
+  getPlacesStats:
+    handler: src/api/places/getPlacesStats/index.handler
+    events:
+      - http:
+          path: analytics/places
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
     events:
