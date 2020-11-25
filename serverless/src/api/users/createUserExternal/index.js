@@ -14,6 +14,7 @@ const {
 } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { token } = require('../../../../queryToken');
+const { getMunicipality } = require('../../../shared/municipalities');
 
 const usersTableName = process.env.USERS_TABLE_NAME;
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
@@ -231,17 +232,6 @@ const updateMunicipality = (ags, userId) => {
   };
 
   return ddb.update(params).promise();
-};
-
-const getMunicipality = ags => {
-  const params = {
-    TableName: municipalitiesTableName,
-    Key: {
-      ags,
-    },
-  };
-
-  return ddb.get(params).promise();
 };
 
 // Validate request body, only email is not optional
