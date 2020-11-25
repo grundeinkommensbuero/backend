@@ -2,22 +2,14 @@ const crypto = require('crypto-secure-random-digit');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-exports.handler = async event => {
+const handler = async event => {
   let secretLoginCode;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
     // Generate a new secret login code and mail it to the user
     secretLoginCode = crypto.randomDigits(6).join('');
 
-    // If user was created via BB plattform we want to send a different mail
-    const signedUpOnBBPlatform =
-      event.request.userAttributes['custom:source'] === 'bb-platform';
-
-    await sendEmail(
-      event.request.userAttributes.email,
-      secretLoginCode,
-      signedUpOnBBPlatform
-    );
+    await sendEmail(event.request.userAttributes, secretLoginCode);
   } else {
     // There's an existing session. Don't generate new digits but
     // re-use the code from the current session. This allows the user to
@@ -41,13 +33,17 @@ exports.handler = async event => {
   return event;
 };
 
-const sendEmail = (email, code, signedUpOnBBPlatform) => {
+const sendEmail = (userAttributes, code) => {
+  // If user was created via BB plattform we want to send a different mail
+  const signedUpOnBBPlatform =
+    userAttributes['custom:source'] === 'bb-platform';
+
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
         To: [
           {
-            Email: email,
+            Email: userAttributes.email,
           },
         ],
         TemplateID: signedUpOnBBPlatform ? 1945264 : 1583518,
@@ -64,3 +60,5 @@ const sendEmail = (email, code, signedUpOnBBPlatform) => {
     ],
   });
 };
+
+module.exports = { sendEmail, handler };
