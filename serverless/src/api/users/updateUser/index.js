@@ -13,7 +13,6 @@ module.exports.handler = async event => {
     if (!isAuthorized(event)) {
       return errorResponse(401, 'No permission to override other user');
     }
-
     const requestBody = JSON.parse(event.body);
 
     console.log('request body', requestBody);
@@ -46,7 +45,10 @@ module.exports.handler = async event => {
         );
       }
 
-      await updateUser(userId, requestBody, result.Item);
+      // Get ip address from request
+      const ipAddress = event.requestContext.identity.sourceIp;
+
+      await updateUser(userId, requestBody, result.Item, ipAddress);
 
       // updating user was successful, return appropriate json
       return {
@@ -97,8 +99,9 @@ const isAuthorized = event => {
 
 const updateUser = (
   userId,
-  { username, zipCode, city, newsletterConsent, donation },
-  user
+  { username, zipCode, city, newsletterConsent, donation, confirmed, code },
+  user,
+  ipAddress
 ) => {
   const timestamp = new Date().toISOString();
 
@@ -121,6 +124,24 @@ const updateUser = (
     data[':donations'] = constructDonationObject(donation, user, timestamp);
   }
 
+  // We only want to confirm the user  if not yet confirmed
+  if (
+    ('confirmed' in user && !user.confirmed.value) ||
+    !('confirmed' in user)
+  ) {
+    // Check if confirmed flag was passed and is true
+    if (confirmed) {
+      // For double opt in we also need to save ip address and code
+      // used for verification
+      data[':confirmed'] = {
+        value: true,
+        timestamp,
+        code,
+        ipAddress,
+      };
+    }
+  }
+
   // We want to check if the user was created at the bb platform.
   // In that case we want to set a flag that the user was updated on
   // expedition-grundeinkommen.de
@@ -141,6 +162,7 @@ const updateUser = (
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
     ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''} 
+    ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,

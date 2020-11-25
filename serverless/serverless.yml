@@ -43,6 +43,14 @@ functions:
           path: users/{userId}/pledges
           method: post
           cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -592,7 +600,7 @@ functions:
     handler: src/triggers/deleteUnverifiedUsers/index.handler
     events: # Call this function every day at 0 am (via cloudwatch event)
       - schedule: cron(0 23 * * ? *)
-    timeout: 40 # Timeout for this specific function.
+    timeout: 100 # Timeout for this specific function.
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -879,6 +887,9 @@ functions:
     events:
       - cognitoUserPool:
           pool: AdminUserPool
+          trigger: PreSignUp
+      - cognitoUserPool:
+          pool: UserPool
           trigger: PreSignUp
 
   verifyAuthChallengeResponse:

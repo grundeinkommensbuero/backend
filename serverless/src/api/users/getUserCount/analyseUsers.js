@@ -2,11 +2,7 @@ const AWS = require('aws-sdk');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
-const {
-  getAllUsers,
-  getAllUnverifiedCognitoUsers,
-  isVerified,
-} = require('../../../shared/users');
+const { getAllUsers } = require('../../../shared/users');
 
 const tableNameWithoutConsent = 'users-without-consent';
 
@@ -16,10 +12,6 @@ module.exports.analyseUsers = async () => {
   // loop through backup users and add all the users who are not already in users
   users = await migrateUsersWithoutNewsletterConsent(users);
 
-  const unverifiedCognitoUsers = await getAllUnverifiedCognitoUsers();
-
-  console.log('not verified count', unverifiedCognitoUsers.length);
-
   // go through users to sum up pledged signatures
   const campaignStats = {
     totalCount: { verifiedUsers: 0, unverifiedUsers: 0 },
@@ -27,7 +19,7 @@ module.exports.analyseUsers = async () => {
 
   for (const user of users) {
     // check if the user is verified
-    const verified = isVerified(user, unverifiedCognitoUsers);
+    const verified = 'confirmed' in user && user.confirmed.value;
 
     const newsletterConsent =
       'newsletterConsent' in user && user.newsletterConsent.value;

@@ -79,6 +79,9 @@ const saveUser = ({
       city,
       username,
       source,
+      confirmed: {
+        value: false,
+      },
     },
   };
 
