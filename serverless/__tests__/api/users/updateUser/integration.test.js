@@ -6,48 +6,9 @@ const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
 let token;
-
-describe('updateUser api test', () => {
+describe('updateUser update donation api test', () => {
   beforeAll(async () => {
     token = await authenticate();
-  });
-
-  it('should be able to update user', async () => {
-    const request = {
-      method: 'PATCH',
-      mode: 'cors',
-      headers: {
-        Authorization: token,
-      },
-      body: JSON.stringify({
-        newsletterConsent: true,
-        zipCode: '12051',
-        username: 'Vali',
-        city: 'Berlin',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
-
-    expect(response.status).toEqual(204);
-  });
-
-  it('should be able to confirm user', async () => {
-    const request = {
-      method: 'PATCH',
-      mode: 'cors',
-      headers: {
-        Authorization: token,
-      },
-      body: JSON.stringify({
-        confirmed: true,
-        code: '213232',
-      }),
-    };
-
-    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
-
-    expect(response.status).toEqual(204);
   });
 
   it('should be able to update recurring donation', async () => {
@@ -274,6 +235,50 @@ describe('updateUser api test', () => {
     const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
 
     expect(response.status).toEqual(400);
+  });
+});
+
+describe('updateUser api test', () => {
+  beforeAll(async () => {
+    token = await authenticate();
+  });
+
+  it('should be able to update user', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
+  it('should be able to confirm user', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        confirmed: true,
+        code: '213232',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
   });
 
   it('should be able to update user with one missing param', async () => {
