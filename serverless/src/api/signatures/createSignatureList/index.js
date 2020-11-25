@@ -28,7 +28,7 @@ const responseHeaders = {
 /*  Model for signature lists in db
 
   id: string (of 7 digits)
-  userId: string or email:string
+  userId: string
   createdAt: timestamp (YYYY-MM-DD)
   campaign: object
   downloads: number
@@ -41,6 +41,11 @@ const responseHeaders = {
 const handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
+
+    if (!('campaignCode' in requestBody)) {
+      return errorResponse(400, 'Campaign code not provided');
+    }
+
     // create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(requestBody.campaignCode);
 
@@ -53,8 +58,8 @@ const handler = async event => {
     // we need the email to later send the pdf
     let email;
     let username;
-    if ('userId' in requestBody || event.pathParameters) {
-      userId = requestBody.userId || event.pathParameters.userId;
+    if (event.pathParameters) {
+      userId = event.pathParameters.userId;
 
       // now we want to validate if the user actually exists
       try {
@@ -71,62 +76,17 @@ const handler = async event => {
           return errorResponse(401, 'Token points to a different user');
         }
 
-        // Otherwise (not authenticated route) if user does not have
-        // newsletter consent we want to return 401
-        // we only want to do this if the endpoint was not triggered by an admin
-        // and if it is not the bb platform
-        if (
-          requestBody.campaignCode !== 'dibb-1' &&
-          !requestBody.triggeredByAdmin &&
-          !event.pathParameters &&
-          (!('newsletterConsent' in result.Item) ||
-            !result.Item.newsletterConsent.value)
-        ) {
-          return errorResponse(401, 'User does not have newsletter consent');
-        }
-
         email = result.Item.email;
         username = result.Item.username;
       } catch (error) {
         console.log('error', error);
         return errorResponse(500, 'Error while getting user', error);
       }
-    } else if ('email' in requestBody) {
-      email = requestBody.email;
-      // in case the api only got the email instead of the id we need to get the user id from the db
-      try {
-        const result = await getUserByMail(email);
-        console.log('result after getting user by mail', result);
-
-        if (result.Count === 0) {
-          console.log('error', 'no user found', result);
-          return errorResponse(404, 'No user found with the passed email');
-        }
-
-        // Otherwise (not authenticated route) if user does not have
-        // newsletter consent we want to return 401
-        // we only want to do this if the endpoint was not triggered by an admin
-        // and if it is not the bb platform
-        if (
-          requestBody.campaignCode !== 'dibb-1' &&
-          !requestBody.triggeredByAdmin &&
-          (!('newsletterConsent' in result.Items[0]) ||
-            !result.Items[0].newsletterConsent.value)
-        ) {
-          return errorResponse(401, 'User does not have newsletter consent');
-        }
-
-        userId = result.Items[0].cognitoId;
-        username = result.Items[0].username;
-      } catch (error) {
-        console.log('error', error);
-        return errorResponse(500, 'Error while getting user by email', error);
-      }
     } else {
       userId = 'anonymous';
     }
 
-    // in does not matter, if the user is anonymous or not...
+    // it does not matter, if the user is anonymous or not...
     // now we check, if there already is an entry for the list for this day
     const foundSignatureLists = await getSignatureList(
       userId,
@@ -141,7 +101,7 @@ const handler = async event => {
       // if there was a signature list for this day found
       // we want to update the downloads counter and send the list id and the url to the pdf as response
       const signatureList = foundSignatureLists.Items[0]; // we definitely only have one value (per user/day)
-      console.log('signature list', signatureList);
+
       try {
         // update list entry to increment the download count
         await incrementDownloads(signatureList.id, signatureList.downloads);
@@ -172,16 +132,14 @@ const handler = async event => {
       while (idExists) {
         pdfId = generateRandomId(7);
         idExists = await checkIfIdExists(pdfId);
-        console.log('id already exists?', idExists);
       }
 
       try {
         // we are going to generate the pdf
-        const currentMillis = new Date().getTime();
-
         const qrCodeUrl = qrCodeUrls[campaign.state]
           ? qrCodeUrls[campaign.state]
           : qrCodeUrls.default;
+
         const generatedPdfCombined = await generatePdf(
           qrCodeUrl,
           pdfId,
@@ -189,14 +147,9 @@ const handler = async event => {
           requestBody.campaignCode
         );
 
-        console.log(
-          'generating pdf takes',
-          new Date().getTime() - currentMillis
-        );
-
         // upload pdf to s3 after generation was successful
         const uploadResult = await uploadPDF(pdfId, generatedPdfCombined);
-        console.log('success uploading pdf to bucket', uploadResult);
+
         const url = uploadResult.Location;
 
         try {

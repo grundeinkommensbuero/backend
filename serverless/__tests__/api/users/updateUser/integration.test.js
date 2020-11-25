@@ -32,6 +32,24 @@ describe('updateUser api test', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('should be able to confirm user', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        confirmed: true,
+        code: '213232',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
   it('should be able to update recurring donation', async () => {
     const request = {
       method: 'PATCH',

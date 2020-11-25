@@ -4,6 +4,10 @@ const { errorResponse } = require('../../../shared/apiResponse');
 
 module.exports.handler = async event => {
   try {
+    if (!isAuthorized(event)) {
+      return errorResponse(401, 'No permission to create pledge of other user');
+    }
+
     const requestBody = JSON.parse(event.body);
 
     try {
@@ -77,4 +81,10 @@ module.exports.handler = async event => {
 
 const validateParams = (event, requestBody) => {
   return 'userId' in event.pathParameters && 'pledgeId' in requestBody;
+};
+
+const isAuthorized = event => {
+  return (
+    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
+  );
 };
