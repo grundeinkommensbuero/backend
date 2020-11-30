@@ -467,6 +467,24 @@ paths:
                       type: string
                       required: true
                       description: Needs to be a valid iban, will be validated
+                customNewsletters:
+                  description: Array holding information about the newsletters the user is subscribed to
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the municipality or the state
+                      value:
+                        type: boolean
+                      extraInfo:
+                        type: boolean
+                      ags:
+                        type: string
+                        description: Is empty if the newsletter is for a state (SH and BB)
+                      timestamp:
+                        type: string
+                        description: In iso format
                 updatedOnXbge:
                   type: boolean
       responses:
@@ -542,6 +560,24 @@ paths:
                             type: boolean
                           timestamp:
                             type: string
+                      customNewsletters:
+                        description: Array holding information about the newsletters the user is subscribed to
+                        type: array
+                        items:
+                          properties:
+                            name:
+                              type: string
+                              description: Name of the municipality or the state
+                            value:
+                              type: boolean
+                            extraInfo:
+                              type: boolean
+                            ags:
+                              type: string
+                              description: Is empty if the newsletter is for a state (SH and BB)
+                            timestamp:
+                              type: string
+                              description: In iso format
                       pledges:
                         type: array
                         items:
