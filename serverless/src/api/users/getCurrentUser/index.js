@@ -25,6 +25,11 @@ module.exports.handler = async event => {
 
     const user = result.Item;
 
+    // Add empty array, if customNewsletters is not defined
+    if (!('customNewsletters' in user)) {
+      user.customNewsletters = [];
+    }
+
     // return user
     return {
       statusCode: 200,
