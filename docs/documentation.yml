@@ -475,16 +475,20 @@ paths:
                       name:
                         type: string
                         description: Name of the municipality or the state
+                        required: true
                       value:
                         type: boolean
+                        required: true
                       extraInfo:
                         type: boolean
+                        required: true
                       ags:
                         type: string
                         description: Is empty if the newsletter is for a state (SH and BB)
                       timestamp:
                         type: string
                         description: In iso format
+                        required: true
                 updatedOnXbge:
                   type: boolean
       responses:
