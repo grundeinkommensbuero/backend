@@ -276,22 +276,20 @@ paths:
               type: object
               required:
                 - email
+                - username
+                - ags
+                - optedIn
               properties:
                 email:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
                   type: string
                 username:
                   type: string
                 ags:
                   type: string
-                zipCode:
+                optedIn:
+                  type: boolean
+                signupId:
                   type: string
-                campaignSource:
-                  type: string
-                  description: Where did the user come from before signing up?
       responses:
         '201':
           description: User was successfully created or municipality was added to existing user

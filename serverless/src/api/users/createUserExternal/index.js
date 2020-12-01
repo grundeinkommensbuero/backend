@@ -12,6 +12,11 @@ const {
   createUserInCognito,
   confirmUserInCognito,
 } = require('../../../shared/users');
+const {
+  validateEmail,
+  validatePhoneNumber,
+  formatPhoneNumber,
+} = require('../../../shared/utils');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { token } = require('../../../../queryToken');
 
@@ -36,6 +41,16 @@ module.exports.handler = async event => {
     }
 
     try {
+      // Get municipality to save the name
+      const municipalityResult = await getMunicipality(requestBody.ags);
+
+      if (!('Item' in municipalityResult)) {
+        return errorResponse(404, 'Municipality not found');
+      }
+
+      // We need the name later for the setting of newsletter settings
+      const municipalityName = municipalityResult.Item.name;
+
       // Get user by mail to check if already exists and
       // if existing user
       const result = await getUserByMail(requestBody.email);
@@ -63,8 +78,8 @@ module.exports.handler = async event => {
         // If user has signed up for the same municipality already,
         // we want to add the info this their existing account
         await Promise.all([
-          updateUser(user.cognitoId, requestBody),
-          addUserToMunicipality(requestBody.ags, user.cognitoId),
+          updateUser(user.cognitoId, user, requestBody, municipalityName),
+          updateMunicipality(requestBody.ags, user.cognitoId),
         ]);
 
         return {
@@ -79,8 +94,8 @@ module.exports.handler = async event => {
       }
 
       // otherwise proceed by creating the user and afterwards add user to municipality
-      const userId = await createUser(requestBody);
-      await addUserToMunicipality(requestBody.ags, userId);
+      const userId = await createUser(requestBody, municipalityName);
+      await updateMunicipality(requestBody.ags, userId);
 
       // return message (created)
       return {
@@ -105,19 +120,40 @@ module.exports.handler = async event => {
 
 const updateUser = (
   userId,
-  { username, zipCode, city, firstName, lastName, ags }
+  { customNewsletters },
+  { username, ags },
+  municipalityName
 ) => {
   const timestamp = new Date().toISOString();
 
+  const newsletterSetting = {
+    ags,
+    value: true,
+    extraInfo: false,
+    timestamp,
+    name: municipalityName,
+  };
+
+  if (typeof customNewsletters !== 'undefined') {
+    // Only update the custom newsletters, if it does not contain
+    // this municipality yet
+    if (
+      customNewsletters.findIndex(newsletter => newsletter.ags === ags) !== -1
+    ) {
+      customNewsletters.push(newsletterSetting);
+    }
+  } else {
+    // Custom newsletters was not defined, so we initialize it
+    // by creating an array with settings for this municipality
+    customNewsletters = [newsletterSetting];
+  }
+
   const data = {
     ':emptyList': [],
-    ':firstName': firstName,
-    ':lastName': lastName,
     ':username': username,
     ':updatedAt': timestamp,
-    ':zipCode': zipCode,
-    ':city': city,
     ':municipalCampaign': [{ createdAt: timestamp, ags }],
+    ':customNewsletters': customNewsletters,
   };
 
   const params = {
@@ -125,12 +161,9 @@ const updateUser = (
     Key: { cognitoId: userId },
     UpdateExpression: `
     SET 
-    ${typeof username !== 'undefined' ? 'username = :username,' : ''}
-    ${typeof firstName !== 'undefined' ? 'firstName = :firstName,' : ''}
-    ${typeof lastName !== 'undefined' ? 'lastName = :lastName,' : ''}
-    ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
-    ${typeof city !== 'undefined' ? 'city = :city,' : ''}
+    username = :username,
     municipalCampaigns = list_append(if_not_exists(municipalCampaigns, :emptyList), :municipalCampaign),
+    customNewsletters = :customNewsletters
     updatedAt = :updatedAt
     `,
     ExpressionAttributeValues: data,
@@ -142,7 +175,7 @@ const updateUser = (
 
 // Creates and confirms user in cognito, creates user in dynamo
 // Returns newly created user id
-const createUser = async requestBody => {
+const createUser = async (requestBody, municipalityName) => {
   const created = await createUserInCognito(requestBody.email);
   const userId = created.User.Username;
 
@@ -150,16 +183,23 @@ const createUser = async requestBody => {
   await confirmUserInCognito(userId);
 
   // now create dynamo resource
-  await createUserInDynamo(userId, requestBody);
+  await createUserInDynamo(userId, requestBody, municipalityName);
 
   return userId;
 };
 
 const createUserInDynamo = (
   userId,
-  { email, zipCode, city, username, firstName, lastName, ags }
+  { email, username, ags, signupId, optedIn },
+  municipalityName
 ) => {
   const timestamp = new Date().toISOString();
+
+  // If the user was already opted in at Mein Grundeinkommen
+  // we want to set a boolean for that
+  const confirmed = optedIn
+    ? { value: true, optedInAtMge: true }
+    : { value: false };
 
   const params = {
     TableName: usersTableName,
@@ -170,45 +210,21 @@ const createUserInDynamo = (
         value: true,
         timestamp,
       },
+      customNewsletters: [
+        {
+          ags,
+          value: true,
+          extraInfo: false,
+          timestamp,
+          name: municipalityName,
+        },
+      ],
       createdAt: timestamp,
-      firstName,
-      lastName,
-      zipCode,
       municipalCampaigns: [{ createdAt: timestamp, ags }],
-      city,
       username,
       source: 'mge-municipal',
-      // TODO confirmed
-    },
-  };
-
-  return ddb.put(params).promise();
-};
-
-// Checks if municipality already exists in db
-// If yes -> update it
-// if no -> create new one
-const addUserToMunicipality = async (ags, userId) => {
-  const result = await getMunicipality(ags);
-
-  if ('Item' in result) {
-    // Municipality already exists, add user by updating it
-    return updateMunicipality(ags, userId);
-  }
-
-  // Municipality does not exist, create it and add user at the same time
-  return createMunicipality(ags, userId);
-};
-
-// Create new municipality including new list with first
-// user who just now has signed up for it
-const createMunicipality = (ags, userId) => {
-  const timestamp = new Date().toISOString();
-  const params = {
-    TableName: municipalitiesTableName,
-    Item: {
-      ags,
-      users: [{ id: userId, createdAt: timestamp }],
+      mgeSignupId: signupId,
+      confirmed,
     },
   };
 
@@ -248,18 +264,15 @@ const getMunicipality = ags => {
 // If other keys are passed, the values should be strings
 const validateParams = requestBody => {
   return (
-    'email' in requestBody &&
     typeof requestBody.email === 'string' &&
-    (!('firstName' in requestBody) ||
-      typeof requestBody.firstName === 'string') &&
-    (!('lastName' in requestBody) ||
-      typeof requestBody.lastName === 'string') &&
-    (!('username' in requestBody) ||
-      typeof requestBody.username === 'string') &&
-    (!('ags' in requestBody) || typeof requestBody.ags === 'string') &&
-    (!('zipCode' in requestBody) || typeof requestBody.zipCode === 'string') &&
-    (!('campaignSource' in requestBody) ||
-      typeof requestBody.campaignSource === 'string')
+    validateEmail(requestBody.email) &&
+    typeof requestBody.username === 'string' &&
+    typeof requestBody.ags === 'string' &&
+    typeof requestBody.signupId === 'string' &&
+    typeof requestBody.optedIn === 'boolean' &&
+    (!('phone' in requestBody) ||
+      (typeof requestBody.phone === 'string' &&
+        validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))))
   );
 };
 
