@@ -121,7 +121,7 @@ module.exports.handler = async event => {
 const updateUser = (
   userId,
   { customNewsletters },
-  { username, ags },
+  { username, ags, userToken, phone },
   municipalityName
 ) => {
   const timestamp = new Date().toISOString();
@@ -154,6 +154,8 @@ const updateUser = (
     ':updatedAt': timestamp,
     ':municipalCampaign': [{ createdAt: timestamp, ags }],
     ':customNewsletters': customNewsletters,
+    ':customToken': { token: userToken, timestamp },
+    ':phoneNumber': phone,
   };
 
   const params = {
@@ -161,8 +163,10 @@ const updateUser = (
     Key: { cognitoId: userId },
     UpdateExpression: `
     SET 
+    ${typeof phone !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
     username = :username,
     municipalCampaigns = list_append(if_not_exists(municipalCampaigns, :emptyList), :municipalCampaign),
+    customToken = :customToken,
     customNewsletters = :customNewsletters
     updatedAt = :updatedAt
     `,
@@ -190,7 +194,7 @@ const createUser = async (requestBody, municipalityName) => {
 
 const createUserInDynamo = (
   userId,
-  { email, username, ags, signupId, optedIn },
+  { email, username, phone, ags, signupId, optedIn, userToken },
   municipalityName
 ) => {
   const timestamp = new Date().toISOString();
@@ -222,9 +226,12 @@ const createUserInDynamo = (
       createdAt: timestamp,
       municipalCampaigns: [{ createdAt: timestamp, ags }],
       username,
+      // TODO: maybe also save phone number in cognito
+      phoneNumber: phone,
       source: 'mge-municipal',
       mgeSignupId: signupId,
       confirmed,
+      customToken: { token: userToken, timestamp },
     },
   };
 
@@ -270,9 +277,10 @@ const validateParams = requestBody => {
     typeof requestBody.ags === 'string' &&
     typeof requestBody.signupId === 'string' &&
     typeof requestBody.optedIn === 'boolean' &&
+    typeof requestBody.userToken === 'string' &&
     (!('phone' in requestBody) ||
       (typeof requestBody.phone === 'string' &&
-        validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))))
+        validatePhoneNumber(formatPhoneNumber(requestBody.phone))))
   );
 };
 
