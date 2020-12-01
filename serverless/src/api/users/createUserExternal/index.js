@@ -121,7 +121,7 @@ module.exports.handler = async event => {
 const updateUser = (
   userId,
   { customNewsletters },
-  { username, ags, userToken, phone },
+  { username, ags, userToken, phone, signupId },
   municipalityName
 ) => {
   const timestamp = new Date().toISOString();
@@ -156,6 +156,7 @@ const updateUser = (
     ':customNewsletters': customNewsletters,
     ':customToken': { token: userToken, timestamp },
     ':phoneNumber': phone,
+    ':signupId': signupId,
   };
 
   const params = {
@@ -167,7 +168,8 @@ const updateUser = (
     username = :username,
     municipalCampaigns = list_append(if_not_exists(municipalCampaigns, :emptyList), :municipalCampaign),
     customToken = :customToken,
-    customNewsletters = :customNewsletters
+    customNewsletters = :customNewsletters,
+    mgeSignupId = :signupId,
     updatedAt = :updatedAt
     `,
     ExpressionAttributeValues: data,
