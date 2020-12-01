@@ -457,6 +457,9 @@ paths:
                   type: string
                 confirmed:
                   type: boolean
+                removeToken:
+                  type: boolean
+                  description: If this flag is set the custom token will be removed from the user
                 code:
                   type: string
                   description: The code used for double opt in, needs to be saved when confirming user
