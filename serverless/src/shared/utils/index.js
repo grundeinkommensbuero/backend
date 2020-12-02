@@ -39,10 +39,40 @@ const getRandomString = length => {
   return randomBytes(length).toString('hex');
 };
 
+const roundTo = (number, factor) => {
+  return Math.round(number / factor) * factor;
+};
+
+const STEPS = [
+  { threshold: 20, roundTo: 1 },
+  { threshold: 50, roundTo: 5 },
+  { threshold: 150, roundTo: 10 },
+  { threshold: 400, roundTo: 50 },
+  { threshold: 4000, roundTo: 100 },
+  { threshold: 10000, roundTo: 500 },
+  { threshold: 40000, roundTo: 1000 },
+  { threshold: 100000, roundTo: 5000 },
+  { threshold: Infinity, roundTo: 10000 },
+];
+
+const prettifyNumber = number => {
+  let pretty = number;
+  const step = STEPS.find(x => number < x.threshold);
+  pretty = roundTo(number, step.roundTo);
+  return pretty;
+};
+
+const getMunicipalityGoal = (population, minGoal = 7, goalFactor = 0.01) => {
+  let goal = population * goalFactor;
+  goal = Math.max(minGoal, prettifyNumber(goal));
+  return goal;
+};
+
 module.exports = {
   constructCampaignId,
   generateRandomId,
   getFileSuffix,
   formatNumber,
   getRandomString,
+  getMunicipalityGoal,
 };
