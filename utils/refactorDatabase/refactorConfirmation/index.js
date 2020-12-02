@@ -3,6 +3,8 @@ const {
   getUser,
   getAllUnverifiedCognitoUsers,
 } = require('../../shared/users/getUsers');
+
+const { confirmUser } = require('../../shared/users/createUsers');
 const CONFIG = require('../../config');
 const AWS = require('aws-sdk');
 const Bottleneck = require('bottleneck');
@@ -21,7 +23,7 @@ const refactorConfirmation = async (userPoolId, tableName) => {
         const userId = user.Username;
         const result = await getUser(tableName, userId);
 
-        if ('Item' in result) {
+        if ('Item' in result && !('confirmed' in result.Item)) {
           await updateUser(tableName, userId, {
             value: true,
             timestamp: result.Item.createdAt,
@@ -42,9 +44,10 @@ const refactorConfirmation = async (userPoolId, tableName) => {
         await updateUser(tableName, userId, {
           value: false,
         });
-      });
 
-      console.log('updated', user.cognitoId);
+        await confirmUser(userPoolId, userId);
+        console.log('Confirmed user in cognito', userId);
+      });
     }
   } catch (error) {
     console.log('Error', error);
