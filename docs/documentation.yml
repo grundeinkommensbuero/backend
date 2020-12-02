@@ -1747,7 +1747,7 @@ paths:
                         type: integer
                         description: Count of signups
                       percentToGoal:
-                        type: integer
+                        type: number
                         description: Percentage of the goal which is already reached
         '404':
           description: Municipality was not found
