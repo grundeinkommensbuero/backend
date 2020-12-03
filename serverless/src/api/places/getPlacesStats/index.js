@@ -37,7 +37,7 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No municipality found with the passed ags');
       }
 
-      const signUpCount = result.Item.users.length;
+      const signUpCount = 'users' in result.Item ? result.Item.users.length : 0;
 
       const goal = getMunicipalityGoal(result.Item.population);
 
@@ -95,7 +95,7 @@ const computeStats = municipalities => {
     if (current > goal) {
       wins.push({ ags, category: 'win', signups: [previous, current] });
     } else if (previous === 0) {
-      newcomers.push({ previous, current, filteredUsers });
+      newcomers.push({ ags, previous, current, filteredUsers });
     } else if (
       (current / previous - 1) * 100 > changeThresholds.relative &&
       population > changeThresholds.population

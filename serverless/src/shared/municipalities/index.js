@@ -43,7 +43,8 @@ const getAllMunicipalitiesWithUsers = async (
 ) => {
   const params = {
     TableName: municipalitiesTableName,
-    FilterExpression: 'attribute_exists(users)',
+    FilterExpression: 'attribute_exists(#attribute)',
+    ExpressionAttributeNames: { '#attribute': 'users' },
   };
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
