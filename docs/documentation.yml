@@ -676,6 +676,15 @@ paths:
                                   type: number
                                 id:
                                   type: string
+                          municipalCampaigns:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                ags:
+                                  type: string
+                                createdAt:
+                                  type: string
         '401':
           description: Not authorized to get user
           content:
