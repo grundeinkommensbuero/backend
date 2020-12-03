@@ -72,6 +72,10 @@ describe('createUserFromExternal api test', () => {
     expect(user.customToken.token).toEqual(userToken);
     expect(user.email).toEqual(randomEmail);
     expect(user.phoneNumber).toEqual(phoneNumber);
+    expect(user.customNewsletters[0].ags).toEqual(AGS);
+    expect(user.customNewsletters[0].name).toEqual('Eisenhüttenstadt');
+    expect(user.customNewsletters[0].extraInfo).toEqual(false);
+    expect(user.customNewsletters[0].value).toEqual(true);
 
     expect(user.municipalCampaigns.length).toEqual(1);
     expect(user.municipalCampaigns[0].ags).toEqual(AGS);
@@ -127,6 +131,10 @@ describe('createUserFromExternal api test', () => {
     expect(user.customToken.token).toEqual(userToken);
     expect(user.email).toEqual(randomEmail);
     expect(typeof user.phoneNumber).toEqual('undefined');
+    expect(user.customNewsletters[0].ags).toEqual(AGS);
+    expect(user.customNewsletters[0].name).toEqual('Eisenhüttenstadt');
+    expect(user.customNewsletters[0].extraInfo).toEqual(false);
+    expect(user.customNewsletters[0].value).toEqual(true);
 
     expect(user.municipalCampaigns.length).toEqual(1);
     expect(user.municipalCampaigns[0].ags).toEqual(AGS);
@@ -183,6 +191,11 @@ describe('createUserFromExternal api test', () => {
     expect(user.email).toEqual(randomEmail);
     expect(typeof user.phoneNumber).toEqual('undefined');
 
+    expect(user.customNewsletters[0].ags).toEqual(AGS);
+    expect(user.customNewsletters[0].name).toEqual('Eisenhüttenstadt');
+    expect(user.customNewsletters[0].extraInfo).toEqual(false);
+    expect(user.customNewsletters[0].value).toEqual(true);
+
     expect(user.municipalCampaigns.length).toEqual(1);
     expect(user.municipalCampaigns[0].ags).toEqual(AGS);
     expect(user.municipalCampaigns[0]).toHaveProperty('createdAt');
@@ -235,6 +248,18 @@ describe('createUserFromExternal api test', () => {
     expect(user.username).toEqual('Vali');
     expect(user.customToken.token).toEqual(userToken);
     expect(user.email).toEqual(email);
+    expect(
+      user.customNewsletters[user.customNewsletters.length - 1].ags
+    ).toEqual(randomAgs);
+    expect(
+      user.customNewsletters[user.customNewsletters.length - 1].name
+    ).toEqual('Hobbingen');
+    expect(
+      user.customNewsletters[user.customNewsletters.length - 1].extraInfo
+    ).toEqual(false);
+    expect(
+      user.customNewsletters[user.customNewsletters.length - 1].value
+    ).toEqual(true);
 
     const municipalityInUser =
       user.municipalCampaigns[user.municipalCampaigns.length - 1];

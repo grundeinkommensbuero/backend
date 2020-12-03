@@ -138,7 +138,7 @@ const updateUser = (
     // Only update the custom newsletters, if it does not contain
     // this municipality yet
     if (
-      customNewsletters.findIndex(newsletter => newsletter.ags === ags) !== -1
+      customNewsletters.findIndex(newsletter => newsletter.ags === ags) === -1
     ) {
       customNewsletters.push(newsletterSetting);
     }
@@ -229,6 +229,7 @@ const createUserInDynamo = (
       municipalCampaigns: [{ createdAt: timestamp, ags }],
       username,
       // TODO: maybe also save phone number in cognito
+      // depending on how I am going to implement the phone number feature
       phoneNumber: phone,
       source: 'mge-municipal',
       mgeSignupId: signupId,
