@@ -528,19 +528,34 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  getPlaces:
-    handler: src/api/places/getPlaces/index.handler
+  getMunicipalities:
+    handler: src/api/municipalities/getMunicipalities/index.handler
     events:
       - http:
-          path: places
+          path: municipalities
           method: get
           cors: true
 
-  getPlacesStats:
-    handler: src/api/places/getPlacesStats/index.handler
+  getMunicipalityStats:
+    handler: src/api/municipalities/getMunicipalityStats/index.handler
     events:
       - http:
-          path: analytics/places
+          path: analytics/municipalities/{ags}
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+
+  getMunicsStats:
+    handler: src/api/municipalities/getMunicipalitiesStats/index.handler
+    events:
+      - http:
+          path: analytics/municipalities
           method: get
           cors: true
     iamRoleStatements:

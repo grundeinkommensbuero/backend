@@ -1,11 +1,9 @@
 /**
  * This endpoint is used to get stats for municipalities.
- * One ags (id of municipalities) can be passed via query param.
- */
+ * */
 
 const { errorResponse } = require('../../../shared/apiResponse');
 const {
-  getMunicipality,
   getAllMunicipalitiesWithUsers,
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
@@ -25,35 +23,8 @@ const scale = [
   [2000, 80000],
 ];
 
-module.exports.handler = async event => {
+module.exports.handler = async () => {
   try {
-    // Check for query params (is null if there is none)
-    if (event.queryStringParameters && event.queryStringParameters.ags) {
-      const ags = event.queryStringParameters.ags;
-      const result = await getMunicipality(ags);
-
-      if (!('Item' in result)) {
-        // No municipality with the passed ags found
-        return errorResponse(404, 'No municipality found with the passed ags');
-      }
-
-      const signUpCount = 'users' in result.Item ? result.Item.users.length : 0;
-
-      const goal = getMunicipalityGoal(result.Item.population);
-
-      // compute percent to goal
-      const percentToGoal = +((signUpCount / goal) * 100).toFixed(1);
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          data: { signups: signUpCount, percentToGoal, goal },
-        }),
-        headers: responseHeaders,
-        isBase64Encoded: false,
-      };
-    }
-
     // No query param was passed, therefore we get all municipalities for which people
     // have already signed up and compute the stats
     const municipalities = await getAllMunicipalitiesWithUsers();

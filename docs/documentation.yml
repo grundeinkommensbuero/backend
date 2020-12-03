@@ -1722,16 +1722,17 @@ paths:
                   error:
                     type: string
 
-  /analytics/places:
+  /analytics/municipalities/{ags}:
     get:
-      summary: Gets statistics for municipalities
-      description: Takes ags as query param to get stats for a specific municipalities
+      summary: Gets statistics for one municipalities
+      description: Takes ags as path param to get stats for a specific municipality
       parameters:
-        - in: query
+        - in: path
           name: ags
           schema:
             type: string
           description: Allgemeiner Gemeindeschlüssel to get stats for specific municipality
+          required: true
       responses:
         '200':
           description: Stats successfully retrieved
@@ -1746,6 +1747,83 @@ paths:
                       signups:
                         type: integer
                         description: Count of signups
+                      percentToGoal:
+                        type: number
+                        description: Percentage of the goal which is already reached
+                      goal:
+                        type: number
+                        description: Goal which is aimed at for this municipality
+        '404':
+          description: Municipality was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/municipalities:
+    get:
+      summary: Gets statistics for all municipalities
+      responses:
+        '200':
+          description: Stats successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      events:
+                        description: Municipalities with special events (reached goal, big growth, first signups)
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            signups:
+                              type: array
+                              description: Array of length 2, first value is previous and second value is current number of signups
+                              items:
+                                type: number
+                            ags:
+                              type: string
+                            category:
+                              type: string
+                              description: Either "win", "change" or "new"
+                      municipalities:
+                        type: array
+                        description: All other municipalites with signups (munic. with no signups not included)
+                        items:
+                          type: object
+                          properties:
+                            signups:
+                              type: number
+                            ags:
+                              type: string
+                      timePassed:
+                        type: number
+                        description: Setting of the timespan which is used to check for events, in ms
+                      scale:
+                        type: array
+                        description: Setting of scale for visualisation in map in form [[x1,x2],[y1,y2]]
+                        items:
+                          type: array
+                          items:
+                            type: number
                       percentToGoal:
                         type: number
                         description: Percentage of the goal which is already reached
@@ -1770,13 +1848,12 @@ paths:
                   error:
                     type: string
 
-  /places:
+  /municipalities:
     get:
-      summary: Gets all places (municipalities)
-      description: Municipalities might be duplicated because of different zip codes
+      summary: Gets all municipalities
       responses:
         '200':
-          description: Places successfully retrieved
+          description: Municipalities successfully retrieved
           content:
             application/json:
               schema:
@@ -1785,6 +1862,7 @@ paths:
                   data:
                     type: array
                     items:
+                      type: object
                       properties:
                         longitude:
                           type: integer

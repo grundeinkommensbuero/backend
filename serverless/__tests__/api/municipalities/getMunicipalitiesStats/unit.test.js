@@ -7,7 +7,7 @@ const crypto = require('crypto-secure-random-digit');
 const {
   timePassed,
   computeStats,
-} = require('../../../../src/api/places/getPlacesStats');
+} = require('../../../../src/api/municipalities/getMunicipalitiesStats');
 
 const populations = [50, 100, 1000, 5000, 10000, 30000, 100000, 2000000];
 const users = [
