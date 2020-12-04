@@ -11,6 +11,8 @@ custom:
   # The table name is based on the stage we are deploying to
   usersTableName: ${self:custom.stage}-users
   signaturesTableName: ${self:custom.stage}-signatures
+  output:
+    file: ./stack.json
 
 provider:
   name: aws
@@ -31,6 +33,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-webpack
   - serverless-plugin-split-stacks # needed because of the 200 resources limit
+  - serverless-stack-output
 
 # no global iam policies, because we want to follow the least privilege princilpe
 # therefore we use a plugin to define roles per function
@@ -1084,21 +1087,3 @@ resources:
           - Fn::GetAtt:
               - CognitoUserPoolAdminUserPool
               - Arn
-
-# Print out the Id of the User Pool that is created
-Outputs:
-  UserPoolId:
-    Value:
-      Ref: CognitoUserPoolUserPool
-
-  UserPoolClientId:
-    Value:
-      Ref: UserPoolClient
-
-  AdminUserPoolId:
-    Value:
-      Ref: CognitoUserPoolAdminUserPool
-
-  AdminUserPoolClientId:
-    Value:
-      Ref: AdminUserPoolClient
