@@ -25,6 +25,9 @@ module.exports.handler = async event => {
 
     const user = result.Item;
 
+    // Strip token from user
+    delete user.customToken;
+
     // return user
     return {
       statusCode: 200,

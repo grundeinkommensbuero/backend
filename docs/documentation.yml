@@ -276,22 +276,25 @@ paths:
               type: object
               required:
                 - email
+                - username
+                - ags
+                - optedIn
+                - userToken
               properties:
                 email:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
                   type: string
                 username:
                   type: string
                 ags:
                   type: string
-                zipCode:
+                optedIn:
+                  type: boolean
+                signupId:
                   type: string
-                campaignSource:
+                userToken:
                   type: string
-                  description: Where did the user come from before signing up?
+                phone:
+                  type: string
       responses:
         '201':
           description: User was successfully created or municipality was added to existing user
@@ -454,6 +457,9 @@ paths:
                   type: string
                 confirmed:
                   type: boolean
+                removeToken:
+                  type: boolean
+                  description: If this flag is set the custom token will be removed from the user
                 code:
                   type: string
                   description: The code used for double opt in, needs to be saved when confirming user
@@ -669,6 +675,15 @@ paths:
                                 amount:
                                   type: number
                                 id:
+                                  type: string
+                          municipalCampaigns:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                ags:
+                                  type: string
+                                createdAt:
                                   type: string
         '401':
           description: Not authorized to get user
