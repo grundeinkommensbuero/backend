@@ -23,7 +23,7 @@ const run = async () => {
       `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
     );
 
-    shell.exec('sls deploy -s cli-test');
+    shell.exec('sls deploy -s pf');
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }

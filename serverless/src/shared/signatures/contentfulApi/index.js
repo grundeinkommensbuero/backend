@@ -1,7 +1,34 @@
 // Get .default because of problems with webpack
 // https://github.com/bitinn/node-fetch/issues/450
 const fetch = require('node-fetch').default;
-const { accessToken, spaceId } = require('../../../../contentfulConfig');
+const Configstore = require('configstore');
+const packageJson = require('../../../../package.json');
+
+const config = new Configstore(packageJson.name);
+let accessToken;
+let spaceId;
+
+// Contentful config should either be passed through a config file
+// or should have been set via config store
+const localContentfulConfig = require('../../../../contentfulConfig');
+
+if (!localContentfulConfig.accessToken || !localContentfulConfig.spaceId) {
+  accessToken = localContentfulConfig.accessToken;
+  spaceId = localContentfulConfig.spaceId;
+} else {
+  console.log(
+    'No contentful config overwrite provided, checking for global config...'
+  );
+
+  const globalContentfulConfig = config.get('contentful');
+
+  if (!globalContentfulConfig) {
+    console.log('No global contentful config provided');
+  } else {
+    accessToken = globalContentfulConfig.accessToken;
+    spaceId = globalContentfulConfig.spaceId;
+  }
+}
 
 const campaigns = {
   'schleswig-holstein-1': 'JH4OhoEW7AMcnrL6zLhXu',
@@ -17,6 +44,11 @@ const requestParams = {
 };
 
 module.exports.getSignatureCountFromContentful = async () => {
+  if (!accessToken || !spaceId) {
+    console.log('Access token or space id not provided');
+    return {};
+  }
+
   const contentfulCounts = {};
 
   // Get the signature counts from contentful for each campaign

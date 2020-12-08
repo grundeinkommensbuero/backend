@@ -1,6 +1,15 @@
+let mailjet;
+
 const { apiKey, apiSecret } = require('../../../mailjetConfig');
+
+// Mailjet config should only be provided optionally
+if (apiKey && apiSecret) {
+  mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+} else {
+  console.log('No mailjet config provided');
+}
+
 const { formatNumber } = require('../../shared/utils');
-const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const CAMPAIGN_SHORTS = {
   'schleswig-holstein-1': 'sh',

@@ -1,6 +1,15 @@
 const crypto = require('crypto-secure-random-digit');
+
+let mailjet;
+
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
-const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+
+// Mailjet config should only be provided optionally
+if (apiKey && apiSecret) {
+  mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+} else {
+  console.log('No mailjet config provided');
+}
 
 const handler = async event => {
   let secretLoginCode;

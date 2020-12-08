@@ -2,12 +2,19 @@ const {
   getUserByMail,
   updateNewsletterConsent,
 } = require('../../../shared/users');
-const { username, password } = require('../../../../basicAuth');
+
+const basicAuth = require('../../../../basicAuth');
+
+// Check if basic auth is not provided in config
+if (!basicAuth.password || !basicAuth.username) {
+  console.log('No basic auth provided');
+}
+
 const { errorResponse } = require('../../../shared/apiResponse');
 
 module.exports.handler = async event => {
   try {
-    if (!isAuthorized(event)) {
+    if (!basicAuth.password || !basicAuth.username || !isAuthorized(event)) {
       return errorResponse(401, 'No basic auth provided');
     }
 
@@ -60,5 +67,7 @@ const isAuthorized = event => {
   const encodedCreds = authorizationHeader.split(' ')[1];
   const plainCreds = new Buffer(encodedCreds, 'base64').toString().split(':');
 
-  return plainCreds[0] === username && plainCreds[1] === password;
+  return (
+    plainCreds[0] === basicAuth.username && plainCreds[1] === basicAuth.password
+  );
 };
