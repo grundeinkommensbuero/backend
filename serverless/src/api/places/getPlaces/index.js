@@ -3,7 +3,7 @@
  * for every municipality in Germany.
  */
 
-const json = require('../../../../../utils/analyseData/mergeGeospatialData/output/places.json');
+const json = require('./places.json');
 const { errorResponse } = require('../../../shared/apiResponse');
 
 const responseHeaders = {

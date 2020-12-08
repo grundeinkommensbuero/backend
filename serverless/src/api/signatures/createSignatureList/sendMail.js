@@ -1,5 +1,13 @@
+let mailjet;
+
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
-const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+
+// Mailjet config should only be provided optionally
+if (apiKey && apiSecret) {
+  mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+} else {
+  console.log('No mailjet config provided');
+}
 
 const TEMPLATE_ID_DEFAULT = 1549991;
 const TEMPLATE_ID_BB_PLATFORM = 1596886;

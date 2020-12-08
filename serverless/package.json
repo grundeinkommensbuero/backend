@@ -1,6 +1,6 @@
 {
   "name": "@xbge/cli",
-  "version": "0.0.3",
+  "version": "0.0.19",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "bin": {
@@ -19,8 +19,10 @@
     "bottleneck": "^2.19.5",
     "bwip-js": "^2.0.11",
     "configstore": "^5.0.1",
+    "copy-webpack-plugin": "^5.1.2",
     "crypto-secure-random-digit": "^1.0.7",
     "csv-parse": "^4.12.0",
+    "dotenv": "^8.2.0",
     "iban": "0.0.14",
     "inquirer": "^7.3.3",
     "jimp": "^0.9.8",
@@ -29,14 +31,13 @@
     "nodemailer": "^6.4.14",
     "pdf-lib": "^1.11.2",
     "raw-loader": "^4.0.2",
-    "shelljs": "^0.8.4",
-    "uuid": "^3.4.0",
-    "copy-webpack-plugin": "^5.1.2",
     "serverless": "^1.83.0",
     "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-plugin-split-stacks": "^1.9.3",
     "serverless-stack-output": "^0.2.3",
     "serverless-webpack": "^5.3.5",
+    "shelljs": "^0.8.4",
+    "uuid": "^3.4.0",
     "webpack": "^4.44.2"
   },
   "devDependencies": {
