@@ -11,3 +11,4 @@ secretConfig.js
 mailjetConfig.js
 basicAuth.js
 list*.pdf
+.env
