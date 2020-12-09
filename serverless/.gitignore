@@ -5,9 +5,6 @@ jspm_packages
 # Serverless directories
 .serverless
 .webpack
-contentfulConfig.js
-mailjetConfig.js
 secretConfig.js
-mailjetConfig.js
-basicAuth.js
 list*.pdf
+.env
