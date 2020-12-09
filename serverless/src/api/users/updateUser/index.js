@@ -187,12 +187,16 @@ const constructDonationObject = (donation, user, timestamp) => {
         iban: normalizedIban,
         updatedAt: timestamp,
         createdAt: donations.recurringDonation.createdAt,
+        id: donations.recurringDonation.id,
+        firstDebitDate: donations.recurringDonation.firstDebitDate,
         ...rest,
       };
     } else {
       donations.recurringDonation = {
         iban: normalizedIban,
         createdAt: timestamp,
+        firstDebitDate: computeDebitDate(timestamp),
+        id: uuid().slice(0, -4), // we need to make id shorter
         ...rest,
       };
     }
@@ -201,7 +205,8 @@ const constructDonationObject = (donation, user, timestamp) => {
     const onetimeDonation = {
       iban: normalizedIban,
       createdAt: timestamp,
-      id: uuid(),
+      debitDate: computeDebitDate(timestamp),
+      id: uuid().slice(0, -4), // we need to make id shorter
       ...rest,
     };
 
@@ -214,3 +219,30 @@ const constructDonationObject = (donation, user, timestamp) => {
 
   return donations;
 };
+
+// Computes the next wednesday after {date} between 9th and 16th
+const computeDebitDate = now => {
+  const date = new Date(now);
+
+  // Set to next wednesday after 9th
+  setToWednesday(date);
+
+  // If it is already passed the 16th or before or equal today
+  // we want to set the date to next month
+  if (date.getDate() > 16 || date.getDate() <= now.getDate()) {
+    date.setMonth(date.getMonth() + 1);
+    setToWednesday(date);
+  }
+
+  return date;
+};
+
+const dayIndex = 3; // Wednesday
+
+const setToWednesday = date => {
+  date.setDate(9);
+  // Set to next wednesday after the 9th
+  date.setDate(date.getDate() + ((dayIndex - 1 - date.getDay() + 7) % 7) + 1);
+};
+
+module.exports.computeDebitDate = computeDebitDate;
