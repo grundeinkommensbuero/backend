@@ -178,6 +178,10 @@ const updateUser = async (
 
 const constructDonationObject = (donation, user, timestamp) => {
   const { iban, recurring, ...rest } = donation;
+
+  // We do not want to save the name of the gifted, if the donation is a gift
+  delete rest.nameOfGifted;
+
   const normalizedIban = iban.replace(/ /g, '');
 
   // Get existing donation object of user to alter it
