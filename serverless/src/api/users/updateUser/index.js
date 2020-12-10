@@ -31,24 +31,22 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      // Check if donation was updated to send an email
-      if ('donation' in requestBody) {
-        // Check if there already was a recurring donation
-        const recurringDonationExisted =
-          'donations' in result.Item &&
-          'recurringDonation' in result.Item.donations;
-
-        await sendMail(
-          result.Item.email,
-          requestBody.donation,
-          recurringDonationExisted
-        );
-      }
-
       // Get ip address from request
       const ipAddress = event.requestContext.identity.sourceIp;
 
-      await updateUser(userId, requestBody, result.Item, ipAddress);
+      // We need to get the donation info holding essential params
+      // for the email to be send
+      const donationInfo = await updateUser(
+        userId,
+        requestBody,
+        result.Item,
+        ipAddress
+      );
+
+      // Check if donation was updated to send an email
+      if ('donation' in requestBody) {
+        await sendMail(result.Item.email, requestBody.donation, donationInfo);
+      }
 
       // updating user was successful, return appropriate json
       return {
@@ -97,7 +95,7 @@ const isAuthorized = event => {
   );
 };
 
-const updateUser = (
+const updateUser = async (
   userId,
   { username, zipCode, city, newsletterConsent, donation, confirmed, code },
   user,
@@ -119,9 +117,11 @@ const updateUser = (
     };
   }
 
+  let donationInfo;
   // Check if donation object was passed to alter iban
   if (typeof donation !== 'undefined') {
-    data[':donations'] = constructDonationObject(donation, user, timestamp);
+    donationInfo = constructDonationObject(donation, user, timestamp);
+    data[':donations'] = donationInfo.donations;
   }
 
   // We only want to confirm the user  if not yet confirmed
@@ -170,7 +170,10 @@ const updateUser = (
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  await ddb.update(params).promise();
+
+  // Return stuff relevant for donation mail
+  return donationInfo;
 };
 
 const constructDonationObject = (donation, user, timestamp) => {
@@ -179,34 +182,46 @@ const constructDonationObject = (donation, user, timestamp) => {
 
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
+  let recurringDonationExisted = false;
+  let id;
+  let debitDate;
 
   // If the donation is recurring we want to set/update recurringDonation
   if (recurring) {
     if ('recurringDonation' in donations) {
+      recurringDonationExisted = true;
+      id = donations.recurringDonation.id;
+
       donations.recurringDonation = {
         iban: normalizedIban,
         updatedAt: timestamp,
         createdAt: donations.recurringDonation.createdAt,
-        id: donations.recurringDonation.id,
+        id,
         firstDebitDate: donations.recurringDonation.firstDebitDate,
         ...rest,
       };
     } else {
+      id = uuid().slice(0, -4); // we need to make id shorter
+      debitDate = computeDebitDate(timestamp);
+
       donations.recurringDonation = {
         iban: normalizedIban,
         createdAt: timestamp,
-        firstDebitDate: computeDebitDate(timestamp),
-        id: uuid().slice(0, -4), // we need to make id shorter
+        firstDebitDate: debitDate,
+        id,
         ...rest,
       };
     }
   } else {
+    id = uuid().slice(0, -4); // we need to make id shorter
+    debitDate = computeDebitDate(timestamp);
+
     // Otherwise we add the one time donation to an array
     const onetimeDonation = {
       iban: normalizedIban,
       createdAt: timestamp,
-      debitDate: computeDebitDate(timestamp),
-      id: uuid().slice(0, -4), // we need to make id shorter
+      debitDate,
+      id,
       ...rest,
     };
 
@@ -217,7 +232,7 @@ const constructDonationObject = (donation, user, timestamp) => {
     }
   }
 
-  return donations;
+  return { donations, id, recurringDonationExisted, debitDate };
 };
 
 // Computes the next wednesday after {date} between 9th and 16th
@@ -229,7 +244,7 @@ const computeDebitDate = now => {
 
   // If it is already passed the 16th or before or equal today
   // we want to set the date to next month
-  if (date.getDate() > 16 || date.getDate() <= now.getDate()) {
+  if (date.getDate() > 14 || date.getDate() <= now.getDate()) {
     date.setMonth(date.getMonth() + 1);
     setToWednesday(date);
   }
@@ -240,8 +255,8 @@ const computeDebitDate = now => {
 const dayIndex = 3; // Wednesday
 
 const setToWednesday = date => {
-  date.setDate(9);
-  // Set to next wednesday after the 9th
+  date.setDate(7);
+  // Set to next wednesday after the 7th
   date.setDate(date.getDate() + ((dayIndex - 1 - date.getDay() + 7) % 7) + 1);
 };
 
