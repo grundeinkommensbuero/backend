@@ -239,29 +239,37 @@ const constructDonationObject = (donation, user, timestamp) => {
   return { donations, id, recurringDonationExisted, debitDate };
 };
 
-// Computes the next wednesday after {date} between 9th and 16th
+// Computes the next debit date (15th of each months)
+// Exceptions in the beginning: 22.12, 15.01, 25.01
 const computeDebitDate = now => {
   const date = new Date(now);
 
-  // Set to next wednesday after 9th
-  setToWednesday(date);
+  // If december 2020 before the 22th we set the debit date to 22th
+  if (
+    date.getFullYear() === 2020 &&
+    date.getMonth() === 11 &&
+    date.getDate() < 22
+  ) {
+    date.setDate(22);
+  } else if (
+    date.getFullYear() === 2021 &&
+    date.getMonth() === 0 &&
+    date.getDate() <= 24 &&
+    date.getDate() >= 15
+  ) {
+    // If january between inlcuding 15th and 24th set to 25th
+    date.setDate(25);
+  } else {
+    // If it is already passed the 14th we set it to next month
+    if (now.getDate() >= 15) {
+      date.setMonth(now.getMonth() + 1);
+    }
 
-  // If it is already passed the 16th or before or equal today
-  // we want to set the date to next month
-  if (date.getDate() > 14 || date.getDate() <= now.getDate()) {
-    date.setMonth(date.getMonth() + 1);
-    setToWednesday(date);
+    // Set to 15th
+    date.setDate(15);
   }
 
   return date;
-};
-
-const dayIndex = 3; // Wednesday
-
-const setToWednesday = date => {
-  date.setDate(7);
-  // Set to next wednesday after the 7th
-  date.setDate(date.getDate() + ((dayIndex - 1 - date.getDay() + 7) % 7) + 1);
 };
 
 module.exports.computeDebitDate = computeDebitDate;
