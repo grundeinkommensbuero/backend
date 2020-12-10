@@ -1,11 +1,15 @@
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+
+const DONATION_TEMPLATE = 1885162;
+const CHRISTMAS_TEMPLATE = 2060355;
+
 // IDEAL BOLD 19
 
 // Function which sends an email to the user after donation was changed
 const sendMail = (
   email,
-  { recurring, amount, firstName, lastName },
+  { recurring, amount, firstName, lastName, nameOfGifted },
   { debitDate, id, recurringDonationExisted }
 ) => {
   let amountAsString = amount.toString().replace('.', ',');
@@ -25,7 +29,7 @@ const sendMail = (
             Email: email,
           },
         ],
-        TemplateID: 1885162,
+        TemplateID: recurring ? DONATION_TEMPLATE : CHRISTMAS_TEMPLATE,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
@@ -33,13 +37,13 @@ const sendMail = (
         },
         // TemplateErrorDeliver: true,
         Variables: {
-          recurring,
           recurringDonationExisted,
           amount: amountAsString,
           firstName,
           lastName,
           debitDate: formatDate(debitDate),
           id,
+          nameOfGifted,
         },
       },
     ],
