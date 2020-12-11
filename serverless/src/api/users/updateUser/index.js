@@ -15,8 +15,6 @@ module.exports.handler = async event => {
     }
     const requestBody = JSON.parse(event.body);
 
-    console.log('request body', requestBody);
-
     if (!validateParams(event.pathParameters, requestBody)) {
       return errorResponse(400, 'One or more parameters are missing');
     }
@@ -45,7 +43,14 @@ module.exports.handler = async event => {
 
       // Check if donation was updated to send an email
       if ('donation' in requestBody) {
-        await sendMail(result.Item.email, requestBody.donation, donationInfo);
+        await sendMail(
+          result.Item.email,
+          requestBody.donation,
+          donationInfo,
+          // Take the username of the request body if exists
+          // or the username of the user record if exists
+          requestBody.certificateGiver || result.Item.username
+        );
       }
 
       // updating user was successful, return appropriate json
@@ -179,8 +184,9 @@ const updateUser = async (
 const constructDonationObject = (donation, user, timestamp) => {
   const { iban, recurring, ...rest } = donation;
 
-  // We do not want to save the name of the gifted, if the donation is a gift
-  delete rest.nameOfGifted;
+  // We do not want to save the name of the gifted and giftgiver, if the donation is a gift
+  delete rest.certificateReceiver;
+  delete rest.certificateGiver;
 
   const normalizedIban = iban.replace(/ /g, '');
 
@@ -206,25 +212,25 @@ const constructDonationObject = (donation, user, timestamp) => {
       };
     } else {
       id = uuid().slice(0, -4); // we need to make id shorter
-      debitDate = computeDebitDate(timestamp);
+      debitDate = computeDebitDate(new Date());
 
       donations.recurringDonation = {
         iban: normalizedIban,
         createdAt: timestamp,
-        firstDebitDate: debitDate,
+        firstDebitDate: debitDate.toISOString(),
         id,
         ...rest,
       };
     }
   } else {
     id = uuid().slice(0, -4); // we need to make id shorter
-    debitDate = computeDebitDate(timestamp);
+    debitDate = computeDebitDate(new Date());
 
     // Otherwise we add the one time donation to an array
     const onetimeDonation = {
       iban: normalizedIban,
       createdAt: timestamp,
-      debitDate,
+      debitDate: debitDate.toISOString(),
       id,
       ...rest,
     };

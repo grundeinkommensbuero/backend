@@ -14,6 +14,7 @@ const functionsWithStaticFiles = [
   'sendCongratulationMails',
   'sendVerificationMail',
   'sendReminderMails',
+  'updateUser',
 ];
 
 // We need this to only copy pdf files for the corresponding function.
@@ -28,6 +29,7 @@ const copyStaticFilesPlugin = () => ({
 
     if (moduleName) {
       new CopyWebpackPlugin([`**/${moduleName}/**/*.pdf`]).apply(compiler);
+      new CopyWebpackPlugin([`**/${moduleName}/**/*.ttf`]).apply(compiler);
     }
   },
 });
@@ -66,7 +68,9 @@ module.exports = {
       'process.env.MAILJET_API_KEY': JSON.stringify(
         process.env.MAILJET_API_KEY
       ),
-      'process.env.MAILJET_SECRET': JSON.stringify(process.env.MAILJET_SECRET),
+      'process.env.MAILJET_API_SECRET': JSON.stringify(
+        process.env.MAILJET_API_SECRET
+      ),
     }),
   ],
 };
