@@ -1,16 +1,23 @@
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
+const { createChristmasCard } = require('./createChristmasCard');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const DONATION_TEMPLATE = 1885162;
 const CHRISTMAS_TEMPLATE = 2060355;
 
-// IDEAL BOLD 19
-
 // Function which sends an email to the user after donation was changed
-const sendMail = (
+const sendMail = async (
   email,
-  { recurring, amount, firstName, lastName, nameOfGifted },
-  { debitDate, id, recurringDonationExisted }
+  {
+    recurring,
+    amount,
+    firstName,
+    lastName,
+    certificateReceiver,
+    certificateGiver,
+  },
+  { debitDate, id, recurringDonationExisted },
+  username
 ) => {
   let amountAsString = amount.toString().replace('.', ',');
   if (amountAsString.includes(',')) {
@@ -21,7 +28,7 @@ const sendMail = (
     amountAsString = `${amountAsString},00`;
   }
 
-  return mailjet.post('send', { version: 'v3.1' }).request({
+  const params = {
     Messages: [
       {
         To: [
@@ -37,17 +44,37 @@ const sendMail = (
         },
         // TemplateErrorDeliver: true,
         Variables: {
+          username,
           recurringDonationExisted,
           amount: amountAsString,
           firstName,
           lastName,
-          debitDate: formatDate(debitDate),
+          debitDate: debitDate && formatDate(debitDate),
           id,
-          nameOfGifted,
+          nameOfGifted: certificateReceiver,
         },
       },
     ],
-  });
+  };
+
+  // If donation is gift we want to create an attachment with a christmas card
+  if (!recurring) {
+    const christmasCard = await createChristmasCard(
+      certificateGiver,
+      certificateReceiver,
+      amountAsString
+    );
+
+    params.Messages[0].Attachments = [
+      {
+        Filename: 'Weihnachtskarte.pdf',
+        Base64Content: Buffer.from(christmasCard).toString('base64'),
+        ContentType: 'application/pdf',
+      },
+    ];
+  }
+
+  return mailjet.post('send', { version: 'v3.1' }).request(params);
 };
 
 module.exports = sendMail;
