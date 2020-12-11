@@ -15,8 +15,6 @@ module.exports.handler = async event => {
     }
     const requestBody = JSON.parse(event.body);
 
-    console.log('request body', requestBody);
-
     if (!validateParams(event.pathParameters, requestBody)) {
       return errorResponse(400, 'One or more parameters are missing');
     }
@@ -31,24 +29,29 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      // Check if donation was updated to send an email
-      if ('donation' in requestBody) {
-        // Check if there already was a recurring donation
-        const recurringDonationExisted =
-          'donations' in result.Item &&
-          'recurringDonation' in result.Item.donations;
-
-        await sendMail(
-          result.Item.email,
-          requestBody.donation,
-          recurringDonationExisted
-        );
-      }
-
       // Get ip address from request
       const ipAddress = event.requestContext.identity.sourceIp;
 
-      await updateUser(userId, requestBody, result.Item, ipAddress);
+      // We need to get the donation info holding essential params
+      // for the email to be send
+      const donationInfo = await updateUser(
+        userId,
+        requestBody,
+        result.Item,
+        ipAddress
+      );
+
+      // Check if donation was updated to send an email
+      if ('donation' in requestBody) {
+        await sendMail(
+          result.Item.email,
+          requestBody.donation,
+          donationInfo,
+          // Take the username of the request body if exists
+          // or the username of the user record if exists
+          requestBody.certificateGiver || result.Item.username
+        );
+      }
 
       // updating user was successful, return appropriate json
       return {
@@ -97,7 +100,7 @@ const isAuthorized = event => {
   );
 };
 
-const updateUser = (
+const updateUser = async (
   userId,
   { username, zipCode, city, newsletterConsent, donation, confirmed, code },
   user,
@@ -119,9 +122,11 @@ const updateUser = (
     };
   }
 
+  let donationInfo;
   // Check if donation object was passed to alter iban
   if (typeof donation !== 'undefined') {
-    data[':donations'] = constructDonationObject(donation, user, timestamp);
+    donationInfo = constructDonationObject(donation, user, timestamp);
+    data[':donations'] = donationInfo.donations;
   }
 
   // We only want to confirm the user  if not yet confirmed
@@ -170,38 +175,63 @@ const updateUser = (
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  await ddb.update(params).promise();
+
+  // Return stuff relevant for donation mail
+  return donationInfo;
 };
 
 const constructDonationObject = (donation, user, timestamp) => {
   const { iban, recurring, ...rest } = donation;
+
+  // We do not want to save the name of the gifted and giftgiver, if the donation is a gift
+  delete rest.certificateReceiver;
+  delete rest.certificateGiver;
+
   const normalizedIban = iban.replace(/ /g, '');
 
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
+  let recurringDonationExisted = false;
+  let id;
+  let debitDate;
 
   // If the donation is recurring we want to set/update recurringDonation
   if (recurring) {
     if ('recurringDonation' in donations) {
+      recurringDonationExisted = true;
+      id = donations.recurringDonation.id;
+
       donations.recurringDonation = {
         iban: normalizedIban,
         updatedAt: timestamp,
         createdAt: donations.recurringDonation.createdAt,
+        id,
+        firstDebitDate: donations.recurringDonation.firstDebitDate,
         ...rest,
       };
     } else {
+      id = uuid().slice(0, -4); // we need to make id shorter
+      debitDate = computeDebitDate(new Date());
+
       donations.recurringDonation = {
         iban: normalizedIban,
         createdAt: timestamp,
+        firstDebitDate: debitDate.toISOString(),
+        id,
         ...rest,
       };
     }
   } else {
+    id = uuid().slice(0, -4); // we need to make id shorter
+    debitDate = computeDebitDate(new Date());
+
     // Otherwise we add the one time donation to an array
     const onetimeDonation = {
       iban: normalizedIban,
       createdAt: timestamp,
-      id: uuid(),
+      debitDate: debitDate.toISOString(),
+      id,
       ...rest,
     };
 
@@ -212,5 +242,40 @@ const constructDonationObject = (donation, user, timestamp) => {
     }
   }
 
-  return donations;
+  return { donations, id, recurringDonationExisted, debitDate };
 };
+
+// Computes the next debit date (15th of each months)
+// Exceptions in the beginning: 22.12, 15.01, 25.01
+const computeDebitDate = now => {
+  const date = new Date(now);
+
+  // If december 2020 before the 22th we set the debit date to 22th
+  if (
+    date.getFullYear() === 2020 &&
+    date.getMonth() === 11 &&
+    date.getDate() < 22
+  ) {
+    date.setDate(22);
+  } else if (
+    date.getFullYear() === 2021 &&
+    date.getMonth() === 0 &&
+    date.getDate() <= 24 &&
+    date.getDate() >= 15
+  ) {
+    // If january between inlcuding 15th and 24th set to 25th
+    date.setDate(25);
+  } else {
+    // If it is already passed the 14th we set it to next month
+    if (now.getDate() >= 15) {
+      date.setMonth(now.getMonth() + 1);
+    }
+
+    // Set to 15th
+    date.setDate(15);
+  }
+
+  return date;
+};
+
+module.exports.computeDebitDate = computeDebitDate;
