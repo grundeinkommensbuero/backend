@@ -465,23 +465,30 @@ paths:
                   description: The code used for double opt in, needs to be saved when confirming user
                 donation:
                   type: object
+                  required:
+                    - amount
+                    - recurring
+                    - firstName
+                    - lastName
+                    - iban
                   properties:
                     amount:
                       type: number
-                      required: true
                     recurring:
                       type: boolean
-                      required: true
                     firstName:
                       type: string
-                      required: true
                     lastName:
                       type: string
-                      required: true
                     iban:
                       type: string
-                      required: true
                       description: Needs to be a valid iban, will be validated
+                    certificateGiver:
+                      type: string
+                      description: If donation is gift, this is the name of the giver
+                    certificateReceiver:
+                      type: string
+                      description: If donation is gift, this is the name of the receiver
                 updatedOnXbge:
                   type: boolean
       responses:

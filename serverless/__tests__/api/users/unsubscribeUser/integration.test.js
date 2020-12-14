@@ -1,5 +1,8 @@
-const { INVOKE_URL_WITHOUT_HTTPS } = require('../../../testConfig');
-const { username, password } = require('../../../../basicAuth');
+const {
+  INVOKE_URL_WITHOUT_HTTPS,
+  BASIC_AUTH_USERNAME,
+  BASIC_AUTH_PASSWORD,
+} = require('../../../testConfig');
 const fetch = require('node-fetch');
 
 describe('unsubscribeUser api test', () => {
@@ -15,7 +18,7 @@ describe('unsubscribeUser api test', () => {
     };
 
     const response = await fetch(
-      `https://${username}:${password}@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
+      `https://${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
       request
     );
 
@@ -34,7 +37,7 @@ describe('unsubscribeUser api test', () => {
     };
 
     const response = await fetch(
-      `https://${username}:${password}@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
+      `https://${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
       request
     );
 
@@ -72,7 +75,7 @@ describe('unsubscribeUser api test', () => {
     };
 
     const response = await fetch(
-      `https://${username}:blub@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
+      `https://${BASIC_AUTH_USERNAME}:blub@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
       request
     );
 
