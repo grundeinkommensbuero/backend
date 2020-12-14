@@ -12,6 +12,7 @@ custom:
   usersTableName: ${self:custom.stage}-users
   signaturesTableName: ${self:custom.stage}-signatures
   municipalitiesTableName: ${self:custom.stage}-municipalities
+  userMunicipalityTableName: ${self:custom.stage}-users-municipalities
 
 provider:
   name: aws
@@ -1048,6 +1049,24 @@ resources:
         KeySchema:
           - AttributeName: ags
             KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    UserMunicipalityTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userMunicipalityTableName}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: ags
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: ags
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5

@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
+const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
 
 const getMunicipality = ags => {
   const params = {
@@ -42,10 +43,9 @@ const getAllMunicipalitiesWithUsers = async (
   startKey = null
 ) => {
   const params = {
-    TableName: municipalitiesTableName,
-    FilterExpression: 'attribute_exists(#attribute)',
-    ExpressionAttributeNames: { '#attribute': 'users' },
+    TableName: userMunicipalityTableName,
   };
+
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
   }

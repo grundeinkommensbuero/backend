@@ -5,6 +5,7 @@
 const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getAllMunicipalitiesWithUsers,
+  getAllMunicipalities,
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
@@ -23,13 +24,26 @@ const scale = [
   [2000, 80000],
 ];
 
-module.exports.handler = async () => {
+module.exports.handler = async event => {
   try {
+    let shouldSendGoal;
+    let shouldSendAllMunicipalities;
+
+    // Check for query params (is null if there is none)
+    if (event.queryStringParameters) {
+      shouldSendGoal = !!event.queryStringParameters.goal;
+      shouldSendAllMunicipalities = !!event.queryStringParameters.all;
+    }
+
     // No query param was passed, therefore we get all municipalities for which people
     // have already signed up and compute the stats
-    const municipalities = await getAllMunicipalitiesWithUsers();
+    const userMuncipality = await getAllMunicipalitiesWithUsers();
 
-    const stats = computeStats(municipalities);
+    const stats = computeStats({
+      userMuncipality,
+      shouldSendGoal,
+      shouldSendAllMunicipalities,
+    });
 
     return {
       statusCode: 200,
@@ -45,15 +59,43 @@ module.exports.handler = async () => {
   }
 };
 
-const computeStats = municipalities => {
+const computeStats = async ({
+  userMuncipality,
+  shouldSendGoal,
+  shouldSendAllMunicipalities,
+}) => {
   const date = new Date();
   const wins = [];
   let newcomers = [];
   let relativeChangers = [];
   let absoluteChangers = [];
-  const allMunicipalities = [];
+  const municipalitiesWithUsers = [];
+  console.time('municipalities');
+  const municipalityMap = new Map();
+  for (const { userId, ags, createdAt, population } of userMuncipality) {
+    if (!municipalityMap.has(ags)) {
+      municipalityMap.add({ users: [{ userId, createdAt }], ags, population });
+    } else {
+      municipalityMap.get(ags).users.push({ userId, createdAt });
+    }
+  }
 
-  for (const { users, population, ags } of municipalities) {
+  // If we should return all municipalities, we get them
+  // from the municipalities table, loop through and add the signups
+  if (shouldSendAllMunicipalities) {
+    const allMunicipalities = await getAllMunicipalities();
+    for (let municipality of allMunicipalities) {
+      if (municipalityMap.has(municipality.ags)) {
+        const goal = getMunicipalityGoal(municipality.population);
+        const signups = municipalityMap.get(municipality.ags).users.length;
+        const { ags } = municipality;
+        municipality = { ags, goal, signups };
+      }
+    }
+  }
+  console.timeEnd('municipalities');
+
+  for (const { users, population, ags } of municipalityMap) {
     const goal = getMunicipalityGoal(population);
 
     const filteredUsers = users.filter(
@@ -78,7 +120,11 @@ const computeStats = municipalities => {
       absoluteChangers.push({ ags, previous, current, absoluteChange });
     }
 
-    allMunicipalities.push({ ags, signups: current });
+    municipalitiesWithUsers.push({
+      ags,
+      signups: current,
+      goal: shouldSendGoal ? goal : undefined,
+    });
   }
 
   // Only take the 15 municipalities with the most signups
@@ -127,7 +173,7 @@ const computeStats = municipalities => {
 
   return {
     events: [...wins, ...newcomers, ...relativeChangers, ...absoluteChangers],
-    municipalities: allMunicipalities,
+    municipalities: municipalitiesWithUsers,
   };
 };
 
