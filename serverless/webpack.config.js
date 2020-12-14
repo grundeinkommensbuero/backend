@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const slsw = require('serverless-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+require('dotenv').config();
+
 // taken from example
 // (https://github.com/serverless-heaven/serverless-webpack/blob/master/examples/typescript/webpack.config.js)
 const isLocal = slsw.lib.webpack.isLocal;
@@ -12,6 +14,7 @@ const functionsWithStaticFiles = [
   'sendCongratulationMails',
   'sendVerificationMail',
   'sendReminderMails',
+  'updateUser',
 ];
 
 // We need this to only copy pdf files for the corresponding function.
@@ -25,8 +28,8 @@ const copyStaticFilesPlugin = () => ({
     );
 
     if (moduleName) {
-      console.log('module has static file dependencies:', moduleName);
       new CopyWebpackPlugin([`**/${moduleName}/**/*.pdf`]).apply(compiler);
+      new CopyWebpackPlugin([`**/${moduleName}/**/*.ttf`]).apply(compiler);
     }
   },
 });
@@ -42,23 +45,32 @@ module.exports = {
   node: {
     __dirname: false,
   },
-  module: {
-    rules: [
-      {
-        test: /\.html$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'raw-loader',
-          },
-        ],
-      },
-    ],
-  },
   stats: 'errors-warnings', // less logging
   plugins: [
     copyStaticFilesPlugin(),
-    // Needed to fix issue with Formidable pack (dependency of node-mailjet)
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
+    // We also want to make some env variables available for config
+    new webpack.DefinePlugin({
+      // Needed to fix issue with Formidable pack (dependency of node-mailjet)
+      'global.GENTLY': false,
+      'process.env.IS_XBGE': JSON.stringify(process.env.IS_XBGE),
+      'process.env.BASIC_AUTH_USERNAME': JSON.stringify(
+        process.env.BASIC_AUTH_USERNAME
+      ),
+      'process.env.BASIC_AUTH_PASSWORD': JSON.stringify(
+        process.env.BASIC_AUTH_PASSWORD
+      ),
+      'process.env.CONTENTFUL_ACCESS_TOKEN': JSON.stringify(
+        process.env.CONTENTFUL_ACCESS_TOKEN
+      ),
+      'process.env.CONTENTFUL_SPACE_ID': JSON.stringify(
+        process.env.CONTENTFUL_SPACE_ID
+      ),
+      'process.env.MAILJET_API_KEY': JSON.stringify(
+        process.env.MAILJET_API_KEY
+      ),
+      'process.env.MAILJET_API_SECRET': JSON.stringify(
+        process.env.MAILJET_API_SECRET
+      ),
+    }),
   ],
 };

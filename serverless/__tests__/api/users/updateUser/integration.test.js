@@ -14,6 +14,38 @@ let token;
 describe('updateUser update donation api test', () => {
   beforeAll(async () => {
     token = await authenticate();
+
+    const params = {
+      TableName: DEV_USERS_TABLE,
+      Key: { cognitoId: userId },
+      UpdateExpression: 'REMOVE donations',
+      ReturnValues: 'UPDATED_NEW',
+    };
+
+    return ddb.update(params).promise();
+  });
+
+  it('should be able to create recurring donation', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        donation: {
+          amount: 50,
+          recurring: true,
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
+          iban: 'DE26641500200001294334',
+        },
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
   });
 
   it('should be able to update recurring donation', async () => {
@@ -48,11 +80,13 @@ describe('updateUser update donation api test', () => {
       },
       body: JSON.stringify({
         donation: {
-          amount: 50,
+          amount: 50.5,
           recurring: false,
           firstName: 'Valentin',
           lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
+          certificateReceiver: 'Anna',
+          certificateGiver: 'Björn',
         },
       }),
     };
