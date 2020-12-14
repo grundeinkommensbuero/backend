@@ -279,7 +279,7 @@ paths:
                 - username
                 - ags
                 - optedIn
-                - userToken
+                - isEngaged
               properties:
                 email:
                   type: string
@@ -289,10 +289,14 @@ paths:
                   type: string
                 optedIn:
                   type: boolean
-                signupId:
+                isEngaged:
+                  type: boolean
+                loginToken:
                   type: string
+                  description: Token to later use for login
                 userToken:
                   type: string
+                  description: MGE specific token
                 phone:
                   type: string
       responses:
