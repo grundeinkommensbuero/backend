@@ -276,6 +276,10 @@ paths:
               type: object
               required:
                 - email
+                - username
+                - ags
+                - optedIn
+                - isEngaged
               properties:
                 email:
                   type: string
@@ -287,9 +291,17 @@ paths:
                   type: string
                 ags:
                   type: string
-                zipCode:
+                optedIn:
+                  type: boolean
+                isEngaged:
+                  type: boolean
+                loginToken:
                   type: string
-                campaignSource:
+                  description: Token to later use for login
+                userToken:
+                  type: string
+                  description: MGE specific token
+                phone:
                   type: string
                   description: Where did the user come from before signing up?
       responses:
