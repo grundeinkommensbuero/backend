@@ -2,6 +2,7 @@ const {
   INVOKE_URL,
   DEV_USERS_TABLE,
   DEV_MUNICIPALITIES_TABLE,
+  QUERY_TOKEN,
 } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
@@ -13,7 +14,6 @@ const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const email = 'vali_schagerl@web.de';
 const randomAgs = crypto.randomDigits(6).join('');
-const { token } = require('../../../../queryToken');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
 
 const AGS = '120312';
@@ -50,7 +50,7 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -109,7 +109,7 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -169,7 +169,7 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -228,7 +228,7 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -294,7 +294,7 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -371,7 +371,7 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
 
