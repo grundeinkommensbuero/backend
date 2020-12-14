@@ -1,8 +1,9 @@
-const signups = require('./output/signups.json');
-const { DEV_MUNICIPALITIES_TABLE_NAME } = require('../../config');
+const signups = require('./output/mockup-complete.json');
+const { DEV_USER_MUNICIPALITY_TABLE_NAME } = require('../../config');
 const AWS = require('aws-sdk');
 const Bottleneck = require('bottleneck');
 const uuid = require('uuid/v4');
+const fs = require('fs');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
@@ -12,31 +13,32 @@ const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 4 });
 const fillDatabase = async () => {
   for (const signup of signups) {
     await limiter.schedule(async () => {
-      const users = [];
-      for (let i = 0; i < signups.signups; i++) {
-        users.push({ id: uuid(), createdAt: createRandomDate() });
+      for (let i = 0; i < signup.signups; i++) {
+        await updateUserMunicipalityTable(
+          signup.ags,
+          uuid(),
+          createRandomDate().toISOString(),
+          signups.population
+        );
       }
 
-      await updateMunicipality(signup.ags, users);
+      console.log('Updated', signup.ags);
     });
   }
 };
 
-const updateMunicipality = (ags, users) => {
+const updateUserMunicipalityTable = (ags, userId, createdAt, population) => {
   const params = {
-    TableName: DEV_MUNICIPALITIES_TABLE_NAME,
-    Key: { ags },
-    UpdateExpression: 'SET #attribute = :users',
-    ExpressionAttributeValues: {
-      ':users': users,
+    TableName: DEV_USER_MUNICIPALITY_TABLE_NAME,
+    Item: {
+      ags,
+      userId,
+      createdAt,
+      population,
     },
-    ExpressionAttributeNames: {
-      '#attribute': 'users',
-    },
-    ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.put(params).promise();
 };
 
 const createRandomDate = () => {
@@ -53,3 +55,5 @@ const createRandomDate = () => {
 
   return randomDate;
 };
+
+fillDatabase();
