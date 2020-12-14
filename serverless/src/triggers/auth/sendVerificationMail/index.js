@@ -1,5 +1,7 @@
-const htmlMailDefault = require('./mailTemplate.html').default;
-const htmlMailBBPlatform = require('./mailBBPlatform.html').default;
+// eslint-disable-next-line
+const htmlMailDefault = require('raw-loader!./mailTemplate.html').default;
+// eslint-disable-next-line
+const htmlMailBBPlatform = require('raw-loader!./mailBBPlatform.html').default;
 
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo

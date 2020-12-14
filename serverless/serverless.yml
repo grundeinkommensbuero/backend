@@ -685,6 +685,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:DeleteItem
+          - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
