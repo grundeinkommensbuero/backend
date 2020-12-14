@@ -173,9 +173,8 @@ const updateUser = (
     ${typeof loginToken !== 'undefined' ? 'customToken = :customToken,' : ''}
     username = :username,
     municipalCampaigns = list_append(if_not_exists(municipalCampaigns, :emptyList), :municipalCampaign),
-    customToken = :customToken,
     customNewsletters = :customNewsletters,
-    isEngaged
+    isEngaged = :isEngaged,
     updatedAt = :updatedAt
     `,
     ExpressionAttributeValues: data,
@@ -202,7 +201,7 @@ const createUser = async (requestBody, municipalityName) => {
 
 const createUserInDynamo = (
   userId,
-  { email, username, phone, ags, userToken, optedIn, loginToken },
+  { email, username, phone, ags, userToken, optedIn, loginToken, isEngaged },
   municipalityName
 ) => {
   const timestamp = new Date().toISOString();
@@ -240,6 +239,7 @@ const createUserInDynamo = (
       source: 'mge-municipal',
       mgeUserToken: userToken,
       confirmed,
+      isEngaged,
       customToken:
         typeof loginToken !== 'undefined'
           ? { token: loginToken, timestamp }
@@ -286,11 +286,12 @@ const validateParams = requestBody => {
     typeof requestBody.email === 'string' &&
     validateEmail(requestBody.email) &&
     typeof requestBody.username === 'string' &&
+    typeof requestBody.isEngaged === 'boolean' &&
     typeof requestBody.ags === 'string' &&
     (typeof requestBody.userToken === 'undefined' ||
       typeof requestBody.userToken === 'string') &&
     typeof requestBody.optedIn === 'boolean' &&
-    (typeof requestBody.userToken === 'undefined' ||
+    (typeof requestBody.loginToken === 'undefined' ||
       typeof requestBody.loginToken === 'string') &&
     (!('phone' in requestBody) ||
       (typeof requestBody.phone === 'string' &&
