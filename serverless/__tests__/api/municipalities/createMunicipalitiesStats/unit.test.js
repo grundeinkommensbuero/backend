@@ -7,7 +7,7 @@ const crypto = require('crypto-secure-random-digit');
 const {
   timePassed,
   computeStats,
-} = require('../../../../src/api/municipalities/getMunicipalitiesStats');
+} = require('../../../../src/api/municipalities/createMunicipalitiesStats');
 
 const populations = [50, 100, 1000, 5000, 10000, 30000, 100000, 2000000];
 const users = [
@@ -27,35 +27,37 @@ describe('Test computeStats', () => {
   beforeAll(() => {
     // Create test data
     for (let i = 0; i < populations.length; i++) {
-      const municipality = {
-        ags: crypto.randomDigits(6).join(''),
-        population: populations[i],
-        users: [],
-      };
-
+      const ags = crypto.randomDigits(6).join('');
       for (let j = 0; j < users[i][0]; j++) {
-        municipality.users.push({
-          id: uuid(),
+        municipalities.push({
+          ags,
+          population: populations[i],
+          users: [],
           createdAt: new Date(
             new Date().getTime() - timePassed - 10000
           ).toISOString(),
+          userId: uuid(),
         });
       }
 
       const change = users[i][1] - users[i][0];
       for (let j = 0; j < change; j++) {
-        municipality.users.push({
-          id: uuid(),
+        municipalities.push({
+          ags,
+          population: populations[i],
+          users: [],
           createdAt: new Date().toISOString(),
+          userId: uuid(),
         });
       }
-
-      municipalities.push(municipality);
     }
   });
 
-  it('should compute stats', () => {
-    const stats = computeStats(municipalities);
+  it('should compute stats', async () => {
+    const stats = await computeStats({
+      userMuncipality: municipalities,
+      shouldSendAllMunicipalities: false,
+    });
 
     expect(stats).toHaveProperty('events');
     expect(stats).toHaveProperty('municipalities');

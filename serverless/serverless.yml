@@ -553,13 +553,28 @@ functions:
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
-  getMunicsStats:
+  getMunicipalitiesStats:
     handler: src/api/municipalities/getMunicipalitiesStats/index.handler
+    timeout: 30 # Timeout for this specific function.
     events:
       - http:
           path: analytics/municipalities
           method: get
           cors: true
+    iamRoleStatementsName: ${self:custom.stage}-get-municipalities-stats-role
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:HeadObject
+          - s3:GetObject
+        Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
+
+  createMunicipalitiesStats:
+    handler: src/api/municipalities/createMunicipalitiesStats/index.handler
+    timeout: 300
+    events: # Call this function every x minutes
+      - schedule: rate(15 minutes)
+    iamRoleStatementsName: ${self:custom.stage}-create-municipalities-stats-role
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -567,6 +582,18 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: Allow
+        Action:
+          - s3:HeadObject
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
