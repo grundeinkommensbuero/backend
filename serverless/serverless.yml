@@ -1098,6 +1098,18 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+        GlobalSecondaryIndexes:
+          - IndexName: agsIndex
+            KeySchema:
+              - AttributeName: ags
+                KeyType: HASH
+              - AttributeName: userId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: 'ALL'
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
