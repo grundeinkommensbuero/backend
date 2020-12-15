@@ -4,7 +4,10 @@
  * */
 
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getMunicipality } = require('../../../shared/municipalities');
+const {
+  getMunicipality,
+  getAllUsersOfMunicipality,
+} = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
 const responseHeaders = {
@@ -24,7 +27,9 @@ module.exports.handler = async event => {
       return errorResponse(404, 'No municipality found with the passed ags');
     }
 
-    const signUpCount = 'users' in result.Item ? result.Item.users.length : 0;
+    const userResult = await getAllUsersOfMunicipality(ags);
+
+    const signUpCount = userResult.Count;
 
     const goal = getMunicipalityGoal(result.Item.population);
 

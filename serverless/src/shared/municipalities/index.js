@@ -15,6 +15,17 @@ const getMunicipality = ags => {
   return ddb.get(params).promise();
 };
 
+const getAllUsersOfMunicipality = ags => {
+  const params = {
+    TableName: userMunicipalityTableName,
+    IndexName: 'agsIndex',
+    KeyConditionExpression: 'ags = :ags',
+    ExpressionAttributeValues: { ':ags': ags },
+  };
+
+  return ddb.query(params).promise();
+};
+
 const getAllMunicipalities = async (municipalities = [], startKey = null) => {
   const params = {
     TableName: municipalitiesTableName,
@@ -72,4 +83,5 @@ module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
+  getAllUsersOfMunicipality,
 };

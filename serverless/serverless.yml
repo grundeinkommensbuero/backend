@@ -549,9 +549,11 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
-          - dynamodb:Scan
         Resource:
-          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
 
   getMunicipalitiesStats:
     handler: src/api/municipalities/getMunicipalitiesStats/index.handler
