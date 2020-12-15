@@ -121,7 +121,7 @@ module.exports.handler = async event => {
 const updateUser = (
   userId,
   { customNewsletters },
-  { username, ags, userToken, phone, signupId },
+  { username, ags, loginToken, phone, userToken, isEngaged },
   municipalityName
 ) => {
   const timestamp = new Date().toISOString();
@@ -154,9 +154,13 @@ const updateUser = (
     ':updatedAt': timestamp,
     ':municipalCampaign': [{ createdAt: timestamp, ags }],
     ':customNewsletters': customNewsletters,
-    ':customToken': { token: userToken, timestamp },
+    ':customToken':
+      typeof loginToken !== 'undefined'
+        ? { token: loginToken, timestamp }
+        : undefined,
     ':phoneNumber': phone,
-    ':signupId': signupId,
+    ':userToken': userToken,
+    ':isEngaged': isEngaged,
   };
 
   const params = {
@@ -165,11 +169,12 @@ const updateUser = (
     UpdateExpression: `
     SET 
     ${typeof phone !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
+    ${typeof userToken !== 'undefined' ? 'mgeUserToken = :userToken,' : ''}
+    ${typeof loginToken !== 'undefined' ? 'customToken = :customToken,' : ''}
     username = :username,
     municipalCampaigns = list_append(if_not_exists(municipalCampaigns, :emptyList), :municipalCampaign),
-    customToken = :customToken,
     customNewsletters = :customNewsletters,
-    mgeSignupId = :signupId,
+    isEngaged = :isEngaged,
     updatedAt = :updatedAt
     `,
     ExpressionAttributeValues: data,
@@ -196,7 +201,7 @@ const createUser = async (requestBody, municipalityName) => {
 
 const createUserInDynamo = (
   userId,
-  { email, username, phone, ags, signupId, optedIn, userToken },
+  { email, username, phone, ags, userToken, optedIn, loginToken, isEngaged },
   municipalityName
 ) => {
   const timestamp = new Date().toISOString();
@@ -232,9 +237,13 @@ const createUserInDynamo = (
       // depending on how I am going to implement the phone number feature
       phoneNumber: phone,
       source: 'mge-municipal',
-      mgeSignupId: signupId,
+      mgeUserToken: userToken,
       confirmed,
-      customToken: { token: userToken, timestamp },
+      isEngaged,
+      customToken:
+        typeof loginToken !== 'undefined'
+          ? { token: loginToken, timestamp }
+          : undefined,
     },
   };
 
@@ -277,10 +286,13 @@ const validateParams = requestBody => {
     typeof requestBody.email === 'string' &&
     validateEmail(requestBody.email) &&
     typeof requestBody.username === 'string' &&
+    typeof requestBody.isEngaged === 'boolean' &&
     typeof requestBody.ags === 'string' &&
-    typeof requestBody.signupId === 'string' &&
+    (typeof requestBody.userToken === 'undefined' ||
+      typeof requestBody.userToken === 'string') &&
     typeof requestBody.optedIn === 'boolean' &&
-    typeof requestBody.userToken === 'string' &&
+    (typeof requestBody.loginToken === 'undefined' ||
+      typeof requestBody.loginToken === 'string') &&
     (!('phone' in requestBody) ||
       (typeof requestBody.phone === 'string' &&
         validatePhoneNumber(formatPhoneNumber(requestBody.phone))))

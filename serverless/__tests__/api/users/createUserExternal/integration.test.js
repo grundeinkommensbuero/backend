@@ -2,6 +2,7 @@ const {
   INVOKE_URL,
   DEV_USERS_TABLE,
   DEV_MUNICIPALITIES_TABLE,
+  QUERY_TOKEN,
 } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
@@ -13,7 +14,6 @@ const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const email = 'vali_schagerl@web.de';
 const randomAgs = crypto.randomDigits(6).join('');
-const { token } = require('../../../../queryToken');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
 
 const AGS = '120312';
@@ -31,8 +31,8 @@ describe('createUserFromExternal api test', () => {
 
   it('should create a new user', async () => {
     const randomEmail = `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`;
-    const signupId = '23123';
     const userToken = uuid();
+    const loginToken = uuid();
     const phoneNumber = '004915755940728';
 
     const request = {
@@ -40,17 +40,18 @@ describe('createUserFromExternal api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         email: randomEmail,
-        signupId,
         username: 'Vali',
         optedIn: true,
         userToken,
         ags: AGS,
         phone: phoneNumber,
+        loginToken,
+        isEngaged: true,
       }),
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -65,11 +66,12 @@ describe('createUserFromExternal api test', () => {
 
     // Check user
     expect(user.cognitoId).toEqual(json.data.userId);
-    expect(user.mgeSignupId).toEqual(signupId);
+    expect(user.mgeUserToken).toEqual(userToken);
     expect(user.confirmed.value).toEqual(true);
     expect(user.confirmed.optedInAtMge).toEqual(true);
     expect(user.username).toEqual('Vali');
-    expect(user.customToken.token).toEqual(userToken);
+    expect(user.isEngaged).toEqual(true);
+    expect(user.customToken.token).toEqual(loginToken);
     expect(user.email).toEqual(randomEmail);
     expect(user.phoneNumber).toEqual(phoneNumber);
     expect(user.customNewsletters[0].ags).toEqual(AGS);
@@ -90,26 +92,23 @@ describe('createUserFromExternal api test', () => {
     expect(userInMunicipality).toHaveProperty('createdAt');
   });
 
-  it('should create a second user without phone', async () => {
+  it('should create a second user without phone and tokens', async () => {
     const randomEmail = `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`;
-    const signupId = '23123';
-    const userToken = uuid();
 
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
         email: randomEmail,
-        signupId,
         username: 'Vali',
         optedIn: true,
-        userToken,
         ags: AGS,
+        isEngaged: false,
       }),
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -124,11 +123,10 @@ describe('createUserFromExternal api test', () => {
 
     // Check user
     expect(user.cognitoId).toEqual(json.data.userId);
-    expect(user.mgeSignupId).toEqual(signupId);
     expect(user.confirmed.value).toEqual(true);
     expect(user.confirmed.optedInAtMge).toEqual(true);
+    expect(user.isEngaged).toEqual(false);
     expect(user.username).toEqual('Vali');
-    expect(user.customToken.token).toEqual(userToken);
     expect(user.email).toEqual(randomEmail);
     expect(typeof user.phoneNumber).toEqual('undefined');
     expect(user.customNewsletters[0].ags).toEqual(AGS);
@@ -152,24 +150,23 @@ describe('createUserFromExternal api test', () => {
 
   it('should create a third user who is not optedIn', async () => {
     const randomEmail = `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`;
-    const signupId = '23123';
-    const userToken = uuid();
+    const loginToken = uuid();
 
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
         email: randomEmail,
-        signupId,
         username: 'Vali',
         optedIn: false,
-        userToken,
+        loginToken,
         ags: AGS,
+        isEngaged: false,
       }),
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -184,10 +181,10 @@ describe('createUserFromExternal api test', () => {
 
     // Check user
     expect(user.cognitoId).toEqual(json.data.userId);
-    expect(user.mgeSignupId).toEqual(signupId);
     expect(user.confirmed.value).toEqual(false);
     expect(user.username).toEqual('Vali');
-    expect(user.customToken.token).toEqual(userToken);
+    expect(user.isEngaged).toEqual(false);
+    expect(user.customToken.token).toEqual(loginToken);
     expect(user.email).toEqual(randomEmail);
     expect(typeof user.phoneNumber).toEqual('undefined');
 
@@ -211,24 +208,23 @@ describe('createUserFromExternal api test', () => {
   });
 
   it('should add municipality to existing user', async () => {
-    const signupId = '23123';
-    const userToken = uuid();
+    const loginToken = uuid();
 
     const request = {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({
         email,
-        signupId,
         username: 'Vali',
         optedIn: true,
-        userToken,
+        loginToken,
         ags: randomAgs,
+        isEngaged: false,
       }),
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -242,11 +238,11 @@ describe('createUserFromExternal api test', () => {
     const { Item: municipality } = await getMunicipality(randomAgs);
 
     // Check user
-    expect(user.mgeSignupId).toEqual(signupId);
+    expect(user.isEngaged).toEqual(false);
     expect(user.confirmed.value).toEqual(true);
     expect(typeof user.confirmed.optedInAtMge).toEqual('undefined');
     expect(user.username).toEqual('Vali');
-    expect(user.customToken.token).toEqual(userToken);
+    expect(user.customToken.token).toEqual(loginToken);
     expect(user.email).toEqual(email);
     expect(
       user.customNewsletters[user.customNewsletters.length - 1].ags
@@ -277,7 +273,6 @@ describe('createUserFromExternal api test', () => {
   });
 
   it('should not add municipality to existing user', async () => {
-    const signupId = '23123';
     const userToken = uuid();
 
     const request = {
@@ -285,16 +280,16 @@ describe('createUserFromExternal api test', () => {
       mode: 'cors',
       body: JSON.stringify({
         email,
-        signupId,
         username: 'Vali',
         optedIn: true,
         userToken,
         ags: randomAgs,
+        isEngaged: true,
       }),
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
     const json = await response.json();
@@ -371,7 +366,30 @@ describe('createUserFromExternal api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/users/external-signup?token=${token}`,
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
+      request
+    );
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing isEngaged', async () => {
+    const userToken = uuid();
+
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        email,
+        username: 'Vali',
+        optedIn: true,
+        userToken,
+        ags: randomAgs,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
       request
     );
 
