@@ -18,7 +18,7 @@ const fillDatabase = async () => {
           signup.ags,
           uuid(),
           createRandomDate().toISOString(),
-          signups.population
+          signup.population
         );
       }
 
