@@ -27,6 +27,7 @@ provider:
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
+    USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
     IMAGE_BUCKET: xbge-profile-pictures
 
