@@ -550,6 +550,11 @@ functions:
         Action:
           - dynamodb:GetItem
         Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
           - Fn::Join:
               - '/'
               - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
@@ -1097,9 +1102,7 @@ resources:
             KeyType: HASH
           - AttributeName: ags
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: agsIndex
             KeySchema:
@@ -1109,9 +1112,6 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: 'ALL'
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
