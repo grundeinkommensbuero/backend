@@ -53,5 +53,6 @@ describe('getMunicipalitiesStats api test', () => {
     expect(json.data.municipalities.length).toBeGreaterThan(0);
     expect(json.data.municipalities[0]).toHaveProperty('signups');
     expect(json.data.municipalities[0]).toHaveProperty('ags');
+    expect(json.data.municipalities[0]).toHaveProperty('goal');
   });
 });
