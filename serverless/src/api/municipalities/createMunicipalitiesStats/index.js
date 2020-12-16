@@ -29,12 +29,12 @@ module.exports.handler = async event => {
     // have already signed up and compute the stats
     const userMuncipality = await getAllMunicipalitiesWithUsers();
 
-    const statsWithAllMunicipalities = computeStats({
+    const statsWithAllMunicipalities = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: true,
     });
 
-    const statsWithEvents = computeStats({
+    const statsWithEvents = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: false,
     });

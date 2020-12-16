@@ -36,10 +36,12 @@ module.exports.handler = async event => {
       shouldSendAllMunicipalities ? 'statsWithAll.json' : 'statsWithEvents.json'
     );
 
+    const body = JSON.parse(json.Body.toString());
+
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: { ...json.Body, timePassed, scale },
+        data: { ...body, timePassed, scale },
       }),
       headers: responseHeaders,
       isBase64Encoded: false,
