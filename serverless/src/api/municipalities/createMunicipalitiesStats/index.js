@@ -74,19 +74,22 @@ const computeStats = async ({
   console.timeEnd('municipalities');
 
   // If we should return all municipalities, we get them
-  // from the municipalities table, loop through and add the signups
+  // from the municipalities table, loop through and add the signups by mapping the array
   if (shouldSendAllMunicipalities) {
     const allMunicipalities = await getAllMunicipalities();
-    for (let municipality of allMunicipalities) {
-      if (municipalityMap.has(municipality.ags)) {
-        const goal = getMunicipalityGoal(municipality.population);
-        const signups = municipalityMap.get(municipality.ags).users.length;
-        const { ags } = municipality;
-        municipality = { ags, goal, signups };
-      }
-    }
 
-    return { municipalities: allMunicipalities };
+    const allMunicipalitiesWithStats = allMunicipalities.map(municipality => {
+      const goal = getMunicipalityGoal(municipality.population);
+      const { ags } = municipality;
+
+      let signups = 0;
+      if (municipalityMap.has(municipality.ags)) {
+        signups = municipalityMap.get(municipality.ags).users.length;
+      }
+
+      return { ags, goal, signups };
+    });
+    return { municipalities: allMunicipalitiesWithStats };
   }
 
   for (const [ags, { users, population }] of municipalityMap) {
