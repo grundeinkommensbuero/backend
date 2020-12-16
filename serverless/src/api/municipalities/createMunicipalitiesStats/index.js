@@ -59,7 +59,7 @@ const computeStats = async ({
   let relativeChangers = [];
   let absoluteChangers = [];
   const municipalitiesWithUsers = [];
-  console.time('municipalities');
+
   const municipalityMap = new Map();
   for (const { userId, ags, createdAt, population } of userMuncipality) {
     if (!municipalityMap.has(ags)) {
@@ -71,7 +71,6 @@ const computeStats = async ({
       municipalityMap.get(ags).users.push({ userId, createdAt });
     }
   }
-  console.timeEnd('municipalities');
 
   // If we should return all municipalities, we get them
   // from the municipalities table, loop through and add the signups by mapping the array
