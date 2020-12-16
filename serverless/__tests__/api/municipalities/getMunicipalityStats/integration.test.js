@@ -4,6 +4,9 @@ const AWS = require('aws-sdk');
 const crypto = require('crypto-secure-random-digit');
 const uuid = require('uuid/v4');
 const { getMunicipalityGoal } = require('../../../../src/shared/utils');
+const {
+  DEV_USER_MUNICIPALITY_TABLE_NAME,
+} = require('../../../../../utils/config');
 
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
@@ -16,13 +19,17 @@ describe('getMunicipalityStats api test', () => {
 
     await createMunicipality({
       ags: randomAgs,
-      users: [
-        { id: uuid(), createdAt: timestamp },
-        { id: uuid(), createdAt: timestamp },
-        { id: uuid(), createdAt: timestamp },
-      ],
       population,
     });
+
+    for (let i = 0; i < 3; i++) {
+      await createUserMunicipality({
+        ags: randomAgs,
+        userId: uuid(),
+        createdAt: timestamp,
+        population,
+      });
+    }
   });
 
   afterAll(async () => {
@@ -73,6 +80,15 @@ const createMunicipality = municipality => {
   const params = {
     TableName: DEV_MUNICIPALITIES_TABLE,
     Item: municipality,
+  };
+
+  return ddb.put(params).promise();
+};
+
+const createUserMunicipality = item => {
+  const params = {
+    TableName: DEV_USER_MUNICIPALITY_TABLE_NAME,
+    Item: item,
   };
 
   return ddb.put(params).promise();
