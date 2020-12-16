@@ -21,7 +21,7 @@ const timePassed = 6 * 60 * 60 * 1000;
 const amountOfWins = 15;
 const amountOfNewcomers = 15;
 const amountOfChanged = 10;
-const changeThresholds = { absolute: 2000, relative: 30, population: 40000 };
+const changeThresholds = { absolute: 500, relative: 20, population: 10000 };
 
 module.exports.handler = async event => {
   try {
@@ -53,7 +53,10 @@ const computeStats = async ({
   userMuncipality,
   shouldSendAllMunicipalities,
 }) => {
-  const date = new Date();
+  let date = new Date();
+  if (stage === 'dev') {
+    date = new Date(2020, 11, 15, 3, 6, 0);
+  }
   const wins = [];
   let newcomers = [];
   let relativeChangers = [];
@@ -126,25 +129,25 @@ const computeStats = async ({
   wins.sort((a, b) => a.signups[1] - b.signups[1]).slice(0, amountOfWins);
 
   // Sort newcomers by most current signup, also only 15
-  newcomers
-    .sort((a, b) => {
-      const timeA = new Date(
-        a.filteredUsers[a.filteredUsers.length - 1].createdAt
-      );
-      const timeB = new Date(
-        b.filteredUsers[b.filteredUsers.length - 1].createdAt
-      );
-      return timeA - timeB;
-    })
-    .slice(0, amountOfNewcomers);
+  newcomers.sort((a, b) => {
+    // NOTE: sorted by time
+    // const timeA = new Date(
+    //   a.filteredUsers[a.filteredUsers.length - 1].createdAt
+    // );
+    // const timeB = new Date(
+    //   b.filteredUsers[b.filteredUsers.length - 1].createdAt
+    // );
+    // return timeA - timeB;
+    // NOTE: current implementation: sorted by size
+    return a.current - b.current;
+  });
+  newcomers = newcomers.slice(0, amountOfNewcomers);
 
-  relativeChangers
-    .sort((a, b) => a.relativeChange - b.relativeChange)
-    .slice(0, amountOfChanged);
+  relativeChangers.sort((a, b) => a.relativeChange - b.relativeChange);
+  relativeChangers = relativeChangers.slice(0, amountOfChanged);
 
-  absoluteChangers
-    .sort((a, b) => a.absoluteChange - b.absoluteChange)
-    .slice(0, amountOfChanged);
+  absoluteChangers.sort((a, b) => a.absoluteChange - b.absoluteChange);
+  absoluteChangers = absoluteChangers.slice(0, amountOfChanged);
 
   // Bring newcomers into [previous, current] structure
   newcomers = newcomers.map(newcomer => ({
