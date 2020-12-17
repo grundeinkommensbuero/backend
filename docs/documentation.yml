@@ -285,6 +285,7 @@ paths:
                   type: string
                 username:
                   type: string
+                  description: Must be at least 3 chars
                 ags:
                   type: string
                 optedIn:
@@ -293,12 +294,13 @@ paths:
                   type: boolean
                 loginToken:
                   type: string
-                  description: Token to later use for login
+                  description: Token to later use for login, key can not be defined or value null
                 userToken:
                   type: string
-                  description: MGE specific token
+                  description: MGE specific token, key can not be defined or value null
                 phone:
                   type: string
+                  description: Key can not be defined or value null, must be at least 6 digits
       responses:
         '201':
           description: User was successfully created or municipality was added to existing user

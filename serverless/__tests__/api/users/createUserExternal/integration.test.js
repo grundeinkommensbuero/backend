@@ -209,6 +209,63 @@ describe('createUserFromExternal api test', () => {
     expect(municipality).toHaveProperty('population');
   });
 
+  it('should work with null values for new user', async () => {
+    const randomEmail = `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`;
+
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        email: randomEmail,
+        username: 'Vali',
+        optedIn: false,
+        loginToken: null,
+        userToken: null,
+        phone: null,
+        ags: AGS,
+        isEngaged: false,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
+      request
+    );
+    const json = await response.json();
+
+    expect(response.status).toEqual(201);
+    expect(json).toHaveProperty('data');
+    expect(json.data).toHaveProperty('userId');
+
+    // Get user and municpality to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, json.data.userId);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      AGS,
+      json.data.userId
+    );
+
+    // Check user
+    expect(user.cognitoId).toEqual(json.data.userId);
+    expect(user.confirmed.value).toEqual(false);
+    expect(user.username).toEqual('Vali');
+    expect(user.isEngaged).toEqual(false);
+    expect(typeof user.customToken).toEqual('undefined');
+    expect(typeof user.mgeUserToken).toEqual('undefined');
+    expect(user.email).toEqual(randomEmail);
+    expect(typeof user.phoneNumber).toEqual('undefined');
+
+    expect(user.customNewsletters[0].ags).toEqual(AGS);
+    expect(user.customNewsletters[0].name).toEqual('Eisenhüttenstadt');
+    expect(user.customNewsletters[0].extraInfo).toEqual(false);
+    expect(user.customNewsletters[0].value).toEqual(true);
+
+    // Check user municipality table
+    expect(municipality.ags).toEqual(AGS);
+    expect(municipality.userId).toEqual(json.data.userId);
+    expect(municipality).toHaveProperty('createdAt');
+    expect(municipality).toHaveProperty('population');
+  });
+
   it('should add municipality to existing user', async () => {
     const loginToken = uuid();
 

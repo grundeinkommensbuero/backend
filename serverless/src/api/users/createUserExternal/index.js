@@ -160,12 +160,13 @@ const updateUser = (
     ':username': username,
     ':updatedAt': timestamp,
     ':customNewsletters': customNewsletters,
+    ':phoneNumber': phone !== null ? phone : undefined,
+    // We also want to support passing optional params as null
     ':customToken':
-      typeof loginToken !== 'undefined'
+      typeof loginToken !== 'undefined' && loginToken !== null // support null
         ? { token: loginToken, timestamp }
         : undefined,
-    ':phoneNumber': phone,
-    ':userToken': userToken,
+    ':userToken': userToken !== null ? userToken : undefined, // support null
     ':isEngaged': isEngaged,
   };
 
@@ -174,9 +175,21 @@ const updateUser = (
     Key: { cognitoId: userId },
     UpdateExpression: `
     SET 
-    ${typeof phone !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
-    ${typeof userToken !== 'undefined' ? 'mgeUserToken = :userToken,' : ''}
-    ${typeof loginToken !== 'undefined' ? 'customToken = :customToken,' : ''}
+    ${
+      typeof phone !== 'undefined' && phone !== null
+        ? 'phoneNumber = :phoneNumber,'
+        : ''
+    }
+    ${
+      typeof userToken !== 'undefined' && userToken !== null
+        ? 'mgeUserToken = :userToken,'
+        : ''
+    }
+    ${
+      typeof loginToken !== 'undefined' && loginToken !== null
+        ? 'customToken = :customToken,'
+        : ''
+    }
     username = :username,
     customNewsletters = :customNewsletters,
     isEngaged = :isEngaged,
@@ -238,14 +251,15 @@ const createUserInDynamo = (
       createdAt: timestamp,
       username,
       // TODO: maybe also save phone number in cognito
-      // depending on how I am going to implement the phone number feature
-      phoneNumber: phone,
+      // depending on how I am going to implement the phone number feature.
+      // We also want to support passing optional params as null
+      phoneNumber: phone !== null ? phone : undefined,
       source: 'mge-municipal',
-      mgeUserToken: userToken,
+      mgeUserToken: userToken !== null ? userToken : undefined, // support null
       confirmed,
       isEngaged,
       customToken:
-        typeof loginToken !== 'undefined'
+        typeof loginToken !== 'undefined' && loginToken !== null // support null
           ? { token: loginToken, timestamp }
           : undefined,
     },
@@ -301,14 +315,18 @@ const validateParams = requestBody => {
     typeof requestBody.email === 'string' &&
     validateEmail(requestBody.email) &&
     typeof requestBody.username === 'string' &&
+    requestBody.username.length >= 3 &&
     typeof requestBody.isEngaged === 'boolean' &&
     typeof requestBody.ags === 'string' &&
     (typeof requestBody.userToken === 'undefined' ||
+      requestBody.userToken === null ||
       typeof requestBody.userToken === 'string') &&
     typeof requestBody.optedIn === 'boolean' &&
     (typeof requestBody.loginToken === 'undefined' ||
+      requestBody.loginToken === null ||
       typeof requestBody.loginToken === 'string') &&
-    (!('phone' in requestBody) ||
+    (typeof requestBody.phone === 'undefined' ||
+      requestBody.phone === null ||
       (typeof requestBody.phone === 'string' &&
         validatePhoneNumber(formatPhoneNumber(requestBody.phone))))
   );
