@@ -13,20 +13,33 @@ const uuid = require('uuid/v4');
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const email = 'vali_schagerl@web.de';
+const testUserId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const randomAgs = crypto.randomDigits(6).join('');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
+const {
+  DEV_USER_MUNICIPALITY_TABLE_NAME,
+} = require('../../../../../utils/config');
 
 const AGS = '120312';
 
 describe('createUserFromExternal api test', () => {
   beforeAll(async () => {
-    await createMunicipality({ ags: AGS, name: 'Eisenhüttenstadt' });
-    await createMunicipality({ ags: randomAgs, name: 'Hobbingen' });
+    await createMunicipality({
+      ags: AGS,
+      name: 'Eisenhüttenstadt',
+      population: 40000,
+    });
+    await createMunicipality({
+      ags: randomAgs,
+      name: 'Hobbingen',
+      population: 5000,
+    });
   });
 
   afterAll(async () => {
     await deleteMunicipality(AGS);
     await deleteMunicipality(randomAgs);
+    await deleteUserMunicipalityLink(randomAgs, testUserId);
   });
 
   it('should create a new user', async () => {
@@ -62,7 +75,10 @@ describe('createUserFromExternal api test', () => {
 
     // Get user and municpality to check if saved correctly
     const { Item: user } = await getUser(DEV_USERS_TABLE, json.data.userId);
-    const { Item: municipality } = await getMunicipality(AGS);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      AGS,
+      json.data.userId
+    );
 
     // Check user
     expect(user.cognitoId).toEqual(json.data.userId);
@@ -79,17 +95,11 @@ describe('createUserFromExternal api test', () => {
     expect(user.customNewsletters[0].extraInfo).toEqual(false);
     expect(user.customNewsletters[0].value).toEqual(true);
 
-    expect(user.municipalCampaigns.length).toEqual(1);
-    expect(user.municipalCampaigns[0].ags).toEqual(AGS);
-    expect(user.municipalCampaigns[0]).toHaveProperty('createdAt');
-
-    // Check municipality
-    const userInMunicipality = municipality.users[0];
-
-    expect(municipality.users.length).toEqual(1);
+    // Check user municipality table
     expect(municipality.ags).toEqual(AGS);
-    expect(userInMunicipality.id).toEqual(json.data.userId);
-    expect(userInMunicipality).toHaveProperty('createdAt');
+    expect(municipality.userId).toEqual(json.data.userId);
+    expect(municipality).toHaveProperty('createdAt');
+    expect(municipality).toHaveProperty('population');
   });
 
   it('should create a second user without phone and tokens', async () => {
@@ -119,7 +129,10 @@ describe('createUserFromExternal api test', () => {
 
     // Get user and municpality to check if saved correctly
     const { Item: user } = await getUser(DEV_USERS_TABLE, json.data.userId);
-    const { Item: municipality } = await getMunicipality(AGS);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      AGS,
+      json.data.userId
+    );
 
     // Check user
     expect(user.cognitoId).toEqual(json.data.userId);
@@ -134,18 +147,11 @@ describe('createUserFromExternal api test', () => {
     expect(user.customNewsletters[0].extraInfo).toEqual(false);
     expect(user.customNewsletters[0].value).toEqual(true);
 
-    expect(user.municipalCampaigns.length).toEqual(1);
-    expect(user.municipalCampaigns[0].ags).toEqual(AGS);
-    expect(user.municipalCampaigns[0]).toHaveProperty('createdAt');
-
-    // Check municipality
-    const userInMunicipality =
-      municipality.users[municipality.users.length - 1];
-
-    expect(municipality.users.length).toEqual(2);
+    // Check user municipality table
     expect(municipality.ags).toEqual(AGS);
-    expect(userInMunicipality.id).toEqual(json.data.userId);
-    expect(userInMunicipality).toHaveProperty('createdAt');
+    expect(municipality.userId).toEqual(json.data.userId);
+    expect(municipality).toHaveProperty('createdAt');
+    expect(municipality).toHaveProperty('population');
   });
 
   it('should create a third user who is not optedIn', async () => {
@@ -177,7 +183,10 @@ describe('createUserFromExternal api test', () => {
 
     // Get user and municpality to check if saved correctly
     const { Item: user } = await getUser(DEV_USERS_TABLE, json.data.userId);
-    const { Item: municipality } = await getMunicipality(AGS);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      AGS,
+      json.data.userId
+    );
 
     // Check user
     expect(user.cognitoId).toEqual(json.data.userId);
@@ -193,18 +202,68 @@ describe('createUserFromExternal api test', () => {
     expect(user.customNewsletters[0].extraInfo).toEqual(false);
     expect(user.customNewsletters[0].value).toEqual(true);
 
-    expect(user.municipalCampaigns.length).toEqual(1);
-    expect(user.municipalCampaigns[0].ags).toEqual(AGS);
-    expect(user.municipalCampaigns[0]).toHaveProperty('createdAt');
-
-    // Check municipality
-    const userInMunicipality =
-      municipality.users[municipality.users.length - 1];
-
-    expect(municipality.users.length).toEqual(3);
+    // Check user municipality table
     expect(municipality.ags).toEqual(AGS);
-    expect(userInMunicipality.id).toEqual(json.data.userId);
-    expect(userInMunicipality).toHaveProperty('createdAt');
+    expect(municipality.userId).toEqual(json.data.userId);
+    expect(municipality).toHaveProperty('createdAt');
+    expect(municipality).toHaveProperty('population');
+  });
+
+  it('should work with null values for new user', async () => {
+    const randomEmail = `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`;
+
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        email: randomEmail,
+        username: 'Vali',
+        optedIn: false,
+        loginToken: null,
+        userToken: null,
+        phone: null,
+        ags: AGS,
+        isEngaged: false,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/external-signup?token=${QUERY_TOKEN}`,
+      request
+    );
+    const json = await response.json();
+
+    expect(response.status).toEqual(201);
+    expect(json).toHaveProperty('data');
+    expect(json.data).toHaveProperty('userId');
+
+    // Get user and municpality to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, json.data.userId);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      AGS,
+      json.data.userId
+    );
+
+    // Check user
+    expect(user.cognitoId).toEqual(json.data.userId);
+    expect(user.confirmed.value).toEqual(false);
+    expect(user.username).toEqual('Vali');
+    expect(user.isEngaged).toEqual(false);
+    expect(typeof user.customToken).toEqual('undefined');
+    expect(typeof user.mgeUserToken).toEqual('undefined');
+    expect(user.email).toEqual(randomEmail);
+    expect(typeof user.phoneNumber).toEqual('undefined');
+
+    expect(user.customNewsletters[0].ags).toEqual(AGS);
+    expect(user.customNewsletters[0].name).toEqual('Eisenhüttenstadt');
+    expect(user.customNewsletters[0].extraInfo).toEqual(false);
+    expect(user.customNewsletters[0].value).toEqual(true);
+
+    // Check user municipality table
+    expect(municipality.ags).toEqual(AGS);
+    expect(municipality.userId).toEqual(json.data.userId);
+    expect(municipality).toHaveProperty('createdAt');
+    expect(municipality).toHaveProperty('population');
   });
 
   it('should add municipality to existing user', async () => {
@@ -235,7 +294,10 @@ describe('createUserFromExternal api test', () => {
 
     // Get user and municpality to check if saved correctly
     const { Item: user } = await getUser(DEV_USERS_TABLE, json.data.userId);
-    const { Item: municipality } = await getMunicipality(randomAgs);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      randomAgs,
+      json.data.userId
+    );
 
     // Check user
     expect(user.isEngaged).toEqual(false);
@@ -257,19 +319,11 @@ describe('createUserFromExternal api test', () => {
       user.customNewsletters[user.customNewsletters.length - 1].value
     ).toEqual(true);
 
-    const municipalityInUser =
-      user.municipalCampaigns[user.municipalCampaigns.length - 1];
-
-    expect(municipalityInUser.ags).toEqual(randomAgs);
-    expect(municipalityInUser).toHaveProperty('createdAt');
-
-    // Check municipality
-    const userInMunicipality = municipality.users[0];
-
-    expect(municipality.users.length).toEqual(1);
+    // Check user municipality table
     expect(municipality.ags).toEqual(randomAgs);
-    expect(userInMunicipality.id).toEqual(json.data.userId);
-    expect(userInMunicipality).toHaveProperty('createdAt');
+    expect(municipality.userId).toEqual(json.data.userId);
+    expect(municipality).toHaveProperty('createdAt');
+    expect(municipality).toHaveProperty('population');
   });
 
   it('should not add municipality to existing user', async () => {
@@ -397,11 +451,12 @@ describe('createUserFromExternal api test', () => {
   });
 });
 
-const getMunicipality = ags => {
+const getUserMunicipalityLink = (ags, userId) => {
   const params = {
-    TableName: DEV_MUNICIPALITIES_TABLE,
+    TableName: DEV_USER_MUNICIPALITY_TABLE_NAME,
     Key: {
       ags,
+      userId,
     },
   };
 
@@ -422,6 +477,18 @@ const deleteMunicipality = ags => {
     TableName: DEV_MUNICIPALITIES_TABLE,
     Key: {
       ags,
+    },
+  };
+
+  return ddb.delete(params).promise();
+};
+
+const deleteUserMunicipalityLink = (ags, userId) => {
+  const params = {
+    TableName: DEV_USER_MUNICIPALITY_TABLE_NAME,
+    Key: {
+      ags,
+      userId,
     },
   };
 
