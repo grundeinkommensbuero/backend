@@ -404,11 +404,15 @@ functions:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
       - Effect: 'Allow'
         Action:
-          - dynamodb:PutItem
-          - dynamodb:UpdateItem
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   getUser:
     handler: src/api/users/getUser/index.handler

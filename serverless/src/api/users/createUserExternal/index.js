@@ -21,6 +21,7 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const { token } = require('../../../../queryToken');
 
 const usersTableName = process.env.USERS_TABLE_NAME;
+const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 
 const responseHeaders = {
@@ -41,29 +42,32 @@ module.exports.handler = async event => {
     }
 
     try {
-      // Get municipality to save the name
-      const municipalityResult = await getMunicipality(requestBody.ags);
+      // 1. Get municipality to save the name
+      // 2. Get user by mail to check if already exists
+      const [municipalityResult, userResult] = await Promise.all([
+        getMunicipality(requestBody.ags),
+        getUserByMail(requestBody.email),
+      ]);
 
       if (!('Item' in municipalityResult)) {
         return errorResponse(404, 'Municipality not found');
       }
 
       // We need the name later for the setting of newsletter settings
-      const municipalityName = municipalityResult.Item.name;
+      // and the population for updating the user municipality table
+      const { name: municipalityName, population } = municipalityResult.Item;
 
-      // Get user by mail to check if already exists and
-      // if existing user
-      const result = await getUserByMail(requestBody.email);
+      if (userResult.Count !== 0) {
+        const user = userResult.Items[0];
 
-      if (result.Count !== 0) {
-        const user = result.Items[0];
+        // Query user municipality table to check if user has already signed up for this munic
+        const userMunicipalityResult = await getUserMunicipalityLink(
+          requestBody.ags,
+          user.cognitoId
+        );
 
-        if (
-          'municipalCampaigns' in user &&
-          user.municipalCampaigns.findIndex(
-            place => place.ags === requestBody.ags
-          ) !== -1
-        ) {
+        // If Item is result user has already signed up
+        if ('Item' in userMunicipalityResult) {
           return {
             statusCode: 200,
             headers: responseHeaders,
@@ -79,7 +83,11 @@ module.exports.handler = async event => {
         // we want to add the info this their existing account
         await Promise.all([
           updateUser(user.cognitoId, user, requestBody, municipalityName),
-          updateMunicipality(requestBody.ags, user.cognitoId),
+          createUserMunicipalityLink(
+            requestBody.ags,
+            user.cognitoId,
+            population
+          ),
         ]);
 
         return {
@@ -95,7 +103,7 @@ module.exports.handler = async event => {
 
       // otherwise proceed by creating the user and afterwards add user to municipality
       const userId = await createUser(requestBody, municipalityName);
-      await updateMunicipality(requestBody.ags, userId);
+      await createUserMunicipalityLink(requestBody.ags, userId, population);
 
       // return message (created)
       return {
@@ -149,17 +157,16 @@ const updateUser = (
   }
 
   const data = {
-    ':emptyList': [],
     ':username': username,
     ':updatedAt': timestamp,
-    ':municipalCampaign': [{ createdAt: timestamp, ags }],
     ':customNewsletters': customNewsletters,
+    ':phoneNumber': phone !== null ? phone : undefined,
+    // We also want to support passing optional params as null
     ':customToken':
-      typeof loginToken !== 'undefined'
+      typeof loginToken !== 'undefined' && loginToken !== null // support null
         ? { token: loginToken, timestamp }
         : undefined,
-    ':phoneNumber': phone,
-    ':userToken': userToken,
+    ':userToken': userToken !== null ? userToken : undefined, // support null
     ':isEngaged': isEngaged,
   };
 
@@ -168,11 +175,22 @@ const updateUser = (
     Key: { cognitoId: userId },
     UpdateExpression: `
     SET 
-    ${typeof phone !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
-    ${typeof userToken !== 'undefined' ? 'mgeUserToken = :userToken,' : ''}
-    ${typeof loginToken !== 'undefined' ? 'customToken = :customToken,' : ''}
+    ${
+      typeof phone !== 'undefined' && phone !== null
+        ? 'phoneNumber = :phoneNumber,'
+        : ''
+    }
+    ${
+      typeof userToken !== 'undefined' && userToken !== null
+        ? 'mgeUserToken = :userToken,'
+        : ''
+    }
+    ${
+      typeof loginToken !== 'undefined' && loginToken !== null
+        ? 'customToken = :customToken,'
+        : ''
+    }
     username = :username,
-    municipalCampaigns = list_append(if_not_exists(municipalCampaigns, :emptyList), :municipalCampaign),
     customNewsletters = :customNewsletters,
     isEngaged = :isEngaged,
     updatedAt = :updatedAt
@@ -231,17 +249,17 @@ const createUserInDynamo = (
         },
       ],
       createdAt: timestamp,
-      municipalCampaigns: [{ createdAt: timestamp, ags }],
       username,
       // TODO: maybe also save phone number in cognito
-      // depending on how I am going to implement the phone number feature
-      phoneNumber: phone,
+      // depending on how I am going to implement the phone number feature.
+      // We also want to support passing optional params as null
+      phoneNumber: phone !== null ? phone : undefined,
       source: 'mge-municipal',
-      mgeUserToken: userToken,
+      mgeUserToken: userToken !== null ? userToken : undefined, // support null
       confirmed,
       isEngaged,
       customToken:
-        typeof loginToken !== 'undefined'
+        typeof loginToken !== 'undefined' && loginToken !== null // support null
           ? { token: loginToken, timestamp }
           : undefined,
     },
@@ -250,22 +268,21 @@ const createUserInDynamo = (
   return ddb.put(params).promise();
 };
 
-// Update existing municipalities by adding user to list
-// of users who already have signed up for this municipality
-const updateMunicipality = (ags, userId) => {
+// Update userMunicipality table to create the link between user and munic
+const createUserMunicipalityLink = (ags, userId, population) => {
   const timestamp = new Date().toISOString();
-  const user = { id: userId, createdAt: timestamp };
 
   const params = {
-    TableName: municipalitiesTableName,
-    Key: { ags },
-    UpdateExpression:
-      'SET #attribute = list_append(if_not_exists(#attribute, :emptyList), :user)',
-    ExpressionAttributeValues: { ':user': [user], ':emptyList': [] },
-    ExpressionAttributeNames: { '#attribute': 'users' },
+    TableName: userMunicipalityTableName,
+    Item: {
+      ags,
+      userId,
+      createdAt: timestamp,
+      population,
+    },
   };
 
-  return ddb.update(params).promise();
+  return ddb.put(params).promise();
 };
 
 const getMunicipality = ags => {
@@ -279,6 +296,18 @@ const getMunicipality = ags => {
   return ddb.get(params).promise();
 };
 
+const getUserMunicipalityLink = (ags, userId) => {
+  const params = {
+    TableName: userMunicipalityTableName,
+    Key: {
+      ags,
+      userId,
+    },
+  };
+
+  return ddb.get(params).promise();
+};
+
 // Validate request body, only email is not optional
 // If other keys are passed, the values should be strings
 const validateParams = requestBody => {
@@ -286,14 +315,18 @@ const validateParams = requestBody => {
     typeof requestBody.email === 'string' &&
     validateEmail(requestBody.email) &&
     typeof requestBody.username === 'string' &&
+    requestBody.username.length >= 3 &&
     typeof requestBody.isEngaged === 'boolean' &&
     typeof requestBody.ags === 'string' &&
     (typeof requestBody.userToken === 'undefined' ||
+      requestBody.userToken === null ||
       typeof requestBody.userToken === 'string') &&
     typeof requestBody.optedIn === 'boolean' &&
     (typeof requestBody.loginToken === 'undefined' ||
+      requestBody.loginToken === null ||
       typeof requestBody.loginToken === 'string') &&
-    (!('phone' in requestBody) ||
+    (typeof requestBody.phone === 'undefined' ||
+      requestBody.phone === null ||
       (typeof requestBody.phone === 'string' &&
         validatePhoneNumber(formatPhoneNumber(requestBody.phone))))
   );
