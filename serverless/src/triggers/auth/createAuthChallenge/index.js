@@ -13,7 +13,7 @@ const handler = async event => {
     // Get user to check if a token was added recently (sub is userId)
     const result = await getUser(event.request.userAttributes.sub);
 
-    // Only set the token as loginCode if it is not older than 10 minutes
+    // Only set the token as loginCode if it is not older than 3 minutes
     if (
       'Item' in result &&
       'customToken' in result.Item &&
