@@ -371,48 +371,49 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  createUserExternal:
-    handler: src/api/users/createUserExternal/index.handler
-    events:
-      - http:
-          path: users/external-signup
-          method: post
-          cors: true
-    environment:
-      USER_POOL_ID:
-        Ref: CognitoUserPoolUserPool
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - dynamodb:PutItem
-          - dynamodb:UpdateItem
-        Resource:
-          - 'Fn::GetAtt': [UsersTable, Arn]
-      - Effect: 'Allow' # for the global secondary index
-        Action:
-          - dynamodb:Query
-        Resource:
-          - Fn::Join:
-              - '/'
-              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
-                - 'index/emailIndex'
-      - Effect: 'Allow'
-        Action:
-          - cognito-idp:AdminCreateUser
-          - cognito-idp:AdminSetUserPassword
-        Resource:
-          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
-      - Effect: 'Allow'
-        Action:
-          - dynamodb:GetItem
-        Resource:
-          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
-      - Effect: 'Allow'
-        Action:
-          - dynamodb:PutItem
-          - dynamodb:GetItem
-        Resource:
-          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+  # Probably not needed in the future
+  # createUserExternal:
+  #   handler: src/api/users/createUserExternal/index.handler
+  #   events:
+  #     - http:
+  #         path: users/external-signup
+  #         method: post
+  #         cors: true
+  #   environment:
+  #     USER_POOL_ID:
+  #       Ref: CognitoUserPoolUserPool
+  #   iamRoleStatements:
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - dynamodb:PutItem
+  #         - dynamodb:UpdateItem
+  #       Resource:
+  #         - 'Fn::GetAtt': [UsersTable, Arn]
+  #     - Effect: 'Allow' # for the global secondary index
+  #       Action:
+  #         - dynamodb:Query
+  #       Resource:
+  #         - Fn::Join:
+  #             - '/'
+  #             - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+  #               - 'index/emailIndex'
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - cognito-idp:AdminCreateUser
+  #         - cognito-idp:AdminSetUserPassword
+  #       Resource:
+  #         - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - dynamodb:GetItem
+  #       Resource:
+  #         - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - dynamodb:PutItem
+  #         - dynamodb:GetItem
+  #       Resource:
+  #         - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   getUser:
     handler: src/api/users/getUser/index.handler
