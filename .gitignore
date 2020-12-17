@@ -1,3 +1,5 @@
 node_modules/
 *.csv
 list*.pdf
+utils/seedDatabase/createMunicipalityShareImages/municipalityImages
+utils/seedDatabase/createMunicipalityShareImages/output
