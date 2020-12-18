@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "gm": "^1.23.1",
-    "jimp": "^0.16.1"
+    "jimp": "^0.16.1",
+    "progress": "^2.0.3"
   }
 }
