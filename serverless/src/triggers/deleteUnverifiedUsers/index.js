@@ -30,7 +30,7 @@ const deleteUsers = async () => {
   const date = new Date();
   const tenDays = 10 * 24 * 60 * 60 * 1000;
   const filteredUsers = unconfirmedUsers.filter(
-    user => date - user.createdAt > tenDays
+    user => date - new Date(user.createdAt) > tenDays
   );
 
   console.log(
@@ -46,27 +46,26 @@ const deleteUsers = async () => {
       });
     } catch (error) {
       console.log('error deleting user', error);
-      break;
     }
   }
 };
 
 const deleteUserInCognito = user => {
-  console.log('deleting user in cognito', user.Username);
+  console.log('deleting user in cognito', user.cognitoId);
   const params = {
     UserPoolId: userPoolId,
-    Username: user.cognitoId, // Username is the id of cognito
+    Username: user.cognitoId,
   };
 
   return cognito.adminDeleteUser(params).promise();
 };
 
 const deleteUserInDynamo = user => {
-  console.log('deleting user in dynamo', user.Username);
+  console.log('deleting user in dynamo', user.cognitoId);
   const params = {
     TableName: tableName,
     Key: {
-      cognitoId: user.cognitoId, // Username is the id of cognito
+      cognitoId: user.cognitoId,
     },
   };
 

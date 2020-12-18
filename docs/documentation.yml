@@ -276,20 +276,28 @@ paths:
               type: object
               required:
                 - email
+                - username
+                - ags
+                - optedIn
+                - isEngaged
               properties:
                 email:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
                   type: string
                 username:
                   type: string
                 ags:
                   type: string
-                zipCode:
+                optedIn:
+                  type: boolean
+                isEngaged:
+                  type: boolean
+                loginToken:
                   type: string
-                campaignSource:
+                  description: Token to later use for login
+                userToken:
+                  type: string
+                  description: MGE specific token
+                phone:
                   type: string
                   description: Where did the user come from before signing up?
       responses:
@@ -450,23 +458,30 @@ paths:
                   description: The code used for double opt in, needs to be saved when confirming user
                 donation:
                   type: object
+                  required:
+                    - amount
+                    - recurring
+                    - firstName
+                    - lastName
+                    - iban
                   properties:
                     amount:
                       type: number
-                      required: true
                     recurring:
                       type: boolean
-                      required: true
                     firstName:
                       type: string
-                      required: true
                     lastName:
                       type: string
-                      required: true
                     iban:
                       type: string
-                      required: true
                       description: Needs to be a valid iban, will be validated
+                    certificateGiver:
+                      type: string
+                      description: If donation is gift, this is the name of the giver
+                    certificateReceiver:
+                      type: string
+                      description: If donation is gift, this is the name of the receiver
                 updatedOnXbge:
                   type: boolean
       responses:

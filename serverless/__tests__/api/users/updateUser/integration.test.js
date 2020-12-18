@@ -1,6 +1,9 @@
-const { INVOKE_URL } = require('../../../testConfig');
+const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
 const { authenticate } = require('../../../testUtils');
 const fetch = require('node-fetch');
+const AWS = require('aws-sdk');
+
+const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
@@ -9,6 +12,38 @@ let token;
 describe('updateUser update donation api test', () => {
   beforeAll(async () => {
     token = await authenticate();
+
+    const params = {
+      TableName: DEV_USERS_TABLE,
+      Key: { cognitoId: userId },
+      UpdateExpression: 'REMOVE donations',
+      ReturnValues: 'UPDATED_NEW',
+    };
+
+    return ddb.update(params).promise();
+  });
+
+  it('should be able to create recurring donation', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        donation: {
+          amount: 50,
+          recurring: true,
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
+          iban: 'DE26641500200001294334',
+        },
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
   });
 
   it('should be able to update recurring donation', async () => {
@@ -43,11 +78,13 @@ describe('updateUser update donation api test', () => {
       },
       body: JSON.stringify({
         donation: {
-          amount: 50,
+          amount: 50.5,
           recurring: false,
           firstName: 'Valentin',
           lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
+          certificateReceiver: 'Anna',
+          certificateGiver: 'Björn',
         },
       }),
     };
