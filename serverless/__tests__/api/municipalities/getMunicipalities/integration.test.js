@@ -1,14 +1,14 @@
 const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 
-describe('getPlaces api test', () => {
-  it('should be able to get places', async () => {
+describe('getMunicipalities api test', () => {
+  it('should be able to get municipalities', async () => {
     const request = {
       method: 'GET',
       mode: 'cors',
     };
 
-    const response = await fetch(`${INVOKE_URL}/places`, request);
+    const response = await fetch(`${INVOKE_URL}/municipalities`, request);
     const json = await response.json();
 
     expect(json).toHaveProperty('data');

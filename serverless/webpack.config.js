@@ -71,6 +71,7 @@ module.exports = {
       'process.env.MAILJET_API_SECRET': JSON.stringify(
         process.env.MAILJET_API_SECRET
       ),
+      'process.env.QUERY_TOKEN': JSON.stringify(process.env.QUERY_TOKEN),
     }),
   ],
 };

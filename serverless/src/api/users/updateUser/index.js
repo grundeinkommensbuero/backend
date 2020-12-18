@@ -102,7 +102,16 @@ const isAuthorized = event => {
 
 const updateUser = async (
   userId,
-  { username, zipCode, city, newsletterConsent, donation, confirmed, code },
+  {
+    username,
+    zipCode,
+    city,
+    newsletterConsent,
+    donation,
+    confirmed,
+    code,
+    removeToken,
+  },
   user,
   ipAddress
 ) => {
@@ -158,6 +167,7 @@ const updateUser = async (
     TableName: tableName,
     Key: { cognitoId: userId },
     UpdateExpression: `
+    ${removeToken ? 'REMOVE customToken' : ''}
     SET ${
       typeof newsletterConsent !== 'undefined'
         ? 'newsletterConsent = :newsletterConsent,'

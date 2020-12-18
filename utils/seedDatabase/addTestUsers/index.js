@@ -7,9 +7,9 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const {
   confirmUser,
   createUserInCognito,
-} = require('../shared/users/createUsers');
+} = require('../../shared/users/createUsers');
 
-const CONFIG = require('../config');
+const CONFIG = require('../../config');
 
 const tableName = CONFIG.DEV_TABLE_NAME;
 const userPoolId = CONFIG.DEV_USER_POOL_ID;

@@ -285,6 +285,7 @@ paths:
                   type: string
                 username:
                   type: string
+                  description: Must be at least 3 chars
                 ags:
                   type: string
                 optedIn:
@@ -293,16 +294,16 @@ paths:
                   type: boolean
                 loginToken:
                   type: string
-                  description: Token to later use for login
+                  description: Token to later use for login, key can not be defined or value null
                 userToken:
                   type: string
-                  description: MGE specific token
+                  description: MGE specific token, key can not be defined or value null
                 phone:
                   type: string
-                  description: Where did the user come from before signing up?
+                  description: Key can not be defined or value null, must be at least 6 digits
       responses:
         '201':
-          description: User was successfully created
+          description: User was successfully created or municipality was added to existing user
           content:
             application/json:
               schema:
@@ -317,7 +318,7 @@ paths:
                       userId:
                         type: string
         '200':
-          description: User had already signed up for communal campaign
+          description: User had already signed up for this municipality
           content:
             application/json:
               schema:
@@ -333,6 +334,15 @@ paths:
                         type: string
         '400':
           description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Query token not provided or incorrect
           content:
             application/json:
               schema:
@@ -453,6 +463,9 @@ paths:
                   type: string
                 confirmed:
                   type: boolean
+                removeToken:
+                  type: boolean
+                  description: If this flag is set the custom token will be removed from the user
                 code:
                   type: string
                   description: The code used for double opt in, needs to be saved when confirming user
@@ -675,6 +688,15 @@ paths:
                                 amount:
                                   type: number
                                 id:
+                                  type: string
+                          municipalCampaigns:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                ags:
+                                  type: string
+                                createdAt:
                                   type: string
         '401':
           description: Not authorized to get user
@@ -1728,16 +1750,17 @@ paths:
                   error:
                     type: string
 
-  /analytics/places:
+  /analytics/municipalities/{ags}:
     get:
-      summary: Gets statistics for municipalities
-      description: Takes ags as query param to get stats for a specific municipalities
+      summary: Gets statistics for one municipalities
+      description: Takes ags as path param to get stats for a specific municipality
       parameters:
-        - in: query
+        - in: path
           name: ags
           schema:
             type: string
           description: Allgemeiner Gemeindeschlüssel to get stats for specific municipality
+          required: true
       responses:
         '200':
           description: Stats successfully retrieved
@@ -1753,8 +1776,11 @@ paths:
                         type: integer
                         description: Count of signups
                       percentToGoal:
-                        type: integer
+                        type: number
                         description: Percentage of the goal which is already reached
+                      goal:
+                        type: integer
+                        description: Goal which is aimed at for this municipality
         '404':
           description: Municipality was not found
           content:
@@ -1776,13 +1802,81 @@ paths:
                   error:
                     type: string
 
-  /places:
+  /analytics/municipalities:
     get:
-      summary: Gets all places (municipalities)
-      description: Municipalities might be duplicated because of different zip codes
+      summary: Gets statistics for all municipalities
+      parameters:
+        - in: query
+          name: all
+          description: Pass e.g. true (or any other string, we just check if the param is there). If param is set all municipalities including goals will be returned.
       responses:
         '200':
-          description: Places successfully retrieved
+          description: Stats successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      events:
+                        description: Municipalities with special events (reached goal, big growth, first signups), not returned if query param "all" is set.
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            signups:
+                              type: array
+                              description: Array of length 2, first value is previous and second value is current number of signups
+                              items:
+                                type: number
+                            ags:
+                              type: string
+                            category:
+                              type: string
+                              description: Either "win", "change" or "new"
+                      municipalities:
+                        type: array
+                        description: All municipalites with signups (munic. with no signups only included if query param "all" is set)
+                        items:
+                          type: object
+                          properties:
+                            signups:
+                              type: number
+                            ags:
+                              type: string
+                            goal:
+                              type: number
+                              description: Will only be returned if query param "all" is set
+                      timePassed:
+                        type: number
+                        description: Setting of the timespan which is used to check for events, in ms
+                      scale:
+                        type: array
+                        description: Setting of scale for visualisation in map in form [[x1,x2],[y1,y2]]
+                        items:
+                          type: array
+                          items:
+                            type: number
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /municipalities:
+    get:
+      summary: Gets all municipalities
+      responses:
+        '200':
+          description: Municipalities successfully retrieved
           content:
             application/json:
               schema:
@@ -1791,6 +1885,7 @@ paths:
                   data:
                     type: array
                     items:
+                      type: object
                       properties:
                         longitude:
                           type: integer
