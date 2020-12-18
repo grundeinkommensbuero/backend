@@ -1,5 +1,15 @@
+// NOTES:
+// This script takes several hours to complete
+// for the 10,830 municipalities
+// Possible Improvements
+// - Check if image exists and skip existing images
+//    – include flag for overwrite
 const fs = require('fs');
 const Jimp = require('jimp');
+const fsPromises = fs.promises;
+const ProgressBar = require('progress');
+
+const errors = [];
 
 const municipalitiesRaw = fs.readFileSync(
   '../../analyseData/mergeGeospatialData/output/places.json',
@@ -7,17 +17,41 @@ const municipalitiesRaw = fs.readFileSync(
 );
 const municipalities = JSON.parse(municipalitiesRaw);
 
-const generateBackground = (pathToTemplate, isGeneric, municipality) => {
-  Jimp.read(pathToTemplate)
-    .then(template => {
-      if (isGeneric) {
+const bar = new ProgressBar(
+  'Processing backgrounds: [:bar] :current/:total = :percent, elapsed :elapsed s, rate :rate images/second, eta :eta s',
+  { total: municipalities.length }
+);
+
+const generateGenericBackground = municipality => {
+  return new Promise((resolve, reject) => {
+    Jimp.read('./template/ogTemplateGeneric.png')
+      .then(template => {
         template.write(`./output/backgrounds/${municipality.ags}.png`, () => {
-          console.log(`${municipality.ags} done`);
+          resolve(`${municipality.ags} done`);
         });
-      } else {
+      })
+      .catch(err => {
+        reject('Error reading template', err);
+        errors.push({
+          municipality,
+          err,
+          msg: 'Error reading generic template',
+        });
+      });
+  });
+};
+
+const generateSpecificBackground = municipality => {
+  return new Promise((resolve, reject) => {
+    Jimp.read('./template/ogTemplate.png')
+      .then(template => {
+        template.write(`./output/backgrounds/${municipality.ags}.png`, () => {
+          resolve(`${municipality.ags} done`);
+        });
+
         Jimp.read(`./municipalityImages/${municipality.ags}.png`)
           .then(overlay => {
-            // Scale municipality image
+            // Rotate first! and then scale municipality image
             overlay.rotate(5).scaleToFit(180, 180, Jimp.RESIZE_BEZIER);
             // Compose
             template
@@ -27,33 +61,53 @@ const generateBackground = (pathToTemplate, isGeneric, municipality) => {
                 330 - overlay.bitmap.height / 2
               )
               .write(`./output/backgrounds/${municipality.ags}.png`, () => {
-                console.log(`${municipality.ags} done`);
+                resolve(`${municipality.ags} done`);
               }); // save;
           })
           .catch(err => {
-            console.log('Error reading overlay', err);
+            reject('Error reading overlay', err);
+            errors.push({
+              municipality,
+              err,
+              msg: 'Error reading municipality overlay',
+            });
           });
-      }
-    })
-    .catch(err => {
-      console.log('Error reading template', err);
-    });
+      })
+      .catch(err => {
+        reject('Error reading template', err);
+        errors.push({
+          municipality,
+          err,
+          msg: 'Error reading municipality template',
+        });
+      });
+  });
 };
 
-for (let index = 0; index < municipalities.length; index++) {
-  const municipality = municipalities[index];
-  fs.stat(`./municipalityImages/${municipality.ags}.png`, function (err, stat) {
-    if (err == null) {
-      generateBackground('./template/ogTemplate.png', false, municipality);
-    } else if (err.code === 'ENOENT') {
-      // file does not exist
-      generateBackground(
-        './template/ogTemplateGeneric.png',
-        true,
-        municipality
-      );
-    } else {
-      console.log('fs stat error: ', err.code);
+const createBackgrounds = async () => {
+  for (let index = 0; index < municipalities.length; index++) {
+    const municipality = municipalities[index];
+    try {
+      await fsPromises.stat(`./municipalityImages/${municipality.ags}.png`);
+      await generateSpecificBackground(municipality);
+    } catch (err) {
+      if ((err.code = 'ENOENT')) {
+        await generateGenericBackground(municipality);
+      } else {
+        console.log('fs stat error', municipality.ags, err);
+        errors.push({
+          municipality,
+          err,
+          msg: 'Some other fs stat error',
+        });
+      }
     }
-  });
-}
+    bar.tick();
+  }
+  fs.writeFileSync(
+    './logs/error-backgrounds.json',
+    JSON.stringify(errors, null, 2)
+  );
+};
+
+createBackgrounds();
