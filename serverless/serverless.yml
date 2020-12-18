@@ -18,6 +18,12 @@ provider:
   stage: dev
   region: eu-central-1
   memorySize: 512 # Overwrite the default memory size. Default is 1024
+  layers:
+    # Google Chrome for AWS Lambda as a layer
+    # Make sure you use the latest version depending on the region
+    # https://github.com/shelfio/chrome-aws-lambda-layer
+    - arn:aws:lambda:${self:provider.region}:764866452798:layer:chrome-aws-lambda:20
+
   timeout: 10
   # These environment variables are made available to our functions
   # under process.env.
@@ -807,17 +813,18 @@ functions:
           - s3:DeleteObject
         Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
 
-  saveMapAsImage:
-    handler: src/triggers/saveMapAsImage/index.handler
-    events:
-      - schedule: rate(15 minutes)
-    timeout: 10
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - s3:PutObject
-          - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::xbge-map-images/*'
+  # saveMapAsImage:
+  #   handler: src/triggers/saveMapAsImage/index.handler
+  #   events:
+  #     - schedule: rate(15 minutes)
+  #   timeout: 60
+  #   memorySize: 2048
+  #   iamRoleStatements:
+  #     - Effect: Allow
+  #       Action:
+  #         - s3:PutObject
+  #         - s3:PutObjectAcl
+  #       Resource: 'arn:aws:s3:::xbge-map-images/*'
 
 
   # getQuestions:

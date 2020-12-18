@@ -1,5 +1,7 @@
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
 const jimp = require('jimp');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({ region: 'eu-central-1' });
 
 module.exports.handler = async event => {
   // Use puppeteer to take screenshot of map
@@ -21,14 +23,21 @@ const sleep = ms => {
 };
 
 async function takeScreenshot() {
-  const browser = await puppeteer.launch({
-    headless: false,
+  const browser = await chromium.puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
   });
+  console.log({ browser });
   const page = await browser.newPage();
-  await page.setViewport({ width: 1200, height: 1200 });
+  console.log('created page', page);
+  //   await page.setViewport({ width: 1200, height: 1200 });
   await page.goto(
     'https://5fc529cd40c2300007539f6c--expedition-grundeinkommen.netlify.app/playground/campaignMap'
   );
+  console.log('went to page', page);
   await page.evaluate(() => {
     // TODO: update in frontend
     // const buttonsSelector = '#mapButtonContainer';
@@ -37,12 +46,15 @@ async function takeScreenshot() {
     let buttons = document.querySelector(buttonsSelector);
     buttons.style.display = 'none';
   });
+  console.log({ page });
 
   const mapSelector = '#deckgl-wrapper';
   await page.waitForSelector(mapSelector);
   const map = await page.$(mapSelector);
-  await sleep(6000);
+  console.log({ map });
+  await sleep(100);
   const image = await map.screenshot();
+  console.log({ image });
 
   browser.close();
 
