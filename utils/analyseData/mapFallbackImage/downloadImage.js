@@ -25,7 +25,6 @@ async function run() {
 
   const mapSelector = '#deckgl-wrapper';
   await page.waitForSelector(mapSelector);
-  // TODO: Get only map in screenshot
   const map = await page.$(mapSelector);
   await sleep(6000);
   await map.screenshot({ path: './output/map.png' });
