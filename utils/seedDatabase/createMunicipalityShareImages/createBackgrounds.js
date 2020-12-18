@@ -5,7 +5,7 @@
 // - Check if image exists and skip existing images
 //    – include flag for overwrite
 const fs = require('fs');
-const Jimp = require('jimp');
+const jimp = require('jimp');
 const fsPromises = fs.promises;
 const ProgressBar = require('progress');
 
@@ -24,7 +24,8 @@ const bar = new ProgressBar(
 
 const generateGenericBackground = municipality => {
   return new Promise((resolve, reject) => {
-    Jimp.read('./template/ogTemplateGeneric.png')
+    jimp
+      .read('./template/ogTemplateGeneric.png')
       .then(template => {
         template.write(`./output/backgrounds/${municipality.ags}.png`, () => {
           resolve(`${municipality.ags} done`);
@@ -43,16 +44,18 @@ const generateGenericBackground = municipality => {
 
 const generateSpecificBackground = municipality => {
   return new Promise((resolve, reject) => {
-    Jimp.read('./template/ogTemplate.png')
+    jimp
+      .read('./template/ogTemplate.png')
       .then(template => {
         template.write(`./output/backgrounds/${municipality.ags}.png`, () => {
           resolve(`${municipality.ags} done`);
         });
 
-        Jimp.read(`./municipalityImages/${municipality.ags}.png`)
+        jimp
+          .read(`./municipalityImages/${municipality.ags}.png`)
           .then(overlay => {
             // Rotate first! and then scale municipality image
-            overlay.rotate(5).scaleToFit(180, 180, Jimp.RESIZE_BEZIER);
+            overlay.rotate(5).scaleToFit(180, 180, jimp.RESIZE_BEZIER);
             // Compose
             template
               .composite(
