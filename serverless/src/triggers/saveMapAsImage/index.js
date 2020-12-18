@@ -33,16 +33,19 @@ async function takeScreenshot() {
   console.log({ browser });
   const page = await browser.newPage();
   console.log('created page', page);
-  //   await page.setViewport({ width: 1200, height: 1200 });
+
+  // NOTE: update to production link when ready.
   await page.goto(
     'https://5fc529cd40c2300007539f6c--expedition-grundeinkommen.netlify.app/playground/campaignMap'
   );
   console.log('went to page', page);
   await page.evaluate(() => {
-    // TODO: update in frontend
-    // const buttonsSelector = '#mapButtonContainer';
+    // NOTE: Selector will be the id in production
+    // const buttonsSelector ='#mapButtonContainer'
+
     const buttonsSelector =
       '#gatsby-focus-wrapper > main > div > section > div > div > div > div.style-module--interfaceContainer--1CH8m > div.style-module--buttonContainer--WINK5';
+
     let buttons = document.querySelector(buttonsSelector);
     buttons.style.display = 'none';
   });
