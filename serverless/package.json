@@ -48,7 +48,8 @@
       "testUtils/",
       "secretConfig.js",
       "load.test.ts",
-      "getQuestions/"
+      "getQuestions/",
+      "createUserExternal/"
     ]
   }
 }

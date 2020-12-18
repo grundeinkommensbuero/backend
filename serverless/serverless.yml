@@ -11,6 +11,8 @@ custom:
   # The table name is based on the stage we are deploying to
   usersTableName: ${self:custom.stage}-users
   signaturesTableName: ${self:custom.stage}-signatures
+  municipalitiesTableName: ${self:custom.stage}-municipalities
+  userMunicipalityTableName: ${self:custom.stage}-users-municipalities
 
 provider:
   name: aws
@@ -30,6 +32,8 @@ provider:
   environment:
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
+    MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
+    USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
     IMAGE_BUCKET: xbge-profile-pictures
     MAP_IMAGE_BUCKET: xbge-map-images
@@ -374,6 +378,50 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  # Probably not needed in the future
+  # createUserExternal:
+  #   handler: src/api/users/createUserExternal/index.handler
+  #   events:
+  #     - http:
+  #         path: users/external-signup
+  #         method: post
+  #         cors: true
+  #   environment:
+  #     USER_POOL_ID:
+  #       Ref: CognitoUserPoolUserPool
+  #   iamRoleStatements:
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - dynamodb:PutItem
+  #         - dynamodb:UpdateItem
+  #       Resource:
+  #         - 'Fn::GetAtt': [UsersTable, Arn]
+  #     - Effect: 'Allow' # for the global secondary index
+  #       Action:
+  #         - dynamodb:Query
+  #       Resource:
+  #         - Fn::Join:
+  #             - '/'
+  #             - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+  #               - 'index/emailIndex'
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - cognito-idp:AdminCreateUser
+  #         - cognito-idp:AdminSetUserPassword
+  #       Resource:
+  #         - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - dynamodb:GetItem
+  #       Resource:
+  #         - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - dynamodb:PutItem
+  #         - dynamodb:GetItem
+  #       Resource:
+  #         - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+
   getUser:
     handler: src/api/users/getUser/index.handler
     events:
@@ -494,13 +542,77 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  getPlaces:
-    handler: src/api/places/getPlaces/index.handler
+  getMunicipalities:
+    handler: src/api/municipalities/getMunicipalities/index.handler
     events:
       - http:
-          path: places
+          path: municipalities
           method: get
           cors: true
+
+  getMunicipalityStats:
+    handler: src/api/municipalities/getMunicipalityStats/index.handler
+    events:
+      - http:
+          path: analytics/municipalities/{ags}
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
+
+  getMunicipalitiesStats:
+    handler: src/api/municipalities/getMunicipalitiesStats/index.handler
+    timeout: 30 # Timeout for this specific function.
+    events:
+      - http:
+          path: analytics/municipalities
+          method: get
+          cors: true
+    iamRoleStatementsName: ${self:custom.stage}-get-municipalities-stats-role
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:HeadObject
+          - s3:GetObject
+        Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
+
+  createMunicipalitiesStats:
+    handler: src/api/municipalities/createMunicipalitiesStats/index.handler
+    timeout: 300
+    events: # Call this function every x minutes
+      - schedule: rate(15 minutes)
+    iamRoleStatementsName: ${self:custom.stage}-create-municipalities-stats-role
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: Allow
+        Action:
+          - s3:HeadObject
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   adminCreateUser:
     handler: src/api/users/adminCreateUser/index.handler
@@ -893,6 +1005,11 @@ functions:
           - ses:SendEmail
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   defineAuthChallenge:
     handler: src/triggers/auth/defineAuthChallenge/index.handler
@@ -982,6 +1099,45 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 5
               WriteCapacityUnits: 5
+
+    MunicipalitiesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.municipalitiesTableName}
+        AttributeDefinitions:
+          - AttributeName: ags
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ags
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    UserMunicipalityTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userMunicipalityTableName}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: ags
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: ags
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: agsIndex
+            KeySchema:
+              - AttributeName: ags
+                KeyType: HASH
+              - AttributeName: userId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: 'ALL'
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
