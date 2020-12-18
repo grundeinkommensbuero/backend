@@ -12,3 +12,4 @@ mailjetConfig.js
 queryToken.js
 basicAuth.js
 list*.pdf
+.env
