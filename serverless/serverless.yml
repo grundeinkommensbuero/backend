@@ -26,6 +26,7 @@ provider:
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
     STAGE: ${self:custom.stage}
     IMAGE_BUCKET: xbge-profile-pictures
+    MAP_IMAGE_BUCKET: xbge-map-images
 
 plugins:
   - serverless-iam-roles-per-function
@@ -804,6 +805,19 @@ functions:
           - s3:PutObjectAcl
           - s3:DeleteObject
         Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+
+  saveMapAsImage:
+    handler: src/triggers/saveMapAsImage/index.handler
+    events:
+      - schedule: rate(15 minutes)
+    timeout: 10
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-map-images/*'
+
 
   # getQuestions:
   #   handler: src/api/users/questions/getQuestions/index.handler
