@@ -16,6 +16,7 @@
   "author": "Vali",
   "license": "ISC",
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
     "bottleneck": "^2.19.5",
     "bwip-js": "^2.0.11",
     "configstore": "^5.0.1",
@@ -51,7 +52,8 @@
       "testUtils/",
       "secretConfig.js",
       "load.test.ts",
-      "getQuestions/"
+      "getQuestions/",
+      "createUserExternal/"
     ]
   }
 }

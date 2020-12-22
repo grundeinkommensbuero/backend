@@ -10,15 +10,30 @@ if (apiKey && apiSecret) {
 } else {
   console.log('No mailjet config provided');
 }
+const { getUser } = require('../../../shared/users');
+
+const THREE_MINUTES = 3 * 60 * 1000;
 
 const handler = async event => {
   let secretLoginCode;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
-    // Generate a new secret login code and mail it to the user
-    secretLoginCode = crypto.randomDigits(6).join('');
 
-    await sendEmail(event.request.userAttributes, secretLoginCode);
+    // Get user to check if a token was added recently (sub is userId)
+    const result = await getUser(event.request.userAttributes.sub);
+
+    // Only set the token as loginCode if it is not older than 3 minutes
+    if (
+      'Item' in result &&
+      'customToken' in result.Item &&
+      new Date() - new Date(result.Item.customToken.timestamp) < THREE_MINUTES
+    ) {
+      secretLoginCode = result.Item.customToken.token;
+    } else {
+      // Generate a new secret login code and mail it to the user
+      secretLoginCode = crypto.randomDigits(6).join('');
+      await sendEmail(event.request.userAttributes, secretLoginCode);
+    }
   } else {
     // There's an existing session. Don't generate new digits but
     // re-use the code from the current session. This allows the user to
