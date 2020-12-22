@@ -159,7 +159,7 @@ functions:
               Ref: ApiGatewayAuthorizer
     memorySize: 1600 # memorySize for this specific function.
     timeout: 12 # Timeout for this specific function.
-    iamRoleStatementsName: create-list-auth-role
+    iamRoleStatementsName: ${self:custom.stage}-create-list-auth-role
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -256,7 +256,7 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: AdminApiGatewayAuthorizer
-    iamRoleStatementsName: admin-update-list-role
+    iamRoleStatementsName: ${self:custom.stage}-admin-update-list-role
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -850,7 +850,7 @@ functions:
       - schedule: cron(30 19 * * ? *)
     memorySize: 2048 # memorySize for this specific function.
     timeout: 300 # Timeout for this specific function.
-    iamRoleStatementsName: send-congrats-mails-role
+    iamRoleStatementsName: ${self:custom.stage}-send-congrats-mails-role
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
