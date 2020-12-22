@@ -56,7 +56,7 @@ const createDonationString = (donation, isRecurring) => {
     : donation.debitDate.substring(0, 10);
   const createdAt = donation.createdAt.substring(0, 10);
 
-  return `SEPA,${donation.amount},EUR,${
+  return `SEPA,DD,${donation.amount},EUR,${
     donation.id
   },CORE,${CREDITOR_ID},${debitDate},${createdAt},${
     isRecurring ? 'RCUR' : 'OOFF'
