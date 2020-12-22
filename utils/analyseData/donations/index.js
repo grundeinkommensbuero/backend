@@ -29,17 +29,16 @@ const generateCsv = users => {
     }
 
     if ('recurringDonation' in user.donations) {
-      for (const donation of user.donations.recurringDonation) {
-        dataString += createDonationString(donation, true);
+      const donation = user.donations.recurringDonation;
+      dataString += createDonationString(donation, true);
 
-        if ('updatedAt' in donation) {
-          console.log(
-            'Donation updated (userId, donationId, updatedAt)',
-            user.cognitoId,
-            donation.id,
-            donation.updatedAt
-          );
-        }
+      if ('updatedAt' in donation) {
+        console.log(
+          'Donation updated (userId, donationId, updatedAt)',
+          user.cognitoId,
+          donation.id,
+          donation.updatedAt
+        );
       }
     }
   }
