@@ -19,11 +19,16 @@ const run = async () => {
       config.set('aws', awsConfig);
     }
 
+    // Copy html templates into mails folder
+    shell.exec(
+      'cp ../../../mailTemplate.html mails/transactional/mailTemplate.html'
+    );
+
     shell.exec(
       `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
     );
 
-    shell.exec('sls deploy -s pf');
+    shell.exec('sls deploy -s cli -f updateUser');
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }

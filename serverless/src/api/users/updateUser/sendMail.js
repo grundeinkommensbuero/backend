@@ -1,3 +1,10 @@
+const AWS = require('aws-sdk');
+const nodemailer = require('nodemailer');
+
+const ses = new AWS.SES();
+const htmlMail = require('raw-loader!../../../../mails/transactional/donationMail.html')
+  .default;
+
 let mailjet;
 
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
@@ -14,19 +21,8 @@ const DONATION_TEMPLATE = 1885162;
 const CHRISTMAS_TEMPLATE = 2060355;
 
 // Function which sends an email to the user after donation was changed
-const sendMail = async (
-  email,
-  {
-    recurring,
-    amount,
-    firstName,
-    lastName,
-    certificateReceiver,
-    certificateGiver,
-  },
-  { debitDate, id, recurringDonationExisted },
-  username
-) => {
+const sendMail = async (email, donation, donationInfo, username) => {
+  const { amount } = donation;
   let amountAsString = amount.toString().replace('.', ',');
   if (amountAsString.includes(',')) {
     if (amountAsString.split(',')[1].length === 1) {
@@ -36,6 +32,34 @@ const sendMail = async (
     amountAsString = `${amountAsString},00`;
   }
 
+  // If the backend is for expedition grundeinkommen we use
+  // mailjet as email provider
+  if (process.env.IS_XBGE) {
+    return sendMailViaMailjet(
+      email,
+      { amountAsString, ...donation },
+      donationInfo,
+      username
+    );
+  }
+
+  // Otherwise we use SES
+  return sendMailViaSes();
+};
+
+const sendMailViaMailjet = async (
+  email,
+  {
+    recurring,
+    amountAsString,
+    firstName,
+    lastName,
+    certificateReceiver,
+    certificateGiver,
+  },
+  { debitDate, id, recurringDonationExisted },
+  username
+) => {
   const params = {
     Messages: [
       {
@@ -85,8 +109,40 @@ const sendMail = async (
   return mailjet.post('send', { version: 'v3.1' }).request(params);
 };
 
-module.exports = sendMail;
+const sendMailViaSes = (
+  email,
+  { amountAsString, ...donation },
+  donationInfo,
+  username
+) => {
+  const mailOptions = {
+    from: 'TODO <support@expedition-grundeinkommen.de',
+    subject: 'Deine Spendeneinstellungen haben sich geändert',
+    html: customEmail(),
+    to: email,
+  };
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses,
+  });
+
+  return transporter.sendMail(mailOptions);
+};
+
+const customEmail = () => {
+  if (!htmlMail) {
+    throw new Error('Html Mail not provided');
+  }
+
+  return htmlMail;
+  // return htmlMail
+  //   .replace(/\[\[OPTIONAL_TEXT_1\]\]/gi, optionalText1)
+  //   .replace(/\[\[ADDRESS\]\]/gi, ADDRESSES[campaign.code]);
+};
 
 const formatDate = date => {
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 };
+
+module.exports = sendMail;
