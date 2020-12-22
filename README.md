@@ -20,5 +20,5 @@ It uses the [Serverless Framework](https://www.serverless.com/) to define infras
 ## Documentation
 
 - Make changes to docs/documentation.yml
-- To watch Redoc-Documentation locally: `npm run serveDocumentation`
-- To bundle Redoc-Documentation into html file: `npm run bundleDocumentation`
+- To watch Redoc-Documentation locally: `npm run serveDocs`
+- To bundle Redoc-Documentation into html file: `npm run bundleDocs`
