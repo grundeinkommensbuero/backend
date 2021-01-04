@@ -1,0 +1,80 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Hier ist deine Unterschriftenliste für die Volksabstimmung zum Grundeinkommen.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo,
+          <br><br>
+          hier sind deine Unterschriftenlisten!
+          <br><br>
+          Bitte druck die Liste aus, unterschreibe sie und schicke sie so bald wie möglich per Post an uns zurück.
+          [[OPTIONAL_TEXT_1]]
+          <br><br>Hast du noch Menschen in deinem Umfeld, die mit dir unterschreiben
+          können? Prima: Je mehr Personen mit dir zusammen unterschreiben, desto besser!
+          <br><br>
+          Die Adresse zum Zurücksenden ist:
+          <br><br>
+          [[ADDRESS]]
+          <br><br>
+          Du willst auch jenseits deines eigenen Haushalts Unterschriften sammeln? Perfekt!
+          Tipps zum Sammeln und Weitererzählen der Expedition unter den aktuellen
+          Ausgangsbeschränkungen findest du bei den Listen in der Anlage.
+          <br><br>
+          Schön, dass du dabei bist!
+          <br><br>
+          Joy und Laura
+
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="section-red" padding-top="40px">
+      <mj-column>
+        <mj-text mj-class="section-red-text">
+
+          <h2>Kannst du für Unterschriftenlisten per Post spenden?</h2>
+          Viele Menschen haben momentan keinen Zugang zu einem Drucker - aber wir brauchen ihre Unterschriften!
+          Bitte unterstütze unser Crowdfunding für den postalischen Versand von Unterschriftenlisten.
+          Die Expedition ist gemeinnützig, das heißt: du kannst deine Spende steuerlich absetzen.
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.startnext.com/CcQ" color="#fef377" border="1px solid #fef377">
+          Ich spende Unterschriften per Post
+        </mj-button>
+
+        <mj-text mj-class="section-red-text">
+          <h3>Alternative Spendenmöglichkeiten</h3>
+          Bankverbindung:
+          <br><br>
+          Vertrauensgesellschaft e.V.<br>
+          IBAN: DE74 4306 0967 1218 1056 01<br>
+          BIC: GENODEM1GLS (GLS-Bank)<br>
+          <br><br>
+          Charity-SMS:
+          <br><br>
+          Du kannst unsere Arbeit auch mit 5 € oder 10 € per SMS unterstützen.
+          Sende dazu das Kennwort expedition5 oder expedition10 an die 81190.
+          Expedition Grundeinkommen erhält davon 4,83 € bzw. 9,83 €.
+          <br><br>
+          oder
+        </mj-text>
+
+        <mj-button align="left" padding-top="40px" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W54KDCT69GNU&source=url" color="#fef377" border="1px solid #fef377">
+          Spende mit Paypal/Kreditkarte
+        </mj-button>
+      </mj-column>
+
+    </mj-section>
+
+    <mj-include path="../includes/footer-transactional.mjml" />
+  </mj-body>
+</mjml>
