@@ -29,17 +29,16 @@ const generateCsv = users => {
     }
 
     if ('recurringDonation' in user.donations) {
-      for (const donation of user.donations.recurringDonation) {
-        dataString += createDonationString(donation, true);
+      const donation = user.donations.recurringDonation;
+      dataString += createDonationString(donation, true);
 
-        if ('updatedAt' in donation) {
-          console.log(
-            'Donation updated (userId, donationId, updatedAt)',
-            user.cognitoId,
-            donation.id,
-            donation.updatedAt
-          );
-        }
+      if ('updatedAt' in donation) {
+        console.log(
+          'Donation updated (userId, donationId, updatedAt)',
+          user.cognitoId,
+          donation.id,
+          donation.updatedAt
+        );
       }
     }
   }
@@ -57,7 +56,7 @@ const createDonationString = (donation, isRecurring) => {
     : donation.debitDate.substring(0, 10);
   const createdAt = donation.createdAt.substring(0, 10);
 
-  return `SEPA,${donation.amount},EUR,${
+  return `SEPA,DD,${donation.amount},EUR,${
     donation.id
   },CORE,${CREDITOR_ID},${debitDate},${createdAt},${
     isRecurring ? 'RCUR' : 'OOFF'
