@@ -19,16 +19,21 @@ const run = async () => {
       config.set('aws', awsConfig);
     }
 
-    // Copy html templates into mails folder
+    // Copy mjml templates into mails folder
     shell.exec(
-      'cp ../../../mailTemplate.html mails/transactional/mailTemplate.html'
+      'cp ../../../mails/donationMail.mjml mails/transactional/donationMail.mjml'
     );
 
+    // Transform mjml template into html
     shell.exec(
-      `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
+      'mjml mails/transactional/donationMail.mjml -o mails/transactional/donationMail.html'
     );
 
-    shell.exec('sls deploy -s cli -f updateUser');
+    // shell.exec(
+    //   `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
+    // );
+
+    // shell.exec('sls deploy -s cli -f updateUser');
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }
