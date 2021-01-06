@@ -10,10 +10,14 @@ const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 4 });
 
 const addMunicipalities = async () => {
   for (const municipality of json) {
-    await limiter.schedule(async () => {
-      await createMunicipality(municipality);
-      console.log('Added municipality', municipality.ags);
-    });
+    try {
+      await limiter.schedule(async () => {
+        await createMunicipality(municipality);
+        console.log('Added municipality', municipality.ags);
+      });
+    } catch (error) {
+      console.log('Error', error);
+    }
   }
 };
 

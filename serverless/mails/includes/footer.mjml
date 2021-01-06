@@ -10,14 +10,12 @@
     </mj-social>
     <mj-text color="#3423f6" font-size="13px">
 
-      Zum Abbestellen des Newsletters antworte bitte mit &bdquo;Abbestellen&ldquo; auf diese Mail. Diese Mail wurde an die Adresse {{Address}} versendet.
-      <br><br>
-      Expedition Grundeinkommen<br>
-      c/o Vertrauensgesellschaft e.V.<br>
+      Vertrauensgesellschaft e.V.<br>
+      c/o Expedition Grundeinkommen<br>
       Karl-Marx-Strasse 50<br>
       12043 Berlin
       <br><br>
-      <a href="https://expedition-grundeinkommen.de/" class="link">www.expedition-grundeinkommen.de</a><br />
+      <a href="https://expedition-grundeinkommen.de/" class="link">expedition-grundeinkommen.de</a><br />
       <a href="https://expedition-grundeinkommen.de/impressum/" class="link">Impressum</a>
       <a href="https://expedition-grundeinkommen.de/datenschutz/" class="link">Datenschutz</a>
     </mj-text>

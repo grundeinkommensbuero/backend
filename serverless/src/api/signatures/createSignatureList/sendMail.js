@@ -1,3 +1,10 @@
+const AWS = require('aws-sdk');
+const nodemailer = require('nodemailer');
+
+const ses = new AWS.SES();
+const htmlMail = require('raw-loader!../../../../mails/transactional/signatureListMail.html')
+  .default;
+
 let mailjet;
 
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
@@ -23,6 +30,17 @@ const STATES = {
 
 // Functions which sends an email with the attached pdf and returns a promise
 const sendMail = (email, username, attachments, campaign) => {
+  // If the backend is for expedition grundeinkommen we use
+  // mailjet as email provider
+  if (process.env.IS_XBGE) {
+    return sendMailViaMailjet(email, username, attachments, campaign);
+  }
+
+  // Otherwise we use SES
+  return sendMailViaSes(email, attachments, campaign);
+};
+
+const sendMailViaMailjet = (email, username, attachments, campaign) => {
   const params = {
     Messages: [
       {
@@ -50,8 +68,33 @@ const sendMail = (email, username, attachments, campaign) => {
     ],
   };
 
-  console.log('params', JSON.stringify(params));
   return mailjet.post('send', { version: 'v3.1' }).request(params);
+};
+
+const sendMailViaSes = (email, attachments) => {
+  if (!htmlMail) {
+    throw new Error('Html Mail not provided');
+  }
+
+  const mailOptions = {
+    from: 'TODO <support@expedition-grundeinkommen.de',
+    subject: 'Deine Unterschriftenliste',
+    html: htmlMail,
+    to: email,
+    // We need to bring the attachments into a different format for nodemailer
+    attachments: attachments.map(attachment => ({
+      filename: attachment.Filename,
+      contentType: attachment.ContentType,
+      content: attachment.Base64Content,
+    })),
+  };
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses,
+  });
+
+  return transporter.sendMail(mailOptions);
 };
 
 module.exports = sendMail;

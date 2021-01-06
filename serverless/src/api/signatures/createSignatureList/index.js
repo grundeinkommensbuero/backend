@@ -42,12 +42,23 @@ const handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    if (!('campaignCode' in requestBody)) {
-      return errorResponse(400, 'Campaign code not provided');
+    // Only for the backend of the expedition we have been passed a campaign code,
+    // not for the prototype fund
+    let campaignCode;
+
+    if (process.env.IS_XBGE) {
+      if (!('campaignCode' in requestBody)) {
+        return errorResponse(400, 'Campaign code not provided');
+      }
+
+      campaignCode = requestBody.campaignCode;
+
+      // create a (nice to later work with) object, which campaign it is
+    } else {
+      campaignCode = 'direct-democracy-1';
     }
 
-    // create a (nice to later work with) object, which campaign it is
-    const campaign = constructCampaignId(requestBody.campaignCode);
+    const campaign = constructCampaignId(campaignCode);
 
     const date = new Date();
     // we only want the current day (YYYY-MM-DD), then it is also easier to filter
@@ -144,7 +155,7 @@ const handler = async event => {
           qrCodeUrl,
           pdfId,
           'COMBINED',
-          requestBody.campaignCode
+          campaign.code
         );
 
         // upload pdf to s3 after generation was successful
@@ -180,10 +191,10 @@ const handler = async event => {
             // we only want to this if the endpoint was not triggered by an admin
             if (userId !== 'anonymous' && !requestBody.triggeredByAdmin) {
               const attachments = await generateAttachments(
-                mailAttachments[requestBody.campaignCode],
+                mailAttachments[campaign.code],
                 qrCodeUrl,
                 pdfId,
-                requestBody.campaignCode
+                campaign.code
               );
 
               await sendMail(email, username, attachments, campaign);

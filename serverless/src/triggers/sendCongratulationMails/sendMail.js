@@ -1,3 +1,10 @@
+const AWS = require('aws-sdk');
+const nodemailer = require('nodemailer');
+
+const ses = new AWS.SES();
+const htmlMail = require('raw-loader!../../../../mails/transactional/congratulationMail.html')
+  .default;
+
 let mailjet;
 
 const { apiKey, apiSecret } = require('../../../mailjetConfig');
@@ -27,11 +34,21 @@ const STATES = {
 
 // Function which sends an email to congratulate for the reception of list(s)
 // gets a user object, which is why we destructure the object
-const sendMail = (
+const sendMail = (user, totalCountForAllUsers) => {
+  // If the backend is for expedition grundeinkommen we use
+  // mailjet as email provider
+  if (process.env.IS_XBGE) {
+    return sendMailViaMailjet(user, totalCountForAllUsers);
+  }
+
+  // Otherwise we use SES
+  return sendMailViaSes();
+};
+
+const sendMailViaMailjet = (
   { email, username, userId, dailyCount, totalCount, campaign, pdfUrl },
   totalCountForAllUsers
 ) => {
-  console.log('about to send email');
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -62,6 +79,38 @@ const sendMail = (
       },
     ],
   });
+};
+
+const sendMailViaSes = ({ email, ...user }, totalCountForAllUsers) => {
+  const mailOptions = {
+    from: 'TODO <support@expedition-grundeinkommen.de',
+    subject: 'Deine Spendeneinstellungen haben sich geändert',
+    html: customEmail(user, totalCountForAllUsers),
+    to: email,
+  };
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses,
+  });
+
+  return transporter.sendMail(mailOptions);
+};
+
+// TODO: the download list link still needs the correct url
+const customEmail = (
+  { userId, dailyCount, totalCount },
+  totalCountForAllUsers
+) => {
+  if (!htmlMail) {
+    throw new Error('Html Mail not provided');
+  }
+
+  return htmlMail
+    .replace(/\[\[DAILY_COUNT\]\]/gi, dailyCount)
+    .replace(/\[\[TOTAL_COUNT\]\]/gi, totalCount)
+    .replace(/\[\[TOTAL_COUNT_ALL_USERS\]\]/gi, totalCountForAllUsers)
+    .replace(/\[\[USER_ID\]\]/gi, userId);
 };
 
 module.exports = sendMail;

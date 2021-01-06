@@ -1,3 +1,10 @@
+const AWS = require('aws-sdk');
+const nodemailer = require('nodemailer');
+
+const ses = new AWS.SES();
+const htmlMail = require('raw-loader!../../../../mails/transactional/loginCodeMail.html')
+  .default;
+
 const crypto = require('crypto-secure-random-digit');
 
 let mailjet;
@@ -62,12 +69,23 @@ const sendEmail = (userAttributes, code) => {
   const signedUpOnBBPlatform =
     userAttributes['custom:source'] === 'bb-platform';
 
+  // If the backend is for expedition grundeinkommen we use
+  // mailjet as email provider
+  if (process.env.IS_XBGE) {
+    return sendMailViaMailjet(userAttributes.email, code, signedUpOnBBPlatform);
+  }
+
+  // Otherwise we use SES
+  return sendMailViaSes(userAttributes.email, code);
+};
+
+const sendMailViaMailjet = (email, code, signedUpOnBBPlatform) => {
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
         To: [
           {
-            Email: userAttributes.email,
+            Email: email,
           },
         ],
         TemplateID: signedUpOnBBPlatform ? 1945264 : 1583518,
@@ -83,6 +101,30 @@ const sendEmail = (userAttributes, code) => {
       },
     ],
   });
+};
+
+const sendMailViaSes = (email, code) => {
+  const mailOptions = {
+    from: 'TODO <support@expedition-grundeinkommen.de',
+    subject: 'Dein geheimer Login-Code',
+    html: customEmail(code),
+    to: email,
+  };
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses,
+  });
+
+  return transporter.sendMail(mailOptions);
+};
+
+const customEmail = code => {
+  if (!htmlMail) {
+    throw new Error('Html Mail not provided');
+  }
+
+  return htmlMail.replace(/\[\[CODE\]\]/gi, code);
 };
 
 module.exports = { sendEmail, handler };

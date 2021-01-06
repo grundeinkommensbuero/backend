@@ -1,0 +1,27 @@
+<mjml>
+
+  <mj-head>
+    <mj-include path="../includes/head.mjml" />
+    <mj-preview>
+      Mit diesem Code kannst du dich einloggen.
+    </mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#f0f0f0">
+    <mj-include path="../includes/header.mjml" />
+    <mj-section background-color="#fef377" padding-top="40px">
+      <mj-column>
+        <mj-text>
+          Hallo,
+          <br><br>
+          fast geschafft – gib einfach den folgenden Code in das Feld auf unserer Webseite ein und schon bist du eingeloggt: 
+          <br><br>
+          
+         <h2>[[CODE]]</h2>
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+    <mj-include path="../includes/footer.mjml" />
+  </mj-body>
+</mjml>
