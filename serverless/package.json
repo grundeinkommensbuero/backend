@@ -1,16 +1,14 @@
 {
   "name": "@xbge/cli",
-  "version": "0.0.21",
+  "version": "0.0.26",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
-  "bin": {
-    "direct-democracy": "./cli.js"
-  },
   "scripts": {
     "test": "jest --verbose --testTimeout 50000 --runInBand",
     "deployDev": "serverless deploy",
     "deployProd": "serverless deploy --stage prod",
     "deployTest": "serverless deploy --stage test",
+    "postinstall": "node scripts/copyTemplates.js",
     "publish-package": "npm publish --access public"
   },
   "author": "Vali",

@@ -3,7 +3,7 @@
 const inquirer = require('inquirer');
 const shell = require('shelljs');
 const Configstore = require('configstore');
-const packageJson = require('./package.json');
+const packageJson = require('../package.json');
 
 const config = new Configstore(packageJson.name);
 
@@ -20,13 +20,20 @@ const run = async () => {
     }
 
     // Copy mjml templates into mails folder
-    shell.exec(
-      'cp ../../../mails/donationMail.mjml mails/transactional/donationMail.mjml'
+    shell.cp(
+      '../../../mails/donationMail.mjml',
+      'mails/transactional/donationMail.mjml'
     );
 
     // Transform mjml template into html
     shell.exec(
       'mjml mails/transactional/donationMail.mjml -o mails/transactional/donationMail.html'
+    );
+
+    // Copy signature list into createSignatureList folder
+    shell.cp(
+      '../../../list/signature_list.pdf',
+      'src/api/signatures/createSignatureList/pdf/direct-democracy'
     );
 
     // shell.exec(

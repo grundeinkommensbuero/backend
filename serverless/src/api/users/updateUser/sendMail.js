@@ -109,16 +109,11 @@ const sendMailViaMailjet = async (
   return mailjet.post('send', { version: 'v3.1' }).request(params);
 };
 
-const sendMailViaSes = (
-  email,
-  { amountAsString, ...donation },
-  donationInfo,
-  username
-) => {
+const sendMailViaSes = (email, donation, donationInfo) => {
   const mailOptions = {
     from: 'TODO <support@expedition-grundeinkommen.de',
     subject: 'Deine Spendeneinstellungen haben sich geändert',
-    html: customEmail(),
+    html: customEmail(donation, donationInfo),
     to: email,
   };
 
@@ -130,15 +125,25 @@ const sendMailViaSes = (
   return transporter.sendMail(mailOptions);
 };
 
-const customEmail = () => {
+const customEmail = (
+  { amountAsString, firstName, lastName },
+  { debitDate, id, recurringDonationExisted }
+) => {
   if (!htmlMail) {
     throw new Error('Html Mail not provided');
   }
 
-  return htmlMail;
-  // return htmlMail
-  //   .replace(/\[\[OPTIONAL_TEXT_1\]\]/gi, optionalText1)
-  //   .replace(/\[\[ADDRESS\]\]/gi, ADDRESSES[campaign.code]);
+  return htmlMail
+    .replace(
+      /\[\[TEXT_DONATION\]\]/gi,
+      recurringDonationExisted
+        ? `Wir buchen ab nun ${amountAsString} € jeden Monat ab.`
+        : `Wir buchen ${amountAsString} € zum ${debitDate} oder zum nächsten Bankarbeitstag ab.`
+    )
+    .replace(/\[\[TEXT_NEW_DONATION\]\]/gi, 'Ab dann buchen wir monatlich ab.')
+    .replace(/\[\[FIRST_NAME\]\]/gi, firstName)
+    .replace(/\[\[LAST_NAME\]\]/gi, lastName)
+    .replace(/\[\[ID\]\]/gi, id);
 };
 
 const formatDate = date => {
