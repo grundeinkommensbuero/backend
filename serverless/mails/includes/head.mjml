@@ -1,14 +1,15 @@
 <mj-attributes>
-  <mj-text align="left" color="#fc484c" font-weight="bold" line-height="26px" font-size="16px" />
   <mj-section full-width="full-width" padding-bottom="50px" />
-  <mj-class name="section-red" background-color="#fc484c" />
-  <mj-class name="section-red-text" color="#fef377" />
 
-  <mj-class name="section-blue" background-color="#003f63" />
-  <mj-class name="section-blue-text" color="#fff" font-weight="normal" />
+  <!-- Hier können die Hintergrundfarben und Textfarben geändert werden -->
+  <mj-text align="left" color="#484848" font-weight="bold" line-height="26px" font-size="16px" />
+  <mj-class name="section-primary" background-color="#ECF3F9" />
 
+  <mj-class name="section-secondary" background-color="#E4E8F6" />
+  <mj-class name="section-secondary-text" align="left"  color="#484848" font-weight="bold" line-height="26px" font-size="16px" />
+
+  <mj-button border-radius="50px" background-color="transparent" color="#484848" font-weight="bold" border="1px solid #484848" font-size="22px" />
   <mj-class name="hidden" display="none" />
-  <mj-button border-radius="50px" background-color="transparent" color="#fc484c" font-weight="bold" border="1px solid #fc484c" font-size="22px" />
 </mj-attributes>
 <mj-style inline="inline">
   .link {
@@ -22,17 +23,5 @@
 
   a {
     color: inherit;
-  }
-
-  .code {
-    font-size: 20px
-  }
-
-  li {
-    margin-bottom: 25px;
-  }
-
-  .small-text {
-    font-size: 13px;
   }
 </mj-style>

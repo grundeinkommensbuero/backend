@@ -9,7 +9,7 @@
 
   <mj-body background-color="#f0f0f0">
     <mj-include path="../includes/header.mjml" />
-    <mj-section background-color="#fef377" padding-top="40px">
+    <mj-section mj-class="section-primary" padding-top="40px">
       <mj-column>
         <mj-text>
           Hallo,
@@ -29,9 +29,9 @@
       </mj-column>
     </mj-section>
 
-    <mj-section mj-class="section-red" padding-top="40px">
+    <mj-section mj-class="section-secondary" padding-top="40px">
       <mj-column>
-       <mj-text mj-class="section-red-text">
+       <mj-text mj-class="section-secondary-text">
         <h2>Du hattest mehr Unterschriften gesendet?</h2>
 
         Keine Sorge, vermutlich sind keine Unterschriftenlisten verloren gegangen! Dass in dieser E-Mail eine geringere Anzahl angegeben ist, kann folgende Gründe haben:  
