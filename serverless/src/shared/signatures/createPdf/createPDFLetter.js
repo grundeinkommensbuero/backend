@@ -25,7 +25,7 @@ module.exports = async function createPDFLetter({
     }
 
     const mailMissingAdditionBytes = fs.readFileSync(
-      `${__dirname}/pdf/letters/BEILAGE_MAIL_FEHLT.pdf`
+      `${__dirname}/pdfs/letters/BEILAGE_MAIL_FEHLT.pdf`
     );
     const mailMissingAdditionDoc = await pdfLib.PDFDocument.load(
       mailMissingAdditionBytes
@@ -59,7 +59,7 @@ module.exports = async function createPDFLetter({
         letter.addPage();
       }
 
-      const lawBytes = fs.readFileSync(`${__dirname}/pdf/bremen-1/GESETZ.pdf`);
+      const lawBytes = fs.readFileSync(`${__dirname}/pdfs/bremen-1/GESETZ.pdf`);
       const lawDoc = await pdfLib.PDFDocument.load(lawBytes);
       const copiedPages = await letter.copyPages(
         lawDoc,
@@ -76,12 +76,12 @@ module.exports = async function createPDFLetter({
     // need to generate a list with codes
     if (campaignCode === 'verkehrswende-1') {
       const bytes = fs.readFileSync(
-        `${__dirname}/pdf/dibb-1/VERKEHRSWENDE.pdf`
+        `${__dirname}/pdfs/dibb-1/VERKEHRSWENDE.pdf`
       );
       listDoc = await pdfLib.PDFDocument.load(bytes);
     } else if (campaignCode === 'klimanotstand-1') {
       const bytes = fs.readFileSync(
-        `${__dirname}/pdf/dibb-1/KLIMANOTSTAND.pdf`
+        `${__dirname}/pdfs/dibb-1/KLIMANOTSTAND.pdf`
       );
       listDoc = await pdfLib.PDFDocument.load(bytes);
     } else {
