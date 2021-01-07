@@ -106,7 +106,7 @@ const CODE_POSITIONS = {
 module.exports = {
   anschreiben: {
     ANSCHREIBEN_GENERAL: {
-      file: fs.readFileSync(__dirname + '/pdf/letters/ANSCHREIBEN.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/letters/ANSCHREIBEN.pdf'),
       codes: [
         {
           type: 'ADDRESS',
@@ -121,7 +121,7 @@ module.exports = {
 
     ANSCHREIBEN_BB_PLATTFORM: {
       file: fs.readFileSync(
-        __dirname + '/pdf/letters/ANSCHREIBEN_BB_PLATTFORM.pdf'
+        __dirname + '/pdfs/letters/ANSCHREIBEN_BB_PLATTFORM.pdf'
       ),
       codes: [
         {
@@ -138,7 +138,7 @@ module.exports = {
 
   'berlin-1': {
     COMBINED: {
-      file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/berlin-1/5er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -153,7 +153,7 @@ module.exports = {
       ],
     },
     SINGLE_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/berlin-1/5er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -168,7 +168,7 @@ module.exports = {
       ],
     },
     SINGLE: {
-      file: fs.readFileSync(__dirname + '/pdf/berlin-1/5er_FARBIG.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/berlin-1/5er_FARBIG.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -186,7 +186,7 @@ module.exports = {
 
   'hamburg-1': {
     COMBINED: {
-      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/ALLES.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/hamburg-1/ALLES.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -201,7 +201,7 @@ module.exports = {
       ],
     },
     SINGLE_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/5er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/hamburg-1/5er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -216,7 +216,7 @@ module.exports = {
       ],
     },
     SINGLE: {
-      file: fs.readFileSync(__dirname + '/pdf/hamburg-1/5er_FARBIG.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/hamburg-1/5er_FARBIG.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -234,7 +234,7 @@ module.exports = {
 
   'brandenburg-1': {
     COMBINED: {
-      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/ALLES.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/brandenburg-1/ALLES.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -249,7 +249,7 @@ module.exports = {
       ],
     },
     MULTI: {
-      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/5er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/brandenburg-1/5er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -264,7 +264,7 @@ module.exports = {
       ],
     },
     SINGLE_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/brandenburg-1/5er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/brandenburg-1/5er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -280,7 +280,7 @@ module.exports = {
     },
     SINGLE_SW_ROTATED_LAW_FOR_PIN: {
       file: fs.readFileSync(
-        __dirname + '/pdf/brandenburg-1/5er_rotated_for_pin.pdf'
+        __dirname + '/pdfs/brandenburg-1/5er_rotated_for_pin.pdf'
       ),
       codes: [
         {
@@ -299,7 +299,7 @@ module.exports = {
 
   'schleswig-holstein-1': {
     COMBINED: {
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/ALLES_sw.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/sh-1/ALLES_sw.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -324,7 +324,7 @@ module.exports = {
       ],
     },
     SINGLE_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/1er_sw.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/sh-1/1er_sw.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -339,7 +339,7 @@ module.exports = {
       ],
     },
     SINGLE: {
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/1er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/sh-1/1er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -354,7 +354,7 @@ module.exports = {
       ],
     },
     MULTI_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/5er_sw.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/sh-1/5er_sw.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -369,7 +369,7 @@ module.exports = {
       ],
     },
     MULTI: {
-      file: fs.readFileSync(__dirname + '/pdf/sh-1/5er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/sh-1/5er.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -387,7 +387,7 @@ module.exports = {
 
   'dibb-1': {
     COMBINED: {
-      file: fs.readFileSync(__dirname + '/pdf/dibb-1/ALLES.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/dibb-1/ALLES.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -403,7 +403,7 @@ module.exports = {
     },
     SINGLE_SW_ROTATED_LAW_FOR_PIN: {
       file: fs.readFileSync(
-        __dirname + '/pdf/brandenburg-1/5er_rotated_for_pin.pdf'
+        __dirname + '/pdfs/brandenburg-1/5er_rotated_for_pin.pdf'
       ),
       codes: [
         {
@@ -422,7 +422,7 @@ module.exports = {
 
   'bremen-1': {
     COMBINED: {
-      file: fs.readFileSync(__dirname + '/pdf/bremen-1/ALLES.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/bremen-1/ALLES.pdf'),
       codes: [
         {
           type: 'BAR',
@@ -437,7 +437,7 @@ module.exports = {
       ],
     },
     SINGLE_SW: {
-      file: fs.readFileSync(__dirname + '/pdf/bremen-1/8er.pdf'),
+      file: fs.readFileSync(__dirname + '/pdfs/bremen-1/8er.pdf'),
       codes: [
         {
           type: 'BAR',
