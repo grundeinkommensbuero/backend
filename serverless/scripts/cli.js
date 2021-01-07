@@ -31,10 +31,7 @@ const run = async () => {
     );
 
     // Copy signature list into createSignatureList folder
-    shell.cp(
-      '../../../list/signature_list.pdf',
-      'src/api/signatures/createSignatureList/pdf/direct-democracy'
-    );
+    shell.cp('../../../list/signature_list.pdf', 'pdfs/direct-democracy');
 
     // shell.exec(
     //   `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`

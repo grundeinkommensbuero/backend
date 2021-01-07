@@ -25,10 +25,7 @@ const copyTemplates = () => {
   if (!shell.test('-e', '../../../list')) {
     shell.mkdir('../../../list');
 
-    shell.cp(
-      'src/api/signatures/createSignatureList/pdf/direct-democracy/signature_list.pdf',
-      '../../../list'
-    );
+    shell.cp('pdfs/direct-democracy/signature_list.pdf', '../../../list');
   }
 };
 
