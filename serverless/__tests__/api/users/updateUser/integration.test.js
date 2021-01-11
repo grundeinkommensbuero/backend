@@ -1,11 +1,11 @@
 const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
 const { authenticate } = require('../../../testUtils');
 const fetch = require('node-fetch');
-const AWS = require('aws-sdk');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
+const AWS = require('aws-sdk');
+const uuid = require('uuid/v4');
 
-const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
@@ -14,6 +14,38 @@ let token;
 describe('updateUser update donation api test', () => {
   beforeAll(async () => {
     token = await authenticate();
+
+    const params = {
+      TableName: DEV_USERS_TABLE,
+      Key: { cognitoId: userId },
+      UpdateExpression: 'REMOVE donations',
+      ReturnValues: 'UPDATED_NEW',
+    };
+
+    return ddb.update(params).promise();
+  });
+
+  it('should be able to create recurring donation', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        donation: {
+          amount: 50,
+          recurring: true,
+          firstName: 'Valentin',
+          lastName: 'Schagerl',
+          iban: 'DE26641500200001294334',
+        },
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
   });
 
   it('should be able to update recurring donation', async () => {
@@ -48,11 +80,13 @@ describe('updateUser update donation api test', () => {
       },
       body: JSON.stringify({
         donation: {
-          amount: 50,
+          amount: 50.5,
           recurring: false,
           firstName: 'Valentin',
           lastName: 'Schagerl',
           iban: 'DE26 6415 0020 0001 2943 34',
+          certificateReceiver: 'Anna',
+          certificateGiver: 'Björn',
         },
       }),
     };
@@ -268,7 +302,10 @@ describe('updateUser api test', () => {
     expect(response.status).toEqual(204);
   });
 
-  it('should be able to confirm user', async () => {
+  it('should be able to confirm user and remove token', async () => {
+    await addCustomToken();
+
+    const code = '213232';
     const request = {
       method: 'PATCH',
       mode: 'cors',
@@ -277,13 +314,48 @@ describe('updateUser api test', () => {
       },
       body: JSON.stringify({
         confirmed: true,
-        code: '213232',
+        code,
+        removeToken: true,
       }),
     };
 
     const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
 
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
     expect(response.status).toEqual(204);
+
+    expect(user.confirmed.value).toEqual(true);
+    expect(user.confirmed.code).toEqual(code);
+    expect(user.confirmed).toHaveProperty('ipAddress');
+    expect(user.confirmed).toHaveProperty('timestamp');
+
+    expect(typeof user.customToken).toEqual('undefined');
+  });
+
+  it('should be able to remove token', async () => {
+    await addCustomToken();
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        removeToken: true,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+
+    expect(typeof user.customToken).toEqual('undefined');
   });
 
   it('should be able to update user with one missing param', async () => {
@@ -619,6 +691,18 @@ const removeCustomNewsletters = () => {
     Key: { cognitoId: userId },
     UpdateExpression: 'REMOVE customNewsletters',
     ReturnValues: 'UPDATED_NEW',
+  };
+  return ddb.update(params).promise();
+};
+
+const addCustomToken = () => {
+  const params = {
+    TableName: DEV_USERS_TABLE,
+    Key: { cognitoId: userId },
+    UpdateExpression: 'SET customToken = :token',
+    ExpressionAttributeValues: {
+      ':token': { customToken: uuid(), timestamp: new Date().toISOString() },
+    },
   };
 
   return ddb.update(params).promise();

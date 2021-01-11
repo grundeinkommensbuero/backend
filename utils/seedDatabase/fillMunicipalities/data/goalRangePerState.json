@@ -1,0 +1,114 @@
+[
+  {
+    "state": "Baden-Württemberg",
+    "goalRange": [
+      4.5,
+      7
+    ]
+  },
+  {
+    "state": "Bayern",
+    "goalRange": [
+      3,
+      10
+    ]
+  },
+  {
+    "state": "Berlin",
+    "goalRange": [
+      3,
+      3
+    ]
+  },
+  {
+    "state": "Brandenburg",
+    "goalRange": [
+      10,
+      10
+    ]
+  },
+  {
+    "state": "Bremen",
+    "goalRange": [
+      5,
+      5
+    ]
+  },
+  {
+    "state": "Hamburg",
+    "goalRange": [
+      5,
+      5
+    ]
+  },
+  {
+    "state": "Hessen",
+    "goalRange": [
+      2,
+      3
+    ]
+  },
+  {
+    "state": "Mecklenburg-Vorpommern",
+    "goalRange": [
+      3,
+      10
+    ]
+  },
+  {
+    "state": "Niedersachsen",
+    "goalRange": [
+      2.5,
+      10
+    ]
+  },
+  {
+    "state": "Nordrhein-Westfalen",
+    "goalRange": [
+      5,
+      10
+    ]
+  },
+  {
+    "state": "Rheinland-Pfalz",
+    "goalRange": [
+      3,
+      10
+    ]
+  },
+  {
+    "state": "Saarland",
+    "goalRange": [
+      5,
+      9
+    ]
+  },
+  {
+    "state": "Sachsen",
+    "goalRange": [
+      5,
+      15
+    ]
+  },
+  {
+    "state": "Sachsen-Anhalt",
+    "goalRange": [
+      5,
+      10
+    ]
+  },
+  {
+    "state": "Schleswig-Holstein",
+    "goalRange": [
+      4.5,
+      10
+    ]
+  },
+  {
+    "state": "Thüringen",
+    "goalRange": [
+      4,
+      10
+    ]
+  }
+]

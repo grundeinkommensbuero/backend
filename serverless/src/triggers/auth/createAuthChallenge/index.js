@@ -1,23 +1,30 @@
 const crypto = require('crypto-secure-random-digit');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
+const { getUser } = require('../../../shared/users');
 
-exports.handler = async event => {
+const THREE_MINUTES = 3 * 60 * 1000;
+
+const handler = async event => {
   let secretLoginCode;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
-    // Generate a new secret login code and mail it to the user
-    secretLoginCode = crypto.randomDigits(6).join('');
 
-    // If user was created via BB plattform we want to send a different mail
-    const signedUpOnBBPlatform =
-      event.request.userAttributes['custom:source'] === 'bb-platform';
+    // Get user to check if a token was added recently (sub is userId)
+    const result = await getUser(event.request.userAttributes.sub);
 
-    await sendEmail(
-      event.request.userAttributes.email,
-      secretLoginCode,
-      signedUpOnBBPlatform
-    );
+    // Only set the token as loginCode if it is not older than 3 minutes
+    if (
+      'Item' in result &&
+      'customToken' in result.Item &&
+      new Date() - new Date(result.Item.customToken.timestamp) < THREE_MINUTES
+    ) {
+      secretLoginCode = result.Item.customToken.token;
+    } else {
+      // Generate a new secret login code and mail it to the user
+      secretLoginCode = crypto.randomDigits(6).join('');
+      await sendEmail(event.request.userAttributes, secretLoginCode);
+    }
   } else {
     // There's an existing session. Don't generate new digits but
     // re-use the code from the current session. This allows the user to
@@ -41,13 +48,17 @@ exports.handler = async event => {
   return event;
 };
 
-const sendEmail = (email, code, signedUpOnBBPlatform) => {
+const sendEmail = (userAttributes, code) => {
+  // If user was created via BB plattform we want to send a different mail
+  const signedUpOnBBPlatform =
+    userAttributes['custom:source'] === 'bb-platform';
+
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
         To: [
           {
-            Email: email,
+            Email: userAttributes.email,
           },
         ],
         TemplateID: signedUpOnBBPlatform ? 1945264 : 1583518,
@@ -64,3 +75,5 @@ const sendEmail = (email, code, signedUpOnBBPlatform) => {
     ],
   });
 };
+
+module.exports = { sendEmail, handler };
