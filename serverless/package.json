@@ -1,6 +1,6 @@
 {
   "name": "@xbge/cli",
-  "version": "0.0.27",
+  "version": "0.0.31",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "scripts": {
