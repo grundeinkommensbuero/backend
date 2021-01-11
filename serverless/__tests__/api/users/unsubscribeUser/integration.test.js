@@ -61,7 +61,7 @@ describe('unsubscribeUser api test', () => {
       mode: 'cors',
       body: JSON.stringify([
         {
-          email: 'valentin@dition-grundeinkommen.de',
+          email: 'valentin@expedition-grundeinkommen.de',
         },
       ]),
     };
