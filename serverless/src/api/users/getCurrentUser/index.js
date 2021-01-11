@@ -25,6 +25,10 @@ module.exports.handler = async event => {
 
     const user = result.Item;
 
+    // Add empty array, if customNewsletters is not defined
+    if (!('customNewsletters' in user)) {
+      user.customNewsletters = [];
+    }
     // Strip token from user
     delete user.customToken;
 
