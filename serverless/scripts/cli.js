@@ -24,20 +24,41 @@ const run = async () => {
       '../../../mails/donationMail.mjml',
       'mails/transactional/donationMail.mjml'
     );
+    shell.cp(
+      '../../../mails/congratulationMail.mjml',
+      'mails/transactional/congratulationMail.mjml'
+    );
+    shell.cp(
+      '../../../mails/loginCodeMail.mjml',
+      'mails/transactional/loginCodeMail.mjml'
+    );
+    shell.cp(
+      '../../../mails/signatureListMail.mjml',
+      'mails/transactional/signatureListMail.mjml'
+    );
 
-    // Transform mjml template into html
+    // Transform mjml templates into html
     shell.exec(
       'mjml mails/transactional/donationMail.mjml -o mails/transactional/donationMail.html'
+    );
+    shell.exec(
+      'mjml mails/transactional/congratulationMail.mjml -o mails/transactional/congratulationMail.html'
+    );
+    shell.exec(
+      'mjml mails/transactional/loginCodeMail.mjml -o mails/transactional/loginCodeMail.html'
+    );
+    shell.exec(
+      'mjml mails/transactional/signatureListMail.mjml -o mails/transactional/signatureListMail.html'
     );
 
     // Copy signature list into createSignatureList folder
     shell.cp('../../../list/signature_list.pdf', 'pdfs/direct-democracy');
 
-    // shell.exec(
-    //   `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
-    // );
+    shell.exec(
+      `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
+    );
 
-    // shell.exec('sls deploy -s cli -f updateUser');
+    shell.exec('sls deploy -s cli');
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }
