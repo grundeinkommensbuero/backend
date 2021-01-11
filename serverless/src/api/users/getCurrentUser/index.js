@@ -29,6 +29,8 @@ module.exports.handler = async event => {
     if (!('customNewsletters' in user)) {
       user.customNewsletters = [];
     }
+    // Strip token from user
+    delete user.customToken;
 
     // return user
     return {

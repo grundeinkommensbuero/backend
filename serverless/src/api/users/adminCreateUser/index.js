@@ -1,19 +1,16 @@
 const AWS = require('aws-sdk');
-const randomBytes = require('crypto').randomBytes;
 // const sendMail = require('./sendMail');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
 const {
   getUserByMail,
   updateNewsletterConsent,
+  createUserInCognito,
+  confirmUserInCognito,
 } = require('../../../shared/users');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
-const cognito = new AWS.CognitoIdentityServiceProvider();
-const {
-  USERS_TABLE_NAME: usersTableName,
-  USER_POOL_ID: userPoolId,
-} = process.env;
+const usersTableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -41,7 +38,7 @@ module.exports.handler = async event => {
       const userId = created.User.Username;
 
       // confirm user (by setting fake password)
-      await confirmUser(userId);
+      await confirmUserInCognito(userId);
 
       // now create dynamo resource
       await createUserInDynamo(userId, lowercaseEmail, campaignCode);
@@ -113,26 +110,6 @@ module.exports.handler = async event => {
   }
 };
 
-// Create a new cognito user in our user pool
-const createUserInCognito = email => {
-  const params = {
-    UserPoolId: userPoolId,
-    Username: email,
-    UserAttributes: [
-      {
-        Name: 'email_verified',
-        Value: 'true',
-      },
-      {
-        Name: 'email',
-        Value: email,
-      },
-    ],
-    MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
-  };
-  return cognito.adminCreateUser(params).promise();
-};
-
 const createUserInDynamo = (userId, email, campaignCode) => {
   const timestamp = new Date().toISOString();
 
@@ -154,23 +131,4 @@ const createUserInDynamo = (userId, email, campaignCode) => {
     },
   };
   return ddb.put(params).promise();
-};
-
-// confirm user by setting a random password
-// (need to do it this way, because user is in state force_reset_password)
-const confirmUser = userId => {
-  const password = getRandomString(20);
-  const setPasswordParams = {
-    UserPoolId: userPoolId,
-    Username: userId,
-    Password: password,
-    Permanent: true,
-  };
-  // set fake password to confirm user
-  return cognito.adminSetUserPassword(setPasswordParams).promise();
-};
-
-// Generates a random string (e.g. for generating random password)
-const getRandomString = length => {
-  return randomBytes(length).toString('hex');
 };
