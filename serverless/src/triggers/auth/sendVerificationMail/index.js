@@ -1,12 +1,16 @@
 // eslint-disable-next-line
-const htmlMailDefault = require('raw-loader!./mailTemplate.html').default;
+// const htmlMailDefault = require('raw-loader!./mailTemplate.html').default;
 // eslint-disable-next-line
-const htmlMailBBPlatform = require('raw-loader!./mailBBPlatform.html').default;
+// const htmlMailBBPlatform = require('raw-loader!./mailBBPlatform.html').default;
 
 // this lambda not only sends the verification mail
 // but also creates a record for the user in dynamo
 module.exports.handler = async event => {
+  // Deactivate for now because of switch to passwordless auth
+  return event;
+
   // Identify why was this function invoked
+  // eslint-disable-next-line
   if (event.triggerSource === 'CustomMessage_SignUp') {
     // We need to retrieve the source attribute to be able to send a different mail
     // for the bb platform
