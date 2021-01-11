@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 
 const ses = new AWS.SES();
-const htmlMail = require('raw-loader!../../../../mails/transactional/congratulationMail.html')
+const htmlMail = require('raw-loader!../../../mails/transactional/congratulationMail.html')
   .default;
 
 let mailjet;
