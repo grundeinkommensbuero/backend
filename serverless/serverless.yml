@@ -504,6 +504,17 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   unsubscribeUser:
     handler: src/api/users/unsubscribeUser/index.handler
