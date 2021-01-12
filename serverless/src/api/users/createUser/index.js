@@ -3,10 +3,13 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const {
+  getMunicipality,
+  createUserMunicipalityLink,
+} = require('../../../shared/municipalities');
 
 const tableName = process.env.USERS_TABLE_NAME;
 const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
-const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,7 +59,7 @@ module.exports.handler = async event => {
         promises.push(createUserMunicipalityLink(ags, userId, population));
       }
 
-      promises.push(saveUser({ ...requestBody, municipalityName, ags }));
+      promises.push(saveUser({ ...requestBody, municipalityName }));
 
       await Promise.all(promises);
 
@@ -161,32 +164,4 @@ const validateParams = requestBody => {
     'email' in requestBody &&
     'newsletterConsent' in requestBody
   );
-};
-
-// Update userMunicipality table to create the link between user and munic
-const createUserMunicipalityLink = (ags, userId, population) => {
-  const timestamp = new Date().toISOString();
-
-  const params = {
-    TableName: userMunicipalityTableName,
-    Item: {
-      ags,
-      userId,
-      createdAt: timestamp,
-      population,
-    },
-  };
-
-  return ddb.put(params).promise();
-};
-
-const getMunicipality = ags => {
-  const params = {
-    TableName: municipalitiesTableName,
-    Key: {
-      ags,
-    },
-  };
-
-  return ddb.get(params).promise();
 };
