@@ -1,22 +1,21 @@
-const {
-  INVOKE_URL,
-  DEV_USERS_TABLE,
-  DEV_USER_MUNICIPALITY_TABLE,
-  DEV_MUNICIPALITIES_TABLE,
-} = require('../../../testConfig');
+const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
 const uuid = require('uuid/v4');
 const crypto = require('crypto-secure-random-digit');
-const AWS = require('aws-sdk');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 const USER_ID = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const randomAgs = crypto.randomDigits(6).join('');
 const randomUserId = uuid();
 const anotherRandomUserId = uuid();
 
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
+const {
+  createMunicipality,
+  deleteMunicipality,
+  deleteUserMunicipalityLink,
+  getUserMunicipalityLink,
+} = require('../../../testUtils');
 
 const testMunicipality = {
   ags: randomAgs,
@@ -277,47 +276,3 @@ describe('createUser api test', () => {
     expect(response.status).toEqual(401);
   });
 });
-
-const getUserMunicipalityLink = (ags, userId) => {
-  const params = {
-    TableName: DEV_USER_MUNICIPALITY_TABLE,
-    Key: {
-      ags,
-      userId,
-    },
-  };
-
-  return ddb.get(params).promise();
-};
-
-const createMunicipality = municipality => {
-  const params = {
-    TableName: DEV_MUNICIPALITIES_TABLE,
-    Item: municipality,
-  };
-
-  return ddb.put(params).promise();
-};
-
-const deleteMunicipality = ags => {
-  const params = {
-    TableName: DEV_MUNICIPALITIES_TABLE,
-    Key: {
-      ags,
-    },
-  };
-
-  return ddb.delete(params).promise();
-};
-
-const deleteUserMunicipalityLink = (ags, userId) => {
-  const params = {
-    TableName: DEV_USER_MUNICIPALITY_TABLE,
-    Key: {
-      ags,
-      userId,
-    },
-  };
-
-  return ddb.delete(params).promise();
-};
