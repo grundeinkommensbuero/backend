@@ -51,6 +51,7 @@ const updateMailjetContact = async ({
     surveyParams: [],
     migratedFrom: 'nowhere',
     username: username || '',
+    activeUser: false,
   };
 
   // construct name with space before
@@ -95,7 +96,11 @@ const updateMailjetContact = async ({
 
   // Because mailjet does now allow arrays we need to handle
   // the newsletter subscription via a concatenated string
-  mailjetUser.newsletterString = createNewsletterString(customNewsletters);
+  const { newsletterString, extraInfo } = createNewsletterString(
+    customNewsletters
+  );
+  mailjetUser.newsletterString = newsletterString;
+  mailjetUser.activeUser = extraInfo;
 
   console.log('newsletter string', mailjetUser.newsletterString);
 
@@ -171,6 +176,10 @@ const updateMailjetContact = async ({
         Name: 'user_id',
         Value: userId,
       },
+      {
+        Name: 'active_user',
+        Value: mailjetUser.activeUser,
+      },
       ...mailjetUser.surveyParams,
     ],
   };
@@ -237,18 +246,25 @@ const createMailjetAttribute = async (attribute, datatype) => {
 };
 
 // Create concatenated string for subscribed newsletters
+// Also checks if extraInfo flag is set to true
 const createNewsletterString = customNewsletters => {
   let newsletterString = '';
+  let extraInfo = false;
+
   if (typeof customNewsletters !== 'undefined') {
     for (const newsletter of customNewsletters) {
       newsletterString += `${newsletter.name}, `;
+
+      if (newsletter.extraInfo) {
+        extraInfo = true;
+      }
     }
 
     // Strip last two chars (, )
     newsletterString = newsletterString.slice(0, -2);
   }
 
-  return newsletterString;
+  return { newsletterString, extraInfo };
 };
 
 // This functions deletes the mailjet contact.
