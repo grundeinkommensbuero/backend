@@ -77,7 +77,12 @@ const validateParams = (pathParameters, requestBody) => {
   // Check if donation object is correct
   if ('donation' in requestBody) {
     const { donation } = requestBody;
-    if (
+    // If cancel flag is passed the other parameters don't matter
+    if ('cancel' in donation) {
+      if (typeof donation.cancel !== 'boolean') {
+        return false;
+      }
+    } else if (
       !('amount' in donation) ||
       typeof donation.amount !== 'number' ||
       !('recurring' in donation) ||
@@ -223,57 +228,64 @@ const constructDonationObject = (donation, user, timestamp) => {
   delete rest.certificateReceiver;
   delete rest.certificateGiver;
 
-  const normalizedIban = iban.replace(/ /g, '');
-
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
   let recurringDonationExisted = false;
   let id;
   let debitDate;
 
-  // If the donation is recurring we want to set/update recurringDonation
-  if (recurring) {
-    if ('recurringDonation' in donations) {
-      recurringDonationExisted = true;
-      id = donations.recurringDonation.id;
+  // If cancel flag was passed the recurring donation should be cancelled
+  if (donation.cancel) {
+    // We just set a timestamp
+    donations.recurringDonation.cancelledAt = timestamp;
+  } else {
+    const normalizedIban = iban.replace(/ /g, '');
 
-      donations.recurringDonation = {
-        iban: normalizedIban,
-        updatedAt: timestamp,
-        createdAt: donations.recurringDonation.createdAt,
-        id,
-        firstDebitDate: donations.recurringDonation.firstDebitDate,
-        ...rest,
-      };
+    if (recurring) {
+      // If the donation is recurring we want to set/update recurringDonation
+
+      if ('recurringDonation' in donations) {
+        recurringDonationExisted = true;
+        id = donations.recurringDonation.id;
+
+        donations.recurringDonation = {
+          iban: normalizedIban,
+          updatedAt: timestamp,
+          createdAt: donations.recurringDonation.createdAt,
+          id,
+          firstDebitDate: donations.recurringDonation.firstDebitDate,
+          ...rest,
+        };
+      } else {
+        id = uuid().slice(0, -4); // we need to make id shorter
+        debitDate = computeDebitDate(new Date());
+
+        donations.recurringDonation = {
+          iban: normalizedIban,
+          createdAt: timestamp,
+          firstDebitDate: debitDate.toISOString(),
+          id,
+          ...rest,
+        };
+      }
     } else {
       id = uuid().slice(0, -4); // we need to make id shorter
       debitDate = computeDebitDate(new Date());
 
-      donations.recurringDonation = {
+      // Otherwise we add the one time donation to an array
+      const onetimeDonation = {
         iban: normalizedIban,
         createdAt: timestamp,
-        firstDebitDate: debitDate.toISOString(),
+        debitDate: debitDate.toISOString(),
         id,
         ...rest,
       };
-    }
-  } else {
-    id = uuid().slice(0, -4); // we need to make id shorter
-    debitDate = computeDebitDate(new Date());
 
-    // Otherwise we add the one time donation to an array
-    const onetimeDonation = {
-      iban: normalizedIban,
-      createdAt: timestamp,
-      debitDate: debitDate.toISOString(),
-      id,
-      ...rest,
-    };
-
-    if ('onetimeDonations' in donations) {
-      donations.onetimeDonations.push(onetimeDonation);
-    } else {
-      donations.onetimeDonations = [onetimeDonation];
+      if ('onetimeDonations' in donations) {
+        donations.onetimeDonations.push(onetimeDonation);
+      } else {
+        donations.onetimeDonations = [onetimeDonation];
+      }
     }
   }
 

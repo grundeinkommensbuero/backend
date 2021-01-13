@@ -478,6 +478,9 @@ paths:
                     - lastName
                     - iban
                   properties:
+                    cancel:
+                      type: boolean
+                      description: If this flag is set to true, the recurring donation will be cancelled. If set, the other required fields are not required.
                     amount:
                       type: number
                     recurring:

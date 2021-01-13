@@ -4,6 +4,7 @@ const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const DONATION_TEMPLATE = 1885162;
 const CHRISTMAS_TEMPLATE = 2060355;
+const CANCEL_TEMPLATE = 2209988;
 
 // Function which sends an email to the user after donation was changed
 const sendMail = async (
@@ -15,17 +16,46 @@ const sendMail = async (
     lastName,
     certificateReceiver,
     certificateGiver,
+    cancel,
   },
   { debitDate, id, recurringDonationExisted },
   username
 ) => {
-  let amountAsString = amount.toString().replace('.', ',');
-  if (amountAsString.includes(',')) {
-    if (amountAsString.split(',')[1].length === 1) {
-      amountAsString = `${amountAsString}0`;
+  let variables = {};
+  let amountAsString;
+
+  if (!cancel) {
+    amountAsString = amount.toString().replace('.', ',');
+    if (amountAsString.includes(',')) {
+      if (amountAsString.split(',')[1].length === 1) {
+        amountAsString = `${amountAsString}0`;
+      }
+    } else {
+      amountAsString = `${amountAsString},00`;
     }
+
+    variables = {
+      username,
+      recurringDonationExisted,
+      amount: amountAsString,
+      firstName,
+      lastName,
+      debitDate: debitDate && formatDate(debitDate),
+      id,
+      nameOfGifted: certificateReceiver,
+    };
   } else {
-    amountAsString = `${amountAsString},00`;
+    variables = { username };
+  }
+
+  let template = '';
+
+  if (recurring) {
+    template = DONATION_TEMPLATE;
+  } else if (cancel) {
+    template = CANCEL_TEMPLATE;
+  } else {
+    template = CHRISTMAS_TEMPLATE;
   }
 
   const params = {
@@ -36,29 +66,20 @@ const sendMail = async (
             Email: email,
           },
         ],
-        TemplateID: recurring ? DONATION_TEMPLATE : CHRISTMAS_TEMPLATE,
+        TemplateID: template,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
           Name: 'Vali',
         },
         // TemplateErrorDeliver: true,
-        Variables: {
-          username,
-          recurringDonationExisted,
-          amount: amountAsString,
-          firstName,
-          lastName,
-          debitDate: debitDate && formatDate(debitDate),
-          id,
-          nameOfGifted: certificateReceiver,
-        },
+        Variables: variables,
       },
     ],
   };
 
   // If donation is gift we want to create an attachment with a christmas card
-  if (!recurring) {
+  if (!recurring && !cancel) {
     const christmasCard = await createChristmasCard(
       certificateGiver,
       certificateReceiver,

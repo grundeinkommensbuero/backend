@@ -96,6 +96,32 @@ describe('updateUser update donation api test', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('should be able to cancel recurring donation', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        donation: {
+          cancel: true,
+        },
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+
+    expect(user.donations.recurringDonation).toHaveProperty('cancelledAt');
+  });
+
   it('should not be able to update donation', async () => {
     const request = {
       method: 'PATCH',
