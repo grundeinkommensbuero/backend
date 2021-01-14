@@ -1,7 +1,8 @@
-const {
-  getUserByMail,
-  updateNewsletterConsent,
-} = require('../../../shared/users');
+/**
+ * This endpoint serves as a callback for when users unsubscribe via mailjet
+ */
+
+const { getUserByMail } = require('../../../shared/users');
 
 const basicAuth = require('../../../../basicAuth');
 
@@ -11,6 +12,11 @@ if (!basicAuth.password || !basicAuth.username) {
 }
 
 const { errorResponse } = require('../../../shared/apiResponse');
+const AWS = require('aws-sdk');
+
+const config = { region: 'eu-central-1' };
+const ddb = new AWS.DynamoDB.DocumentClient(config);
+const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
   try {
@@ -34,7 +40,7 @@ module.exports.handler = async event => {
       if (result.Count === 0) {
         console.log('No user found with the passed email');
       } else {
-        await updateNewsletterConsent(result.Items[0].cognitoId, false);
+        await updateUser(result.Items[0]);
       }
 
       // updating user was successful, return appropriate json
@@ -70,4 +76,41 @@ const isAuthorized = event => {
   return (
     plainCreds[0] === basicAuth.username && plainCreds[1] === basicAuth.password
   );
+};
+
+// Unsubscribe from every newsletter by setting newsletter consent to false,
+// as well as setting value in every item in customNewsletters to false
+const updateUser = ({ cognitoId, customNewsletters }) => {
+  const timestamp = new Date().toISOString();
+
+  // Loop through custom newsletters and set the values to false
+  if (typeof customNewsletters !== 'undefined') {
+    for (const newsletter of customNewsletters) {
+      newsletter.timestamp = timestamp;
+      newsletter.value = false;
+      newsletter.extraInfo = false;
+    }
+  }
+
+  const data = {
+    ':newsletterConsent': {
+      value: false,
+      timestamp,
+    },
+    ':customNewsletters': customNewsletters,
+    ':updatedAt': timestamp,
+  };
+
+  const updateExpression =
+    'set newsletterConsent = :newsletterConsent, customNewsletters = :customNewsletters, updatedAt = :updatedAt';
+
+  return ddb
+    .update({
+      TableName: tableName,
+      Key: { cognitoId },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: data,
+      ReturnValues: 'UPDATED_NEW',
+    })
+    .promise();
 };
