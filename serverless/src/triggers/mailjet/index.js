@@ -10,7 +10,6 @@ if (apiKey && apiSecret) {
 }
 
 const fetch = require('node-fetch').default;
-const zipCodeMatcher = require('../../shared/zipCodeMatcher');
 
 const createdSurveyAttributes = [];
 const contactListIdXbge = '10234980';
@@ -26,13 +25,11 @@ const syncMailjetContact = async (user, verified) => {
   }
 
   try {
-    const mailjetUser = await updateMailjetContact(user);
+    await updateMailjetContact(user);
 
-    if (mailjetUser.activeOnXbge) {
+    if (user.source !== 'bb-platform') {
       await updateMailjetSubscription(user, verified, contactListIdXbge);
-    }
-
-    if (mailjetUser.activeOnBrandenburgPlatform) {
+    } else {
       await updateMailjetSubscription(user, verified, contactListIdBBPlatform);
     }
   } catch (error) {
@@ -49,11 +46,10 @@ const updateMailjetContact = async ({
   migrated,
   signatureLists,
   scannedLists,
-  signatureCampaigns,
   pledges,
   surveys,
-  source,
-  updatedOnXbge,
+  customNewsletters,
+  newsletterConsent,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -61,16 +57,10 @@ const updateMailjetContact = async ({
     receivedSignatureCount: 0,
     scannedSignatureCount: 0,
     pledgedSignatureCount: 0,
-    activeInBerlin: false,
-    activeInSchleswigHolstein: false,
-    activeInBrandenburg: false,
-    activeInBremen: false,
-    activeInHamburg: false,
-    activeOnBrandenburgPlatform: false,
-    activeOnXbge: false,
     surveyParams: [],
     migratedFrom: 'nowhere',
     username: username || '',
+    activeUser: false,
   };
 
   // construct name with space before
@@ -91,8 +81,6 @@ const updateMailjetContact = async ({
     if (list.downloads) {
       mailjetUser.downloadedListCount += list.downloads;
     }
-
-    checkIfActiveInState(mailjetUser, list.campaign.state);
   }
 
   // Use the scan record in the user object,
@@ -101,22 +89,6 @@ const updateMailjetContact = async ({
     for (const scan of scannedLists) {
       mailjetUser.scannedSignatureCount += scan.count;
     }
-  }
-
-  if (typeof signatureCampaigns !== 'undefined') {
-    for (const campaign of signatureCampaigns) {
-      checkIfActiveInState(mailjetUser, campaign.state);
-    }
-  }
-
-  // Make use of utility function to match the state to a given zip code
-  let region;
-  if (typeof zipCode !== 'undefined') {
-    region = zipCodeMatcher.getStateByZipCode(zipCode);
-  }
-
-  if (typeof region !== 'undefined') {
-    checkIfActiveInState(mailjetUser, region.toLowerCase());
   }
 
   if (typeof pledges !== 'undefined') {
@@ -128,12 +100,18 @@ const updateMailjetContact = async ({
   }
 
   if (typeof migrated !== 'undefined') {
-    if (migrated.source === 'offline') {
-      checkIfActiveInState(mailjetUser, migrated.campaign.state);
-    }
-
     mailjetUser.migratedFrom = migrated.source;
   }
+
+  // Because mailjet does now allow arrays we need to handle
+  // the newsletter subscription via a concatenated string
+  const { newsletterString, extraInfo } = createNewsletterString(
+    customNewsletters
+  );
+  mailjetUser.newsletterString = newsletterString;
+  mailjetUser.activeUser = extraInfo;
+
+  console.log('newsletter string', mailjetUser.newsletterString);
 
   if (typeof surveys !== 'undefined') {
     for (const survey of surveys) {
@@ -165,18 +143,6 @@ const updateMailjetContact = async ({
     }
   }
 
-  // Check if the user was active on the brandenburg platform
-  // and/or expedition-grundeinkommen.de
-  if (source !== 'bb-platform') {
-    mailjetUser.activeOnXbge = true;
-  } else {
-    mailjetUser.activeOnBrandenburgPlatform = true;
-
-    if (updatedOnXbge) {
-      mailjetUser.activeOnXbge = true;
-    }
-  }
-
   const requestParams = {
     Data: [
       {
@@ -188,24 +154,12 @@ const updateMailjetContact = async ({
         Value: mailjetUser.username,
       },
       {
-        Name: 'subscribed_in_berlin',
-        Value: mailjetUser.activeInBerlin,
+        Name: 'subscribed_in',
+        Value: mailjetUser.newsletterString,
       },
       {
-        Name: 'subscribed_in_schleswig_holstein',
-        Value: mailjetUser.activeInSchleswigHolstein,
-      },
-      {
-        Name: 'subscribed_in_brandenburg',
-        Value: mailjetUser.activeInBrandenburg,
-      },
-      {
-        Name: 'subscribed_in_hamburg',
-        Value: mailjetUser.activeInHamburg,
-      },
-      {
-        Name: 'subscribed_in_bremen',
-        Value: mailjetUser.activeInBremen,
+        Name: 'subscribed_to_general',
+        Value: newsletterConsent.value,
       },
       {
         Name: 'migrated_from',
@@ -231,6 +185,10 @@ const updateMailjetContact = async ({
         Name: 'user_id',
         Value: userId,
       },
+      {
+        Name: 'active_user',
+        Value: mailjetUser.activeUser,
+      },
       ...mailjetUser.surveyParams,
     ],
   };
@@ -253,7 +211,7 @@ const updateMailjetContact = async ({
 // This function updates the subscription status
 // by unsubbing or subbing to contact list
 const updateMailjetSubscription = async (
-  { email, newsletterConsent },
+  { email },
   verified,
   contactListId
 ) => {
@@ -264,7 +222,7 @@ const updateMailjetSubscription = async (
     .request({
       ContactsLists: [
         {
-          Action: newsletterConsent.value && verified ? 'addforce' : 'unsub',
+          Action: verified ? 'addforce' : 'unsub',
           ListID: contactListId,
         },
       ],
@@ -293,41 +251,34 @@ const createMailjetAttribute = async (attribute, datatype) => {
     });
   }
 
-  console.log('already created survey attribute', attribute);
   return null;
 };
 
-const checkIfActiveInState = (mailjetUser, state) => {
-  if (state === 'berlin') {
-    mailjetUser.activeInBerlin = true;
-    mailjetUser.activeOnXbge = true;
+// Create concatenated string for subscribed newsletters
+// Also checks if extraInfo flag is set to true
+const createNewsletterString = customNewsletters => {
+  let newsletterString = '';
+  let extraInfo = false;
+
+  if (typeof customNewsletters !== 'undefined') {
+    for (const newsletter of customNewsletters) {
+      newsletterString += `${newsletter.name}, `;
+
+      if (newsletter.extraInfo) {
+        extraInfo = true;
+      }
+    }
+
+    // Strip last two chars (, )
+    newsletterString = newsletterString.slice(0, -2);
   }
 
-  if (state === 'schleswig-holstein') {
-    mailjetUser.activeInSchleswigHolstein = true;
-    mailjetUser.activeOnXbge = true;
-  }
-
-  if (state === 'brandenburg') {
-    mailjetUser.activeInBrandenburg = true;
-    mailjetUser.activeOnXbge = true;
-  }
-
-  if (state === 'bremen') {
-    mailjetUser.activeInBremen = true;
-    mailjetUser.activeOnXbge = true;
-  }
-
-  if (state === 'hamburg') {
-    mailjetUser.activeInHamburg = true;
-    mailjetUser.activeOnXbge = true;
-  }
-
-  if (state === 'dibb') {
-    mailjetUser.activeOnBrandenburgPlatform = true;
-  }
+  return { newsletterString, extraInfo };
 };
 
+// This functions deletes the mailjet contact.
+// We cannot use the mailjet package because it does not provide
+// that yet.
 const deleteMailjetContact = async email => {
   // First we need to get the mailjet contact because we need the id for deleting it
   const result = await mailjet

@@ -493,6 +493,208 @@ describe('updateUser api test', () => {
   });
 });
 
+describe('updateUser update newsletters test', () => {
+  beforeAll(async () => {
+    // Remove custom newsletters key from user
+    await removeCustomNewsletters();
+  });
+
+  it('should set custom newsletters', async () => {
+    const timestamp = new Date().toISOString();
+
+    const customNewsletters = [
+      {
+        name: 'Kiel',
+        ags: '1231231',
+        value: true,
+        extraInfo: false,
+        timestamp,
+      },
+      {
+        name: 'Stuttgart',
+        ags: '123431',
+        value: true,
+        extraInfo: true,
+        timestamp,
+      },
+    ];
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        customNewsletters,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+    expect(user.customNewsletters).toEqual(customNewsletters);
+  });
+
+  it('should update custom newsletters', async () => {
+    const timestamp = new Date().toISOString();
+
+    const customNewsletters = [
+      {
+        name: 'Kiel',
+        ags: '1231231',
+        value: true,
+        extraInfo: false,
+        timestamp,
+      },
+      {
+        name: 'Mainz',
+        ags: '123431',
+        value: true,
+        extraInfo: true,
+        timestamp,
+      },
+    ];
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        customNewsletters,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+    expect(user.customNewsletters).toEqual(customNewsletters);
+  });
+
+  it('should have missing params', async () => {
+    const timestamp = new Date().toISOString();
+
+    const customNewsletters = [
+      {
+        name: 'Kiel',
+        ags: '1231231',
+        extraInfo: false,
+        timestamp,
+      },
+      {
+        name: 'Mainz',
+        ags: '123431',
+        value: true,
+        extraInfo: true,
+        timestamp,
+      },
+    ];
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        customNewsletters,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing params', async () => {
+    const timestamp = new Date().toISOString();
+
+    const customNewsletters = [
+      {
+        ags: '1231231',
+        value: true,
+        extraInfo: false,
+        timestamp,
+      },
+      {
+        name: 'Mainz',
+        ags: '123431',
+        value: true,
+        extraInfo: true,
+        timestamp,
+      },
+    ];
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        customNewsletters,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing params', async () => {
+    const timestamp = new Date().toISOString();
+
+    const customNewsletters = [
+      {
+        name: 'Kiel',
+        ags: '1231231',
+        value: true,
+        timestamp,
+      },
+      {
+        name: 'Mainz',
+        ags: '123431',
+        value: true,
+        extraInfo: true,
+        timestamp,
+      },
+    ];
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        customNewsletters,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+});
+
+const removeCustomNewsletters = () => {
+  const params = {
+    TableName: DEV_USERS_TABLE,
+    Key: { cognitoId: userId },
+    UpdateExpression: 'REMOVE customNewsletters',
+    ReturnValues: 'UPDATED_NEW',
+  };
+  return ddb.update(params).promise();
+};
+
 const addCustomToken = () => {
   const params = {
     TableName: DEV_USERS_TABLE,

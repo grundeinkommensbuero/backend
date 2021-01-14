@@ -91,6 +91,24 @@ const validateParams = (pathParameters, requestBody) => {
     }
   }
 
+  if ('customNewsletters' in requestBody) {
+    const { customNewsletters } = requestBody;
+    if (typeof customNewsletters !== 'object') {
+      return false;
+    }
+
+    for (const newsletter of customNewsletters) {
+      if (
+        typeof newsletter.name !== 'string' ||
+        typeof newsletter.value !== 'boolean' ||
+        typeof newsletter.extraInfo !== 'boolean' ||
+        typeof newsletter.timestamp !== 'string'
+      ) {
+        return false;
+      }
+    }
+  }
+
   return 'userId' in pathParameters && Object.keys(requestBody).length !== 0;
 };
 
@@ -107,6 +125,7 @@ const updateUser = async (
     zipCode,
     city,
     newsletterConsent,
+    customNewsletters,
     donation,
     confirmed,
     code,
@@ -122,6 +141,7 @@ const updateUser = async (
     ':username': username,
     ':zipCode': zipCode,
     ':city': city,
+    ':customNewsletters': customNewsletters,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -171,6 +191,11 @@ const updateUser = async (
     SET ${
       typeof newsletterConsent !== 'undefined'
         ? 'newsletterConsent = :newsletterConsent,'
+        : ''
+    }
+    ${
+      typeof customNewsletters !== 'undefined'
+        ? 'customNewsletters = :customNewsletters,'
         : ''
     }
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
