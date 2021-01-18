@@ -14,7 +14,7 @@ custom:
   municipalitiesTableName: ${self:custom.stage}-municipalities
   userMunicipalityTableName: ${self:custom.stage}-users-municipalities
   output:
-    file: ./stack.json
+    handler: scripts/outputStack.handler
 
 provider:
   name: aws
@@ -1246,3 +1246,21 @@ resources:
           - Fn::GetAtt:
               - CognitoUserPoolAdminUserPool
               - Arn
+
+              # Print out the Id of the User Pool that is created
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPoolUserPool
+
+    UserPoolClientId:
+      Value:
+        Ref: UserPoolClient
+
+    AdminUserPoolId:
+      Value:
+        Ref: CognitoUserPoolAdminUserPool
+
+    AdminUserPoolClientId:
+      Value:
+        Ref: AdminUserPoolClient
