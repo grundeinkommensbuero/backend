@@ -21,38 +21,44 @@ const run = async () => {
 
     // Copy mjml templates into mails folder
     shell.cp(
-      '../../../mails/donationMail.mjml',
-      'mails/transactional/donationMail.mjml'
+      `${process.cwd()}/mails/donationMail.mjml`,
+      `${__dirname}/../mails/transactional/donationMail.mjml`
     );
     shell.cp(
-      '../../../mails/congratulationMail.mjml',
-      'mails/transactional/congratulationMail.mjml'
+      `${process.cwd()}/mails/congratulationMail.mjml`,
+      `${__dirname}/../mails/transactional/congratulationMail.mjml`
     );
     shell.cp(
-      '../../../mails/loginCodeMail.mjml',
-      'mails/transactional/loginCodeMail.mjml'
+      `${process.cwd()}/mails/loginCodeMail.mjml`,
+      `${__dirname}/../mails/transactional/loginCodeMail.mjml`
     );
     shell.cp(
-      '../../../mails/signatureListMail.mjml',
-      'mails/transactional/signatureListMail.mjml'
+      `${process.cwd()}/mails/signatureListMail.mjml`,
+      `${__dirname}/../mails/transactional/signatureListMail.mjml`
     );
+    shell.cp('-r', `${process.cwd()}/mails/includes`, `${__dirname}/../mails/`);
 
     // Transform mjml templates into html
     shell.exec(
-      'mjml mails/transactional/donationMail.mjml -o mails/transactional/donationMail.html'
+      `mjml ${__dirname}/../mails/transactional/donationMail.mjml -o ${__dirname}/../mails/transactional/donationMail.html`
     );
     shell.exec(
-      'mjml mails/transactional/congratulationMail.mjml -o mails/transactional/congratulationMail.html'
+      `mjml ${__dirname}/../mails/transactional/congratulationMail.mjml -o ${__dirname}/../mails/transactional/congratulationMail.html`
     );
     shell.exec(
-      'mjml mails/transactional/loginCodeMail.mjml -o mails/transactional/loginCodeMail.html'
+      `mjml ${__dirname}/../mails/transactional/loginCodeMail.mjml -o ${__dirname}/../mails/transactional/loginCodeMail.html`
     );
     shell.exec(
-      'mjml mails/transactional/signatureListMail.mjml -o mails/transactional/signatureListMail.html'
+      `mjml ${__dirname}/../mails/transactional/signatureListMail.mjml -o ${__dirname}/../mails/transactional/signatureListMail.html`
     );
 
     // Copy signature list into createSignatureList folder
-    shell.cp('../../../list/signature_list.pdf', 'pdfs/direct-democracy');
+    shell.cp(
+      `${process.cwd()}/list/signature_list.pdf`,
+      `${__dirname}/../pdfs/direct-democracy`
+    );
+
+    shell.cd(`${__dirname}/../`);
 
     shell.exec(
       `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`

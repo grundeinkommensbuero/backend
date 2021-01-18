@@ -1,8 +1,11 @@
 {
   "name": "@xbge/cli",
-  "version": "0.0.31",
+  "version": "0.0.47",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
+  "bin": {
+    "direct-democracy-deploy-backend": "scripts/deploy.js"
+  },
   "scripts": {
     "test": "jest --verbose --testTimeout 50000 --runInBand",
     "deployDev": "serverless deploy",
@@ -34,7 +37,7 @@
     "raw-loader": "^4.0.2",
     "serverless": "^1.83.0",
     "serverless-iam-roles-per-function": "^2.0.2",
-    "serverless-plugin-split-stacks": "^1.9.3",
+    "serverless-plugin-split-stacks": "~1.9.3",
     "serverless-stack-output": "^0.2.3",
     "serverless-webpack": "^5.3.5",
     "shelljs": "^0.8.4",
