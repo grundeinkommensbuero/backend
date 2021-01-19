@@ -18,26 +18,17 @@ const sendMail = async (
     certificateGiver,
     cancel,
   },
-  { debitDate, id, recurringDonationExisted },
+  // donations is the entire donations object which was saved
+  { debitDate, id, recurringDonationExisted, donations },
   username
 ) => {
   let variables = {};
-  let amountAsString;
 
   if (!cancel) {
-    amountAsString = amount.toString().replace('.', ',');
-    if (amountAsString.includes(',')) {
-      if (amountAsString.split(',')[1].length === 1) {
-        amountAsString = `${amountAsString}0`;
-      }
-    } else {
-      amountAsString = `${amountAsString},00`;
-    }
-
     variables = {
       username,
       recurringDonationExisted,
-      amount: amountAsString,
+      amount: amountToString(amount),
       firstName,
       lastName,
       debitDate: debitDate && formatDate(debitDate),
@@ -45,7 +36,12 @@ const sendMail = async (
       nameOfGifted: certificateReceiver,
     };
   } else {
-    variables = { username };
+    // If the donation was cancelled we want to pass
+    // the amount of the cancelled donation to the mail template
+    variables = {
+      username,
+      amount: amountToString(donations.recurringDonation.amount),
+    };
   }
 
   let template = '';
@@ -83,7 +79,7 @@ const sendMail = async (
     const christmasCard = await createChristmasCard(
       certificateGiver,
       certificateReceiver,
-      amountAsString
+      amountToString(amount)
     );
 
     params.Messages[0].Attachments = [
@@ -102,4 +98,17 @@ module.exports = sendMail;
 
 const formatDate = date => {
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+};
+
+const amountToString = amount => {
+  let amountAsString = amount.toString().replace('.', ',');
+  if (amountAsString.includes(',')) {
+    if (amountAsString.split(',')[1].length === 1) {
+      amountAsString = `${amountAsString}0`;
+    }
+  } else {
+    amountAsString = `${amountAsString},00`;
+  }
+
+  return amountAsString;
 };
