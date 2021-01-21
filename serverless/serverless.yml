@@ -13,6 +13,7 @@ custom:
   signaturesTableName: ${self:custom.stage}-signatures
   municipalitiesTableName: ${self:custom.stage}-municipalities
   userMunicipalityTableName: ${self:custom.stage}-users-municipalities
+  imageBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-profile-pics
   output:
     handler: scripts/outputStack.handler
 
@@ -31,7 +32,20 @@ provider:
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
-    IMAGE_BUCKET: xbge-profile-pictures
+    IMAGE_BUCKET: ${self:custom.imageBucketName}
+  # S3 configuration here, we don't need to define the bucket in resources
+  # https://www.serverless.com/framework/docs/providers/aws/events/s3/
+  s3:
+    imageBucket:
+      name: ${self:custom.imageBucketName}
+      corsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - 'PUT'
+            AllowedOrigins:
+              - '*'
 
 plugins:
   - serverless-iam-roles-per-function
@@ -893,21 +907,20 @@ functions:
         Action:
           - s3:PutObject
           - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+        Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
   processUploadedImage:
     handler: src/triggers/processUploadedImage/index.handler
     events:
       - s3:
-          bucket: xbge-profile-pictures
+          bucket: imageBucket
           event: s3:ObjectCreated:*
-          existing: true
           rules:
             - prefix: ${self:custom.stage}/originals/
     timeout: 30 # Timeout for this specific function.
     memorySize: 1600 # memorySize for this specific function.
     environment:
-      S3_IMAGES_URL: https://xbge-profile-pictures.s3.eu-central-1.amazonaws.com
+      S3_IMAGES_URL: https://${self:custom.imageBucketName}.s3.eu-central-1.amazonaws.com
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -922,7 +935,7 @@ functions:
           - s3:PutObject
           - s3:PutObjectAcl
           - s3:DeleteObject
-        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+        Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
   # getQuestions:
   #   handler: src/api/users/questions/getQuestions/index.handler
