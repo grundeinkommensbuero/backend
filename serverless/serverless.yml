@@ -33,6 +33,19 @@ provider:
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
     IMAGE_BUCKET: ${self:custom.imageBucketName}
+  # S3 configuration here, we don't need to define the bucket in resources
+  # https://www.serverless.com/framework/docs/providers/aws/events/s3/
+  s3:
+    imageBucket:
+      name: ${self:custom.imageBucketName}
+      corsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - 'PUT'
+            AllowedOrigins:
+              - '*'
 
 plugins:
   - serverless-iam-roles-per-function
@@ -896,7 +909,7 @@ functions:
     handler: src/triggers/processUploadedImage/index.handler
     events:
       - s3:
-          bucket: ${self:custom.imageBucketName}
+          bucket: imageBucket
           event: s3:ObjectCreated:*
           rules:
             - prefix: ${self:custom.stage}/originals/
