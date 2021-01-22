@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const { getMunicipalityGoal } = require('../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
@@ -79,9 +80,23 @@ const getAllMunicipalitiesWithUsers = async (
   return municipalities;
 };
 
+const getMunicipalityStats = async (ags, population) => {
+  const userResult = await getAllUsersOfMunicipality(ags);
+
+  const signups = userResult.Count;
+
+  const goal = getMunicipalityGoal(population);
+
+  // compute percent to goal
+  const percentToGoal = +((signups / goal) * 100).toFixed(1);
+
+  return { goal, signups, percentToGoal };
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
   getAllUsersOfMunicipality,
+  getMunicipalityStats,
 };
