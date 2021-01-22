@@ -6,9 +6,8 @@
 const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getMunicipality,
-  getAllUsersOfMunicipality,
+  getMunicipalityStats,
 } = require('../../../shared/municipalities');
-const { getMunicipalityGoal } = require('../../../shared/utils');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,19 +26,12 @@ module.exports.handler = async event => {
       return errorResponse(404, 'No municipality found with the passed ags');
     }
 
-    const userResult = await getAllUsersOfMunicipality(ags);
-
-    const signUpCount = userResult.Count;
-
-    const goal = getMunicipalityGoal(result.Item.population);
-
-    // compute percent to goal
-    const percentToGoal = +((signUpCount / goal) * 100).toFixed(1);
+    const stats = await getMunicipalityStats(ags, result.Item.population);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: { signups: signUpCount, percentToGoal, goal },
+        data: stats,
       }),
       headers: responseHeaders,
       isBase64Encoded: false,
