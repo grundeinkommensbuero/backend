@@ -19,6 +19,7 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName =
   process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 const usersTableName = process.env.USERS_TABLE_NAME || 'prod-users';
+const bucket = process.env.SIGNATURE_LISTS_BUCKET;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -271,7 +272,7 @@ const incrementDownloads = (id, downloads) => {
 const uploadPDF = (id, pdf) => {
   return s3
     .upload({
-      Bucket: 'signature-lists',
+      Bucket: bucket,
       ACL: 'public-read',
       Key: `${id}.pdf`,
       Body: Buffer.from(pdf),
