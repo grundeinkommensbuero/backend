@@ -471,7 +471,7 @@ module.exports = {
   'direct-democracy-1': {
     SINGLE: {
       file: fs.readFileSync(
-        __dirname + '/pdf/prototype-fund/signature_list.pdf'
+        __dirname + '/pdfs/direct-democracy/signature_list.pdf'
       ),
       codes: [
         {
