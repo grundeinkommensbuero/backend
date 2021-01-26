@@ -14,6 +14,7 @@ custom:
   municipalitiesTableName: ${self:custom.stage}-municipalities
   userMunicipalityTableName: ${self:custom.stage}-users-municipalities
   imageBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-profile-pics
+  listsBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-signature-lists
   output:
     handler: scripts/outputStack.handler
 
@@ -33,6 +34,20 @@ provider:
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
     IMAGE_BUCKET: ${self:custom.imageBucketName}
+    SIGNATURE_LISTS_BUCKET: ${self:custom.listsBucketName}
+  # S3 configuration here, we don't need to define the bucket in resources
+  # https://www.serverless.com/framework/docs/providers/aws/events/s3/
+  s3:
+    imageBucket:
+      name: ${self:custom.imageBucketName}
+      corsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - 'PUT'
+            AllowedOrigins:
+              - '*'
 
 plugins:
   - serverless-iam-roles-per-function
@@ -132,7 +147,7 @@ functions:
         Action:
           - s3:PutObject
           - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::signature-lists/*'
+        Resource: 'arn:aws:s3:::${self:custom.listsBucketName}/*'
       - Effect: 'Allow' # for the global secondary index of signatures table
         Action:
           - dynamodb:Query
@@ -193,7 +208,7 @@ functions:
         Action:
           - s3:PutObject
           - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::signature-lists/*'
+        Resource: 'arn:aws:s3:::${self:custom.listsBucketName}/*'
       - Effect: 'Allow' # for the global secondary index of signatures table
         Action:
           - dynamodb:Query
@@ -896,7 +911,7 @@ functions:
     handler: src/triggers/processUploadedImage/index.handler
     events:
       - s3:
-          bucket: ${self:custom.imageBucketName}
+          bucket: imageBucket
           event: s3:ObjectCreated:*
           rules:
             - prefix: ${self:custom.stage}/originals/
@@ -1279,20 +1294,25 @@ resources:
               - CognitoUserPoolAdminUserPool
               - Arn
 
-# Print out the Id of the User Pool that is created
-Outputs:
-  UserPoolId:
-    Value:
-      Ref: CognitoUserPoolUserPool
+    SignatureListsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.listsBucketName}
 
-  UserPoolClientId:
-    Value:
-      Ref: UserPoolClient
+  # Print out the Id of the User Pool that is created
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPoolUserPool
 
-  AdminUserPoolId:
-    Value:
-      Ref: CognitoUserPoolAdminUserPool
+    UserPoolClientId:
+      Value:
+        Ref: UserPoolClient
 
-  AdminUserPoolClientId:
-    Value:
-      Ref: AdminUserPoolClient
+    AdminUserPoolId:
+      Value:
+        Ref: CognitoUserPoolAdminUserPool
+
+    AdminUserPoolClientId:
+      Value:
+        Ref: AdminUserPoolClient
