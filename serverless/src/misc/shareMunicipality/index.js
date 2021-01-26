@@ -16,12 +16,13 @@ const {
 } = require('../../shared/municipalities');
 
 const isbot = require('isbot');
+const fs = require('fs');
 
+const pathToFont = __dirname + '/3AD95C_0_0.ttf.fnt';
 const s3 = new AWS.S3();
 const emblemBucketUrl =
   'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
 const outputBucket = 'xbge-personalized-sharing-images';
-const ogUrl = 'https://expedition-grundeinkommen.de/gemeinde-teilen';
 const redirectUrl = 'https://expedition-grundeinkommen.de/gemeinden';
 const contentfulRequestHeaders = {
   headers: {
@@ -31,6 +32,7 @@ const contentfulRequestHeaders = {
 
 module.exports.handler = async event => {
   try {
+    console.log('event', event);
     // Check for query params (is null if there is none)
     if (!event.queryStringParameters) {
       return errorResponse(400, 'No query params provided');
@@ -79,6 +81,8 @@ module.exports.handler = async event => {
         profilePictureUrl = user.profilePictures['900'];
       }
 
+      console.log('picture url', profilePictureUrl);
+
       // Get template image
       const templates = await getTemplatesFromContentful(
         templateVersion,
@@ -119,7 +123,6 @@ module.exports.handler = async event => {
         }
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
-        <meta property="og:url" content="${ogUrl}/${userId}?ags=${ags}&version=${templateVersion}" />
         
         <title>${title}</title>
 
@@ -238,7 +241,7 @@ const createRenderedImage = async (templates, ags, profilePictureUrl) => {
       profilePictureUrl
     );
   } catch (error) {
-    const genericEmblem = jimp.read(`https:${templates.emblemUrl}`);
+    const genericEmblem = await jimp.read(`https:${templates.emblemUrl}`);
     return createCompositeImage(
       templates.templateUrl,
       genericEmblem,
@@ -264,14 +267,22 @@ const createCompositeImage = async (
   let profilePicture;
   if (profilePictureUrl) {
     profilePicture = await jimp.read(profilePictureUrl);
-    profilePicture.scaleToFit(180, 180, jimp.RESIZE_BEZIER);
+    const mask = await jimp.read(
+      'https://cloud.githubusercontent.com/assets/414918/11165709/051d10b0-8b0f-11e5-864a-20ef0bada8d6.png'
+    );
+    profilePicture.scaleToFit(360, 360, jimp.RESIZE_BEZIER);
+    mask.scaleToFit(360, 360, jimp.RESIZE_BEZIER);
+    profilePicture.mask(mask, 0, 0);
     background.composite(
       profilePicture,
-      200 - profilePicture.bitmap.width / 2,
-      330 - profilePicture.bitmap.height / 2
+      300 - profilePicture.bitmap.width / 2,
+      320 - profilePicture.bitmap.height / 2
     );
   }
-  return background.getBufferAsync(jimp.MIME_PNG);
+
+  const imageWithText = await printText(background);
+
+  return imageWithText.getBufferAsync(jimp.MIME_PNG);
 };
 
 const uploadImage = async (buffer, userId, ags) => {
@@ -288,4 +299,12 @@ const uploadImage = async (buffer, userId, ags) => {
   };
 
   return s3.upload(params).promise();
+};
+
+const printText = async image => {
+  const imageCaption = 'Testing';
+
+  const font = await jimp.loadFont(pathToFont);
+  const imageWithText = await image.print(font, 10, 10, imageCaption);
+  return imageWithText;
 };
