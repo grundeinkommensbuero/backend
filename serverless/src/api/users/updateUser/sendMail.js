@@ -111,7 +111,7 @@ const sendMailViaMailjet = async (
 
 const sendMailViaSes = (email, donation, donationInfo) => {
   const mailOptions = {
-    from: 'TODO <support@expedition-grundeinkommen.de',
+    from: process.env.EMAIL_ADDRESS,
     subject: 'Deine Spendeneinstellungen haben sich geändert',
     html: customEmail(donation, donationInfo),
     to: email,

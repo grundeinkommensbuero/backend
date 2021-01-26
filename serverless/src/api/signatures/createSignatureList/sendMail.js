@@ -77,7 +77,7 @@ const sendMailViaSes = (email, attachments) => {
   }
 
   const mailOptions = {
-    from: 'TODO <support@expedition-grundeinkommen.de',
+    from: process.env.EMAIL_ADDRESS,
     subject: 'Deine Unterschriftenliste',
     html: htmlMail,
     to: email,

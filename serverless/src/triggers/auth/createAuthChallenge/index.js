@@ -105,7 +105,7 @@ const sendMailViaMailjet = (email, code, signedUpOnBBPlatform) => {
 
 const sendMailViaSes = (email, code) => {
   const mailOptions = {
-    from: 'TODO <support@expedition-grundeinkommen.de',
+    from: process.env.EMAIL_ADDRESS,
     subject: 'Dein geheimer Login-Code',
     html: customEmail(code),
     to: email,

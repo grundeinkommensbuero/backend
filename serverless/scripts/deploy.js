@@ -19,6 +19,12 @@ const run = async () => {
       config.set('aws', awsConfig);
     }
 
+    // Check if we have already save email
+    if (!config.get('email')) {
+      const { email } = await askEmail();
+      config.set('email', email);
+    }
+
     // Copy mjml templates into mails folder
     shell.cp(
       `${process.cwd()}/mails/donationMail.mjml`,
@@ -64,7 +70,7 @@ const run = async () => {
       `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
     );
 
-    shell.exec('sls deploy -s cli');
+    shell.exec('sls deploy -s dev');
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }
@@ -94,6 +100,24 @@ const askCredentials = () => {
         }
 
         return 'Please enter your AWS secret.';
+      },
+    },
+  ]);
+};
+
+const askEmail = () => {
+  return inquirer.prompt([
+    {
+      name: 'email',
+      type: 'input',
+      message:
+        'Enter the e-mail address from which automatic mails should be sent:',
+      validate: value => {
+        if (value.length > 0) {
+          return true;
+        }
+
+        return 'Please enter an e-mail address.';
       },
     },
   ]);

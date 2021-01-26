@@ -1,6 +1,10 @@
 const webpack = require('webpack');
 const slsw = require('serverless-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const Configstore = require('configstore');
+const packageJson = require('./package.json');
+
+const config = new Configstore(packageJson.name);
 
 require('dotenv').config();
 
@@ -63,6 +67,8 @@ const copyStaticFilesPlugin = () => ({
   },
 });
 
+console.log('using mail', JSON.stringify(config.get('email')));
+
 module.exports = {
   mode: isLocal ? 'development' : 'production',
   // You can let the plugin determine the correct handler entry points at build time
@@ -113,6 +119,7 @@ module.exports = {
         process.env.MAILJET_API_SECRET
       ),
       'process.env.QUERY_TOKEN': JSON.stringify(process.env.QUERY_TOKEN),
+      'process.env.EMAIL_ADDRESS': JSON.stringify(config.get('email')),
     }),
   ],
 };
