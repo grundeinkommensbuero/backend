@@ -16,7 +16,6 @@ const {
 } = require('../../shared/municipalities');
 
 const isbot = require('isbot');
-const fs = require('fs');
 
 const pathToFont = __dirname + '/3AD95C_0_0.ttf.fnt';
 const s3 = new AWS.S3();
@@ -81,10 +80,8 @@ module.exports.handler = async event => {
         profilePictureUrl = user.profilePictures['900'];
       }
 
-      console.log('picture url', profilePictureUrl);
-
       // Get template image
-      const templates = await getTemplatesFromContentful(
+      const { templates, captions } = await getTemplatesFromContentful(
         templateVersion,
         profilePictureUrl
       );
@@ -93,7 +90,10 @@ module.exports.handler = async event => {
       const buffer = await createRenderedImage(
         templates,
         ags,
-        profilePictureUrl
+        profilePictureUrl,
+        captions,
+        user.username,
+        municipality.name
       );
 
       // Upload image to s3
@@ -205,18 +205,24 @@ const getTemplatesFromContentful = async (
     item => item.fields.version === templateVersion
   );
 
-  console.log('asset', asset);
   const assetId = profilePictureUrl
     ? asset.fields.backgroundImage.sys.id
     : asset.fields.backgroundImageAlternative.sys.id;
   const emblemId = asset.fields.genericEmblem.sys.id;
+
+  const mainCaption = asset.fields.mainCaption;
+  const altMainCaption = asset.fields.altMainCaption;
+  const subCaption = asset.fields.subCaption;
 
   const [templateUrl, emblemUrl] = await Promise.all([
     getAssetFromContentful(assetId),
     getAssetFromContentful(emblemId),
   ]);
 
-  return { templateUrl, emblemUrl };
+  return {
+    templates: { templateUrl, emblemUrl },
+    captions: { mainCaption, altMainCaption, subCaption },
+  };
 };
 
 // Get some asset from Contentful by ID
@@ -232,20 +238,33 @@ const getAssetFromContentful = async assetId => {
   return json.fields.file.url;
 };
 
-const createRenderedImage = async (templates, ags, profilePictureUrl) => {
+const createRenderedImage = async (
+  templates,
+  ags,
+  profilePictureUrl,
+  captions,
+  username,
+  municipalityName
+) => {
   try {
     const emblem = await jimp.read(`${emblemBucketUrl}/${ags}.png`);
     return createCompositeImage(
       templates.templateUrl,
       emblem,
-      profilePictureUrl
+      profilePictureUrl,
+      captions,
+      username,
+      municipalityName
     );
   } catch (error) {
     const genericEmblem = await jimp.read(`https:${templates.emblemUrl}`);
     return createCompositeImage(
       templates.templateUrl,
       genericEmblem,
-      profilePictureUrl
+      profilePictureUrl,
+      captions,
+      username,
+      municipalityName
     );
   }
 };
@@ -253,15 +272,18 @@ const createRenderedImage = async (templates, ags, profilePictureUrl) => {
 const createCompositeImage = async (
   backgroundUrl,
   emblem,
-  profilePictureUrl
+  profilePictureUrl,
+  captions,
+  username,
+  municipalityName
 ) => {
   const background = await jimp.read(`https:${backgroundUrl}`);
 
-  emblem.rotate(5).scaleToFit(180, 180, jimp.RESIZE_BEZIER);
+  emblem.scaleToFit(180, 180, jimp.RESIZE_BEZIER);
   background.composite(
     emblem,
-    880 - emblem.bitmap.width / 2,
-    330 - emblem.bitmap.height / 2
+    1000 - emblem.bitmap.width / 2,
+    500 - emblem.bitmap.height / 2
   );
 
   let profilePicture;
@@ -280,7 +302,12 @@ const createCompositeImage = async (
     );
   }
 
-  const imageWithText = await printText(background);
+  const imageWithText = await printText(
+    background,
+    captions,
+    username,
+    municipalityName
+  );
 
   return imageWithText.getBufferAsync(jimp.MIME_PNG);
 };
@@ -301,10 +328,18 @@ const uploadImage = async (buffer, userId, ags) => {
   return s3.upload(params).promise();
 };
 
-const printText = async image => {
-  const imageCaption = 'Testing';
+const printText = async (image, captions, username, municipalityName) => {
+  const mainCaption = username
+    ? captions.mainCaption
+        .replace('$USERNAME', username)
+        .replace('$MUNICIPALITY_NAME', municipalityName)
+    : captions.altMainCaption.replace('$MUNICIPALITY_NAME', municipalityName);
 
   const font = await jimp.loadFont(pathToFont);
-  const imageWithText = await image.print(font, 10, 10, imageCaption);
-  return imageWithText;
+
+  await image
+    .print(font, image.bitmap.width / 2 - 50, 200, mainCaption, 500)
+    .print(font, image.bitmap.width / 2 - 50, 350, captions.subCaption, 500);
+
+  return image;
 };
