@@ -15,6 +15,8 @@ const {
   getMunicipality,
 } = require('../../shared/municipalities');
 
+const isbot = require('isbot');
+
 const s3 = new AWS.S3();
 const emblemBucketUrl =
   'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
@@ -34,6 +36,9 @@ module.exports.handler = async event => {
       return errorResponse(400, 'No query params provided');
     }
 
+    // Get user agent to check if source is crawler
+    const isBot = isbot(event.headers['User-Agent']);
+
     const {
       version: templateVersion,
       ags,
@@ -51,20 +56,6 @@ module.exports.handler = async event => {
 
     const user = result.Item;
 
-    let profilePictureUrl = null;
-
-    // Get profile picture if available, and if flag to add it is set
-    if ('profilePictures' in user && addProfilePicture) {
-      // Get a medium sized image and load it into J
-      profilePictureUrl = user.profilePictures['900'];
-    }
-
-    // Get template image
-    const templates = await getTemplatesFromContentful(
-      templateVersion,
-      profilePictureUrl
-    );
-
     // Get stats for this municipality
     const municipalityResult = await getMunicipality(ags);
 
@@ -77,34 +68,104 @@ module.exports.handler = async event => {
 
     const stats = await getMunicipalityStats(ags, municipality.population);
 
-    // Render combined image
-    const buffer = await createRenderedImage(templates, ags, profilePictureUrl);
+    let renderedImageUrl = null;
+    // Only generate new image if is bot
+    if (isBot) {
+      let profilePictureUrl = null;
 
-    // Upload image to s3
-    const { Location: renderedImageUrl } = await uploadImage(
-      buffer,
-      user.cognitoId,
-      ags
-    );
+      // Get profile picture if available, and if flag to add it is set
+      if ('profilePictures' in user && addProfilePicture) {
+        // Get a medium sized image and load it into J
+        profilePictureUrl = user.profilePictures['900'];
+      }
+
+      // Get template image
+      const templates = await getTemplatesFromContentful(
+        templateVersion,
+        profilePictureUrl
+      );
+
+      // Render combined image
+      const buffer = await createRenderedImage(
+        templates,
+        ags,
+        profilePictureUrl
+      );
+
+      // Upload image to s3
+      const uploadResult = await uploadImage(buffer, user.cognitoId, ags);
+
+      renderedImageUrl = uploadResult.Location;
+    }
 
     const title = `Hole das Grundeinkommen nach ${municipality.name}`;
-    // Return HTML
+    const description = `Werde Teil der Expedition an und hole das Grundeinkommen nach ${municipality.name}!`;
     const html = `
     <html>
       <head>
+        <meta name="twitter:card" content="summary_large_image" />
+        ${
+          renderedImageUrl
+            ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
+            : ''
+        }
+        <meta name="twitter:title" content="${title}" />
+        <meta name="twitter:description" content="${description}" />
+        
+        ${
+          renderedImageUrl
+            ? `<meta property="og:image" content="${renderedImageUrl}" />`
+            : ''
+        }
         <meta property="og:title" content="${title}" />
-        <meta property="og:url" content="${redirectUrl}" />
-        <meta property="og:image" content="${renderedImageUrl}" />
+        <meta property="og:description" content="${description}" />
+        <meta property="og:url" content="${ogUrl}/${userId}?ags=${ags}&version=${templateVersion}" />
+        
         <title>${title}</title>
+
         <script>
-          window.location.replace(${redirectUrl});
+          if(${!isBot}) {
+            window.location.href = "${redirectUrl}/${ags}";
+          }
         </script>
+        <style>
+          .loader {
+            border: 8px solid #F0F0F0;
+            border-top: 8px solid #00C8F0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.75s linear infinite;
+            margin: auto;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          body {
+            font-family:'Ideal',Tahoma,Arial,Helvetica,sans-serif;
+            background-color:#FF4646;
+            color:#fff;
+            padding:2rem;
+            text-align:center;
+          }
+          a {
+            color:#00C8F0
+          }
+          h1 {
+            font-size:2rem;
+          }
+          p {
+            font-size:1.5rem;
+          }
+        </style>
       </head>
       <body>
         <h1>Du wirst automatisch weitergeleitet...</h1>
+        <div class="loader"></div>
         <p>
-          Solltest du nicht automatisch weitergeleitet werden, klicke bitte
-          &nbsp;<a href="${redirectUrl}/${ags}">hier</a>
+          Solltest du nicht automatisch weitergeleitet werden,<br/>klicke bitte
+          <a href="${redirectUrl}/${ags}"><b>HIER</b></a>
         </p>
       </body>
     </html>
