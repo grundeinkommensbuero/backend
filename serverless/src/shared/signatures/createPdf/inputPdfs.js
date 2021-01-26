@@ -469,7 +469,7 @@ module.exports = {
   },
 
   'direct-democracy-1': {
-    SINGLE: {
+    COMBINED: {
       file: fs.readFileSync(
         __dirname + '/pdfs/direct-democracy/signature_list.pdf'
       ),
