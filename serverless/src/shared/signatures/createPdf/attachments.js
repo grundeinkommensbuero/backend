@@ -80,7 +80,7 @@ module.exports = {
   'direct-democracy-1': [
     {
       filename: 'Listen.pdf',
-      type: 'SINGLE',
+      type: 'COMBINED',
     },
   ],
 };
