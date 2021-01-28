@@ -713,6 +713,26 @@ functions:
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
 
+  adminGetDonations:
+    handler: src/api/users/adminGetDonations/index.handler
+    events:
+      - http:
+          path: admin/donations
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   sendVerificationMail:
     handler: src/triggers/auth/sendVerificationMail/index.handler
     events:
