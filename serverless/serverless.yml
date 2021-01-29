@@ -515,6 +515,37 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  deleteUser:
+    handler: src/api/users/deleteUser/index.handler
+    events:
+      - http:
+          path: users/{userId}
+          method: delete
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminDeleteUser
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+
   unsubscribeUser:
     handler: src/api/users/unsubscribeUser/index.handler
     events:
@@ -715,6 +746,26 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+
+  adminGetDonations:
+    handler: src/api/users/adminGetDonations/index.handler
+    events:
+      - http:
+          path: admin/donations
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   sendVerificationMail:
     handler: src/triggers/auth/sendVerificationMail/index.handler

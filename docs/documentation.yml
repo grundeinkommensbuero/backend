@@ -551,6 +551,40 @@ paths:
                     type: string
                   error:
                     type: string
+    delete:
+      summary: Delete user (in dynamo and cognito)
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user who should be deleted
+      responses:
+        '204':
+          description: User successfully deleted
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
 
   /users/me:
     get:
@@ -1405,6 +1439,85 @@ paths:
                     type: string
         '400':
           description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /admin/donations:
+    get:
+      summary: Gets list of donations
+      security:
+        - AdminApiKeyAuth: []
+      responses:
+        '200':
+          description: Donations successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  donations:
+                    type: object
+                    properties:
+                      recurringDonations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            amount:
+                              type: number
+                            firstName:
+                              type: string
+                            lastName:
+                              type: string
+                            iban:
+                              type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
+                            cancelledAt:
+                              type: string
+                            firstDebitDate:
+                              type: string
+                      onetimeDonations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            amount:
+                              type: number
+                            firstName:
+                              type: string
+                            lastName:
+                              type: string
+                            iban:
+                              type: string
+                            createdAt:
+                              type: string
+                            debitDate:
+                              type: string
+        '401':
+          description: Not authorized to get users
           content:
             application/json:
               schema:
