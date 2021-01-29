@@ -14,7 +14,6 @@ describe('getUser api test', () => {
     const json = await response.json();
 
     expect(json).toHaveProperty('user');
-    expect(json.user).toHaveProperty('profilePictures');
     expect(json.user).toHaveProperty('hasZipCode');
     expect(json.user).toHaveProperty('questions');
 

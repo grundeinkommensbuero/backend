@@ -13,12 +13,14 @@ const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 2 });
 
 const run = async () => {
   // Get all signature lists
-  const lists = await getSignatureLists(DEV_SIGNATURES_TABLE_NAME);
+  const lists = await getSignatureLists(PROD_SIGNATURES_TABLE_NAME);
   let i = 0;
 
   for (const list of lists) {
     await limiter.schedule(async () => {
-      await updateList(list);
+      if (list.pdfUrl && !list.pdfUrl.includes('xbge-prod-signature-lists')) {
+        await updateList(list);
+      }
     });
 
     console.log('Updated', i++);
@@ -27,13 +29,15 @@ const run = async () => {
 
 const updateList = ({ id, pdfUrl }) => {
   const params = {
-    TableName: DEV_SIGNATURES_TABLE_NAME,
+    TableName: PROD_SIGNATURES_TABLE_NAME,
     Key: { id },
     UpdateExpression: 'SET pdfUrl = :url',
     ExpressionAttributeValues: {
-      ':url': pdfUrl.replace('signature-lists', 'xbge-dev-signature-lists'),
+      ':url': pdfUrl.replace('signature-lists', 'xbge-prod-signature-lists'),
     },
   };
 
   return ddb.update(params).promise();
 };
+
+run();
