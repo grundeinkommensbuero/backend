@@ -551,6 +551,40 @@ paths:
                     type: string
                   error:
                     type: string
+    delete:
+      summary: Delete user (in dynamo and cognito)
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user who should be deleted
+      responses:
+        '204':
+          description: User successfully deleted
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
 
   /users/me:
     get:
