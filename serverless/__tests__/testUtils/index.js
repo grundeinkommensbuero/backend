@@ -12,9 +12,8 @@ const AWS = require('aws-sdk');
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 
-module.exports.authenticate = async (userId = null) => {
-  const id = userId || USER_ID;
-  return makeAuthenticationCall(USER_POOL_ID, CLIENT_ID, id);
+module.exports.authenticate = async (userId = USER_ID) => {
+  return makeAuthenticationCall(USER_POOL_ID, CLIENT_ID, userId);
 };
 
 module.exports.authenticateAdmin = async () => {
