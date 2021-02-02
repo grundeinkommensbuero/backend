@@ -2,28 +2,32 @@
 
 const inquirer = require('inquirer');
 const shell = require('shelljs');
-const Configstore = require('configstore');
-const packageJson = require('../package.json');
+const config = require('../config.json');
 
-const config = new Configstore(packageJson.name);
+const configPath = `${process.cwd()}/config.json`;
+
+// const config = new Configstore(packageJson.name);
 
 const run = async () => {
   try {
-    // Check if we have already saved credentials
-    let awsConfig = config.get('aws');
+    let awsConfig = config.aws;
 
+    // Check if we have already saved credentials
     // If not we ask to user the enter credentials
     // and save them in the configstore for next time
     if (!awsConfig) {
       awsConfig = await askCredentials();
-      config.set('aws', awsConfig);
     }
 
+    let email = config.email;
     // Check if we have already save email
-    if (!config.get('email')) {
-      const { email } = await askEmail();
-      config.set('email', email);
+    if (!email) {
+      const answer = await askEmail();
+      email = answer.email;
     }
+
+    // Save config to file
+    new shell.ShellString(JSON.stringify({ awsConfig, email })).to(configPath);
 
     // Copy mjml templates into mails folder
     shell.cp(
@@ -70,7 +74,7 @@ const run = async () => {
       `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
     );
 
-    shell.exec('sls deploy -s dev');
+    shell.exec('sls deploy -s dd');
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }
