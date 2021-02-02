@@ -1,6 +1,6 @@
 {
-  "name": "@xbge/cli",
-  "version": "0.0.57",
+  "name": "backend-direct-democracy",
+  "version": "0.0.1",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "bin": {
