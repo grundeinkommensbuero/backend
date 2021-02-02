@@ -3,7 +3,9 @@ const shell = require('shelljs');
 module.exports.handler = data => {
   const json = {
     userPoolId: data.UserPoolId,
+    adminUserPoolId: data.AdminUserPoolId,
     userPoolClientId: data.UserPoolClientId,
+    adminUserPoolClientId: data.AdminUserPoolClientId,
     endpointUrl: data.ServiceEndpoint,
   };
 
