@@ -1,5 +1,9 @@
 const AWS = require('aws-sdk');
 const { getUser } = require('../../../shared/users');
+const {
+  getMunicipality,
+  createUserMunicipalityLink,
+} = require('../../../shared/municipalities');
 const { errorResponse } = require('../../../shared/apiResponse');
 const IBAN = require('iban');
 const uuid = require('uuid/v4');
@@ -29,17 +33,48 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
-      // Get ip address from request
+      // Get ip address from request (needed for user confirmation)
       const ipAddress = event.requestContext.identity.sourceIp;
+
+      // This array will be filled depending on which database calles will be made
+      const promises = [];
+      let municipalityName = null;
+      const ags = requestBody.ags;
+
+      // If ags was passed we also need to create the link
+      // between municipality and user
+      if (typeof ags !== 'undefined') {
+        // Get municipality to fetch its name (to later save it in the communication settings)
+        // and to check if munic even exists
+        const municipalityResult = await getMunicipality(ags);
+
+        if (!('Item' in municipalityResult)) {
+          return errorResponse(404, 'Municipality not found');
+        }
+
+        // We need the name later for the setting of newsletter settings
+        // and the population for updating the user municipality table
+        const { population } = municipalityResult.Item;
+        municipalityName = municipalityResult.Item.name;
+
+        // Add creating the link between user and munic to the promises array
+        // which will be executed afterwards
+        promises.push(createUserMunicipalityLink(ags, userId, population));
+      }
+
+      promises.push(
+        updateUser(
+          userId,
+          requestBody,
+          result.Item,
+          ipAddress,
+          municipalityName
+        )
+      );
 
       // We need to get the donation info holding essential params
       // for the email to be send
-      const donationInfo = await updateUser(
-        userId,
-        requestBody,
-        result.Item,
-        ipAddress
-      );
+      const [donationInfo] = await Promise.all(promises);
 
       // Check if donation was updated to send an email
       if ('donation' in requestBody) {
@@ -130,18 +165,37 @@ const updateUser = async (
     confirmed,
     code,
     removeToken,
+    ags,
   },
   user,
-  ipAddress
+  ipAddress,
+  municipalityName
 ) => {
   const timestamp = new Date().toISOString();
+
+  // If custom newsletters are part of request we use that value, if not
+  // we build our own array (adding to the existing one) of custom newsletters depending on the ags
+  let customNewslettersArray;
+  if (typeof customNewsletters !== 'undefined') {
+    customNewslettersArray = customNewsletters;
+  } else if (typeof ags !== 'undefined') {
+    // If array already exists, use that array
+    customNewslettersArray = user.customNewsletters || [];
+    customNewslettersArray.push({
+      name: municipalityName,
+      ags,
+      value: true,
+      extraInfo: false,
+      timestamp,
+    });
+  }
 
   const data = {
     ':updatedAt': timestamp,
     ':username': username,
     ':zipCode': zipCode,
     ':city': city,
-    ':customNewsletters': customNewsletters,
+    ':customNewsletters': customNewslettersArray,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -194,7 +248,7 @@ const updateUser = async (
         : ''
     }
     ${
-      typeof customNewsletters !== 'undefined'
+      typeof customNewslettersArray !== 'undefined'
         ? 'customNewsletters = :customNewsletters,'
         : ''
     }
