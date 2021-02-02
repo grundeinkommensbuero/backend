@@ -79,9 +79,27 @@ const getAllMunicipalitiesWithUsers = async (
   return municipalities;
 };
 
+// Update userMunicipality table to create the link between user and munic
+const createUserMunicipalityLink = (ags, userId, population) => {
+  const timestamp = new Date().toISOString();
+
+  const params = {
+    TableName: userMunicipalityTableName,
+    Item: {
+      ags,
+      userId,
+      createdAt: timestamp,
+      population,
+    },
+  };
+
+  return ddb.put(params).promise();
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
   getAllUsersOfMunicipality,
+  createUserMunicipalityLink,
 };

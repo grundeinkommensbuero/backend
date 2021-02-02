@@ -205,6 +205,7 @@ paths:
                 email:
                   type: string
                 newsletterConsent:
+                  description: Subscription to general newsletter
                   type: boolean
                 referral:
                   type: string
@@ -216,6 +217,31 @@ paths:
                   type: string
                 source:
                   type: string
+                ags:
+                  type: string
+                  description: If user should be signed up for municipality
+                customNewsletters:
+                  description: If omitted, newsletter settings will be configured on the basis of the ags. Will override existing newsletter settings.
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the municipality or the state
+                        required: true
+                      value:
+                        type: boolean
+                        required: true
+                      extraInfo:
+                        type: boolean
+                        required: true
+                      ags:
+                        type: string
+                        description: Is empty if the newsletter is for a state (SH and BB)
+                      timestamp:
+                        type: string
+                        description: In iso format
+                        required: true
       responses:
         '201':
           description: User was successfully created
@@ -453,7 +479,11 @@ paths:
             schema:
               type: object
               properties:
+                ags:
+                  type: string
+                  description: If user should be signed up for municipality
                 newsletterConsent:
+                  description: Subscription to general newsletter
                   type: boolean
                 zipCode:
                   type: string

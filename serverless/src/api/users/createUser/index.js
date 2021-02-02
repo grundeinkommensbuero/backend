@@ -3,8 +3,13 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
+const {
+  getMunicipality,
+  createUserMunicipalityLink,
+} = require('../../../shared/municipalities');
 
 const tableName = process.env.USERS_TABLE_NAME;
+const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,7 +25,7 @@ module.exports.handler = async event => {
     }
 
     try {
-      const { userId } = requestBody;
+      const { userId, ags } = requestBody;
 
       const result = await getUser(userId);
 
@@ -29,8 +34,34 @@ module.exports.handler = async event => {
         return errorResponse(401, 'Not authorized to overwrite user');
       }
 
-      // otherwise proceed by saving the user
-      await saveUser(requestBody);
+      // This array will be filled depending on which database calles will be made
+      const promises = [];
+      let municipalityName = null;
+
+      // If ags was passed we also need to create the link
+      // between municipality and user
+      if (typeof ags !== 'undefined') {
+        // Get municipality to fetch its name (to later save it in the communication settings)
+        // and to check if munic even exists
+        const municipalityResult = await getMunicipality(ags);
+
+        if (!('Item' in municipalityResult)) {
+          return errorResponse(404, 'Municipality not found');
+        }
+
+        // We need the name later for the setting of newsletter settings
+        // and the population for updating the user municipality table
+        const { population } = municipalityResult.Item;
+        municipalityName = municipalityResult.Item.name;
+
+        // Add creating the link between user and munic to the promises array
+        // which will be executed afterwards
+        promises.push(createUserMunicipalityLink(ags, userId, population));
+      }
+
+      promises.push(saveUser({ ...requestBody, municipalityName }));
+
+      await Promise.all(promises);
 
       // return message (created)
       return {
@@ -61,8 +92,28 @@ const saveUser = ({
   city,
   username,
   source,
+  customNewsletters,
+  municipalityName,
+  ags,
 }) => {
   const timestamp = new Date().toISOString();
+
+  // If custom newsletters are part of request we use that value, if not
+  // we build our own array (just one item) of custom newsletters depending on the ags
+  let customNewslettersArray;
+  if (typeof customNewsletters !== 'undefined') {
+    customNewslettersArray = customNewsletters;
+  } else if (typeof ags !== 'undefined') {
+    customNewslettersArray = [
+      {
+        name: municipalityName,
+        ags,
+        value: true,
+        extraInfo: false,
+        timestamp,
+      },
+    ];
+  }
 
   const params = {
     TableName: tableName,
@@ -73,6 +124,7 @@ const saveUser = ({
         value: newsletterConsent,
         timestamp,
       },
+      customNewsletters: customNewslettersArray,
       createdAt: timestamp,
       zipCode,
       referral,
@@ -89,6 +141,24 @@ const saveUser = ({
 };
 
 const validateParams = requestBody => {
+  if ('customNewsletters' in requestBody) {
+    const { customNewsletters } = requestBody;
+    if (typeof customNewsletters !== 'object') {
+      return false;
+    }
+
+    for (const newsletter of customNewsletters) {
+      if (
+        typeof newsletter.name !== 'string' ||
+        typeof newsletter.value !== 'boolean' ||
+        typeof newsletter.extraInfo !== 'boolean' ||
+        typeof newsletter.timestamp !== 'string'
+      ) {
+        return false;
+      }
+    }
+  }
+
   return (
     'userId' in requestBody &&
     'email' in requestBody &&
