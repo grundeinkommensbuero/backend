@@ -96,10 +96,23 @@ const createUserMunicipalityLink = (ags, userId, population) => {
   return ddb.put(params).promise();
 };
 
+const getUserMunicipalityLink = (ags, userId) => {
+  const params = {
+    TableName: userMunicipalityTableName,
+    Key: {
+      ags,
+      userId,
+    },
+  };
+
+  return ddb.get(params).promise();
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
   getAllUsersOfMunicipality,
   createUserMunicipalityLink,
+  getUserMunicipalityLink,
 };
