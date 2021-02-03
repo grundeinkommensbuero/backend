@@ -108,6 +108,16 @@ const getUserMunicipalityLink = (ags, userId) => {
   return ddb.get(params).promise();
 };
 
+const getMunicipalitiesOfUser = userId => {
+  const params = {
+    TableName: userMunicipalityTableName,
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: { ':userId': userId },
+  };
+
+  return ddb.query(params).promise();
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
@@ -115,4 +125,5 @@ module.exports = {
   getAllUsersOfMunicipality,
   createUserMunicipalityLink,
   getUserMunicipalityLink,
+  getMunicipalitiesOfUser,
 };
