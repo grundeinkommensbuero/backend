@@ -18,8 +18,10 @@ const responseHeaders = {
 };
 
 const scale = [
+  // Note: currently optimized for
+  // mockup-data and circles as markers
   [1, 40000],
-  [2000, 80000],
+  [1000, 30000],
 ];
 
 module.exports.handler = async event => {
