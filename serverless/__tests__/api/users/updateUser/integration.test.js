@@ -1,9 +1,10 @@
 const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
-const { authenticate } = require('../../../testUtils');
+const { authenticate, removeCustomNewsletters } = require('../../../testUtils');
 const fetch = require('node-fetch');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
 const AWS = require('aws-sdk');
 const uuid = require('uuid/v4');
+const crypto = require('crypto-secure-random-digit');
 
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
@@ -22,7 +23,7 @@ describe('updateUser update donation api test', () => {
       ReturnValues: 'UPDATED_NEW',
     };
 
-    return ddb.update(params).promise();
+    await ddb.update(params).promise();
   });
 
   it('should be able to create recurring donation', async () => {
@@ -522,7 +523,12 @@ describe('updateUser api test', () => {
 describe('updateUser update newsletters test', () => {
   beforeAll(async () => {
     // Remove custom newsletters key from user
-    await removeCustomNewsletters();
+    await removeCustomNewsletters(userId);
+  });
+
+  afterAll(async () => {
+    // Remove custom newsletters key from user
+    await removeCustomNewsletters(userId);
   });
 
   it('should set custom newsletters', async () => {
@@ -710,16 +716,6 @@ describe('updateUser update newsletters test', () => {
     expect(response.status).toEqual(400);
   });
 });
-
-const removeCustomNewsletters = () => {
-  const params = {
-    TableName: DEV_USERS_TABLE,
-    Key: { cognitoId: userId },
-    UpdateExpression: 'REMOVE customNewsletters',
-    ReturnValues: 'UPDATED_NEW',
-  };
-  return ddb.update(params).promise();
-};
 
 const addCustomToken = () => {
   const params = {
