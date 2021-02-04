@@ -27,9 +27,9 @@ module.exports.handler = async event => {
       return errorResponse(404, 'No municipality found with the passed ags');
     }
 
-    const userResult = await getAllUsersOfMunicipality(ags);
+    const users = await getAllUsersOfMunicipality(ags);
 
-    const signUpCount = userResult.Count;
+    const signUpCount = users.length;
 
     const goal = getMunicipalityGoal(result.Item.population);
 
