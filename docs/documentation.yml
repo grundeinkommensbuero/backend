@@ -796,7 +796,7 @@ paths:
                                   type: number
                                 id:
                                   type: string
-                          municipalCampaigns:
+                          municipalities:
                             type: array
                             items:
                               type: object
@@ -805,6 +805,11 @@ paths:
                                   type: string
                                 createdAt:
                                   type: string
+                                population:
+                                  type: number
+                                userId:
+                                  type: string
+                                  description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
         '401':
           description: Not authorized to get user
           content:
