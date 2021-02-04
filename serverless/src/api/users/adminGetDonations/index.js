@@ -6,8 +6,16 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-module.exports.handler = async () => {
+module.exports.handler = async event => {
   try {
+    // Check if admin has only permission for one municipality
+    if (!isAuthorized(event)) {
+      return errorResponse(
+        404,
+        'Admin only has permission for a specific municipality'
+      );
+    }
+
     const users = await getUsersWithDonations();
 
     const donations = formatDonations(users);
@@ -84,4 +92,8 @@ const sortDonations = donations => {
     // If not updated or cancelled more recently created should come first
     return new Date(donation2.createdAt) - new Date(donation1.createdAt);
   });
+};
+
+const isAuthorized = event => {
+  return !event.requestContext.authorizer.claims['custom:ags'];
 };
