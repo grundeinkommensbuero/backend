@@ -633,6 +633,20 @@ functions:
           method: get
           cors: true
 
+  getMunicipality:
+    handler: src/api/municipalities/getMunicipality/index.handler
+    events:
+      - http:
+          path: municipality/{ags}
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+
   getMunicipalityStats:
     handler: src/api/municipalities/getMunicipalityStats/index.handler
     events:
