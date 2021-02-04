@@ -32,12 +32,15 @@ const formatDonations = users => {
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
+        donation.iban = anonymizeIban(donation.iban);
         onetimeDonations.push(donation);
       }
     }
 
     if ('recurringDonation' in user.donations) {
-      recurringDonations.push(user.donations.recurringDonation);
+      const donation = user.donations.recurringDonation;
+      donation.iban = anonymizeIban(donation.iban);
+      recurringDonations.push(donation);
     }
   }
 
@@ -45,6 +48,10 @@ const formatDonations = users => {
   sortDonations(onetimeDonations);
 
   return { recurringDonations, onetimeDonations };
+};
+
+const anonymizeIban = iban => {
+  return `************${iban.slice(-4)}`;
 };
 
 // Sort donations by most recent (cancelled at the top, then updated, then created)
