@@ -17,7 +17,7 @@ const {
 
 const isbot = require('isbot');
 
-const pathToFont = __dirname + '/3AD95C_0_0.ttf.fnt';
+const pathToFont = __dirname + '/3AD95C_0_0.bft.fnt';
 const s3 = new AWS.S3();
 const emblemBucketUrl =
   'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
@@ -105,22 +105,21 @@ module.exports.handler = async event => {
     const title = `Hole das Grundeinkommen nach ${municipality.name}`;
     const description = `Werde Teil der Expedition an und hole das Grundeinkommen nach ${municipality.name}!`;
     const html = `
-    <html>
+    <html lang="de">
       <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="twitter:card" content="summary_large_image" />
-        ${
-          renderedImageUrl
-            ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
-            : ''
-        }
+        ${renderedImageUrl
+        ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
+        : ''
+      }
         <meta name="twitter:title" content="${title}" />
         <meta name="twitter:description" content="${description}" />
         
-        ${
-          renderedImageUrl
-            ? `<meta property="og:image" content="${renderedImageUrl}" />`
-            : ''
-        }
+        ${renderedImageUrl
+        ? `<meta property="og:image" content="${renderedImageUrl}" />`
+        : ''
+      }
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         
@@ -282,16 +281,30 @@ const createCompositeImage = async (
   emblem.scaleToFit(180, 180, jimp.RESIZE_BEZIER);
   background.composite(
     emblem,
-    1000 - emblem.bitmap.width / 2,
+    1050 - emblem.bitmap.width / 2,
     500 - emblem.bitmap.height / 2
   );
 
   let profilePicture;
   if (profilePictureUrl) {
     profilePicture = await jimp.read(profilePictureUrl);
+
+    // TODO: Upload this mask to Contentful
     const mask = await jimp.read(
       'https://cloud.githubusercontent.com/assets/414918/11165709/051d10b0-8b0f-11e5-864a-20ef0bada8d6.png'
     );
+
+    const height = profilePicture.bitmap.height;
+    const width = profilePicture.bitmap.width;
+
+    if (height < width) {
+      const offset = Math.floor((width - height) / 2);
+      profilePicture.crop(offset, 0, height, height);
+    } else if (width < height) {
+      const offset = Math.floor((height - width) / 2);
+      profilePicture.crop(0, offset, width, width);
+    }
+
     profilePicture.scaleToFit(360, 360, jimp.RESIZE_BEZIER);
     mask.scaleToFit(360, 360, jimp.RESIZE_BEZIER);
     profilePicture.mask(mask, 0, 0);
@@ -331,15 +344,15 @@ const uploadImage = async (buffer, userId, ags) => {
 const printText = async (image, captions, username, municipalityName) => {
   const mainCaption = username
     ? captions.mainCaption
-        .replace('$USERNAME', username)
-        .replace('$MUNICIPALITY_NAME', municipalityName)
+      .replace('$USERNAME', username)
+      .replace('$MUNICIPALITY_NAME', municipalityName)
     : captions.altMainCaption.replace('$MUNICIPALITY_NAME', municipalityName);
 
   const font = await jimp.loadFont(pathToFont);
 
   await image
-    .print(font, image.bitmap.width / 2 - 50, 200, mainCaption, 500)
-    .print(font, image.bitmap.width / 2 - 50, 350, captions.subCaption, 500);
+    .print(font, image.bitmap.width / 2 - 50, 150, mainCaption, 700)
+    .print(font, image.bitmap.width / 2 - 50, 400, captions.subCaption, 350);
 
   return image;
 };
