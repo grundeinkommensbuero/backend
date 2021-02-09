@@ -21,15 +21,21 @@ const stage = process.env.STAGE;
 const fileName = 'statsWithAll.json';
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 
-module.exports.handler = async event => {
-  // We don't want to compute the stats again, because we already
-  // do it in a cron job, so we just get the json from s3
-  const json = await getJson();
-  const { municipalities } = JSON.parse(json.Body.toString());
+// Munic to test: 01051014
 
-  // Check which municipalities have reached goals and
-  // send emails to all users
-  await analyseMunicipalities(municipalities);
+module.exports.handler = async event => {
+  try {
+    // We don't want to compute the stats again, because we already
+    // do it in a cron job, so we just get the json from s3
+    const json = await getJson();
+    const { municipalities } = JSON.parse(json.Body.toString());
+
+    // Check which municipalities have reached goals and
+    // send emails to all users
+    await analyseMunicipalities(municipalities);
+  } catch (error) {
+    console.log('Error sending mails', error);
+  }
 
   return event;
 };
@@ -46,19 +52,24 @@ const analyseMunicipalities = async municipalities => {
       // Now we need to check, if we have already sent a mail for this municipality
       const { Item } = await getMunicipality(ags);
 
-      // We need the engagement levels to check if there are any organizers
-      const municipality = { ...Item, goal, signups, engagementLevels };
+      if (typeof Item !== 'undefined') {
+        // We need the engagement levels to check if there are any organizers
+        const municipality = { ...Item, goal, signups, engagementLevels };
 
-      if (
-        (reached80 && !Item.mails.sentReached80) ||
-        (reachedGoal && !Item.mails.sentReachedGoal)
-      ) {
-        const event = reached80 ? '80' : 'goal';
-        // Send mail to all users
-        await sendMailsForMunicipality(municipality, event);
+        // Check if we have already set the flags for this municipality
+        if (
+          (reached80 && (!('mails' in Item) || !Item.mails.sentReached80)) ||
+          (reachedGoal && (!('mails' in Item) || !Item.mails.sentReachedGoal))
+        ) {
+          const event = reached80 ? '80' : 'goal';
+          // Send mail to all users
+          await sendMailsForMunicipality(municipality, event);
 
-        // Set flag, that we have sent mails
-        await setFlag(Item.ags, event);
+          // Set flag, that we have sent mails
+          await setFlag(Item.ags, event);
+        }
+      } else {
+        console.log('No municipality found with ags', ags);
       }
     }
   }
@@ -79,16 +90,21 @@ const sendMailsForMunicipality = async (municipality, event) => {
   }
 
   // send info mail to xbge team
-  await sendInfoMail(municipality, event);
+  if (municipality.ags === '01051014') {
+    await sendInfoMail(municipality, event);
+  }
 };
 
 const setFlag = (ags, event) => {
   const params = {
     TableName: municipalitiesTableName,
     Key: { ags },
-    UpdateExpression: 'SET #key := true',
+    UpdateExpression: 'SET mails.#key = :flag',
+    ExpressionAttributeValues: {
+      ':flag': true,
+    },
     ExpressionAttributeNames: {
-      '#key': event === '80' ? 'mails.sentReached80' : 'mails.sentReachedGoal',
+      '#key': event === '80' ? 'sentReached80' : 'sentReachedGoal',
     },
     ReturnValues: 'UPDATED_NEW',
   };
@@ -109,17 +125,22 @@ const getJson = () => {
 // Send info mail to xbge Team (we just use ses here, because we don't need
 // a mailjet template and this is just easier)
 const sendInfoMail = (municipality, event) => {
+  const organizerCount =
+    'engagementLevels' in municipality ? municipality.engagementLevels[3] : 0;
+
   const mailOptions = {
-    from: 'Expedition Grundeinkommen <technik@expedition-grundeinkommen.de',
-    subject: `Die Gemeinde ${municipality.name} hat ein Ziel erreicht`,
+    from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
+    subject:
+      event === '80'
+        ? `Die Gemeinde ${municipality.name} hat 80% erreicht`
+        : `Die Gemeinde ${municipality.name} hat das Ziel erreicht`,
     html: `Es wurden Mails an die User:innen aus ${
       municipality.name
     } verschickt, da die Gemeinde ${
       event === '80' ? '80% des Ziels erreicht hat' : 'das Ziel erreicht hat'
     }. Die Gemeinde hat ${municipality.signups} von ${
       municipality.goal
-    } erreicht.`,
-    // TODO add, Tuan and Vilma and co
+    } erreicht. Es haben sich ${organizerCount} Aktive gemeldet.`,
     to:
       stage === 'prod'
         ? [

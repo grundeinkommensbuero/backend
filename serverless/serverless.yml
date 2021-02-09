@@ -1063,6 +1063,12 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
                 - 'index/agsIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
       - Effect: Allow
         Action:
           - s3:HeadObject

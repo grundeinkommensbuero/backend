@@ -61,8 +61,11 @@ const computeDaysRemaining = () => {
 };
 
 const computeDaysPassed = () => {
-  return Math.round(
-    (new Date() - new Date(START_OF_QUALIFYING_PERIOD)) / (1000 * 60 * 60 * 24)
+  return Math.abs(
+    Math.round(
+      (new Date() - new Date(START_OF_QUALIFYING_PERIOD)) /
+        (1000 * 60 * 60 * 24)
+    )
   );
 };
 
