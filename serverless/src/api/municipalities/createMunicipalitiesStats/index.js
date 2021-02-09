@@ -65,14 +65,34 @@ const computeStats = async ({
   const municipalitiesWithUsers = [];
 
   const municipalityMap = new Map();
-  for (const { userId, ags, createdAt, population } of userMuncipality) {
+  for (const {
+    userId,
+    ags,
+    createdAt,
+    population,
+    engagementLevel,
+  } of userMuncipality) {
     if (!municipalityMap.has(ags)) {
+      const engagementLevels = {
+        1: 0,
+        2: 0,
+        3: 0,
+      };
+
+      if (typeof engagementLevel !== 'undefined') {
+        engagementLevels[engagementLevel]++;
+      }
+
       municipalityMap.set(ags, {
         users: [{ userId, createdAt }],
         population,
+        engagementLevels,
       });
     } else {
-      municipalityMap.get(ags).users.push({ userId, createdAt });
+      const municipality = municipalityMap.get(ags);
+
+      municipality.engagementLevels[engagementLevel]++;
+      municipality.users.push({ userId, createdAt });
     }
   }
 
@@ -86,12 +106,25 @@ const computeStats = async ({
       const { ags } = municipality;
 
       let signups = 0;
+      let engagementLevels;
       if (municipalityMap.has(municipality.ags)) {
-        signups = municipalityMap.get(municipality.ags).users.length;
+        const { users, engagementLevels: engagement } = municipalityMap.get(
+          municipality.ags
+        );
+
+        signups = users.length;
+        engagementLevels = engagement;
       }
 
-      return { ags, goal, signups };
+      return {
+        ags,
+        goal,
+        signups,
+        // Conditionally add key engagementLevels using spread operator
+        ...(engagementLevels && { engagementLevels }),
+      };
     });
+
     return { municipalities: allMunicipalitiesWithStats };
   }
 
