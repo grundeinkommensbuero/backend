@@ -8,6 +8,7 @@ const {
   getMunicipality,
   getAllUsersOfMunicipality,
 } = require('../../shared/municipalities');
+const { getUser } = require('../../shared/users');
 const sendMail = require('./sendMail');
 const nodemailer = require('nodemailer');
 
@@ -36,7 +37,7 @@ module.exports.handler = async event => {
 // Loops through municipalities and checks if municipalities are
 // over 80% of the goal and  have reached goal
 const analyseMunicipalities = async municipalities => {
-  for (const { signups, goal, ags } of municipalities) {
+  for (const { signups, goal, ags, engagementLevels } of municipalities) {
     const ratio = signups / goal;
     const reached80 = ratio >= 0.8 && ratio < 1;
     const reachedGoal = ratio >= 1;
@@ -45,7 +46,8 @@ const analyseMunicipalities = async municipalities => {
       // Now we need to check, if we have already sent a mail for this municipality
       const { Item } = await getMunicipality(ags);
 
-      const municipality = { ...Item, goal, signups };
+      // We need the engagement levels to check if there are any organizers
+      const municipality = { ...Item, goal, signups, engagementLevels };
 
       if (
         (reached80 && !Item.mails.sentReached80) ||
@@ -67,8 +69,13 @@ const sendMailsForMunicipality = async (municipality, event) => {
   // First we have to get all users of this municipality
   const users = await getAllUsersOfMunicipality(municipality.ags);
 
-  for (const user of users) {
-    await sendMail(user, municipality, event);
+  for (const { userId } of users) {
+    // Get user record from users table to get email, username etc
+    const result = await getUser(userId);
+
+    if ('Item' in result) {
+      await sendMail(result.Item, municipality, event);
+    }
   }
 
   // send info mail to xbge team
