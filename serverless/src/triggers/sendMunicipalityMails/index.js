@@ -9,7 +9,9 @@ const {
   getAllUsersOfMunicipality,
 } = require('../../shared/municipalities');
 const sendMail = require('./sendMail');
+const nodemailer = require('nodemailer');
 
+const ses = new AWS.SES({ region: 'eu-central-1' });
 const s3 = new AWS.S3();
 const ddb = new AWS.DynamoDB.DocumentClient();
 
@@ -36,28 +38,25 @@ module.exports.handler = async event => {
 const analyseMunicipalities = async municipalities => {
   for (const { signups, goal, ags } of municipalities) {
     const ratio = signups / goal;
+    const reached80 = ratio >= 0.8 && ratio < 1;
+    const reachedGoal = ratio >= 1;
 
-    if (ratio >= 0.8 && ratio < 1) {
+    if (reached80 || reachedGoal) {
       // Now we need to check, if we have already sent a mail for this municipality
       const { Item } = await getMunicipality(ags);
 
-      if (!Item.mails.sentReached80) {
+      const municipality = { ...Item, goal, signups };
+
+      if (
+        (reached80 && !Item.mails.sentReached80) ||
+        (reachedGoal && !Item.mails.sentReachedGoal)
+      ) {
+        const event = reached80 ? '80' : 'goal';
         // Send mail to all users
-        await sendMailsForMunicipality(Item, '80');
+        await sendMailsForMunicipality(municipality, event);
 
         // Set flag, that we have sent mails
-        await setFlag(Item.ags, '80');
-      }
-    } else if (ratio >= 1) {
-      // Now we need to check, if we have already sent a mail for this municipality
-      const { Item } = await getMunicipality(ags);
-
-      if (!Item.mails.sentReachedGoal) {
-        // Send mail to all users
-        await sendMailsForMunicipality(Item, 'goal');
-
-        // Set flag, that we have sent mails
-        await setFlag(Item.ags, 'goal');
+        await setFlag(Item.ags, event);
       }
     }
   }
@@ -72,7 +71,8 @@ const sendMailsForMunicipality = async (municipality, event) => {
     await sendMail(user, municipality, event);
   }
 
-  // TODO: send info mail to xbge team
+  // send info mail to xbge team
+  await sendInfoMail(municipality, event);
 };
 
 const setFlag = (ags, event) => {
@@ -97,4 +97,38 @@ const getJson = () => {
   };
 
   return s3.getObject(params).promise();
+};
+
+// Send info mail to xbge Team (we just use ses here, because we don't need
+// a mailjet template and this is just easier)
+const sendInfoMail = (municipality, event) => {
+  const mailOptions = {
+    from: 'Expedition Grundeinkommen <technik@expedition-grundeinkommen.de',
+    subject: `Die Gemeinde ${municipality.name} hat ein Ziel erreicht`,
+    html: `Es wurden Mails an die User:innen aus ${
+      municipality.name
+    } verschickt, da die Gemeinde ${
+      event === '80' ? '80% des Ziels erreicht hat' : 'das Ziel erreicht hat'
+    }. Die Gemeinde hat ${municipality.signups} von ${
+      municipality.goal
+    } erreicht.`,
+    // TODO add, Tuan and Vilma and co
+    to:
+      stage === 'prod'
+        ? [
+            'valentin@expedition-grundeinkommen.de',
+            'tuan@expedition-grundeinkommen.de',
+            'lucia@expedition-grundeinkommen.de',
+            'laura@expedition-grundeinkommen.de',
+            'sarah@expedition-grundeinkommen.de',
+          ]
+        : 'valentin@expedition-grundeinkommen.de',
+  };
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses,
+  });
+
+  return transporter.sendMail(mailOptions);
 };
