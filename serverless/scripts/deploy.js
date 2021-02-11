@@ -8,6 +8,12 @@ const configPath = `${process.cwd()}/config.json`;
 
 const run = async () => {
   try {
+    const { projectName } = config;
+
+    if (!projectName) {
+      throw new Error('No project name defined');
+    }
+
     let awsConfig = config.aws;
 
     // Check if we have already saved credentials
@@ -25,9 +31,9 @@ const run = async () => {
     }
 
     // Save config to file
-    new shell.ShellString(JSON.stringify({ aws: awsConfig, email })).to(
-      configPath
-    );
+    new shell.ShellString(
+      JSON.stringify({ aws: awsConfig, email, projectName })
+    ).to(configPath);
 
     // Copy mjml templates into mails folder
     shell.cp(
@@ -74,7 +80,7 @@ const run = async () => {
       `sls config credentials --provider aws --key ${awsConfig.key} --secret ${awsConfig.secret} --overwrite`
     );
 
-    shell.exec('sls deploy -s dd');
+    shell.exec(`sls deploy -s dd --projectName ${projectName}`);
   } catch (error) {
     console.log('Ooops, something went wrong', error);
   }
