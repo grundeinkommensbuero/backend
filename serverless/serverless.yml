@@ -148,7 +148,7 @@ functions:
         Action:
           - ses:SendEmail
           - ses:SendRawEmail
-        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
       - Effect: 'Allow'
         Action:
           - s3:PutObject
@@ -210,7 +210,7 @@ functions:
         Action:
           - ses:SendEmail
           - ses:SendRawEmail
-        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
       - Effect: 'Allow'
         Action:
           - s3:PutObject
@@ -734,7 +734,7 @@ functions:
         Action:
           - ses:SendEmail
           - ses:SendRawEmail
-        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
       - Effect: 'Allow'
         Action:
           - cognito-idp:AdminCreateUser
@@ -985,7 +985,7 @@ functions:
         Action:
           - ses:SendEmail
           - ses:SendRawEmail
-        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
 
   requestImageUpload:
     handler: src/api/images/requestImageUpload/index.handler
@@ -1099,7 +1099,7 @@ functions:
         Action:
           - ses:SendEmail
           - ses:SendRawEmail
-        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
