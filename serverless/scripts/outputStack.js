@@ -7,6 +7,7 @@ module.exports.handler = data => {
     userPoolClientId: data.UserPoolClientId,
     adminUserPoolClientId: data.AdminUserPoolClientId,
     endpointUrl: data.ServiceEndpoint,
+    region: data.Region,
   };
 
   // Write stack json to to file
