@@ -17,6 +17,10 @@ custom:
   listsBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-signature-lists
   output:
     handler: scripts/outputStack.handler
+  # If you enable caching globally, it does NOT automatically enable
+  # caching for your endpoints - you have to be explicit about which endpoints should have caching enabled.
+  apiGatewayCaching:
+    enabled: true
 
 provider:
   name: aws
@@ -54,6 +58,7 @@ plugins:
   - serverless-webpack
   - serverless-plugin-split-stacks # needed because of the 200 resources limit
   - serverless-stack-output
+  - serverless-api-gateway-caching
 
 # no global iam policies, because we want to follow the least privilege princilpe
 # therefore we use a plugin to define roles per function
@@ -341,6 +346,12 @@ functions:
           path: analytics/users
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
+            perKeyInvalidation:
+              requireAuthorization: true # default is true
+              handleUnauthorizedRequests: Ignore # default is "IgnoreWithWarning"
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -369,6 +380,9 @@ functions:
           path: analytics/signatures/lists
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -482,6 +496,11 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
@@ -730,6 +749,9 @@ functions:
           path: admin/users
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:

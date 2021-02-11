@@ -19,6 +19,7 @@ const { createChristmasCard } = require('./createChristmasCard');
 
 const DONATION_TEMPLATE = 1885162;
 const CHRISTMAS_TEMPLATE = 2060355;
+const CANCEL_TEMPLATE = 2209988;
 
 // Function which sends an email to the user after donation was changed
 const sendMail = async (email, donation, donationInfo, username) => {
@@ -51,15 +52,49 @@ const sendMailViaMailjet = async (
   email,
   {
     recurring,
-    amountAsString,
+    amount,
     firstName,
     lastName,
     certificateReceiver,
     certificateGiver,
+    cancel,
   },
-  { debitDate, id, recurringDonationExisted },
+  // donations is the entire donations object which was saved
+  { debitDate, id, recurringDonationExisted, donations },
   username
 ) => {
+  let variables = {};
+
+  if (!cancel) {
+    variables = {
+      username,
+      recurringDonationExisted,
+      amount: amountToString(amount),
+      firstName,
+      lastName,
+      debitDate: debitDate && formatDate(debitDate),
+      id,
+      nameOfGifted: certificateReceiver,
+    };
+  } else {
+    // If the donation was cancelled we want to pass
+    // the amount of the cancelled donation to the mail template
+    variables = {
+      username,
+      amount: amountToString(donations.recurringDonation.amount),
+    };
+  }
+
+  let template = '';
+
+  if (recurring) {
+    template = DONATION_TEMPLATE;
+  } else if (cancel) {
+    template = CANCEL_TEMPLATE;
+  } else {
+    template = CHRISTMAS_TEMPLATE;
+  }
+
   const params = {
     Messages: [
       {
@@ -68,33 +103,24 @@ const sendMailViaMailjet = async (
             Email: email,
           },
         ],
-        TemplateID: recurring ? DONATION_TEMPLATE : CHRISTMAS_TEMPLATE,
+        TemplateID: template,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
           Name: 'Vali',
         },
         // TemplateErrorDeliver: true,
-        Variables: {
-          username,
-          recurringDonationExisted,
-          amount: amountAsString,
-          firstName,
-          lastName,
-          debitDate: debitDate && formatDate(debitDate),
-          id,
-          nameOfGifted: certificateReceiver,
-        },
+        Variables: variables,
       },
     ],
   };
 
   // If donation is gift we want to create an attachment with a christmas card
-  if (!recurring) {
+  if (!recurring && !cancel) {
     const christmasCard = await createChristmasCard(
       certificateGiver,
       certificateReceiver,
-      amountAsString
+      amountToString(amount)
     );
 
     params.Messages[0].Attachments = [
@@ -148,6 +174,19 @@ const customEmail = (
 
 const formatDate = date => {
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+};
+
+const amountToString = amount => {
+  let amountAsString = amount.toString().replace('.', ',');
+  if (amountAsString.includes(',')) {
+    if (amountAsString.split(',')[1].length === 1) {
+      amountAsString = `${amountAsString}0`;
+    }
+  } else {
+    amountAsString = `${amountAsString},00`;
+  }
+
+  return amountAsString;
 };
 
 module.exports = sendMail;
