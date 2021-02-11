@@ -6,8 +6,6 @@ const config = require('../config.json');
 
 const configPath = `${process.cwd()}/config.json`;
 
-// const config = new Configstore(packageJson.name);
-
 const run = async () => {
   try {
     let awsConfig = config.aws;
@@ -27,7 +25,9 @@ const run = async () => {
     }
 
     // Save config to file
-    new shell.ShellString(JSON.stringify({ awsConfig, email })).to(configPath);
+    new shell.ShellString(JSON.stringify({ aws: awsConfig, email })).to(
+      configPath
+    );
 
     // Copy mjml templates into mails folder
     shell.cp(
