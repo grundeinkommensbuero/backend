@@ -1,6 +1,6 @@
 {
   "name": "backend-direct-democracy",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "bin": {
@@ -36,6 +36,7 @@
     "pdf-lib": "^1.11.2",
     "raw-loader": "^4.0.2",
     "serverless": "^1.83.0",
+    "serverless-api-gateway-caching": "^1.6.1",
     "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-plugin-split-stacks": "~1.9.3",
     "serverless-stack-output": "^0.2.3",
