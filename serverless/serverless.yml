@@ -1357,3 +1357,5 @@ resources:
     AdminUserPoolClientId:
       Value:
         Ref: AdminUserPoolClient
+    Region:
+      Value: eu-central-1
