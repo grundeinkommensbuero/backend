@@ -24,6 +24,9 @@ describe('get current user api test', () => {
     expect(response.status).toEqual(200);
     expect(json).toHaveProperty('user');
     expect(json.user).toHaveProperty('email');
+    expect(json.user).toHaveProperty('municipalities');
+    expect(json.user.municipalities[0]).toHaveProperty('ags');
+    expect(json.user.municipalities[0]).toHaveProperty('createdAt');
   });
 
   it('should not be able to authorize', async () => {

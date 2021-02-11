@@ -3,6 +3,7 @@ const { getUser } = require('../../../shared/users');
 const {
   getMunicipality,
   createUserMunicipalityLink,
+  getUserMunicipalityLink,
 } = require('../../../shared/municipalities');
 const { errorResponse } = require('../../../shared/apiResponse');
 const IBAN = require('iban');
@@ -41,6 +42,7 @@ module.exports.handler = async event => {
       let municipalityName = null;
       const ags = requestBody.ags;
 
+      let alreadySignedUpForMunicipality = true;
       // If ags was passed we also need to create the link
       // between municipality and user
       if (typeof ags !== 'undefined') {
@@ -57,9 +59,19 @@ module.exports.handler = async event => {
         const { population } = municipalityResult.Item;
         municipalityName = municipalityResult.Item.name;
 
-        // Add creating the link between user and munic to the promises array
-        // which will be executed afterwards
-        promises.push(createUserMunicipalityLink(ags, userId, population));
+        // Query user municipality table to check if user has already signed up for this munic
+        const userMunicipalityResult = await getUserMunicipalityLink(
+          requestBody.ags,
+          userId
+        );
+
+        // If Item is result user has already signed up
+        if (!('Item' in userMunicipalityResult)) {
+          // Add creating the link between user and munic to the promises array
+          // which will be executed afterwards
+          promises.push(createUserMunicipalityLink(ags, userId, population));
+          alreadySignedUpForMunicipality = false;
+        }
       }
 
       promises.push(
@@ -68,7 +80,8 @@ module.exports.handler = async event => {
           requestBody,
           result.Item,
           ipAddress,
-          municipalityName
+          municipalityName,
+          alreadySignedUpForMunicipality
         )
       );
 
@@ -112,7 +125,12 @@ const validateParams = (pathParameters, requestBody) => {
   // Check if donation object is correct
   if ('donation' in requestBody) {
     const { donation } = requestBody;
-    if (
+    // If cancel flag is passed the other parameters don't matter
+    if ('cancel' in donation) {
+      if (typeof donation.cancel !== 'boolean') {
+        return false;
+      }
+    } else if (
       !('amount' in donation) ||
       typeof donation.amount !== 'number' ||
       !('recurring' in donation) ||
@@ -169,7 +187,8 @@ const updateUser = async (
   },
   user,
   ipAddress,
-  municipalityName
+  municipalityName,
+  alreadySignedUpForMunicipality
 ) => {
   const timestamp = new Date().toISOString();
 
@@ -178,7 +197,7 @@ const updateUser = async (
   let customNewslettersArray;
   if (typeof customNewsletters !== 'undefined') {
     customNewslettersArray = customNewsletters;
-  } else if (typeof ags !== 'undefined') {
+  } else if (typeof ags !== 'undefined' && !alreadySignedUpForMunicipality) {
     // If array already exists, use that array
     customNewslettersArray = user.customNewsletters || [];
     customNewslettersArray.push({
@@ -277,57 +296,64 @@ const constructDonationObject = (donation, user, timestamp) => {
   delete rest.certificateReceiver;
   delete rest.certificateGiver;
 
-  const normalizedIban = iban.replace(/ /g, '');
-
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
   let recurringDonationExisted = false;
   let id;
   let debitDate;
 
-  // If the donation is recurring we want to set/update recurringDonation
-  if (recurring) {
-    if ('recurringDonation' in donations) {
-      recurringDonationExisted = true;
-      id = donations.recurringDonation.id;
+  // If cancel flag was passed the recurring donation should be cancelled
+  if (donation.cancel) {
+    // We just set a timestamp
+    donations.recurringDonation.cancelledAt = timestamp;
+  } else {
+    const normalizedIban = iban.replace(/ /g, '');
 
-      donations.recurringDonation = {
-        iban: normalizedIban,
-        updatedAt: timestamp,
-        createdAt: donations.recurringDonation.createdAt,
-        id,
-        firstDebitDate: donations.recurringDonation.firstDebitDate,
-        ...rest,
-      };
+    if (recurring) {
+      // If the donation is recurring we want to set/update recurringDonation
+
+      if ('recurringDonation' in donations) {
+        recurringDonationExisted = true;
+        id = donations.recurringDonation.id;
+
+        donations.recurringDonation = {
+          iban: normalizedIban,
+          updatedAt: timestamp,
+          createdAt: donations.recurringDonation.createdAt,
+          id,
+          firstDebitDate: donations.recurringDonation.firstDebitDate,
+          ...rest,
+        };
+      } else {
+        id = uuid().slice(0, -4); // we need to make id shorter
+        debitDate = computeDebitDate(new Date());
+
+        donations.recurringDonation = {
+          iban: normalizedIban,
+          createdAt: timestamp,
+          firstDebitDate: debitDate.toISOString(),
+          id,
+          ...rest,
+        };
+      }
     } else {
       id = uuid().slice(0, -4); // we need to make id shorter
       debitDate = computeDebitDate(new Date());
 
-      donations.recurringDonation = {
+      // Otherwise we add the one time donation to an array
+      const onetimeDonation = {
         iban: normalizedIban,
         createdAt: timestamp,
-        firstDebitDate: debitDate.toISOString(),
+        debitDate: debitDate.toISOString(),
         id,
         ...rest,
       };
-    }
-  } else {
-    id = uuid().slice(0, -4); // we need to make id shorter
-    debitDate = computeDebitDate(new Date());
 
-    // Otherwise we add the one time donation to an array
-    const onetimeDonation = {
-      iban: normalizedIban,
-      createdAt: timestamp,
-      debitDate: debitDate.toISOString(),
-      id,
-      ...rest,
-    };
-
-    if ('onetimeDonations' in donations) {
-      donations.onetimeDonations.push(onetimeDonation);
-    } else {
-      donations.onetimeDonations = [onetimeDonation];
+      if ('onetimeDonations' in donations) {
+        donations.onetimeDonations.push(onetimeDonation);
+      } else {
+        donations.onetimeDonations = [onetimeDonation];
+      }
     }
   }
 

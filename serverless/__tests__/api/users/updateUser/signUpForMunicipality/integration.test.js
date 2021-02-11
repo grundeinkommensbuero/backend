@@ -13,10 +13,17 @@ const crypto = require('crypto-secure-random-digit');
 
 const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
 const randomAgs = crypto.randomDigits(6).join('');
+const anotherRandomAgs = crypto.randomDigits(6).join('');
 
 const testMunicipality = {
   ags: randomAgs,
   name: 'Hobbingen',
+  population: 5000,
+};
+
+const anotherTestMunicipality = {
+  ags: anotherRandomAgs,
+  name: 'Eisenhüttenstadt',
   population: 5000,
 };
 
@@ -26,10 +33,12 @@ describe('updateUser sign up for munic api test', () => {
   beforeAll(async () => {
     token = await authenticate();
     await createMunicipality(testMunicipality);
+    await createMunicipality(anotherTestMunicipality);
   });
 
   afterAll(async () => {
     await deleteMunicipality(randomAgs);
+    await deleteMunicipality(anotherRandomAgs);
     await deleteUserMunicipalityLink(randomAgs, userId);
     await removeCustomNewsletters(userId);
   });
@@ -81,11 +90,11 @@ describe('updateUser sign up for munic api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        ags: randomAgs,
+        ags: anotherRandomAgs,
         customNewsletters: [
           {
             name: customMunicipalityName,
-            ags: randomAgs,
+            ags: anotherRandomAgs,
             value: true,
             extraInfo: false,
             timestamp,
@@ -101,21 +110,21 @@ describe('updateUser sign up for munic api test', () => {
     // Get user and municpality to check if saved correctly
     const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
     const { Item: municipality } = await getUserMunicipalityLink(
-      randomAgs,
+      anotherRandomAgs,
       userId
     );
 
     // Check user
-    expect(user.customNewsletters[0].ags).toEqual(randomAgs);
+    expect(user.customNewsletters[0].ags).toEqual(anotherRandomAgs);
     expect(user.customNewsletters[0].name).toEqual(customMunicipalityName);
     expect(user.customNewsletters[0].extraInfo).toEqual(false);
     expect(user.customNewsletters[0].value).toEqual(true);
     expect(user.customNewsletters[0].timestamp).toEqual(timestamp);
 
     // Check user municipality table
-    expect(municipality.ags).toEqual(randomAgs);
+    expect(municipality.ags).toEqual(anotherRandomAgs);
     expect(municipality.userId).toEqual(userId);
-    expect(municipality.population).toEqual(testMunicipality.population);
+    expect(municipality.population).toEqual(anotherTestMunicipality.population);
     expect(municipality).toHaveProperty('createdAt');
   });
 });

@@ -15,7 +15,7 @@ const getMunicipality = ags => {
   return ddb.get(params).promise();
 };
 
-const getAllUsersOfMunicipality = ags => {
+const getAllUsersOfMunicipality = async (ags, users = [], startKey = null) => {
   const params = {
     TableName: userMunicipalityTableName,
     IndexName: 'agsIndex',
@@ -23,7 +23,23 @@ const getAllUsersOfMunicipality = ags => {
     ExpressionAttributeValues: { ':ags': ags },
   };
 
-  return ddb.query(params).promise();
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.query(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if there are too many result, only needed
+  // if there are a lot of results
+  if ('LastEvaluatedKey' in result) {
+    return getAllUsersOfMunicipality(ags, users, result.LastEvaluatedKey);
+  }
+
+  // otherwise return the array
+  return users;
 };
 
 const getAllMunicipalities = async (municipalities = [], startKey = null) => {
@@ -96,10 +112,34 @@ const createUserMunicipalityLink = (ags, userId, population) => {
   return ddb.put(params).promise();
 };
 
+const getUserMunicipalityLink = (ags, userId) => {
+  const params = {
+    TableName: userMunicipalityTableName,
+    Key: {
+      ags,
+      userId,
+    },
+  };
+
+  return ddb.get(params).promise();
+};
+
+const getMunicipalitiesOfUser = userId => {
+  const params = {
+    TableName: userMunicipalityTableName,
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: { ':userId': userId },
+  };
+
+  return ddb.query(params).promise();
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
   getAllUsersOfMunicipality,
   createUserMunicipalityLink,
+  getUserMunicipalityLink,
+  getMunicipalitiesOfUser,
 };
