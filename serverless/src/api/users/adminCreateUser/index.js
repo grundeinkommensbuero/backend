@@ -121,6 +121,10 @@ const createUserInDynamo = (userId, email, campaignCode, extraInfo) => {
         value: true,
         timestamp,
       },
+      confirmed: {
+        value: true,
+        timestamp,
+      },
       customNewsletters: [
         {
           name: capitalizeState(campaign.state),
