@@ -9,8 +9,10 @@ const tableNameWithoutConsent = 'users-without-consent';
 module.exports.analyseUsers = async () => {
   let users = await getAllUsers();
 
-  // loop through backup users and add all the users who are not already in users
-  users = await migrateUsersWithoutNewsletterConsent(users);
+  if (process.env.IS_XBGE) {
+    // loop through backup users and add all the users who are not already in users
+    users = await migrateUsersWithoutNewsletterConsent(users);
+  }
 
   // go through users to sum up pledged signatures
   const campaignStats = {
