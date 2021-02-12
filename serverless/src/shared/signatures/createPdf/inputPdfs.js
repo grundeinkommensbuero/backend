@@ -99,21 +99,6 @@ const CODE_POSITIONS = {
       height: 37,
     },
   },
-  // Default list for prototype fund project (DD = direct democracy)
-  DD: {
-    BARCODE: {
-      x: 435,
-      y: 35,
-      width: 120,
-      height: 55,
-    },
-    QRCODE: {
-      x: 360.5,
-      y: 46,
-      width: 37,
-      height: 37,
-    },
-  },
 };
 
 // Here we define on which pages the qr and barcodes should be placed
@@ -463,26 +448,6 @@ module.exports = {
           type: 'QR',
           page: 0,
           position: CODE_POSITIONS.HB.QRCODE,
-        },
-      ],
-    },
-  },
-
-  'direct-democracy-1': {
-    COMBINED: {
-      file: fs.readFileSync(
-        __dirname + '/pdfs/direct-democracy/signature_list.pdf'
-      ),
-      codes: [
-        {
-          type: 'BAR',
-          page: 0,
-          position: CODE_POSITIONS.DD.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 0,
-          position: CODE_POSITIONS.DD.QRCODE,
         },
       ],
     },

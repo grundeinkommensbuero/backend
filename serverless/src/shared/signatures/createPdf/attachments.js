@@ -77,10 +77,4 @@ module.exports = {
       type: 'COMBINED',
     },
   ],
-  'direct-democracy-1': [
-    {
-      filename: 'Listen.pdf',
-      type: 'COMBINED',
-    },
-  ],
 };
