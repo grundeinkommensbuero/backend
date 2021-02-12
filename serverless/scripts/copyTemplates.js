@@ -37,25 +37,25 @@ const copyTemplates = () => {
     fs.readFileSync(`${process.env.INIT_CWD}/../campaigns.json`, 'utf8')
   );
 
-  if (!shell.test('-e', `${process.env.INIT_CWD}/list`)) {
-    shell.mkdir(`${process.env.INIT_CWD}/list`);
+  if (!shell.test('-e', `${process.env.INIT_CWD}/lists`)) {
+    shell.mkdir(`${process.env.INIT_CWD}/lists`);
 
     for (const campaign of campaigns) {
       shell.cp(
         'pdfs/direct-democracy/signature_list.pdf',
-        `${process.env.INIT_CWD}/lists/${campaign.name}-${campaign.round}`
+        `${process.env.INIT_CWD}/lists/${campaign.name}-${campaign.round}.pdf`
       );
     }
   }
 
   // Depending on the campaigns we also alter some js files
   fs.writeFileSync(
-    `${__dirname}/../../src/shared/signatures/createPdf/attachments.js`,
+    `${__dirname}/../src/shared/signatures/createPdf/attachments.js`,
     generateAttachmentFile(campaigns)
   );
 
   fs.writeFileSync(
-    `${__dirname}/../../src/shared/signatures/createPdf/inputPdfs.js`,
+    `${__dirname}/../src/shared/signatures/createPdf/inputPdfs.js`,
     generateInputPdfsFile(campaigns)
   );
 };
@@ -63,21 +63,24 @@ const copyTemplates = () => {
 const generateInputPdfsFile = campaigns => {
   let fileContent = `
   const fs = require('fs');
+  const CODE_POSITIONS = {
+    DD: {
+      BARCODE: {
+        x: 435,
+        y: 35,
+        width: 120,
+        height: 55,
+      },
+      QRCODE: {
+        x: 360.5,
+        y: 46,
+        width: 37,
+        height: 37,
+      },
+    },
+  }
 
-  DD: {
-    BARCODE: {
-      x: 435,
-      y: 35,
-      width: 120,
-      height: 55,
-    },
-    QRCODE: {
-      x: 360.5,
-      y: 46,
-      width: 37,
-      height: 37,
-    },
-  },
+  module.exports = {
   `;
 
   for (const campaign of campaigns) {
@@ -85,7 +88,7 @@ const generateInputPdfsFile = campaigns => {
     '${campaign.name}-${campaign.round}': {
       COMBINED: {
         file: fs.readFileSync(
-          __dirname + '/pdfs/${campaign.name}-${campaign.round}/signature_list.pdf'
+          __dirname + '/pdfs/${campaign.name}-${campaign.round}.pdf'
         ),
         codes: [
           {

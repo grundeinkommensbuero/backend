@@ -1,6 +1,6 @@
 {
   "name": "backend-direct-democracy",
-  "version": "0.0.13",
+  "version": "0.0.23",
   "description": "backend for the expedition grundeinkommen website, based on the serverless framework",
   "main": "index.js",
   "bin": {

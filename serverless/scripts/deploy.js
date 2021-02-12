@@ -69,7 +69,7 @@ const run = async () => {
     );
 
     // Copy signature lists into createSignatureList folder
-    shell.cp(`${process.cwd()}/lists/.`, `${__dirname}/../pdfs/`);
+    shell.cp('-r', `${process.cwd()}/lists/*.pdf`, `${__dirname}/../pdfs/`);
 
     shell.cd(`${__dirname}/../`);
 
