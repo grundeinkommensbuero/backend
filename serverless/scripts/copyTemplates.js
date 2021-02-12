@@ -34,7 +34,7 @@ const copyTemplates = () => {
 
   // But first we need to get campaign config to create folder names
   const { campaigns } = JSON.parse(
-    fs.readFileSync(`${process.env.INIT_CWD}/campaigns.json`, 'utf8')
+    fs.readFileSync(`${process.env.INIT_CWD}/../campaigns.json`, 'utf8')
   );
 
   if (!shell.test('-e', `${process.env.INIT_CWD}/list`)) {
