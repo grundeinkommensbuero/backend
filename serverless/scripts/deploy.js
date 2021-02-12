@@ -68,11 +68,8 @@ const run = async () => {
       `mjml ${__dirname}/../mails/transactional/signatureListMail.mjml -o ${__dirname}/../mails/transactional/signatureListMail.html`
     );
 
-    // Copy signature list into createSignatureList folder
-    shell.cp(
-      `${process.cwd()}/list/signature_list.pdf`,
-      `${__dirname}/../pdfs/direct-democracy`
-    );
+    // Copy signature lists into createSignatureList folder
+    shell.cp(`${process.cwd()}/lists/.`, `${__dirname}/../pdfs/`);
 
     shell.cd(`${__dirname}/../`);
 

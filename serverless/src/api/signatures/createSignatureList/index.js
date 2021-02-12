@@ -43,22 +43,13 @@ const handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    // Only for the backend of the expedition we have been passed a campaign code,
-    // not for the prototype fund
-    let campaignCode;
-
-    if (process.env.IS_XBGE) {
-      if (!('campaignCode' in requestBody)) {
-        return errorResponse(400, 'Campaign code not provided');
-      }
-
-      campaignCode = requestBody.campaignCode;
-
-      // create a (nice to later work with) object, which campaign it is
-    } else {
-      campaignCode = 'direct-democracy-1';
+    if (!('campaignCode' in requestBody)) {
+      return errorResponse(400, 'Campaign code not provided');
     }
 
+    const { campaignCode } = requestBody;
+
+    // create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(campaignCode);
 
     const date = new Date();
