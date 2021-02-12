@@ -1247,7 +1247,7 @@ resources:
           - phone_number
         AutoVerifiedAttributes:
           - email
-          - phone_number
+          # deactivate for now: - phone_number
         Schema:
           - Name: source
             Mutable: true
@@ -1263,13 +1263,13 @@ resources:
             Mutable: true
             Required: false
             AttributeDataType: Number
+        # This doesn't really matter anymore because of passwordless auth
         EmailConfiguration:
-          EmailSendingAccount: DEVELOPER
-          SourceArn: arn:aws:ses:eu-west-1:550953582247:identity/support@expedition-grundeinkommen.de
-          From: Expedition Grundeinkommen <support@expedition-grundeinkommen.de>
-        SmsConfiguration:
-          SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
-          ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
+          EmailSendingAccount: COGNITO_DEFAULT
+        # Deactivate for now, since we won't be using sms yet (and probably not at all)
+        #    SmsConfiguration:
+        #     SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
+        #    ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
         Policies:
           PasswordPolicy: # We generate a fake password anyway (passwordless)
             MinimumLength: 8
@@ -1315,14 +1315,14 @@ resources:
           - phone_number
         AutoVerifiedAttributes:
           - email
-          - phone_number
+          # - phone_number
+        # This doesn't really matter anymore because of passwordless auth
         EmailConfiguration:
-          EmailSendingAccount: DEVELOPER
-          SourceArn: arn:aws:ses:eu-west-1:550953582247:identity/support@expedition-grundeinkommen.de
-          From: Expedition Grundeinkommen <support@expedition-grundeinkommen.de>
-        SmsConfiguration:
-          SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
-          ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
+          EmailSendingAccount: COGNITO_DEFAULT
+        # Deactivate for now, since we won't be using sms yet (and probably not at all)
+        # SmsConfiguration:
+        #    SnsCallerArn: arn:aws:iam::550953582247:role/service-role/Cognito-SMS-Role
+        #   ExternalId: cf03d420-a229-44ae-9fcd-d5af9e5b594e
         Policies:
           PasswordPolicy: # We generate a fake password anyway (passwordless)
             MinimumLength: 8
