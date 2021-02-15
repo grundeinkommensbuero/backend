@@ -552,6 +552,9 @@ paths:
                         required: true
                 updatedOnXbge:
                   type: boolean
+                store:
+                  type: object
+                  description: Can contain any key. All keys will be added to existing store. If a key already exists it will be overwritten.
       responses:
         '204':
           description: User was successfully updated
