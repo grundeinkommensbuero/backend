@@ -1,8 +1,11 @@
 const AWS = require('aws-sdk');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
+const s3 = new AWS.S3();
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
+const bucket = 'xbge-municipalities-stats';
+const stage = process.env.STAGE;
 
 const getMunicipality = ags => {
   const params = {
@@ -134,6 +137,16 @@ const getMunicipalitiesOfUser = userId => {
   return ddb.query(params).promise();
 };
 
+// Gets json file from s3
+const getStatsJson = fileName => {
+  const params = {
+    Bucket: bucket,
+    Key: `${stage}/${fileName}`,
+  };
+
+  return s3.getObject(params).promise();
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
@@ -142,4 +155,5 @@ module.exports = {
   createUserMunicipalityLink,
   getUserMunicipalityLink,
   getMunicipalitiesOfUser,
+  getStatsJson,
 };

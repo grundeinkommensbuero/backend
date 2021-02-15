@@ -14,6 +14,7 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getAllMunicipalitiesWithUsers,
   getAllMunicipalities,
+  getStatsJson,
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
@@ -30,6 +31,13 @@ module.exports.handler = async event => {
     // have already signed up and compute the stats
     const userMuncipality = await getAllMunicipalitiesWithUsers();
 
+    // We need to get the existing stats so we can include the previous count
+    const json = await getStatsJson('statsWithEvents.json');
+
+    const body = JSON.parse(json.Body.toString());
+    const previousSummary = body.summary;
+    delete previousSummary.previous;
+
     const statsWithAllMunicipalities = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: true,
@@ -38,6 +46,7 @@ module.exports.handler = async event => {
     const statsWithEvents = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: false,
+      previousSummary,
     });
 
     await saveJson(statsWithAllMunicipalities, 'statsWithAll.json');
@@ -53,6 +62,7 @@ module.exports.handler = async event => {
 const computeStats = async ({
   userMuncipality,
   shouldSendAllMunicipalities,
+  previousSummary,
 }) => {
   let date = new Date();
   if (stage === 'dev') {
@@ -178,8 +188,10 @@ const computeStats = async ({
     events: [...wins, ...newcomers, ...relativeChangers, ...absoluteChangers],
     municipalities: municipalitiesWithUsers,
     summary: {
+      previous: previousSummary,
       users: userMuncipality.length,
       municipalities: municipalitiesWithUsers.length,
+      timestamp: new Date().toISOString(),
     },
   };
 };

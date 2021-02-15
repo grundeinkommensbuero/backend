@@ -695,6 +695,7 @@ functions:
           - s3:HeadObject
           - s3:PutObject
           - s3:PutObjectAcl
+          - s3:GetObject
         Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   adminCreateUser:
