@@ -1,14 +1,15 @@
 /**
  * This function should send various mails depending on the count of signups
- * for a municipality.
+ * for a municipality. Users will be informed, when municipalities have
+ * reached 80% of the goal or the goal itself.
  */
 
 const AWS = require('aws-sdk');
 const {
   getMunicipality,
   getAllUsersOfMunicipality,
-} = require('../../shared/municipalities');
-const { getUser } = require('../../shared/users');
+} = require('../../../shared/municipalities');
+const { getUser } = require('../../../shared/users');
 const sendMail = require('./sendMail');
 const nodemailer = require('nodemailer');
 
