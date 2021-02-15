@@ -2050,6 +2050,26 @@ paths:
                           type: array
                           items:
                             type: number
+                      summary:
+                        type: object
+                        properties:
+                          users:
+                            type: number
+                          municipalities:
+                            type: number
+                          timestamp:
+                            type: string
+                          previous:
+                            description: The numbers x minutes ago.
+                            type: object
+                            properties:
+                              users:
+                                type: number
+                              municipalities:
+                                type: number
+                              timestamp:
+                                type: string
+
         '500':
           description: Server error
           content:
