@@ -291,10 +291,13 @@ const updateUser = async (
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
-    ExpressionAttributeNames: { '#store': 'store' },
     ExpressionAttributeValues: data,
     ReturnValues: 'UPDATED_NEW',
   };
+
+  if (typeof store !== 'undefined') {
+    params.ExpressionAttributeNames = { '#store': 'store' };
+  }
 
   await ddb.update(params).promise();
 
