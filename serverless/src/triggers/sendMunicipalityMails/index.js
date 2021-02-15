@@ -66,7 +66,7 @@ const analyseMunicipalities = async municipalities => {
           await sendMailsForMunicipality(municipality, event);
 
           // Set flag, that we have sent mails
-          await setFlag(Item.ags, event);
+          await setFlag(municipality, event);
         }
       } else {
         console.log('No municipality found with ags', ags);
@@ -90,21 +90,36 @@ const sendMailsForMunicipality = async (municipality, event) => {
   }
 
   // send info mail to xbge team
-  if (municipality.ags === '01051014') {
+  if (stage === 'prod') {
     await sendInfoMail(municipality, event);
   }
 };
 
-const setFlag = (ags, event) => {
+const setFlag = (municipality, event) => {
+  let flags = {};
+
+  if ('mails' in municipality) {
+    flags = municipality.mails;
+  }
+
+  if (event === '80') {
+    flags.sentReached80 = true;
+  } else if (
+    'engagementLevels' in municipality &&
+    municipality.engagementLevels[3] > 0
+  ) {
+    flags.sentReachedGoal = true;
+  } else {
+    // No organizers yet
+    flags.sentReachedGoalNoOrganizers = true;
+  }
+
   const params = {
     TableName: municipalitiesTableName,
-    Key: { ags },
-    UpdateExpression: 'SET mails.#key = :flag',
+    Key: { ags: municipality.ags },
+    UpdateExpression: 'SET mails = :flags',
     ExpressionAttributeValues: {
-      ':flag': true,
-    },
-    ExpressionAttributeNames: {
-      '#key': event === '80' ? 'sentReached80' : 'sentReachedGoal',
+      ':flags': flags,
     },
     ReturnValues: 'UPDATED_NEW',
   };
