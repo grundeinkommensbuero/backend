@@ -1,4 +1,4 @@
-const { apiKey, apiSecret } = require('../../../mailjetConfig');
+const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const TEMPLATE_80 = 2387952;
