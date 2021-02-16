@@ -66,6 +66,7 @@ const getAllMunicipalities = async (municipalities = [], startKey = null) => {
 };
 
 const getAllMunicipalitiesWithUsers = async (
+  date = null,
   municipalities = [],
   startKey = null
 ) => {
@@ -77,6 +78,14 @@ const getAllMunicipalitiesWithUsers = async (
     params.ExclusiveStartKey = startKey;
   }
 
+  // If date param was passed we want to filter by data
+  if (date !== null) {
+    params.FilterExpression = 'createdAt >= :date';
+    params.ExpressionAttributeValues = {
+      ':date': date,
+    };
+  }
+
   const result = await ddb.scan(params).promise();
 
   // add elements to existing array
@@ -84,8 +93,8 @@ const getAllMunicipalitiesWithUsers = async (
 
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    console.log('call get lists recursively');
     return getAllMunicipalitiesWithUsers(
+      date,
       municipalities,
       result.LastEvaluatedKey
     );
