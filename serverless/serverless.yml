@@ -1060,6 +1060,28 @@ functions:
   #       Resource:
   #         - 'Fn::GetAtt': [UsersTable, Arn]
 
+  sendWelcomeMails:
+    handler: src/triggers/municipalities/sendWelcomeMails/index.handler
+    timeout: 900 # Timeout for this specific function. Might take a while
+    # events: # Call this function every hour between 8am and 9pm
+    #   - schedule: cron(0 8-21 * * ? *)
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+
   sendReminderMails:
     handler: src/triggers/sendReminderMails/index.handler
     timeout: 900 # Timeout for this specific function. Takes a while...
