@@ -184,6 +184,7 @@ const updateUser = async (
     code,
     removeToken,
     ags,
+    store,
   },
   user,
   ipAddress,
@@ -209,12 +210,22 @@ const updateUser = async (
     });
   }
 
+  // If the store object was passed we want to get the current store object
+  // of the user and adjust it accordingly
+  let newStore;
+  if (typeof store !== 'undefined') {
+    // Keep all existing keys, add new ones, and overwrite
+    // if keys are in existing store and in request
+    newStore = { ...user.store, ...store };
+  }
+
   const data = {
     ':updatedAt': timestamp,
     ':username': username,
     ':zipCode': zipCode,
     ':city': city,
     ':customNewsletters': customNewslettersArray,
+    ':store': newStore,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -274,7 +285,8 @@ const updateUser = async (
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
-    ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''} 
+    ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''}
+    ${typeof store !== 'undefined' ? '#store = :store,' : ''} 
     ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
@@ -282,6 +294,10 @@ const updateUser = async (
     ExpressionAttributeValues: data,
     ReturnValues: 'UPDATED_NEW',
   };
+
+  if (typeof store !== 'undefined') {
+    params.ExpressionAttributeNames = { '#store': 'store' };
+  }
 
   await ddb.update(params).promise();
 
