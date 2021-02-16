@@ -308,10 +308,6 @@ const updateUser = async (
 const constructDonationObject = (donation, user, timestamp) => {
   const { iban, recurring, yearly, ...rest } = donation;
 
-  // We do not want to save the name of the gifted and giftgiver, if the donation is a gift
-  delete rest.certificateReceiver;
-  delete rest.certificateGiver;
-
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
   let recurringDonationExisted = false;
