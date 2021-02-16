@@ -306,7 +306,7 @@ const updateUser = async (
 };
 
 const constructDonationObject = (donation, user, timestamp) => {
-  const { iban, recurring, ...rest } = donation;
+  const { iban, recurring, yearly, ...rest } = donation;
 
   // We do not want to save the name of the gifted and giftgiver, if the donation is a gift
   delete rest.certificateReceiver;
@@ -338,6 +338,7 @@ const constructDonationObject = (donation, user, timestamp) => {
           createdAt: donations.recurringDonation.createdAt,
           id,
           firstDebitDate: donations.recurringDonation.firstDebitDate,
+          yearly,
           ...rest,
         };
       } else {
@@ -349,6 +350,7 @@ const constructDonationObject = (donation, user, timestamp) => {
           createdAt: timestamp,
           firstDebitDate: debitDate.toISOString(),
           id,
+          yearly,
           ...rest,
         };
       }
