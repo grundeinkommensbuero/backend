@@ -498,6 +498,11 @@ functions:
           - dynamodb:Query
         Resource:
           - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
