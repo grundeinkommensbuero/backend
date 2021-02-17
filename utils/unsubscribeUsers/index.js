@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const { getUserByMail } = require('../shared/users/getUsers');
-const { DEV_USERS_TABLE_NAME } = require('../config');
+const { PROD_USERS_TABLE_NAME } = require('../config');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
@@ -10,7 +10,7 @@ const unsubscribeUsers = async (tableName, emails) => {
     const result = await getUserByMail(tableName, email);
 
     if (result.Count === 0) {
-      console.log('No user found with the passed email');
+      console.log('No user found with the passed email', email);
     } else {
       await updateUser(tableName, result.Items[0]);
       console.log('Unsubscribed', email);
@@ -23,6 +23,16 @@ const unsubscribeUsers = async (tableName, emails) => {
 const updateUser = (tableName, { cognitoId, customNewsletters }) => {
   const timestamp = new Date().toISOString();
 
+  const data = {
+    ':newsletterConsent': {
+      value: false,
+      timestamp,
+    },
+    ':updatedAt': timestamp,
+  };
+
+  let updateExpression;
+
   // Loop through custom newsletters and set the values to false
   if (typeof customNewsletters !== 'undefined') {
     for (const newsletter of customNewsletters) {
@@ -30,19 +40,15 @@ const updateUser = (tableName, { cognitoId, customNewsletters }) => {
       newsletter.value = false;
       newsletter.extraInfo = false;
     }
+
+    data[':customNewsletters'] = customNewsletters;
+
+    updateExpression =
+      'set newsletterConsent = :newsletterConsent, customNewsletters = :customNewsletters, updatedAt = :updatedAt';
+  } else {
+    updateExpression =
+      'set newsletterConsent = :newsletterConsent, updatedAt = :updatedAt';
   }
-
-  const data = {
-    ':newsletterConsent': {
-      value: false,
-      timestamp,
-    },
-    ':customNewsletters': customNewsletters,
-    ':updatedAt': timestamp,
-  };
-
-  const updateExpression =
-    'set newsletterConsent = :newsletterConsent, customNewsletters = :customNewsletters, updatedAt = :updatedAt';
 
   return ddb
     .update({
@@ -55,6 +61,6 @@ const updateUser = (tableName, { cognitoId, customNewsletters }) => {
     .promise();
 };
 
-const emails = ['valentin@expedition-grundeinkommen.de'];
+const emails = [];
 
-unsubscribeUsers(DEV_USERS_TABLE_NAME, emails);
+unsubscribeUsers(PROD_USERS_TABLE_NAME, emails);
