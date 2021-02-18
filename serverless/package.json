@@ -28,6 +28,7 @@
     "nodemailer": "^6.4.14",
     "pdf-lib": "^1.11.2",
     "raw-loader": "^4.0.2",
+    "serverless-api-gateway-caching": "^1.6.1",
     "uuid": "^3.4.0"
   },
   "devDependencies": {

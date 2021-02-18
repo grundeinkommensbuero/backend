@@ -17,6 +17,10 @@ custom:
   listsBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-signature-lists
   output:
     handler: scripts/outputStack.handler
+  # If you enable caching globally, it does NOT automatically enable
+  # caching for your endpoints - you have to be explicit about which endpoints should have caching enabled.
+  apiGatewayCaching:
+    enabled: true
 
 provider:
   name: aws
@@ -53,6 +57,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-webpack
   - serverless-plugin-split-stacks # needed because of the 200 resources limit
+  - serverless-api-gateway-caching
 
 # no global iam policies, because we want to follow the least privilege princilpe
 # therefore we use a plugin to define roles per function
@@ -338,6 +343,12 @@ functions:
           path: analytics/users
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
+            perKeyInvalidation:
+              requireAuthorization: true # default is true
+              handleUnauthorizedRequests: Ignore # default is "IgnoreWithWarning"
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -366,6 +377,9 @@ functions:
           path: analytics/signatures/lists
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -388,6 +402,17 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   # Probably not needed in the future
   # createUserExternal:
@@ -468,6 +493,16 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
@@ -511,6 +546,48 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+
+  deleteUser:
+    handler: src/api/users/deleteUser/index.handler
+    events:
+      - http:
+          path: users/{userId}
+          method: delete
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminDeleteUser
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
   unsubscribeUser:
     handler: src/api/users/unsubscribeUser/index.handler
@@ -623,6 +700,7 @@ functions:
           - s3:HeadObject
           - s3:PutObject
           - s3:PutObjectAcl
+          - s3:GetObject
         Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   adminCreateUser:
@@ -674,6 +752,9 @@ functions:
           path: admin/users
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
@@ -712,6 +793,26 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+
+  adminGetDonations:
+    handler: src/api/users/adminGetDonations/index.handler
+    events:
+      - http:
+          path: admin/donations
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   sendVerificationMail:
     handler: src/triggers/auth/sendVerificationMail/index.handler

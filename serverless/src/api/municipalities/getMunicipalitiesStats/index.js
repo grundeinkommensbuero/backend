@@ -2,15 +2,9 @@
  * This endpoint is used to get stats for municipalities.
  * */
 
-const AWS = require('aws-sdk');
-
-const config = { region: 'eu-central-1' };
-const s3 = new AWS.S3(config);
-const bucket = 'xbge-municipalities-stats';
-const stage = process.env.STAGE;
-
 const { errorResponse } = require('../../../shared/apiResponse');
 const { timePassed } = require('../createMunicipalitiesStats');
+const { getStatsJson } = require('../../../shared/municipalities');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,8 +12,10 @@ const responseHeaders = {
 };
 
 const scale = [
+  // Note: currently optimized for
+  // mockup-data and circles as markers
   [1, 40000],
-  [2000, 80000],
+  [1000, 30000],
 ];
 
 module.exports.handler = async event => {
@@ -32,7 +28,7 @@ module.exports.handler = async event => {
     }
 
     // Depending on the query params we get a different json file
-    const json = await getJson(
+    const json = await getStatsJson(
       shouldSendAllMunicipalities ? 'statsWithAll.json' : 'statsWithEvents.json'
     );
 
@@ -50,14 +46,4 @@ module.exports.handler = async event => {
     console.log('error getting stats for places', error);
     return errorResponse(500, 'Error while getting stats for places', error);
   }
-};
-
-// Gets json file from s3
-const getJson = fileName => {
-  const params = {
-    Bucket: bucket,
-    Key: `${stage}/${fileName}`,
-  };
-
-  return s3.getObject(params).promise();
 };
