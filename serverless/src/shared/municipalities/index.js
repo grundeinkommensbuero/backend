@@ -100,9 +100,9 @@ const getAllMunicipalitiesWithUsers = async (
 };
 
 const getMunicipalityStats = async (ags, population) => {
-  const userResult = await getAllUsersOfMunicipality(ags);
+  const users = await getAllUsersOfMunicipality(ags);
 
-  const signups = userResult.Count;
+  const signups = users.length;
 
   const goal = getMunicipalityGoal(population);
 
