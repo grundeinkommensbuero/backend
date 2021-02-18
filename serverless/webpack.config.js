@@ -16,6 +16,8 @@ const functionsWithPdf = [
 
 const functionsWithTtf = ['updateUser'];
 
+const functionsWithFnt = ['shareMunicipality'];
+
 // We need this to only copy pdf (or other files) files for the corresponding function.
 // Based on https://github.com/serverless-heaven/serverless-webpack/issues/425
 // We only copy the files for each corresponding function
@@ -58,6 +60,20 @@ const copyStaticFilesPlugin = () => ({
     if (moduleWithTtf) {
       new CopyWebpackPlugin({
         patterns: [`**/${moduleWithTtf}/**/*.ttf`],
+      }).apply(compiler);
+    }
+
+    // Same for ttf
+    const moduleWithFnt = functionsWithFnt.find(name =>
+      compiler.options.output.path.includes(name)
+    );
+
+    if (moduleWithFnt) {
+      new CopyWebpackPlugin({
+        patterns: [
+          `**/${moduleWithFnt}/**/*.fnt`,
+          `**/${moduleWithFnt}/**/*.png`,
+        ],
       }).apply(compiler);
     }
   },
