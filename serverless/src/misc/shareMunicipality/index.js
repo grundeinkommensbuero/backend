@@ -11,13 +11,13 @@ const fetch = require('node-fetch').default;
 const { accessToken, spaceId } = require('../../../contentfulConfig');
 const { getUser } = require('../../shared/users');
 const {
-  getMunicipalityStats,
+  // getMunicipalityStats,
   getMunicipality,
 } = require('../../shared/municipalities');
 
 const isbot = require('isbot');
 
-const pathToFont = __dirname + '/3AD95C_0_0.bft.fnt';
+const pathToFont = __dirname + '/ideal-bold.fnt';
 const s3 = new AWS.S3();
 const emblemBucketUrl =
   'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
@@ -67,7 +67,8 @@ module.exports.handler = async event => {
 
     const municipality = municipalityResult.Item;
 
-    const stats = await getMunicipalityStats(ags, municipality.population);
+    // Not needed for now
+    // const stats = await getMunicipalityStats(ags, municipality.population);
 
     let renderedImageUrl = null;
     // Only generate new image if is bot
@@ -109,17 +110,19 @@ module.exports.handler = async event => {
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="twitter:card" content="summary_large_image" />
-        ${renderedImageUrl
-        ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
-        : ''
-      }
+        ${
+          renderedImageUrl
+            ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
+            : ''
+        }
         <meta name="twitter:title" content="${title}" />
         <meta name="twitter:description" content="${description}" />
         
-        ${renderedImageUrl
-        ? `<meta property="og:image" content="${renderedImageUrl}" />`
-        : ''
-      }
+        ${
+          renderedImageUrl
+            ? `<meta property="og:image" content="${renderedImageUrl}" />`
+            : ''
+        }
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         
@@ -127,7 +130,9 @@ module.exports.handler = async event => {
 
         <script>
           if(${!isBot}) {
-            window.location.href = "${redirectUrl}/${ags}";
+            window.location.href = "${redirectUrl}/${ags}?referredByUser=${
+      user.cognitoId
+    }";
           }
         </script>
         <style>
@@ -167,7 +172,9 @@ module.exports.handler = async event => {
         <div class="loader"></div>
         <p>
           Solltest du nicht automatisch weitergeleitet werden,<br/>klicke bitte
-          <a href="${redirectUrl}/${ags}"><b>HIER</b></a>
+          <a href="${redirectUrl}/${ags}?referredByUser=${
+      user.cognitoId
+    }"><b>HIER</b></a>
         </p>
       </body>
     </html>
@@ -233,7 +240,6 @@ const getAssetFromContentful = async assetId => {
 
   // parse result to json
   const json = await assetResult.json();
-  console.log('asset result json', json);
   return json.fields.file.url;
 };
 
@@ -289,9 +295,8 @@ const createCompositeImage = async (
   if (profilePictureUrl) {
     profilePicture = await jimp.read(profilePictureUrl);
 
-    // TODO: Upload this mask to Contentful
     const mask = await jimp.read(
-      'https://cloud.githubusercontent.com/assets/414918/11165709/051d10b0-8b0f-11e5-864a-20ef0bada8d6.png'
+      'https://images.ctfassets.net/af08tobnb0cl/2I4QnbzZgw5IZCQqkd8hDg/b024883bdadd37240bacbf1f5dd6b119/ProfileMask.png?h=512'
     );
 
     const height = profilePicture.bitmap.height;
@@ -321,7 +326,6 @@ const createCompositeImage = async (
     username,
     municipalityName
   );
-
   return imageWithText.getBufferAsync(jimp.MIME_PNG);
 };
 
@@ -344,8 +348,8 @@ const uploadImage = async (buffer, userId, ags) => {
 const printText = async (image, captions, username, municipalityName) => {
   const mainCaption = username
     ? captions.mainCaption
-      .replace('$USERNAME', username)
-      .replace('$MUNICIPALITY_NAME', municipalityName)
+        .replace('$USERNAME', username)
+        .replace('$MUNICIPALITY_NAME', municipalityName)
     : captions.altMainCaption.replace('$MUNICIPALITY_NAME', municipalityName);
 
   const font = await jimp.loadFont(pathToFont);
