@@ -205,6 +205,7 @@ paths:
                 email:
                   type: string
                 newsletterConsent:
+                  description: Subscription to general newsletter
                   type: boolean
                 referral:
                   type: string
@@ -216,6 +217,31 @@ paths:
                   type: string
                 source:
                   type: string
+                ags:
+                  type: string
+                  description: If user should be signed up for municipality
+                customNewsletters:
+                  description: If omitted, newsletter settings will be configured on the basis of the ags. Will override existing newsletter settings.
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the municipality or the state
+                        required: true
+                      value:
+                        type: boolean
+                        required: true
+                      extraInfo:
+                        type: boolean
+                        required: true
+                      ags:
+                        type: string
+                        description: Is empty if the newsletter is for a state (SH and BB)
+                      timestamp:
+                        type: string
+                        description: In iso format
+                        required: true
       responses:
         '201':
           description: User was successfully created
@@ -453,7 +479,11 @@ paths:
             schema:
               type: object
               properties:
+                ags:
+                  type: string
+                  description: If user should be signed up for municipality
                 newsletterConsent:
+                  description: Subscription to general newsletter
                   type: boolean
                 zipCode:
                   type: string
@@ -478,6 +508,9 @@ paths:
                     - lastName
                     - iban
                   properties:
+                    cancel:
+                      type: boolean
+                      description: If this flag is set to true, the recurring donation will be cancelled. If set, the other required fields are not required.
                     amount:
                       type: number
                     recurring:
@@ -519,6 +552,9 @@ paths:
                         required: true
                 updatedOnXbge:
                   type: boolean
+                store:
+                  type: object
+                  description: Can contain any key. All keys will be added to existing store. If a key already exists it will be overwritten.
       responses:
         '204':
           description: User was successfully updated
@@ -533,6 +569,40 @@ paths:
                     type: string
         '400':
           description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+    delete:
+      summary: Delete user (in dynamo and cognito)
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user who should be deleted
+      responses:
+        '204':
+          description: User successfully deleted
+        '404':
+          description: User not found
           content:
             application/json:
               schema:
@@ -729,7 +799,7 @@ paths:
                                   type: number
                                 id:
                                   type: string
-                          municipalCampaigns:
+                          municipalities:
                             type: array
                             items:
                               type: object
@@ -738,6 +808,11 @@ paths:
                                   type: string
                                 createdAt:
                                   type: string
+                                population:
+                                  type: number
+                                userId:
+                                  type: string
+                                  description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
         '401':
           description: Not authorized to get user
           content:
@@ -1424,6 +1499,85 @@ paths:
                   error:
                     type: string
 
+  /admin/donations:
+    get:
+      summary: Gets list of donations
+      security:
+        - AdminApiKeyAuth: []
+      responses:
+        '200':
+          description: Donations successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  donations:
+                    type: object
+                    properties:
+                      recurringDonations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            amount:
+                              type: number
+                            firstName:
+                              type: string
+                            lastName:
+                              type: string
+                            iban:
+                              type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
+                            cancelledAt:
+                              type: string
+                            firstDebitDate:
+                              type: string
+                      onetimeDonations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            amount:
+                              type: number
+                            firstName:
+                              type: string
+                            lastName:
+                              type: string
+                            iban:
+                              type: string
+                            createdAt:
+                              type: string
+                            debitDate:
+                              type: string
+        '401':
+          description: Not authorized to get users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
   /images/upload-url:
     post:
       summary: Create a signed url to upload image
@@ -1899,6 +2053,26 @@ paths:
                           type: array
                           items:
                             type: number
+                      summary:
+                        type: object
+                        properties:
+                          users:
+                            type: number
+                          municipalities:
+                            type: number
+                          timestamp:
+                            type: string
+                          previous:
+                            description: The numbers x minutes ago.
+                            type: object
+                            properties:
+                              users:
+                                type: number
+                              municipalities:
+                                type: number
+                              timestamp:
+                                type: string
+
         '500':
           description: Server error
           content:
