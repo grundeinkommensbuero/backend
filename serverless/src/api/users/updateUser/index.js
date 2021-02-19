@@ -179,6 +179,7 @@ const updateUser = async (
     city,
     newsletterConsent,
     customNewsletters,
+    reminderMails,
     donation,
     confirmed,
     code,
@@ -235,6 +236,13 @@ const updateUser = async (
     };
   }
 
+  if (typeof reminderMails !== 'undefined') {
+    data[':reminderMails'] = {
+      value: reminderMails,
+      timestamp,
+    };
+  }
+
   let donationInfo;
   // Check if donation object was passed to alter iban
   if (typeof donation !== 'undefined') {
@@ -275,6 +283,11 @@ const updateUser = async (
     SET ${
       typeof newsletterConsent !== 'undefined'
         ? 'newsletterConsent = :newsletterConsent,'
+        : ''
+    }
+    ${
+      typeof reminderMails !== 'undefined'
+        ? 'reminderMails = :reminderMails,'
         : ''
     }
     ${
