@@ -124,6 +124,11 @@ const saveUser = ({
         value: newsletterConsent,
         timestamp,
       },
+      // Reminder mail setting is true by default
+      reminderMails: {
+        value: true,
+        timestamp,
+      },
       customNewsletters: customNewslettersArray,
       createdAt: timestamp,
       zipCode,
