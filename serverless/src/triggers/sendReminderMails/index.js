@@ -77,14 +77,11 @@ module.exports.handler = async event => {
             const result = await getUser(list.userId);
 
             // the user might have been deleted or does not have
-            // newsletter consent
-            // TODO: also send to people without consent?
+            // reminder mail setting to true
             if (
               'Item' in result &&
-              'newsletterConsent' in result.Item &&
-              result.Item.newsletterConsent.value &&
-              (!('transactionalConsent' in result.Item) ||
-                result.Item.transactionalConsent.value !== false)
+              'reminderMails' in result.Item &&
+              result.Item.reminderMails.value
             ) {
               const user = result.Item;
 
