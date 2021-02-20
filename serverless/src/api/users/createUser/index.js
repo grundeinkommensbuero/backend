@@ -95,6 +95,7 @@ const saveUser = ({
   customNewsletters,
   municipalityName,
   ags,
+  store,
 }) => {
   const timestamp = new Date().toISOString();
 
@@ -137,6 +138,7 @@ const saveUser = ({
       city,
       username,
       source,
+      store,
       confirmed: {
         value: false,
       },
