@@ -55,11 +55,11 @@ module.exports.handler = async event => {
           const result = await getUser(list.userId);
 
           // the user might have been deleted or does not have
-          // newsletter consent
+          // reminder mails setting to true
           if (
             'Item' in result &&
-            'newsletterConsent' in result.Item &&
-            result.Item.newsletterConsent.value
+            'reminderMails' in result.Item &&
+            result.Item.reminderMails.value
           ) {
             // initialize an object in the map
             usersMap[list.userId] = {

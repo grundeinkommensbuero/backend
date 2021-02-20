@@ -485,6 +485,9 @@ paths:
                 newsletterConsent:
                   description: Subscription to general newsletter
                   type: boolean
+                reminderMails:
+                  description: Subscription to automated mails
+                  type: boolean
                 zipCode:
                   type: string
                 username:
@@ -552,6 +555,9 @@ paths:
                         required: true
                 updatedOnXbge:
                   type: boolean
+                store:
+                  type: object
+                  description: Can contain any key. All keys will be added to existing store. If a key already exists it will be overwritten.
       responses:
         '204':
           description: User was successfully updated
@@ -653,6 +659,13 @@ paths:
                       zipCode:
                         type: string
                       newsletterConsent:
+                        type: object
+                        properties:
+                          value:
+                            type: boolean
+                          timestamp:
+                            type: string
+                      reminderMails:
                         type: object
                         properties:
                           value:
@@ -2050,6 +2063,26 @@ paths:
                           type: array
                           items:
                             type: number
+                      summary:
+                        type: object
+                        properties:
+                          users:
+                            type: number
+                          municipalities:
+                            type: number
+                          timestamp:
+                            type: string
+                          previous:
+                            description: The numbers x minutes ago.
+                            type: object
+                            properties:
+                              users:
+                                type: number
+                              municipalities:
+                                type: number
+                              timestamp:
+                                type: string
+
         '500':
           description: Server error
           content:
