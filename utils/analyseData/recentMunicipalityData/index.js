@@ -3,8 +3,8 @@ const csv = require('csv-parser');
 
 // Params
 const excludeMunicipalitiesWithoutPopulation = true;
-const runDataTransform = false; // re runs initial data transform (takes longer)
-const runDataMerge = false; // re runs initial data merge (takes longer)
+const runDataTransform = true; // re runs initial data transform (takes longer)
+const runDataMerge = true; // re runs initial data merge (takes longer)
 
 // Utility
 const readCSV = path => {
@@ -90,14 +90,14 @@ const transformDestatis = async path => {
         bezeichnung: travelRegion,
         verstaedterungschluessel: urbanicityCode,
         verstaedterungbezeichnung: urbanicity,
-        laengengrad: longitude,
-        breitengrad: latitude,
       } = el;
       const ags = `${el.land}${el.rb}${el.kreis}${el.gemeinde}`;
       const population = parseInt(el.bevoelkerung.replace(/\s/g, ''), 10);
       const populationMale = parseInt(el.maennlich.replace(/\s/g, ''), 10);
       const populationFemale = parseInt(el.weiblich.replace(/\s/g, ''), 10);
       const populationPerSquareKm = parseInt(el.jekm2.replace(/\s/g, ''), 10);
+      const longitude = +el.laengengrad.replace(',', '.');
+      const latitude = +el.breitengrad.replace(',', '.');
 
       return {
         ags,
@@ -525,9 +525,18 @@ const addSlugs = data => {
 const selectAttributesForFrontend = data => {
   // {"longitude":10.745801,"latitude":53.430286,"ags":"13076054","name":"Gresse","zipCodes":["19258"],"district":"Landkreis Ludwigslust-Parchim","state":"Mecklenburg-Vorpommern","population":724}
   return data.map(e => {
-    const { ags, slug, name, population, district, state, zipCodes } = e;
-    const longitude = +e.longitude.replace(',', '.');
-    const latitude = +e.latitude.replace(',', '.');
+    const {
+      ags,
+      slug,
+      name,
+      population,
+      longitude,
+      latitude,
+      district,
+      state,
+      zipCodes,
+    } = e;
+
     return {
       ags,
       slug,
