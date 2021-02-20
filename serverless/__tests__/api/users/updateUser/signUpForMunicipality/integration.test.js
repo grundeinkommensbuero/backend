@@ -52,6 +52,7 @@ describe('updateUser sign up for munic api test', () => {
       },
       body: JSON.stringify({
         ags: randomAgs,
+        newsletterConsent: true,
       }),
     };
 

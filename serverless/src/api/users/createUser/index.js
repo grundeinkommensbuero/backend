@@ -100,10 +100,11 @@ const saveUser = ({
 
   // If custom newsletters are part of request we use that value, if not
   // we build our own array (just one item) of custom newsletters depending on the ags
+  // (but only if newsletter consent was passed as true)
   let customNewslettersArray;
   if (typeof customNewsletters !== 'undefined') {
     customNewslettersArray = customNewsletters;
-  } else if (typeof ags !== 'undefined') {
+  } else if (typeof ags !== 'undefined' && newsletterConsent) {
     customNewslettersArray = [
       {
         name: municipalityName,
