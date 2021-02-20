@@ -1,8 +1,12 @@
 const AWS = require('aws-sdk');
+const { getMunicipalityGoal } = require('../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
+const s3 = new AWS.S3();
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
+const bucket = 'xbge-municipalities-stats';
+const stage = process.env.STAGE;
 
 const getMunicipality = ags => {
   const params = {
@@ -95,6 +99,19 @@ const getAllMunicipalitiesWithUsers = async (
   return municipalities;
 };
 
+const getMunicipalityStats = async (ags, population) => {
+  const users = await getAllUsersOfMunicipality(ags);
+
+  const signups = users.length;
+
+  const goal = getMunicipalityGoal(population);
+
+  // compute percent to goal
+  const percentToGoal = +((signups / goal) * 100).toFixed(1);
+
+  return { goal, signups, percentToGoal };
+};
+
 // Update userMunicipality table to create the link between user and munic
 const createUserMunicipalityLink = (ags, userId, population) => {
   const timestamp = new Date().toISOString();
@@ -134,12 +151,24 @@ const getMunicipalitiesOfUser = userId => {
   return ddb.query(params).promise();
 };
 
+// Gets json file from s3
+const getStatsJson = fileName => {
+  const params = {
+    Bucket: bucket,
+    Key: `${stage}/${fileName}`,
+  };
+
+  return s3.getObject(params).promise();
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
   getAllUsersOfMunicipality,
+  getMunicipalityStats,
   createUserMunicipalityLink,
   getUserMunicipalityLink,
   getMunicipalitiesOfUser,
+  getStatsJson,
 };

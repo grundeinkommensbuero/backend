@@ -94,3 +94,13 @@ module.exports.removeCustomNewsletters = userId => {
   };
   return ddb.update(params).promise();
 };
+
+module.exports.removeStore = userId => {
+  const params = {
+    TableName: DEV_USERS_TABLE,
+    Key: { cognitoId: userId },
+    UpdateExpression: 'REMOVE store',
+    ReturnValues: 'UPDATED_NEW',
+  };
+  return ddb.update(params).promise();
+};
