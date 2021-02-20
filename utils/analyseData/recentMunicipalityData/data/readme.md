@@ -3,3 +3,24 @@
 - `DE.csv` is from [fa-technik.adfc](http://www.fa-technik.adfc.de/code/opengeodb/) – _adjusted in Excel_
 - `AuszugGV4QAktuell.csv` from [Gemeindeverzeichnis](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugQ/AuszugGV4QAktuell.html) – _adjusted in Excel_, **also includes uninhabited areas with an AGS (208 in total)**
 - `zuordnung_plz_ort.csv`is from [Suche-Postleitzahl.org](https://www.suche-postleitzahl.org/downloads)
+
+
+#### Non-exhaustive list of name extensions in nameDestatis:
+
+_just for future reference_
+
+, Stadt
+, Landeshauptstadt
+, Hansestadt
+, Kreisstadt
+, Flecken
+, Universitätsstadt
+, Stadt der FernUniversität
+, Stadt der Kluterthöhle
+, Berg- und Universitätsstadt
+, Wissenschaftsstadt
+, Büchnerstadt
+, Hochschulstadt
+, Friedrich-Ludwig-Weidig-Stadt
+, Oranienstadt
+, GKSt
