@@ -293,7 +293,7 @@ const updateUser = async (
     UpdateExpression: `
     ${removeToken ? 'REMOVE customToken' : ''}
     SET ${
-      'newsletterConsent' in data
+      ':newsletterConsent' in data
         ? 'newsletterConsent = :newsletterConsent,'
         : ''
     }
