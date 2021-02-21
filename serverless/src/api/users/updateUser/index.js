@@ -235,10 +235,17 @@ const updateUser = async (
   };
 
   if (typeof newsletterConsent !== 'undefined') {
-    data[':newsletterConsent'] = {
-      value: newsletterConsent,
-      timestamp,
-    };
+    // If user is signing up for municipality, we want to keep
+    // the old newsletter consent if it was true
+    if (
+      typeof ags === 'undefined' ||
+      (typeof ags !== 'undefined' && !user.newsletterConsent.value)
+    ) {
+      data[':newsletterConsent'] = {
+        value: newsletterConsent,
+        timestamp,
+      };
+    }
   }
 
   if (typeof reminderMails !== 'undefined') {
@@ -286,7 +293,7 @@ const updateUser = async (
     UpdateExpression: `
     ${removeToken ? 'REMOVE customToken' : ''}
     SET ${
-      typeof newsletterConsent !== 'undefined'
+      'newsletterConsent' in data
         ? 'newsletterConsent = :newsletterConsent,'
         : ''
     }
