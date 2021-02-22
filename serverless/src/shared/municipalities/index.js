@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const { getMunicipalityGoal } = require('../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const s3 = new AWS.S3();
@@ -98,6 +99,21 @@ const getAllMunicipalitiesWithUsers = async (
   return municipalities;
 };
 
+const getMunicipalityStats = async (ags, population) => {
+  const users = await getAllUsersOfMunicipality(ags);
+
+  let signups = users.length;
+
+  signups += getExistingUsers(ags);
+
+  const goal = getMunicipalityGoal(population);
+
+  // compute percent to goal
+  const percentToGoal = +((signups / goal) * 100).toFixed(1);
+
+  return { goal, signups, percentToGoal };
+};
+
 // Update userMunicipality table to create the link between user and munic
 const createUserMunicipalityLink = (ags, userId, population) => {
   const timestamp = new Date().toISOString();
@@ -147,13 +163,29 @@ const getStatsJson = fileName => {
   return s3.getObject(params).promise();
 };
 
+const getExistingUsers = ags => {
+  if (ags === '04011000') {
+    return Math.round(1729 * 0.7);
+  }
+  if (ags === '02000000') {
+    return Math.round(5202 * 0.7);
+  }
+  if (ags === '11000000') {
+    return Math.round(10871 * 0.7);
+  }
+
+  return 0;
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
   getAllMunicipalitiesWithUsers,
   getAllUsersOfMunicipality,
+  getMunicipalityStats,
   createUserMunicipalityLink,
   getUserMunicipalityLink,
   getMunicipalitiesOfUser,
   getStatsJson,
+  getExistingUsers,
 };

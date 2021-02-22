@@ -498,6 +498,11 @@ functions:
           - dynamodb:Query
         Resource:
           - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
@@ -1078,6 +1083,42 @@ functions:
           method: get
           cors: true
 
+  shareMunicipality:
+    handler: src/misc/shareMunicipality/index.handler
+    events:
+      - http:
+          path: share-municipality/{userId}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-personalized-sharing-images/*'
+
   # Admin cognito auth triggers
 
   createAuthChallenge:
@@ -1150,9 +1191,10 @@ resources:
             KeyType: HASH
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        # ProvisionedThroughput:
+        # ReadCapacityUnits: 5
+        # WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: emailIndex
             KeySchema:
@@ -1160,9 +1202,9 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: 'ALL'
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            # ProvisionedThroughput:
+            #   ReadCapacityUnits: 5
+            #   WriteCapacityUnits: 5
 
     SignaturesTable:
       Type: AWS::DynamoDB::Table
@@ -1179,8 +1221,8 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_IMAGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
         GlobalSecondaryIndexes:
           - IndexName: userIdIndex
             KeySchema:
@@ -1189,8 +1231,8 @@ resources:
             Projection:
               ProjectionType: 'ALL'
             ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
 
     MunicipalitiesTable:
       Type: AWS::DynamoDB::Table
@@ -1202,9 +1244,10 @@ resources:
         KeySchema:
           - AttributeName: ags
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
+        # ProvisionedThroughput:
+        #   ReadCapacityUnits: 5
+        #   WriteCapacityUnits: 5
 
     UserMunicipalityTable:
       Type: AWS::DynamoDB::Table

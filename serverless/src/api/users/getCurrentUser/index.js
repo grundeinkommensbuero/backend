@@ -5,7 +5,10 @@
 
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getMunicipalitiesOfUser } = require('../../../shared/municipalities');
+const {
+  getMunicipalitiesOfUser,
+  getMunicipality,
+} = require('../../../shared/municipalities');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,7 +33,27 @@ module.exports.handler = async event => {
     const { Count, Items } = await getMunicipalitiesOfUser(userId);
 
     if (Count !== 0) {
-      user.municipalities = Items;
+      const municipalities = [];
+
+      // Get municipality names for all municipalities
+      await Promise.all(
+        Items.map(async municipality => {
+          const municipalityResult = await getMunicipality(municipality.ags);
+
+          // Municipality should be definitely there, but we'll check anyway
+          if ('Item' in municipalityResult) {
+            municipalities.push({
+              ...municipality,
+              name: municipalityResult.Item.name,
+              slug: municipalityResult.Item.slug,
+            });
+          }
+        })
+      );
+
+      if (municipalities.length !== 0) {
+        user.municipalities = municipalities;
+      }
     }
 
     // Add empty array, if customNewsletters is not defined

@@ -179,6 +179,7 @@ const updateUser = async (
     city,
     newsletterConsent,
     customNewsletters,
+    reminderMails,
     donation,
     confirmed,
     code,
@@ -195,10 +196,15 @@ const updateUser = async (
 
   // If custom newsletters are part of request we use that value, if not
   // we build our own array (adding to the existing one) of custom newsletters depending on the ags
+  // (but only if newsletter consent was passed as true)
   let customNewslettersArray;
   if (typeof customNewsletters !== 'undefined') {
     customNewslettersArray = customNewsletters;
-  } else if (typeof ags !== 'undefined' && !alreadySignedUpForMunicipality) {
+  } else if (
+    typeof ags !== 'undefined' &&
+    newsletterConsent &&
+    !alreadySignedUpForMunicipality
+  ) {
     // If array already exists, use that array
     customNewslettersArray = user.customNewsletters || [];
     customNewslettersArray.push({
@@ -229,8 +235,22 @@ const updateUser = async (
   };
 
   if (typeof newsletterConsent !== 'undefined') {
-    data[':newsletterConsent'] = {
-      value: newsletterConsent,
+    // If user is signing up for municipality, we want to keep
+    // the old newsletter consent if it was true
+    if (
+      typeof ags === 'undefined' ||
+      (typeof ags !== 'undefined' && !user.newsletterConsent.value)
+    ) {
+      data[':newsletterConsent'] = {
+        value: newsletterConsent,
+        timestamp,
+      };
+    }
+  }
+
+  if (typeof reminderMails !== 'undefined') {
+    data[':reminderMails'] = {
+      value: reminderMails,
       timestamp,
     };
   }
@@ -273,8 +293,13 @@ const updateUser = async (
     UpdateExpression: `
     ${removeToken ? 'REMOVE customToken' : ''}
     SET ${
-      typeof newsletterConsent !== 'undefined'
+      ':newsletterConsent' in data
         ? 'newsletterConsent = :newsletterConsent,'
+        : ''
+    }
+    ${
+      typeof reminderMails !== 'undefined'
+        ? 'reminderMails = :reminderMails,'
         : ''
     }
     ${

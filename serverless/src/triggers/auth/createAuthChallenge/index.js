@@ -2,6 +2,7 @@ const crypto = require('crypto-secure-random-digit');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 const { getUser } = require('../../../shared/users');
+const { sleep } = require('../../../shared/utils');
 
 const THREE_MINUTES = 3 * 60 * 1000;
 
@@ -23,7 +24,23 @@ const handler = async event => {
     } else {
       // Generate a new secret login code and mail it to the user
       secretLoginCode = crypto.randomDigits(6).join('');
-      await sendEmail(event.request.userAttributes, secretLoginCode);
+
+      let retry = true;
+
+      // We want to catch the 429 rate limit error and try again after x seconds
+      while (retry) {
+        try {
+          retry = false;
+          await sendEmail(event.request.userAttributes, secretLoginCode);
+        } catch (error) {
+          if (error.statusCode === 429) {
+            console.log(error);
+
+            retry = true;
+            await sleep(2000);
+          }
+        }
+      }
     }
   } else {
     // There's an existing session. Don't generate new digits but
