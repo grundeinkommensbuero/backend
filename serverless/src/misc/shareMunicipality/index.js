@@ -7,6 +7,7 @@
 const AWS = require('aws-sdk');
 const jimp = require('jimp/dist');
 const { errorResponse } = require('../../shared/apiResponse');
+const slugJson = require('../../../../utils/analyseData/recentMunicipalityData/output/municipalities-frontend.json');
 const fetch = require('node-fetch').default;
 const { accessToken, spaceId } = require('../../../contentfulConfig');
 const { getUser } = require('../../shared/users');
@@ -45,6 +46,14 @@ module.exports.handler = async event => {
       ags,
       addProfilePicture,
     } = event.queryStringParameters;
+
+    const foundMunicipalityWithSlug = slugJson.find(
+      municipality => municipality.ags === ags
+    );
+
+    const slug = foundMunicipalityWithSlug
+      ? foundMunicipalityWithSlug.slug
+      : '';
 
     // get user id from path parameter
     const userId = event.pathParameters.userId;
@@ -130,7 +139,7 @@ module.exports.handler = async event => {
 
         <script>
           if(${!isBot}) {
-            window.location.href = "${redirectUrl}/${ags}?referredByUser=${
+            window.location.href = "${redirectUrl}/${slug}?referredByUser=${
       user.cognitoId
     }";
           }
@@ -172,7 +181,7 @@ module.exports.handler = async event => {
         <div class="loader"></div>
         <p>
           Solltest du nicht automatisch weitergeleitet werden,<br/>klicke bitte
-          <a href="${redirectUrl}/${ags}?referredByUser=${
+          <a href="${redirectUrl}/${slug}?referredByUser=${
       user.cognitoId
     }"><b>HIER</b></a>
         </p>
