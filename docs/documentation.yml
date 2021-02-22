@@ -485,6 +485,9 @@ paths:
                 newsletterConsent:
                   description: Subscription to general newsletter
                   type: boolean
+                reminderMails:
+                  description: Subscription to automated mails
+                  type: boolean
                 zipCode:
                   type: string
                 username:
@@ -654,6 +657,13 @@ paths:
                       zipCode:
                         type: string
                       newsletterConsent:
+                        type: object
+                        properties:
+                          value:
+                            type: boolean
+                          timestamp:
+                            type: string
+                      reminderMails:
                         type: object
                         properties:
                           value:
