@@ -13,6 +13,14 @@ custom:
   signaturesTableName: ${self:custom.stage}-signatures
   municipalitiesTableName: ${self:custom.stage}-municipalities
   userMunicipalityTableName: ${self:custom.stage}-users-municipalities
+  imageBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-profile-pics
+  listsBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-signature-lists
+  output:
+    handler: scripts/outputStack.handler
+  # If you enable caching globally, it does NOT automatically enable
+  # caching for your endpoints - you have to be explicit about which endpoints should have caching enabled.
+  apiGatewayCaching:
+    enabled: true
 
 provider:
   name: aws
@@ -35,13 +43,28 @@ provider:
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
-    IMAGE_BUCKET: xbge-profile-pictures
     MAP_IMAGE_BUCKET: xbge-map-images
+    IMAGE_BUCKET: ${self:custom.imageBucketName}
+    SIGNATURE_LISTS_BUCKET: ${self:custom.listsBucketName}
+  # S3 configuration here, we don't need to define the bucket in resources
+  # https://www.serverless.com/framework/docs/providers/aws/events/s3/
+  s3:
+    imageBucket:
+      name: ${self:custom.imageBucketName}
+      corsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - 'PUT'
+            AllowedOrigins:
+              - '*'
 
 plugins:
   - serverless-iam-roles-per-function
   - serverless-webpack
   - serverless-plugin-split-stacks # needed because of the 200 resources limit
+  - serverless-api-gateway-caching
 
 # no global iam policies, because we want to follow the least privilege princilpe
 # therefore we use a plugin to define roles per function
@@ -136,7 +159,7 @@ functions:
         Action:
           - s3:PutObject
           - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::signature-lists/*'
+        Resource: 'arn:aws:s3:::${self:custom.listsBucketName}/*'
       - Effect: 'Allow' # for the global secondary index of signatures table
         Action:
           - dynamodb:Query
@@ -197,7 +220,7 @@ functions:
         Action:
           - s3:PutObject
           - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::signature-lists/*'
+        Resource: 'arn:aws:s3:::${self:custom.listsBucketName}/*'
       - Effect: 'Allow' # for the global secondary index of signatures table
         Action:
           - dynamodb:Query
@@ -327,6 +350,12 @@ functions:
           path: analytics/users
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
+            perKeyInvalidation:
+              requireAuthorization: true # default is true
+              handleUnauthorizedRequests: Ignore # default is "IgnoreWithWarning"
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -355,6 +384,9 @@ functions:
           path: analytics/signatures/lists
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -377,6 +409,17 @@ functions:
           - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   # Probably not needed in the future
   # createUserExternal:
@@ -457,6 +500,16 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
@@ -500,6 +553,48 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+
+  deleteUser:
+    handler: src/api/users/deleteUser/index.handler
+    events:
+      - http:
+          path: users/{userId}
+          method: delete
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminDeleteUser
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
   unsubscribeUser:
     handler: src/api/users/unsubscribeUser/index.handler
@@ -612,6 +707,7 @@ functions:
           - s3:HeadObject
           - s3:PutObject
           - s3:PutObjectAcl
+          - s3:GetObject
         Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   adminCreateUser:
@@ -663,6 +759,9 @@ functions:
           path: admin/users
           method: get
           cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 600
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
@@ -701,6 +800,26 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+
+  adminGetDonations:
+    handler: src/api/users/adminGetDonations/index.handler
+    events:
+      - http:
+          path: admin/donations
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   sendVerificationMail:
     handler: src/triggers/auth/sendVerificationMail/index.handler
@@ -894,21 +1013,20 @@ functions:
         Action:
           - s3:PutObject
           - s3:PutObjectAcl
-        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+        Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
   processUploadedImage:
     handler: src/triggers/processUploadedImage/index.handler
     events:
       - s3:
-          bucket: xbge-profile-pictures
+          bucket: imageBucket
           event: s3:ObjectCreated:*
-          existing: true
           rules:
             - prefix: ${self:custom.stage}/originals/
     timeout: 30 # Timeout for this specific function.
     memorySize: 1600 # memorySize for this specific function.
     environment:
-      S3_IMAGES_URL: https://xbge-profile-pictures.s3.eu-central-1.amazonaws.com
+      S3_IMAGES_URL: https://${self:custom.imageBucketName}.s3.eu-central-1.amazonaws.com
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -923,7 +1041,7 @@ functions:
           - s3:PutObject
           - s3:PutObjectAcl
           - s3:DeleteObject
-        Resource: 'arn:aws:s3:::xbge-profile-pictures/*'
+        Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
   # saveMapAsImage:
   #   handler: src/triggers/saveMapAsImage/index.handler
@@ -937,7 +1055,6 @@ functions:
   #         - s3:PutObject
   #         - s3:PutObjectAcl
   #       Resource: 'arn:aws:s3:::xbge-map-images/*'
-
 
   # getQuestions:
   #   handler: src/api/users/questions/getQuestions/index.handler
@@ -985,6 +1102,42 @@ functions:
           path: analytics/crowdfunding
           method: get
           cors: true
+
+  shareMunicipality:
+    handler: src/misc/shareMunicipality/index.handler
+    events:
+      - http:
+          path: share-municipality/{userId}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-personalized-sharing-images/*'
 
   # Admin cognito auth triggers
 
@@ -1058,9 +1211,10 @@ resources:
             KeyType: HASH
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        # ProvisionedThroughput:
+        # ReadCapacityUnits: 5
+        # WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: emailIndex
             KeySchema:
@@ -1068,9 +1222,9 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: 'ALL'
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            # ProvisionedThroughput:
+            #   ReadCapacityUnits: 5
+            #   WriteCapacityUnits: 5
 
     SignaturesTable:
       Type: AWS::DynamoDB::Table
@@ -1087,8 +1241,8 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_IMAGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
         GlobalSecondaryIndexes:
           - IndexName: userIdIndex
             KeySchema:
@@ -1097,8 +1251,8 @@ resources:
             Projection:
               ProjectionType: 'ALL'
             ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
 
     MunicipalitiesTable:
       Type: AWS::DynamoDB::Table
@@ -1110,9 +1264,10 @@ resources:
         KeySchema:
           - AttributeName: ags
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
+        # ProvisionedThroughput:
+        #   ReadCapacityUnits: 5
+        #   WriteCapacityUnits: 5
 
     UserMunicipalityTable:
       Type: AWS::DynamoDB::Table
@@ -1262,20 +1417,25 @@ resources:
               - CognitoUserPoolAdminUserPool
               - Arn
 
-# Print out the Id of the User Pool that is created
-Outputs:
-  UserPoolId:
-    Value:
-      Ref: CognitoUserPoolUserPool
+    SignatureListsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.listsBucketName}
 
-  UserPoolClientId:
-    Value:
-      Ref: UserPoolClient
+  # Print out the Id of the User Pool that is created
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPoolUserPool
 
-  AdminUserPoolId:
-    Value:
-      Ref: CognitoUserPoolAdminUserPool
+    UserPoolClientId:
+      Value:
+        Ref: UserPoolClient
 
-  AdminUserPoolClientId:
-    Value:
-      Ref: AdminUserPoolClient
+    AdminUserPoolId:
+      Value:
+        Ref: CognitoUserPoolAdminUserPool
+
+    AdminUserPoolClientId:
+      Value:
+        Ref: AdminUserPoolClient

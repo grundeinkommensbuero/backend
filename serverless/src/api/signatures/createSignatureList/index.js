@@ -19,6 +19,7 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const signaturesTableName =
   process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 const usersTableName = process.env.USERS_TABLE_NAME || 'prod-users';
+const bucket = process.env.SIGNATURE_LISTS_BUCKET;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -58,8 +59,13 @@ const handler = async event => {
     // we need the email to later send the pdf
     let email;
     let username;
-    if (event.pathParameters) {
-      userId = event.pathParameters.userId;
+    if (
+      event.pathParameters ||
+      (requestBody.triggeredByAdmin && 'userId' in requestBody)
+    ) {
+      userId = requestBody.triggeredByAdmin
+        ? requestBody.userId
+        : event.pathParameters.userId;
 
       // now we want to validate if the user actually exists
       try {
@@ -260,7 +266,7 @@ const incrementDownloads = (id, downloads) => {
 const uploadPDF = (id, pdf) => {
   return s3
     .upload({
-      Bucket: 'signature-lists',
+      Bucket: bucket,
       ACL: 'public-read',
       Key: `${id}.pdf`,
       Body: Buffer.from(pdf),

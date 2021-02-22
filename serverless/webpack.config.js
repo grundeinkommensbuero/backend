@@ -8,28 +8,73 @@ require('dotenv').config();
 // (https://github.com/serverless-heaven/serverless-webpack/blob/master/examples/typescript/webpack.config.js)
 const isLocal = slsw.lib.webpack.isLocal;
 
-const functionsWithStaticFiles = [
+const functionsWithPdf = [
   'createSignatureList',
-  'adminCreateUser',
-  'sendCongratulationMails',
-  'sendVerificationMail',
   'sendReminderMails',
   'updateUser',
 ];
 
-// We need this to only copy pdf files for the corresponding function.
+const functionsWithTtf = ['updateUser'];
+
+const functionsWithFnt = ['shareMunicipality'];
+
+// We need this to only copy pdf (or other files) files for the corresponding function.
 // Based on https://github.com/serverless-heaven/serverless-webpack/issues/425
 // We only copy the files for each corresponding function
 const copyStaticFilesPlugin = () => ({
   apply: compiler => {
     // Get the module name off of the output path
-    const moduleName = functionsWithStaticFiles.find(name =>
+    const moduleWithPdf = functionsWithPdf.find(name =>
       compiler.options.output.path.includes(name)
     );
 
-    if (moduleName) {
-      new CopyWebpackPlugin([`**/${moduleName}/**/*.pdf`]).apply(compiler);
-      new CopyWebpackPlugin([`**/${moduleName}/**/*.ttf`]).apply(compiler);
+    if (moduleWithPdf) {
+      // We need to define the output path here, because since I moved the pdfs
+      // outside of the functions to reuse them it is a bit more difficult to
+      // copy them into the correct folder of the corresponding function
+      let outputPath;
+      // same for createSignatureListAuth and createSignatureList because they
+      // use the same index file
+      if (moduleWithPdf === 'createSignatureList') {
+        outputPath = 'src/api/signatures/createSignatureList/pdfs';
+      } else if (moduleWithPdf === 'sendReminderMails') {
+        outputPath = 'src/triggers/sendReminderMails/pdfs';
+      } else {
+        // For other functions with pdfs (but inside the function folder),
+        // we also want to copy them
+        new CopyWebpackPlugin({
+          patterns: [`**/${moduleWithPdf}/**/*.pdf`],
+        }).apply(compiler);
+      }
+
+      new CopyWebpackPlugin({
+        patterns: [{ from: 'pdfs', to: outputPath }],
+      }).apply(compiler);
+    }
+
+    // Same for ttf
+    const moduleWithTtf = functionsWithTtf.find(name =>
+      compiler.options.output.path.includes(name)
+    );
+
+    if (moduleWithTtf) {
+      new CopyWebpackPlugin({
+        patterns: [`**/${moduleWithTtf}/**/*.ttf`],
+      }).apply(compiler);
+    }
+
+    // Same for ttf
+    const moduleWithFnt = functionsWithFnt.find(name =>
+      compiler.options.output.path.includes(name)
+    );
+
+    if (moduleWithFnt) {
+      new CopyWebpackPlugin({
+        patterns: [
+          `**/${moduleWithFnt}/**/*.fnt`,
+          `**/${moduleWithFnt}/**/*.png`,
+        ],
+      }).apply(compiler);
     }
   },
 });
@@ -51,6 +96,18 @@ module.exports = {
     __dirname: false,
   },
   stats: 'errors-warnings', // less logging
+  module: {
+    rules: [
+      {
+        test: /\.(pdf)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
+    ],
+  },
   plugins: [
     copyStaticFilesPlugin(),
     // We also want to make some env variables available for config

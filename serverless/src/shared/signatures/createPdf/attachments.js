@@ -14,7 +14,7 @@ module.exports = {
   'hamburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/TIPPS.pdf`),
+      file: fs.readFileSync(`${__dirname}/pdfs/hamburg-1/TIPPS.pdf`),
     },
     {
       filename: 'Liste_schwarz-weiss.pdf',
@@ -26,17 +26,17 @@ module.exports = {
     },
     {
       filename: 'Newsletter.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/NEWSLETTER.pdf`),
+      file: fs.readFileSync(`${__dirname}/pdfs/hamburg-1/NEWSLETTER.pdf`),
     },
     {
       filename: 'Gesetzestext.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/hamburg-1/GESETZ.pdf`),
+      file: fs.readFileSync(`${__dirname}/pdfs/hamburg-1/GESETZ.pdf`),
     },
   ],
   'brandenburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/brandenburg-1/TIPPS.pdf`),
+      file: fs.readFileSync(`${__dirname}/pdfs/brandenburg-1/TIPPS.pdf`),
     },
     {
       filename: 'Liste.pdf',
@@ -46,7 +46,7 @@ module.exports = {
   'schleswig-holstein-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',
-      file: fs.readFileSync(`${__dirname}/pdf/sh-1/TIPPS.pdf`),
+      file: fs.readFileSync(`${__dirname}/pdfs/sh-1/TIPPS.pdf`),
     },
     {
       filename: 'Liste_1er_SW.pdf',
