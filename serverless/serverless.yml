@@ -1191,9 +1191,10 @@ resources:
             KeyType: HASH
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        # ProvisionedThroughput:
+        # ReadCapacityUnits: 5
+        # WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: emailIndex
             KeySchema:
@@ -1201,9 +1202,9 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: 'ALL'
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            # ProvisionedThroughput:
+            #   ReadCapacityUnits: 5
+            #   WriteCapacityUnits: 5
 
     SignaturesTable:
       Type: AWS::DynamoDB::Table
@@ -1220,8 +1221,8 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_IMAGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
         GlobalSecondaryIndexes:
           - IndexName: userIdIndex
             KeySchema:
@@ -1230,8 +1231,8 @@ resources:
             Projection:
               ProjectionType: 'ALL'
             ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
 
     MunicipalitiesTable:
       Type: AWS::DynamoDB::Table
@@ -1243,9 +1244,10 @@ resources:
         KeySchema:
           - AttributeName: ags
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
+        # ProvisionedThroughput:
+        #   ReadCapacityUnits: 5
+        #   WriteCapacityUnits: 5
 
     UserMunicipalityTable:
       Type: AWS::DynamoDB::Table
