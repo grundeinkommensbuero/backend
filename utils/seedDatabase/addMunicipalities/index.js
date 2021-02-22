@@ -24,13 +24,14 @@ const addMunicipalities = async () => {
   console.log('errors', errors);
 };
 
-const createMunicipality = ({ ags, name, population }) => {
+const createMunicipality = ({ ags, name, population, slug }) => {
   const params = {
     TableName: CONFIG.PROD_MUNICIPALITIES_TABLE_NAME,
     Item: {
       ags,
       name,
       population,
+      slug,
     },
   };
 
