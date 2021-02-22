@@ -4,7 +4,6 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
 const {
   getUserByMail,
-  updateNewsletterConsent,
   createUserInCognito,
   confirmUserInCognito,
 } = require('../../../shared/users');
@@ -17,10 +16,16 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
+const stateToAgs = {
+  berlin: '11000000',
+  bremen: '04011000',
+  hamburg: '02000000',
+};
+
 module.exports.handler = async event => {
   try {
     // get email from body,
-    const { email, campaignCode } = JSON.parse(event.body);
+    const { email, campaignCode, extraInfo } = JSON.parse(event.body);
 
     const lowercaseEmail = email.toLowerCase();
 
@@ -41,7 +46,7 @@ module.exports.handler = async event => {
       await confirmUserInCognito(userId);
 
       // now create dynamo resource
-      await createUserInDynamo(userId, lowercaseEmail, campaignCode);
+      await createUserInDynamo(userId, lowercaseEmail, campaignCode, extraInfo);
 
       try {
         // send email to to user to welcome them
@@ -68,21 +73,12 @@ module.exports.handler = async event => {
           const result = await getUserByMail(email);
           const user = result.Items[0];
 
-          // Check if the user has newsletter consent set to true
-          if (user.newsletterConsent.value) {
-            return errorResponse(
-              200,
-              'User already exists and has newsletter consent true',
-              error
-            );
-          }
           // if not, we want to update the user
-          await updateNewsletterConsent(user.cognitoId, true);
+          await updateNewsletterSettings(user, campaignCode, extraInfo);
 
           return errorResponse(
             200,
-            'User already exists, but had newsletter consent false',
-            error
+            'User existed, updated newsletter settings'
           );
         } catch (newsletterError) {
           console.log(
@@ -110,8 +106,10 @@ module.exports.handler = async event => {
   }
 };
 
-const createUserInDynamo = (userId, email, campaignCode) => {
+const createUserInDynamo = (userId, email, campaignCode, extraInfo) => {
   const timestamp = new Date().toISOString();
+  // create a (nice to later work with) object, which campaign it is
+  const campaign = constructCampaignId(campaignCode);
 
   const params = {
     TableName: usersTableName,
@@ -123,12 +121,80 @@ const createUserInDynamo = (userId, email, campaignCode) => {
         value: true,
         timestamp,
       },
+      confirmed: {
+        value: true,
+        timestamp,
+      },
+      customNewsletters: [
+        {
+          name: capitalizeState(campaign.state),
+          value: true,
+          extraInfo,
+          timestamp,
+          ags: stateToAgs[campaign.state],
+        },
+      ],
       migrated: {
         source: 'offline',
-        // create a (nice to later work with) object, which campaign it is
-        campaign: constructCampaignId(campaignCode),
+        campaign,
       },
     },
   };
+
   return ddb.put(params).promise();
+};
+
+// Update existing user to set or alter newsletter settings
+const updateNewsletterSettings = (user, campaignCode, extraInfo) => {
+  const timestamp = new Date().toISOString();
+
+  const customNewsletters = user.customNewsletters || [];
+
+  const campaign = constructCampaignId(campaignCode);
+
+  const index = customNewsletters.findIndex(
+    newsletter => newsletter.name.toLowerCase() === campaign.state
+  );
+
+  if (index !== -1) {
+    if (!customNewsletters[index].value) {
+      customNewsletters[index].value = true;
+      customNewsletters[index].timestamp = timestamp;
+    }
+  } else {
+    customNewsletters.push({
+      name: capitalizeState(campaign.state),
+      value: true,
+      extraInfo,
+      timestamp,
+      ags: stateToAgs[campaign.state],
+    });
+  }
+
+  const params = {
+    TableName: usersTableName,
+    Key: { cognitoId: user.cognitoId },
+    UpdateExpression:
+      'SET customNewsletters = :customNewsletters, newsletterConsent = :newsletterConsent',
+    ExpressionAttributeValues: {
+      ':customNewsletters': customNewsletters,
+      ':newsletterConsent': { value: true, timestamp },
+    },
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  return ddb.update(params).promise();
+};
+
+const capitalizeState = state => {
+  const stringSplit = state.split('-');
+  if (stringSplit.length > 1) {
+    return `${capitalize(stringSplit[0])}-${capitalize(stringSplit[1])}`;
+  }
+
+  return `${capitalize(stringSplit[0])}`;
+};
+
+const capitalize = string => {
+  return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
 };

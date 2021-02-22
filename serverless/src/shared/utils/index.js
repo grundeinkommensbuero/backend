@@ -97,6 +97,10 @@ const formatPhoneNumber = phoneNumber => {
   return string.replace(new RegExp('[()/-\\s]', 'g'), '').replace('+', '00');
 };
 
+const sleep = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 module.exports = {
   constructCampaignId,
   generateRandomId,
@@ -108,4 +112,5 @@ module.exports = {
   validateZipCode,
   validatePhoneNumber,
   formatPhoneNumber,
+  sleep,
 };

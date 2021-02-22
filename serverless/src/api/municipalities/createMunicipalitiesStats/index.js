@@ -14,20 +14,29 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getAllMunicipalitiesWithUsers,
   getAllMunicipalities,
+  getStatsJson,
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
-const timePassed = 6 * 60 * 60 * 1000;
-const amountOfWins = 15;
-const amountOfNewcomers = 15;
-const amountOfChanged = 10;
-const changeThresholds = { absolute: 500, relative: 20, population: 10000 };
+const timePassed = 24 * 60 * 60 * 1000;
+const amountOfWins = 16;
+const amountOfNewcomers = 16;
+const amountOfChanged = 16;
+const changeThresholds = { absolute: 300, relative: 20 };
+const signupThreshold = 350;
 
 module.exports.handler = async event => {
   try {
     // No query param was passed, therefore we get all municipalities for which people
     // have already signed up and compute the stats
     const userMuncipality = await getAllMunicipalitiesWithUsers();
+
+    // We need to get the existing stats so we can include the previous count
+    const json = await getStatsJson('statsWithEvents.json');
+
+    const body = JSON.parse(json.Body.toString());
+    const previousSummary = body.summary;
+    delete previousSummary.previous;
 
     const statsWithAllMunicipalities = await computeStats({
       userMuncipality,
@@ -37,6 +46,7 @@ module.exports.handler = async event => {
     const statsWithEvents = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: false,
+      previousSummary,
     });
 
     await saveJson(statsWithAllMunicipalities, 'statsWithAll.json');
@@ -52,12 +62,13 @@ module.exports.handler = async event => {
 const computeStats = async ({
   userMuncipality,
   shouldSendAllMunicipalities,
+  previousSummary,
 }) => {
   let date = new Date();
   if (stage === 'dev') {
-    date = new Date(2020, 11, 15, 3, 6, 0);
+    date = new Date(2021, 0, 6, 16, 0, 0);
   }
-  const wins = [];
+  let wins = [];
   let newcomers = [];
   let relativeChangers = [];
   let absoluteChangers = [];
@@ -104,13 +115,16 @@ const computeStats = async ({
     const previous = users.length - filteredUsers.length;
     const current = users.length;
 
-    if (current > goal) {
+    if (current > goal && previous < goal && current > signupThreshold) {
       wins.push({ ags, category: 'win', signups: [previous, current] });
-    } else if (previous === 0) {
+      // Newcomers used to be previous === 0,
+      // but these tend to have low signup numbers
+      // leading to them not being visible in the animation
+    } else if (previous < signupThreshold && current > signupThreshold) {
       newcomers.push({ ags, previous, current, filteredUsers });
     } else if (
       (current / previous - 1) * 100 > changeThresholds.relative &&
-      population > changeThresholds.population
+      current > signupThreshold
     ) {
       const relativeChange = (current / previous - 1) * 100;
       relativeChangers.push({ ags, previous, current, relativeChange });
@@ -126,7 +140,8 @@ const computeStats = async ({
   }
 
   // Only take the 15 municipalities with the most signups
-  wins.sort((a, b) => a.signups[1] - b.signups[1]).slice(0, amountOfWins);
+  wins.sort((a, b) => a.signups[1] - b.signups[1]);
+  wins = wins.slice(0, amountOfWins);
 
   // Sort newcomers by most current signup, also only 15
   newcomers.sort((a, b) => {
@@ -144,10 +159,10 @@ const computeStats = async ({
   newcomers = newcomers.slice(0, amountOfNewcomers);
 
   relativeChangers.sort((a, b) => a.relativeChange - b.relativeChange);
-  relativeChangers = relativeChangers.slice(0, amountOfChanged);
+  relativeChangers = relativeChangers.slice(0, amountOfChanged / 2);
 
   absoluteChangers.sort((a, b) => a.absoluteChange - b.absoluteChange);
-  absoluteChangers = absoluteChangers.slice(0, amountOfChanged);
+  absoluteChangers = absoluteChangers.slice(0, amountOfChanged / 2);
 
   // Bring newcomers into [previous, current] structure
   newcomers = newcomers.map(newcomer => ({
@@ -172,6 +187,12 @@ const computeStats = async ({
   return {
     events: [...wins, ...newcomers, ...relativeChangers, ...absoluteChangers],
     municipalities: municipalitiesWithUsers,
+    summary: {
+      previous: previousSummary,
+      users: userMuncipality.length,
+      municipalities: municipalitiesWithUsers.length,
+      timestamp: new Date().toISOString(),
+    },
   };
 };
 

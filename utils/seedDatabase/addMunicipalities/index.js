@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const json = require('../../analyseData/mergeGeospatialData/output/places.json');
+const json = require('../../analyseData/recentMunicipalityData/output/municipalities-frontend.json');
 const Bottleneck = require('bottleneck');
 const CONFIG = require('../../config');
 
@@ -9,17 +9,24 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 4 });
 
 const addMunicipalities = async () => {
+  const errors = [];
   for (const municipality of json) {
-    await limiter.schedule(async () => {
-      await createMunicipality(municipality);
-      console.log('Added municipality', municipality.ags);
-    });
+    try {
+      await limiter.schedule(async () => {
+        await createMunicipality(municipality);
+        console.log('Added municipality', municipality.ags);
+      });
+    } catch (error) {
+      errors.push(error);
+    }
   }
+
+  console.log('errors', errors);
 };
 
 const createMunicipality = ({ ags, name, population }) => {
   const params = {
-    TableName: CONFIG.DEV_MUNICIPALITIES_TABLE_NAME,
+    TableName: CONFIG.PROD_MUNICIPALITIES_TABLE_NAME,
     Item: {
       ags,
       name,
