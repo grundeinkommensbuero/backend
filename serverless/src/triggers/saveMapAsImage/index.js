@@ -1,7 +1,12 @@
 const chromium = require('chrome-aws-lambda');
 const jimp = require('jimp');
 const AWS = require('aws-sdk');
+
 const s3 = new AWS.S3({ region: 'eu-central-1' });
+const url =
+  process.env.STAGE === 'dev'
+    ? 'https://campaign-launch--expedition-grundeinkommen.netlify.app/playground/campaignMap'
+    : 'https://expedition-grundeinkommen.de/playground/campaignMap';
 
 module.exports.handler = async event => {
   // Use puppeteer to take screenshot of map
@@ -34,19 +39,15 @@ async function takeScreenshot() {
   const page = await browser.newPage();
   console.log('created page', page);
 
-  // NOTE: update to production link when ready.
-  await page.goto(
-    'https://5fc529cd40c2300007539f6c--expedition-grundeinkommen.netlify.app/playground/campaignMap'
-  );
+  await page.goto(url);
   console.log('went to page', page);
   await page.evaluate(() => {
     // NOTE: Selector will be the id in production
     // const buttonsSelector ='#mapButtonContainer'
 
-    const buttonsSelector =
-      '#gatsby-focus-wrapper > main > div > section > div > div > div > div.style-module--interfaceContainer--1CH8m > div.style-module--buttonContainer--WINK5';
+    const buttonsSelector = '#mapButtonContainer';
 
-    let buttons = document.querySelector(buttonsSelector);
+    const buttons = document.querySelector(buttonsSelector);
     buttons.style.display = 'none';
   });
   console.log({ page });
