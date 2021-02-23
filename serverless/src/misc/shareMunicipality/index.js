@@ -7,7 +7,6 @@
 const AWS = require('aws-sdk');
 const jimp = require('jimp/dist');
 const { errorResponse } = require('../../shared/apiResponse');
-const slugJson = require('../../../../utils/analyseData/recentMunicipalityData/output/municipalities-frontend.json');
 const fetch = require('node-fetch').default;
 const { accessToken, spaceId } = require('../../../contentfulConfig');
 const { getUser } = require('../../shared/users');
@@ -23,7 +22,7 @@ const s3 = new AWS.S3();
 const emblemBucketUrl =
   'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
 const outputBucket = 'xbge-personalized-sharing-images';
-const redirectUrl = 'https://expedition-grundeinkommen.de/gemeinden';
+const redirectUrl = 'https://expedition-grundeinkommen.de/';
 const contentfulRequestHeaders = {
   headers: {
     Authorization: `Bearer ${accessToken}`,
@@ -46,14 +45,6 @@ module.exports.handler = async event => {
       ags,
       addProfilePicture,
     } = event.queryStringParameters;
-
-    const foundMunicipalityWithSlug = slugJson.find(
-      municipality => municipality.ags === ags
-    );
-
-    const slug = foundMunicipalityWithSlug
-      ? foundMunicipalityWithSlug.slug
-      : '';
 
     // get user id from path parameter
     const userId = event.pathParameters.userId;
@@ -139,7 +130,7 @@ module.exports.handler = async event => {
 
         <script>
           if(${!isBot}) {
-            window.location.href = "${redirectUrl}/${slug}?referredByUser=${
+            window.location.href = "${redirectUrl}/?referredByUser=${
       user.cognitoId
     }";
           }
@@ -181,7 +172,7 @@ module.exports.handler = async event => {
         <div class="loader"></div>
         <p>
           Solltest du nicht automatisch weitergeleitet werden,<br/>klicke bitte
-          <a href="${redirectUrl}/${slug}?referredByUser=${
+          <a href="${redirectUrl}/?referredByUser=${
       user.cognitoId
     }"><b>HIER</b></a>
         </p>
