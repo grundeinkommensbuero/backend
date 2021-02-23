@@ -200,7 +200,7 @@ const computeStats = async ({
     summary: {
       previous: previousSummary,
       users: userMuncipality.length + Math.round(17802 * 0.7),
-      municipalities: municipalitiesWithUsers.length,
+      municipalities: municipalitiesWithUsers.length + 3,
       timestamp: new Date().toISOString(),
     },
   };
