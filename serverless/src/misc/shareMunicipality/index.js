@@ -103,8 +103,9 @@ module.exports.handler = async event => {
       renderedImageUrl = uploadResult.Location;
     }
 
-    const title = `Hole das Grundeinkommen nach ${municipality.name}`;
-    const description = `Werde Teil der Expedition an und hole das Grundeinkommen nach ${municipality.name}!`;
+    const title = 'Hole das Grundeinkommen in deinen Ort';
+    const description =
+      'Werde Teil der Expedition und hole das Grundeinkommen in deinen Ort!';
     const html = `
     <html lang="de">
       <head>
