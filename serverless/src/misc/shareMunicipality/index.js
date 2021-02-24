@@ -253,10 +253,13 @@ const createRenderedImage = async (
   municipalityName
 ) => {
   try {
-    const emblem = await jimp.read(`${emblemBucketUrl}/${ags}.png`);
+    // Note: deactived using real emblem for now due to legal reasons
+    // const emblem = await jimp.read(`${emblemBucketUrl}/${ags}.png`);
+    const genericEmblem = await jimp.read(`https:${templates.emblemUrl}`);
+
     return createCompositeImage(
       templates.templateUrl,
-      emblem,
+      genericEmblem,
       profilePictureUrl,
       captions,
       username,
