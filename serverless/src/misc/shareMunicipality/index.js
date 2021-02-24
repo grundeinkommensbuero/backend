@@ -103,7 +103,7 @@ module.exports.handler = async event => {
       renderedImageUrl = uploadResult.Location;
     }
 
-    const title = 'Hole das Grundeinkommen in deinen Ort';
+    const title = 'Bring das Grundeinkommen mit mir an den Staat!';
     const description =
       'Werde Teil der Expedition und hole das Grundeinkommen in deinen Ort!';
     const html = `
