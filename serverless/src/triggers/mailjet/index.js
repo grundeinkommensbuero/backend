@@ -41,6 +41,7 @@ const updateMailjetContact = async ({
   surveys,
   customNewsletters,
   newsletterConsent,
+  createdAt,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -52,11 +53,17 @@ const updateMailjetContact = async ({
     migratedFrom: 'nowhere',
     username: username || '',
     activeUser: false,
+    newSinceLaunch: false,
   };
 
   // construct name with space before
   if (typeof username !== 'undefined') {
     mailjetUser.usernameWithSpace = `&#160;${username}`;
+  }
+
+  // If user was created after our launch in february 2021, set it to true
+  if (new Date(createdAt) > new Date('2021-02-22')) {
+    mailjetUser.newSinceLaunch = true;
   }
 
   // Check how many signatures we already received from the user,
@@ -180,9 +187,18 @@ const updateMailjetContact = async ({
         Name: 'active_user',
         Value: mailjetUser.activeUser,
       },
+      {
+        // TODO: change to new_since_launch and test again
+        // Mailjet could not handle the new property although it was
+        // created properly. No idea why, probably a mailjet issue
+        Name: 'list_order_brandenburg',
+        Value: mailjetUser.newSinceLaunch,
+      },
       ...mailjetUser.surveyParams,
     ],
   };
+
+  console.log(requestParams);
 
   if (typeof zipCode !== 'undefined') {
     requestParams.Data.push({
