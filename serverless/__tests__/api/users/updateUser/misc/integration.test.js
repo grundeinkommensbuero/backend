@@ -43,6 +43,7 @@ describe('updateUser update donation api test', () => {
           firstName: 'Valentin',
           lastName: 'Schagerl',
           iban: 'DE26641500200001294334',
+          yearly: true,
         },
       }),
     };

@@ -102,7 +102,9 @@ const getAllMunicipalitiesWithUsers = async (
 const getMunicipalityStats = async (ags, population) => {
   const users = await getAllUsersOfMunicipality(ags);
 
-  const signups = users.length;
+  let signups = users.length;
+
+  signups += getExistingUsers(ags);
 
   const goal = getMunicipalityGoal(population);
 
@@ -161,6 +163,20 @@ const getStatsJson = fileName => {
   return s3.getObject(params).promise();
 };
 
+const getExistingUsers = ags => {
+  if (ags === '04011000') {
+    return Math.round(1729 * 0.7);
+  }
+  if (ags === '02000000') {
+    return Math.round(5202 * 0.7);
+  }
+  if (ags === '11000000') {
+    return Math.round(10871 * 0.7);
+  }
+
+  return 0;
+};
+
 module.exports = {
   getMunicipality,
   getAllMunicipalities,
@@ -171,4 +187,5 @@ module.exports = {
   getUserMunicipalityLink,
   getMunicipalitiesOfUser,
   getStatsJson,
+  getExistingUsers,
 };

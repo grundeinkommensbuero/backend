@@ -20,11 +20,12 @@ module.exports.handler = async (event, context) => {
 // Loops through all users to update the corrsesponding mailjet contact
 const fillMailjet = async (event, context) => {
   try {
-    // If the lambda was invoked recursively we got the startKey as payload
+    // If the lambda was invoked recursively we got the startKey and total count as payload
     const startKey = event.startKey || null;
+    const totalCount = event.totalCount || 0;
     console.log('startkey of new lambda', startKey);
 
-    await processBatchOfUsers(event, context, startKey);
+    await processBatchOfUsers(event, context, startKey, totalCount);
   } catch (error) {
     console.log('error', error);
   }
@@ -43,7 +44,7 @@ const getBatchOfUsers = (startKey = null) => {
   return ddb.scan(params).promise();
 };
 
-const processBatchOfUsers = async (event, context, startKey) => {
+const processBatchOfUsers = async (event, context, startKey, totalCount) => {
   console.log('processing another batch with startKey', startKey);
 
   const result = await getBatchOfUsers(startKey);
@@ -68,21 +69,29 @@ const processBatchOfUsers = async (event, context, startKey) => {
       }
 
       count++;
+
+      console.log('total count', totalCount + count);
     }
 
-    console.log('updated count', count);
+    console.log('updated batch count', count);
 
     // After batch of users is processed check how much time we have got left in this lambda
     // and if there are still users to process
     if ('LastEvaluatedKey' in result) {
       // If the remaining time is more than x minutes start a new batch
       if (context.getRemainingTimeInMillis() > 400000) {
-        await processBatchOfUsers(event, context, result.LastEvaluatedKey);
+        await processBatchOfUsers(
+          event,
+          context,
+          result.LastEvaluatedKey,
+          totalCount
+        );
       } else {
         // Start new lambda function
         // First of all create a new event object with the start key
         const newEvent = Object.assign(event, {
           startKey: result.LastEvaluatedKey,
+          totalCount: totalCount + count,
         });
 
         const req = {

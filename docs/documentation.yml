@@ -525,12 +525,10 @@ paths:
                     iban:
                       type: string
                       description: Needs to be a valid iban, will be validated
-                    certificateGiver:
-                      type: string
-                      description: If donation is gift, this is the name of the giver
-                    certificateReceiver:
-                      type: string
-                      description: If donation is gift, this is the name of the receiver
+                    yearly:
+                      type: boolean
+                      description: Only relevant if donation is recurring. Should be true if donation is supposed to yearly, not monthly
+
                 customNewsletters:
                   description: Array holding information about the newsletters the user is subscribed to
                   type: array
