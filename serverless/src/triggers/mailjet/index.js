@@ -16,12 +16,35 @@ const syncMailjetContact = async (user, verified) => {
   }
 
   try {
-    await updateMailjetContact(user);
+    const {
+      subscribedToGeneral,
+      newsletterString,
+    } = await updateMailjetContact(user);
 
     if (user.source !== 'bb-platform') {
-      await updateMailjetSubscription(user, verified, contactListIdXbge);
+      // Check if user is subscribed to anything, so we don't have people
+      // in the contact list, which are not subscribed.
+      // This way we can avoid segmentation errors, where people can newsletters
+      // who don't want any.
+
+      const isSubscribed =
+        subscribedToGeneral || newsletterString !== 'nowhere';
+
+      console.log('is subscribed', isSubscribed);
+
+      await updateMailjetSubscription(
+        user,
+        verified,
+        isSubscribed,
+        contactListIdXbge
+      );
     } else {
-      await updateMailjetSubscription(user, verified, contactListIdBBPlatform);
+      await updateMailjetSubscription(
+        user,
+        verified,
+        true,
+        contactListIdBBPlatform
+      );
     }
   } catch (error) {
     console.log('error updating contact', error);
@@ -54,6 +77,7 @@ const updateMailjetContact = async ({
     username: username || '',
     activeUser: false,
     newSinceLaunch: false,
+    subscribedToGeneral: newsletterConsent.value,
   };
 
   // construct name with space before
@@ -157,7 +181,7 @@ const updateMailjetContact = async ({
       },
       {
         Name: 'subscribed_to_general',
-        Value: newsletterConsent.value,
+        Value: mailjetUser.subscribedToGeneral,
       },
       {
         Name: 'migrated_from',
@@ -217,6 +241,7 @@ const updateMailjetContact = async ({
 const updateMailjetSubscription = async (
   { email },
   verified,
+  isSubscribed,
   contactListId
 ) => {
   return mailjet
@@ -226,7 +251,7 @@ const updateMailjetSubscription = async (
     .request({
       ContactsLists: [
         {
-          Action: verified ? 'addforce' : 'unsub',
+          Action: verified && isSubscribed ? 'addforce' : 'unsub',
           ListID: contactListId,
         },
       ],
