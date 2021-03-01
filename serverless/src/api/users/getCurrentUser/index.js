@@ -45,6 +45,7 @@ module.exports.handler = async event => {
             municipalities.push({
               ...municipality,
               name: municipalityResult.Item.name,
+              slug: municipalityResult.Item.slug,
             });
           }
         })

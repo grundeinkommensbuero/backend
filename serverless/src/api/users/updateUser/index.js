@@ -331,11 +331,7 @@ const updateUser = async (
 };
 
 const constructDonationObject = (donation, user, timestamp) => {
-  const { iban, recurring, ...rest } = donation;
-
-  // We do not want to save the name of the gifted and giftgiver, if the donation is a gift
-  delete rest.certificateReceiver;
-  delete rest.certificateGiver;
+  const { iban, recurring, yearly, ...rest } = donation;
 
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
@@ -363,6 +359,7 @@ const constructDonationObject = (donation, user, timestamp) => {
           createdAt: donations.recurringDonation.createdAt,
           id,
           firstDebitDate: donations.recurringDonation.firstDebitDate,
+          yearly,
           ...rest,
         };
       } else {
@@ -374,6 +371,7 @@ const constructDonationObject = (donation, user, timestamp) => {
           createdAt: timestamp,
           firstDebitDate: debitDate.toISOString(),
           id,
+          yearly,
           ...rest,
         };
       }
@@ -402,25 +400,14 @@ const constructDonationObject = (donation, user, timestamp) => {
 };
 
 // Computes the next debit date (15th of each months)
-// Exceptions in the beginning: 22.12, 15.01, 25.01
+// Exceptions in 2021: 03/04
 const computeDebitDate = now => {
   const date = new Date(now);
 
-  // If december 2020 before the 22th we set the debit date to 22th
-  if (
-    date.getFullYear() === 2020 &&
-    date.getMonth() === 11 &&
-    date.getDate() < 22
-  ) {
-    date.setDate(22);
-  } else if (
-    date.getFullYear() === 2021 &&
-    date.getMonth() === 0 &&
-    date.getDate() <= 24 &&
-    date.getDate() >= 15
-  ) {
-    // If january between inlcuding 15th and 24th set to 25th
-    date.setDate(25);
+  // If before the 4th of march we set the debit date to 4th
+  if (date < new Date('2021-03-04')) {
+    date.setMonth(2);
+    date.setDate(4);
   } else {
     // If it is already passed the 14th we set it to next month
     if (now.getDate() >= 15) {
