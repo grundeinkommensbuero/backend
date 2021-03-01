@@ -18,19 +18,24 @@ const run = async () => {
 };
 
 const generateCsv = users => {
-  let dataString =
+  const header =
     'SvcLvl,PmtMtd,Amt,AmtCcy,MndtId,MndtLclInstrm,CdtrId,ReqdExctnDt,MndtDtOfSgntr,SeqTp,RmtInf,PurpCd,RmtdNm,RmtdAcctCtry,RmtdAcctIBAN\n';
+
+  let dataStringOnetimeDonations = header;
+  let dataStringRecurringDonations = header;
 
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
-        dataString += createDonationString(donation, false);
+        dataStringOnetimeDonations += createDonationString(donation, false);
       }
     }
 
     if ('recurringDonation' in user.donations) {
       const donation = user.donations.recurringDonation;
-      dataString += createDonationString(donation, true);
+      // TODO handle yearly properly, because we don't want to add it every month
+      console.log('yearly', donation.yearly, donation.amount);
+      dataStringRecurringDonations += createDonationString(donation, true);
 
       if ('updatedAt' in donation) {
         console.log(
@@ -40,12 +45,30 @@ const generateCsv = users => {
           donation.updatedAt
         );
       }
+
+      if ('cancelledAt' in donation) {
+        console.log(
+          'Donation cancelled (userId, donationId, updatedAt)',
+          user.cognitoId,
+          donation.id,
+          donation.updatedAt
+        );
+      }
     }
   }
 
   fs.writeFileSync(
-    `output/donations_${new Date().toISOString().substring(0, 10)}.csv`,
-    dataString
+    `output/donations_onetime_${new Date()
+      .toISOString()
+      .substring(0, 10)}blub.csv`,
+    dataStringOnetimeDonations
+  );
+
+  fs.writeFileSync(
+    `output/donations_recurring_${new Date()
+      .toISOString()
+      .substring(0, 10)}blub.csv`,
+    dataStringRecurringDonations
   );
 };
 
