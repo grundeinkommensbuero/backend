@@ -188,10 +188,7 @@ const updateMailjetContact = async ({
         Value: mailjetUser.activeUser,
       },
       {
-        // TODO: change to new_since_launch and test again
-        // Mailjet could not handle the new property although it was
-        // created properly. No idea why, probably a mailjet issue
-        Name: 'list_order_brandenburg',
+        Name: 'new_since_launch',
         Value: mailjetUser.newSinceLaunch,
       },
       ...mailjetUser.surveyParams,
@@ -275,9 +272,14 @@ const createNewsletterString = customNewsletters => {
         extraInfo = true;
       }
     }
+  }
 
+  if (newsletterString !== '') {
     // Strip last two chars (, )
     newsletterString = newsletterString.slice(0, -2);
+  } else {
+    // Because mailjet seems to not save empty strings, we add "nowhere"
+    newsletterString = 'nowhere';
   }
 
   return { newsletterString, extraInfo };
