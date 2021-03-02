@@ -1,10 +1,15 @@
+const AWS = require('aws-sdk');
+const nodemailer = require('nodemailer');
 const crypto = require('crypto-secure-random-digit');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 const { getUser } = require('../../../shared/users');
 const { sleep } = require('../../../shared/utils');
 
+const ses = new AWS.SES();
 const THREE_MINUTES = 3 * 60 * 1000;
+// eslint-disable-next-line
+const fallBackMail = require('raw-loader!./loginCodeMail.html').default;
 
 const handler = async event => {
   let secretLoginCode;
@@ -93,4 +98,30 @@ const sendEmail = (userAttributes, code) => {
   });
 };
 
-module.exports = { sendEmail, handler };
+const sendEmailViaSes = (email, code) => {
+  const mailOptions = {
+    from: 'Expedition Grundeinkommen <newsletter@expedition-grundeinkommen.de>',
+    subject: `Dein geheimer Login-Code: ${code}`,
+    html: customEmail(email, code),
+    to: email,
+  };
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses,
+  });
+
+  return transporter.sendMail(mailOptions);
+};
+
+const customEmail = (email, code) => {
+  if (!fallBackMail) {
+    throw new Error('Html Mail not provided');
+  }
+
+  return fallBackMail
+    .replace(/\[\[CODE\]\]/gi, code)
+    .replace(/\[\[EMAIL_TO\]\]/gi, email);
+};
+
+module.exports = { sendEmail, handler, sendEmailViaSes };
