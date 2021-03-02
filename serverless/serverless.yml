@@ -1173,6 +1173,12 @@ functions:
       - cognitoUserPool:
           pool: UserPool
           trigger: VerifyAuthChallengeResponse
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
 
 # CloudFormation resource templates
 resources:
