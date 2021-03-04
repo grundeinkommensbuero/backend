@@ -34,8 +34,6 @@ const generateCsv = users => {
     if ('recurringDonation' in user.donations) {
       const donation = user.donations.recurringDonation;
       // TODO handle yearly properly, because we don't want to add it every month
-      console.log('yearly', donation.yearly, donation.amount);
-      dataStringRecurringDonations += createDonationString(donation, true);
 
       if ('updatedAt' in donation) {
         console.log(
@@ -51,23 +49,33 @@ const generateCsv = users => {
           'Donation cancelled (userId, donationId, updatedAt)',
           user.cognitoId,
           donation.id,
-          donation.updatedAt
+          donation.cancelledAt
         );
+
+        // If donation was also updated and updated is newer than cancelled we
+        // add the donation
+        if (
+          'updatedAt' in donation &&
+          new Date(donation.cancelledAt) < new Date(donation.updatedAt)
+        ) {
+          console.log('Was cancelled and then updated', donation.id);
+          dataStringRecurringDonations += createDonationString(donation, true);
+        }
+      } else {
+        dataStringRecurringDonations += createDonationString(donation, true);
       }
     }
   }
 
   fs.writeFileSync(
-    `output/donations_onetime_${new Date()
-      .toISOString()
-      .substring(0, 10)}blub.csv`,
+    `output/donations_onetime_${new Date().toISOString().substring(0, 10)}.csv`,
     dataStringOnetimeDonations
   );
 
   fs.writeFileSync(
     `output/donations_recurring_${new Date()
       .toISOString()
-      .substring(0, 10)}blub.csv`,
+      .substring(0, 10)}.csv`,
     dataStringRecurringDonations
   );
 };
