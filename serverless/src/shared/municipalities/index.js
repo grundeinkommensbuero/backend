@@ -153,6 +153,35 @@ const getMunicipalitiesOfUser = userId => {
   return ddb.query(params).promise();
 };
 
+// Get all municipalities of user. But not just the ags, but also
+// all the data (name, slug, population)
+const getMunicipalitiesOfUserWithData = async userId => {
+  const municipalities = [];
+
+  // Get municipalities for which the user has signed up for
+  const { Count, Items } = await getMunicipalitiesOfUser(userId);
+
+  if (Count !== 0) {
+    // Get municipality names for all municipalities
+    await Promise.all(
+      Items.map(async municipality => {
+        const municipalityResult = await getMunicipality(municipality.ags);
+
+        // Municipality should be definitely there, but we'll check anyway
+        if ('Item' in municipalityResult) {
+          municipalities.push({
+            ...municipality,
+            name: municipalityResult.Item.name,
+            slug: municipalityResult.Item.slug,
+          });
+        }
+      })
+    );
+  }
+
+  return municipalities;
+};
+
 // Gets json file from s3
 const getStatsJson = fileName => {
   const params = {
@@ -186,6 +215,7 @@ module.exports = {
   createUserMunicipalityLink,
   getUserMunicipalityLink,
   getMunicipalitiesOfUser,
+  getMunicipalitiesOfUserWithData,
   getStatsJson,
   getExistingUsers,
 };
