@@ -440,6 +440,25 @@ paths:
                         description: Anonymized email address
                       username:
                         type: string
+                      municipalities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ags:
+                              type: string
+                            createdAt:
+                              type: string
+                            population:
+                              type: number
+                            name:
+                              type: string
+                            slug:
+                              type: string
+                              description: The slug to open the page of this specific municipality
+                            userId:
+                              type: string
+                              description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
         '404':
           description: User not found
           content:
@@ -818,6 +837,11 @@ paths:
                                   type: string
                                 population:
                                   type: number
+                                name:
+                                  type: string
+                                slug:
+                                  type: string
+                                  description: The slug to open the page of this specific municipality
                                 userId:
                                   type: string
                                   description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
