@@ -2,13 +2,14 @@ const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const RECURRING_DONATION_TEMPLATE = 1885162;
+const YEARLY_DONATION_TEMPLATE = 2606607;
 const ONETIME_DONATION_TEMPLATE = 2060355;
 const CANCEL_TEMPLATE = 2209988;
 
 // Function which sends an email to the user after donation was changed
 const sendMail = async (
   email,
-  { recurring, amount, firstName, lastName, cancel },
+  { recurring, amount, firstName, lastName, cancel, yearly },
   // donations is the entire donations object which was saved
   { debitDate, id, recurringDonationExisted, donations },
   username
@@ -36,7 +37,9 @@ const sendMail = async (
 
   let template = '';
 
-  if (recurring) {
+  if (recurring && yearly) {
+    template = YEARLY_DONATION_TEMPLATE;
+  } else if (recurring) {
     template = RECURRING_DONATION_TEMPLATE;
   } else if (cancel) {
     template = CANCEL_TEMPLATE;
