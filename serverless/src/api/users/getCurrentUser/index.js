@@ -6,8 +6,7 @@
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const {
-  getMunicipalitiesOfUser,
-  getMunicipality,
+  getMunicipalitiesOfUserWithData,
 } = require('../../../shared/municipalities');
 
 const responseHeaders = {
@@ -30,35 +29,17 @@ module.exports.handler = async event => {
     const user = result.Item;
 
     // Get municipalities for which the user has signed up for
-    const { Count, Items } = await getMunicipalitiesOfUser(userId);
+    const municipalities = await getMunicipalitiesOfUserWithData(userId);
 
-    if (Count !== 0) {
-      const municipalities = [];
-
-      // Get municipality names for all municipalities
-      await Promise.all(
-        Items.map(async municipality => {
-          const municipalityResult = await getMunicipality(municipality.ags);
-
-          // Municipality should be definitely there, but we'll check anyway
-          if ('Item' in municipalityResult) {
-            municipalities.push({
-              ...municipality,
-              name: municipalityResult.Item.name,
-            });
-          }
-        })
-      );
-
-      if (municipalities.length !== 0) {
-        user.municipalities = municipalities;
-      }
+    if (municipalities.length !== 0) {
+      user.municipalities = municipalities;
     }
 
     // Add empty array, if customNewsletters is not defined
     if (!('customNewsletters' in user)) {
       user.customNewsletters = [];
     }
+
     // Strip token from user
     delete user.customToken;
 
