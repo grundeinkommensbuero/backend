@@ -1053,18 +1053,18 @@ functions:
           - s3:DeleteObject
         Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
-  # saveMapAsImage:
-  #   handler: src/triggers/saveMapAsImage/index.handler
-  #   events:
-  #     - schedule: rate(15 minutes)
-  #   timeout: 60
-  #   memorySize: 2048
-  #   iamRoleStatements:
-  #     - Effect: Allow
-  #       Action:
-  #         - s3:PutObject
-  #         - s3:PutObjectAcl
-  #       Resource: 'arn:aws:s3:::xbge-map-images/*'
+  saveMapAsImage:
+    handler: src/triggers/saveMapAsImage/index.handler
+    events:
+      - schedule: rate(15 minutes)
+    timeout: 60
+    memorySize: 2048
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-map-images/*'
 
   # getQuestions:
   #   handler: src/api/users/questions/getQuestions/index.handler
