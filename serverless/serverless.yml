@@ -931,6 +931,16 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   fillMailjet:
     handler: src/triggers/mailjet/fillMailjet/index.handler
@@ -974,6 +984,16 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler

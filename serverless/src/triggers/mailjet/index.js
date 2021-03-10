@@ -65,6 +65,7 @@ const updateMailjetContact = async ({
   customNewsletters,
   newsletterConsent,
   createdAt,
+  municipalities,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -78,6 +79,9 @@ const updateMailjetContact = async ({
     activeUser: false,
     newSinceLaunch: false,
     subscribedToGeneral: newsletterConsent.value,
+    signedUpForMunicipality: false,
+    mostRecentMunicipalityName: '',
+    mostRecentMunicipalitySlug: '',
   };
 
   // construct name with space before
@@ -123,6 +127,16 @@ const updateMailjetContact = async ({
 
   if (typeof migrated !== 'undefined') {
     mailjetUser.migratedFrom = migrated.source;
+  }
+
+  if (typeof municipalities !== 'undefined' && municipalities.length > 0) {
+    mailjetUser.signedUpForMunicipality = true;
+
+    // Get the municipality the user most recently signed up for
+    municipalities.sort((a, b) => b.createdAt - a.createdAt);
+
+    mailjetUser.mostRecentMunicipalityName = municipalities[0].name;
+    mailjetUser.mostRecentMunicipalitySlug = municipalities[0].slug;
   }
 
   // Because mailjet does now allow arrays we need to handle
@@ -214,6 +228,18 @@ const updateMailjetContact = async ({
       {
         Name: 'new_since_launch',
         Value: mailjetUser.newSinceLaunch,
+      },
+      {
+        Name: 'signed_up_for_municipality',
+        Value: mailjetUser.signedUpForMunicipality,
+      },
+      {
+        Name: 'most_recent_municipality_name',
+        Value: mailjetUser.mostRecentMunicipalityName,
+      },
+      {
+        Name: 'most_recent_municipality_slug',
+        Value: mailjetUser.mostRecentMunicipalitySlug,
       },
       ...mailjetUser.surveyParams,
     ],
