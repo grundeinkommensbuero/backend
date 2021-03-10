@@ -1,4 +1,7 @@
 const { deleteMailjetContact, syncMailjetContact } = require('../');
+const {
+  getMunicipalitiesOfUserWithData,
+} = require('../../../shared/municipalities');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { getUser } = require('../../../shared/users');
 
@@ -53,6 +56,11 @@ module.exports.handler = async event => {
             );
 
             user.signatureLists = signatureListsResult.Items;
+
+            // Get municipalities of user
+            user.municipalities = await getMunicipalitiesOfUserWithData(
+              user.cognitoId
+            );
 
             const verified = 'confirmed' in user && user.confirmed.value;
 
