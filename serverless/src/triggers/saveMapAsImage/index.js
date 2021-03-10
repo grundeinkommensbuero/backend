@@ -3,10 +3,7 @@ const jimp = require('jimp');
 const AWS = require('aws-sdk');
 
 const s3 = new AWS.S3({ region: 'eu-central-1' });
-const url =
-  process.env.STAGE === 'dev'
-    ? 'https://campaign-launch--expedition-grundeinkommen.netlify.app/playground/campaignMap'
-    : 'https://expedition-grundeinkommen.de/playground/campaignMap';
+const url = 'https://expedition-grundeinkommen.de/playground/campaignMap';
 
 module.exports.handler = async event => {
   // Use puppeteer to take screenshot of map
