@@ -482,6 +482,16 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   getCurrentUser:
     handler: src/api/users/getCurrentUser/index.handler
@@ -1193,6 +1203,12 @@ functions:
       - cognitoUserPool:
           pool: UserPool
           trigger: VerifyAuthChallengeResponse
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
 
 # CloudFormation resource templates
 resources:

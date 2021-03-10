@@ -7,5 +7,6 @@ module.exports = {
   DEV_MUNICIPALITIES_TABLE_NAME: 'dev-municipalities',
   DEV_USER_MUNICIPALITY_TABLE_NAME: 'dev-users-municipalities',
   PROD_MUNICIPALITIES_TABLE_NAME: 'prod-municipalities',
+  PROD_USER_MUNICIPALITY_TABLE_NAME: 'prod-users-municipalities',
   DEV_USER_POOL_ID: 'eu-central-1_SYtDaO0qH',
 };
