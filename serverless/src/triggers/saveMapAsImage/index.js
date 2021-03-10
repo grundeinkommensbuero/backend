@@ -6,16 +6,19 @@ const s3 = new AWS.S3({ region: 'eu-central-1' });
 const url = 'https://expedition-grundeinkommen.de/playground/campaignMap';
 
 module.exports.handler = async event => {
-  // Use puppeteer to take screenshot of map
-  const image = await takeScreenshot();
+  // Only run the script if the environment is prod
+  if (process.env.STAGE === 'prod') {
+    // Use puppeteer to take screenshot of map
+    const image = await takeScreenshot();
 
-  const timestamp = new Date().toISOString();
-  // Save screenshot in two different files (one with timestamp as file name)
-  // the other one is the current map and is always overwritten
-  await Promise.all([
-    uploadImage(image, 'municipalityMap'),
-    uploadImage(image, `municipalityMap_${timestamp}`),
-  ]);
+    const timestamp = new Date().toISOString();
+    // Save screenshot in two different files (one with timestamp as file name)
+    // the other one is the current map and is always overwritten
+    await Promise.all([
+      uploadImage(image, 'municipalityMap'),
+      uploadImage(image, `municipalityMap_${timestamp}`),
+    ]);
+  }
 
   return event;
 };
