@@ -27,13 +27,18 @@ const generateCsv = users => {
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
-        dataStringOnetimeDonations += createDonationString(donation, false);
+        if (new Date(donation.debitDate) > new Date('2021-03-05')) {
+          dataStringOnetimeDonations += createDonationString(donation, false);
+        }
       }
     }
 
     if ('recurringDonation' in user.donations) {
       const donation = user.donations.recurringDonation;
       // TODO handle yearly properly, because we don't want to add it every month
+      if (donation.yearly) {
+        console.log('is yearly', donation.id, donation.createdAt);
+      }
 
       if ('updatedAt' in donation) {
         console.log(
