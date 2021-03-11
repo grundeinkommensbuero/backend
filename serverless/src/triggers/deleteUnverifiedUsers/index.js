@@ -25,12 +25,13 @@ const deleteUsers = async () => {
   // get all users, which are not verified from user pool
   const unconfirmedUsers = await getAllUnconfirmedUsers();
 
+  console.log('unconfirmed users length', unconfirmedUsers.length);
   // filter users to check if the creation of the user was more than
   // x days ago
   const date = new Date();
-  const tenDays = 10 * 24 * 60 * 60 * 1000;
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
   const filteredUsers = unconfirmedUsers.filter(
-    user => date - new Date(user.createdAt) > tenDays
+    user => date - new Date(user.createdAt) > thirtyDays
   );
 
   console.log(
@@ -41,8 +42,10 @@ const deleteUsers = async () => {
   for (const user of filteredUsers) {
     try {
       await limiter.schedule(async () => {
-        await deleteUserInCognito(user);
         await deleteUserInDynamo(user);
+        await deleteUserInCognito(user);
+
+        console.log('deleted user', user.cognitoId);
       });
     } catch (error) {
       console.log('error deleting user', error);

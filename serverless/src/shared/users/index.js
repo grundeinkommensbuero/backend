@@ -85,8 +85,8 @@ const getAllUnconfirmedUsers = async (users = [], startKey = null) => {
   const params = {
     TableName: tableName,
     FilterExpression:
-      'attribute_not_exists(confirmed) OR #confirmed = :confirmed',
-    ExpressionAttributeNames: { '#confirmed': 'confirmed.value' },
+      'attribute_not_exists(confirmed) OR #key1.#key2 = :confirmed',
+    ExpressionAttributeNames: { '#key1': 'confirmed', '#key2': 'value' },
     ExpressionAttributeValues: { ':confirmed': false },
   };
 
