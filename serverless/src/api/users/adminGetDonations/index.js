@@ -54,41 +54,28 @@ const anonymizeIban = iban => {
   return `************${iban.slice(-4)}`;
 };
 
-// Sort donations by most recent (cancelled at the top, then updated, then created)
+// Sort donations by most recent
 const sortDonations = donations => {
   donations.sort((donation1, donation2) => {
-    // If both donations were cancelled the most recent should come first
-    if ('cancelledAt' in donation1 && 'cancelledAt' in donation2) {
-      return new Date(donation2.cancelledAt) - new Date(donation1.cancelledAt);
+    const debitDate1 = donation1.debitDate || donation1.firstDebitDate;
+    const debitDate2 = donation2.debitDate || donation2.firstDebitDate;
+
+    // Most recently created should come first, if same day sort by name
+    if (
+      new Date(debitDate1).getMonth() === new Date(debitDate2).getMonth() &&
+      new Date(debitDate1).getFullYear() ===
+        new Date(debitDate2).getFullYear() &&
+      new Date(debitDate1).getDate() === new Date(debitDate2).getDate()
+    ) {
+      if (donation1.lastName < donation2.lastName) {
+        return -1;
+      }
+
+      if (donation1.lastName > donation2.lastName) {
+        return 1;
+      }
     }
 
-    if ('cancelledAt' in donation1) {
-      // donation 1 first
-      return -1;
-    }
-
-    if ('cancelledAt' in donation2) {
-      // donation 2 first
-      return 1;
-    }
-
-    // Same for updatedAt
-    // If both donations were cancelled the most recent should come first
-    if ('updatedAt' in donation1 && 'updatedAt' in donation2) {
-      return new Date(donation2.updatedAt) - new Date(donation1.updatedAt);
-    }
-
-    if ('updatedAt' in donation1) {
-      // donation 1 first
-      return -1;
-    }
-
-    if ('updatedAt' in donation2) {
-      // donation 2 first
-      return 1;
-    }
-
-    // If not updated or cancelled more recently created should come first
-    return new Date(donation2.createdAt) - new Date(donation1.createdAt);
+    return new Date(debitDate2) - new Date(debitDate1);
   });
 };
