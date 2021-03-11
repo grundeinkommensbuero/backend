@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { syncMailjetContact } = require('../');
+const {
+  getMunicipalitiesOfUserWithData,
+} = require('../../../shared/municipalities');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
@@ -63,6 +66,11 @@ const processBatchOfUsers = async (event, context, startKey, totalCount) => {
       );
 
       user.signatureLists = signatureListsResult.Items;
+
+      // Get municipalities of user
+      user.municipalities = await getMunicipalitiesOfUserWithData(
+        user.cognitoId
+      );
 
       if (user.email) {
         await syncMailjetContact(user, verified);

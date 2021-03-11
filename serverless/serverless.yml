@@ -28,6 +28,12 @@ provider:
   stage: dev
   region: eu-central-1
   memorySize: 512 # Overwrite the default memory size. Default is 1024
+  layers:
+    # Google Chrome for AWS Lambda as a layer
+    # Make sure you use the latest version depending on the region
+    # https://github.com/shelfio/chrome-aws-lambda-layer
+    - arn:aws:lambda:${self:provider.region}:764866452798:layer:chrome-aws-lambda:20
+
   timeout: 10
   # These environment variables are made available to our functions
   # under process.env.
@@ -37,6 +43,7 @@ provider:
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
+    MAP_IMAGE_BUCKET: xbge-map-images
     IMAGE_BUCKET: ${self:custom.imageBucketName}
     SIGNATURE_LISTS_BUCKET: ${self:custom.listsBucketName}
   # S3 configuration here, we don't need to define the bucket in resources
@@ -924,6 +931,16 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   fillMailjet:
     handler: src/triggers/mailjet/fillMailjet/index.handler
@@ -967,6 +984,16 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
@@ -1045,6 +1072,19 @@ functions:
           - s3:PutObjectAcl
           - s3:DeleteObject
         Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
+
+  saveMapAsImage:
+    handler: src/triggers/saveMapAsImage/index.handler
+    events:
+      - schedule: rate(15 minutes)
+    timeout: 60
+    memorySize: 2048
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-map-images/*'
 
   # getQuestions:
   #   handler: src/api/users/questions/getQuestions/index.handler
