@@ -1103,8 +1103,8 @@ functions:
   sendWelcomeMails:
     handler: src/triggers/municipalities/sendWelcomeMails/index.handler
     timeout: 900 # Timeout for this specific function. Might take a while
-    # events: # Call this function every hour between 8am and 9pm
-    #   - schedule: cron(0 8-21 * * ? *)
+    events: # Call this function every day at 6:05 pm (via cloudwatch event)
+      - schedule: cron(5 17 * * ? *)
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
