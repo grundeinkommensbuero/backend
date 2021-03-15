@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const inWords = require('in-words').de;
 
 const ses = new AWS.SES({ region: 'eu-central-1' });
-const pathToDonors = './spendenbescheinigungen.csv';
+const pathToDonors = './spendenbescheinigungen_olympia.csv';
 const file = fs.readFileSync('./vorlage.pdf');
 const logo = fs.readFileSync('./logo.jpg');
 
@@ -146,18 +146,17 @@ const readCsv = () => {
         let user;
         // leave out headers
         if (count > 0) {
-          console.log('row', row);
           user = {
             email: row[1],
-            firstname: row[2],
-            lastname: row[3],
-            company: row[4],
-            street: row[5],
-            zipCode: row[6],
-            city: row[7],
-            country: row[8],
-            date: row[18],
-            amount: row[17],
+            firstname: row[3],
+            lastname: row[4],
+            company: row[5],
+            street: row[6],
+            zipCode: row[7],
+            city: row[8],
+            country: row[9],
+            date: row[12],
+            amount: row[13],
             index: count,
           };
 
@@ -181,19 +180,25 @@ const customMail = firstname => `
 Hallo ${firstname},
 <br /><br />
 anbei findest du die Spendenbescheinigung für deine Unterstützung 
-unseres Crowdfundings "Jetzt erst recht: Volksentscheid zum Grundeinkommen!" auf Startnext.
+unseres Olympia12062020-Crowdfundings "Grundeinkommen jetzt. Mit deiner Hilfe".
 <br /><br />
-Mit deiner Spende hast du einen wichtigen Beitrag dazu geleistet, 
-dass wir trotz Kontaktbeschränkungen weiter Unterschriften für 
-den Modellversuch zum Grundeinkommen sammeln konnten. Dafür noch einmal herzlichen Dank!
+Dank Euch und der Olympia-Challenge bringen wir jetzt einen bundesweiten Modellversuch 
+zum Grundeinkommen mit mindestens 10.000 Teilnehmenden per Volksgesetzgebung 
+an den Start - aus der Bevölkerung heraus mit direktdemokratischen Mitteln. 
+Ab jetzt könnt ihr deutschlandweit eure Stadt oder Gemeinde dafür qualifizieren. Meldet Euch an:  <br/>
+<a href="https://expedition-grundeinkommen.de" alt="Link zur Anmeldung">https://expedition-grundeinkommen.de/</a>
 <br /><br />
-Falls du noch nicht zu unserem Newsletter angemeldet bist, kannst du dich hier anmelden, 
-um informiert zu bleiben: <a href="https://expedition-grundeinkommen.de/newsletter" alt="Link zur Newsletteranmeldung">https://expedition-grundeinkommen.de/newsletter</a>.
+Das angehängte PDF ist das Original, das du ausdrucken und für deine Steuererklärung nutzen kannst. 
+Du erhältst keine zusätzliche postalische Spendenbescheinigung. 
+<br /><br />
+Wenn du innerhalb des letzten Jahres umgezogen bist, ist das kein Problem. 
+Solange die Adresse zum Zeitpunkt deiner Spende(n) jeweils aktuell war, 
+akzeptiert das Finanzamt die Spendenbescheinigung auch mit einer neuen Adresse.
 <br /><br />
 Gemeinsam lassen wir den Modellversuch zum bedingungslosen Grundeinkommen politische Wirklichkeit werden.
 <br /><br />
-Herzlich<br/>
-Dein Expeditionsteam
+Viele Grüße<br/>
+Lucia
 `;
 
 generateReceipts();
