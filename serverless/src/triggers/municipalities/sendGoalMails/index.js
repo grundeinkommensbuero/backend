@@ -1,7 +1,7 @@
 /**
  * This function should send various mails depending on the count of signups
  * for a municipality. Users will be informed, when municipalities have
- * reached 80% of the goal or the goal itself.
+ * reached 50% of the goal or the goal itself.
  */
 
 const AWS = require('aws-sdk');
@@ -12,6 +12,7 @@ const {
 const { getUser } = require('../../../shared/users');
 const sendMail = require('./sendMail');
 const nodemailer = require('nodemailer');
+const { sendErrorMail } = require('../../../shared/errorHandling');
 
 const ses = new AWS.SES({ region: 'eu-central-1' });
 const s3 = new AWS.S3();
@@ -36,20 +37,23 @@ module.exports.handler = async event => {
     await analyseMunicipalities(municipalities);
   } catch (error) {
     console.log('Error sending mails', error);
+    await sendErrorMail('sendGoalMails', error);
   }
 
   return event;
 };
 
 // Loops through municipalities and checks if municipalities are
-// over 80% of the goal and  have reached goal
+// over 50% of the goal and have reached goal (the latter is deactivated for now)
 const analyseMunicipalities = async municipalities => {
   for (const { signups, goal, ags, engagementLevels } of municipalities) {
     const ratio = signups / goal;
-    const reached80 = ratio >= 0.8 && ratio < 1;
-    const reachedGoal = ratio >= 1;
+    const reached50 = ratio >= 0.5 && ratio < 1;
 
-    if (reached80 || reachedGoal) {
+    // NOTE: not needed for now, will be reactivated soon
+    // const reachedGoal = ratio >= 1;
+
+    if (reached50) {
       // Now we need to check, if we have already sent a mail for this municipality
       const { Item } = await getMunicipality(ags);
 
@@ -59,15 +63,19 @@ const analyseMunicipalities = async municipalities => {
 
         // Check if we have already set the flags for this municipality
         if (
-          (reached80 && (!('mails' in Item) || !Item.mails.sentReached80)) ||
-          (reachedGoal && (!('mails' in Item) || !Item.mails.sentReachedGoal))
+          reached50 &&
+          (!('mails' in Item) || !Item.mails.sentReached50)
+          // NOTE: not needed for now, will be reactivated soon
+          // || (reachedGoal && (!('mails' in Item) || !Item.mails.sentReachedGoal))
         ) {
-          const event = reached80 ? '80' : 'goal';
+          const event = reached50 ? '50' : 'goal';
           // Send mail to all users
-          await sendMailsForMunicipality(municipality, event);
+          await sendMailsForMunicipality(municipality, event, ratio);
 
           // Set flag, that we have sent mails
           await setFlag(municipality, event);
+
+          console.log('sent mails for municipality', municipality);
         }
       } else {
         console.log('No municipality found with ags', ags);
@@ -77,7 +85,7 @@ const analyseMunicipalities = async municipalities => {
 };
 
 // Send mail to all users of this municipality
-const sendMailsForMunicipality = async (municipality, event) => {
+const sendMailsForMunicipality = async (municipality, event, ratio) => {
   // First we have to get all users of this municipality
   const users = await getAllUsersOfMunicipality(municipality.ags);
 
@@ -86,7 +94,7 @@ const sendMailsForMunicipality = async (municipality, event) => {
     const result = await getUser(userId);
 
     if ('Item' in result) {
-      await sendMail(result.Item, municipality, event);
+      await sendMail(result.Item, municipality, event, ratio);
     }
   }
 
@@ -103,16 +111,10 @@ const setFlag = (municipality, event) => {
     flags = municipality.mails;
   }
 
-  if (event === '80') {
-    flags.sentReached80 = true;
-  } else if (
-    'engagementLevels' in municipality &&
-    municipality.engagementLevels[3] > 0
-  ) {
-    flags.sentReachedGoal = true;
+  if (event === '50') {
+    flags.sentReached50 = true;
   } else {
-    // No organizers yet
-    flags.sentReachedGoalNoOrganizers = true;
+    flags.sentReachedGoal = true;
   }
 
   const params = {
@@ -141,30 +143,26 @@ const getJson = () => {
 // Send info mail to xbge Team (we just use ses here, because we don't need
 // a mailjet template and this is just easier)
 const sendInfoMail = (municipality, event) => {
-  const organizerCount =
-    'engagementLevels' in municipality ? municipality.engagementLevels[3] : 0;
-
   const mailOptions = {
     from: 'Expedition Grundeinkommen <support@expedition-grundeinkommen.de',
     subject:
-      event === '80'
-        ? `Die Gemeinde ${municipality.name} hat 80% erreicht`
+      event === '50'
+        ? `Die Gemeinde ${municipality.name} hat 50% erreicht`
         : `Die Gemeinde ${municipality.name} hat das Ziel erreicht`,
     html: `Es wurden Mails an die User:innen aus ${
       municipality.name
     } verschickt, da die Gemeinde ${
-      event === '80' ? '80% des Ziels erreicht hat' : 'das Ziel erreicht hat'
+      event === '50' ? '50% des Ziels erreicht hat' : 'das Ziel erreicht hat'
     }. Die Gemeinde hat ${municipality.signups} von ${
       municipality.goal
-    } erreicht. Es haben sich ${organizerCount} Aktive gemeldet.`,
+    } erreicht.`,
     to:
       stage === 'prod'
         ? [
             'valentin@expedition-grundeinkommen.de',
-            'tuan@expedition-grundeinkommen.de',
-            'lucia@expedition-grundeinkommen.de',
-            'laura@expedition-grundeinkommen.de',
-            'sarah@expedition-grundeinkommen.de',
+            // 'lucia@expedition-grundeinkommen.de',
+            // 'laura@expedition-grundeinkommen.de',
+            // 'sarah@expedition-grundeinkommen.de',
           ]
         : 'valentin@expedition-grundeinkommen.de',
   };
