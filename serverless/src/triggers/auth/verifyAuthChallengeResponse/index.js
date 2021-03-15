@@ -1,4 +1,4 @@
-const { sendEmail } = require('../createAuthChallenge');
+const { sendEmailViaSes } = require('../createAuthChallenge');
 
 exports.handler = async event => {
   const expectedAnswer =
@@ -6,7 +6,8 @@ exports.handler = async event => {
   if (event.request.challengeAnswer === expectedAnswer) {
     event.response.answerCorrect = true;
   } else if (event.request.challengeAnswer === 'resendCode') {
-    await sendEmail(event.request.userAttributes, expectedAnswer);
+    // We want to send the second mail via SES as a fallback
+    await sendEmailViaSes(event.request.userAttributes.email, expectedAnswer);
     event.response.answerCorrect = false;
   } else {
     event.response.answerCorrect = false;

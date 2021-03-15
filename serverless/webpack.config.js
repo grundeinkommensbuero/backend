@@ -16,6 +16,8 @@ const functionsWithPdf = [
 
 const functionsWithTtf = ['updateUser'];
 
+const functionsWithFnt = ['shareMunicipality'];
+
 // We need this to only copy pdf (or other files) files for the corresponding function.
 // Based on https://github.com/serverless-heaven/serverless-webpack/issues/425
 // We only copy the files for each corresponding function
@@ -60,6 +62,20 @@ const copyStaticFilesPlugin = () => ({
         patterns: [`**/${moduleWithTtf}/**/*.ttf`],
       }).apply(compiler);
     }
+
+    // Same for ttf
+    const moduleWithFnt = functionsWithFnt.find(name =>
+      compiler.options.output.path.includes(name)
+    );
+
+    if (moduleWithFnt) {
+      new CopyWebpackPlugin({
+        patterns: [
+          `**/${moduleWithFnt}/**/*.fnt`,
+          `**/${moduleWithFnt}/**/*.png`,
+        ],
+      }).apply(compiler);
+    }
   },
 });
 
@@ -68,7 +84,12 @@ module.exports = {
   // You can let the plugin determine the correct handler entry points at build time
   entry: slsw.lib.entries,
   // Remove aws dependency because it is included in the lambdas anyway
-  externals: [{ 'aws-sdk': 'commonjs aws-sdk' }],
+  externals: [
+    {
+      'aws-sdk': 'commonjs aws-sdk',
+    },
+    { 'chrome-aws-lambda': 'commonjs chrome-aws-lambda' },
+  ],
   target: 'node',
   // Needed to use __dirname (https://stackoverflow.com/questions/41063214/reading-a-packaged-file-in-aws-lambda-package)
   node: {

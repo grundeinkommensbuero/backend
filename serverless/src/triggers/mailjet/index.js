@@ -16,12 +16,35 @@ const syncMailjetContact = async (user, verified) => {
   }
 
   try {
-    await updateMailjetContact(user);
+    const {
+      subscribedToGeneral,
+      newsletterString,
+    } = await updateMailjetContact(user);
 
     if (user.source !== 'bb-platform') {
-      await updateMailjetSubscription(user, verified, contactListIdXbge);
+      // Check if user is subscribed to anything, so we don't have people
+      // in the contact list, which are not subscribed.
+      // This way we can avoid segmentation errors, where people can newsletters
+      // who don't want any.
+
+      const isSubscribed =
+        subscribedToGeneral || newsletterString !== 'nowhere';
+
+      console.log('is subscribed', isSubscribed);
+
+      await updateMailjetSubscription(
+        user,
+        verified,
+        isSubscribed,
+        contactListIdXbge
+      );
     } else {
-      await updateMailjetSubscription(user, verified, contactListIdBBPlatform);
+      await updateMailjetSubscription(
+        user,
+        verified,
+        true,
+        contactListIdBBPlatform
+      );
     }
   } catch (error) {
     console.log('error updating contact', error);
@@ -41,6 +64,8 @@ const updateMailjetContact = async ({
   surveys,
   customNewsletters,
   newsletterConsent,
+  createdAt,
+  municipalities,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -52,11 +77,21 @@ const updateMailjetContact = async ({
     migratedFrom: 'nowhere',
     username: username || '',
     activeUser: false,
+    newSinceLaunch: false,
+    subscribedToGeneral: newsletterConsent.value,
+    signedUpForMunicipality: false,
+    mostRecentMunicipalityName: '',
+    mostRecentMunicipalitySlug: '',
   };
 
   // construct name with space before
   if (typeof username !== 'undefined') {
     mailjetUser.usernameWithSpace = `&#160;${username}`;
+  }
+
+  // If user was created after our launch in february 2021, set it to true
+  if (new Date(createdAt) > new Date('2021-02-22')) {
+    mailjetUser.newSinceLaunch = true;
   }
 
   // Check how many signatures we already received from the user,
@@ -92,6 +127,16 @@ const updateMailjetContact = async ({
 
   if (typeof migrated !== 'undefined') {
     mailjetUser.migratedFrom = migrated.source;
+  }
+
+  if (typeof municipalities !== 'undefined' && municipalities.length > 0) {
+    mailjetUser.signedUpForMunicipality = true;
+
+    // Get the municipality the user most recently signed up for
+    municipalities.sort((a, b) => b.createdAt - a.createdAt);
+
+    mailjetUser.mostRecentMunicipalityName = municipalities[0].name;
+    mailjetUser.mostRecentMunicipalitySlug = municipalities[0].slug;
   }
 
   // Because mailjet does now allow arrays we need to handle
@@ -150,7 +195,7 @@ const updateMailjetContact = async ({
       },
       {
         Name: 'subscribed_to_general',
-        Value: newsletterConsent.value,
+        Value: mailjetUser.subscribedToGeneral,
       },
       {
         Name: 'migrated_from',
@@ -180,9 +225,27 @@ const updateMailjetContact = async ({
         Name: 'active_user',
         Value: mailjetUser.activeUser,
       },
+      {
+        Name: 'new_since_launch',
+        Value: mailjetUser.newSinceLaunch,
+      },
+      {
+        Name: 'signed_up_for_municipality',
+        Value: mailjetUser.signedUpForMunicipality,
+      },
+      {
+        Name: 'most_recent_municipality_name',
+        Value: mailjetUser.mostRecentMunicipalityName,
+      },
+      {
+        Name: 'most_recent_municipality_slug',
+        Value: mailjetUser.mostRecentMunicipalitySlug,
+      },
       ...mailjetUser.surveyParams,
     ],
   };
+
+  console.log(requestParams);
 
   if (typeof zipCode !== 'undefined') {
     requestParams.Data.push({
@@ -204,6 +267,7 @@ const updateMailjetContact = async ({
 const updateMailjetSubscription = async (
   { email },
   verified,
+  isSubscribed,
   contactListId
 ) => {
   return mailjet
@@ -213,7 +277,7 @@ const updateMailjetSubscription = async (
     .request({
       ContactsLists: [
         {
-          Action: verified ? 'addforce' : 'unsub',
+          Action: verified && isSubscribed ? 'addforce' : 'unsub',
           ListID: contactListId,
         },
       ],
@@ -259,9 +323,14 @@ const createNewsletterString = customNewsletters => {
         extraInfo = true;
       }
     }
+  }
 
+  if (newsletterString !== '') {
     // Strip last two chars (, )
     newsletterString = newsletterString.slice(0, -2);
+  } else {
+    // Because mailjet seems to not save empty strings, we add "nowhere"
+    newsletterString = 'nowhere';
   }
 
   return { newsletterString, extraInfo };

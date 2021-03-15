@@ -14,6 +14,8 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const {
   getAllMunicipalitiesWithUsers,
   getAllMunicipalities,
+  getStatsJson,
+  getExistingUsers,
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
@@ -30,6 +32,13 @@ module.exports.handler = async event => {
     // have already signed up and compute the stats
     const userMuncipality = await getAllMunicipalitiesWithUsers();
 
+    // We need to get the existing stats so we can include the previous count
+    const json = await getStatsJson('statsWithEvents.json');
+
+    const body = JSON.parse(json.Body.toString());
+    const previousSummary = body.summary;
+    delete previousSummary.previous;
+
     const statsWithAllMunicipalities = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: true,
@@ -38,6 +47,7 @@ module.exports.handler = async event => {
     const statsWithEvents = await computeStats({
       userMuncipality,
       shouldSendAllMunicipalities: false,
+      previousSummary,
     });
 
     await saveJson(statsWithAllMunicipalities, 'statsWithAll.json');
@@ -53,6 +63,7 @@ module.exports.handler = async event => {
 const computeStats = async ({
   userMuncipality,
   shouldSendAllMunicipalities,
+  previousSummary,
 }) => {
   let date = new Date();
   if (stage === 'dev') {
@@ -65,33 +76,15 @@ const computeStats = async ({
   const municipalitiesWithUsers = [];
 
   const municipalityMap = new Map();
-  for (const {
-    userId,
-    ags,
-    createdAt,
-    population,
-    engagementLevel,
-  } of userMuncipality) {
+  for (const { userId, ags, createdAt, population } of userMuncipality) {
     if (!municipalityMap.has(ags)) {
-      const engagementLevels = {
-        1: 0,
-        2: 0,
-        3: 0,
-      };
-
-      if (typeof engagementLevel !== 'undefined') {
-        engagementLevels[engagementLevel]++;
-      }
-
       municipalityMap.set(ags, {
         users: [{ userId, createdAt }],
         population,
-        engagementLevels,
       });
     } else {
       const municipality = municipalityMap.get(ags);
 
-      municipality.engagementLevels[engagementLevel]++;
       municipality.users.push({ userId, createdAt });
     }
   }
@@ -106,22 +99,19 @@ const computeStats = async ({
       const { ags } = municipality;
 
       let signups = 0;
-      let engagementLevels;
+
+      signups += getExistingUsers(ags);
+
       if (municipalityMap.has(municipality.ags)) {
-        const { users, engagementLevels: engagement } = municipalityMap.get(
-          municipality.ags
-        );
+        const { users } = municipalityMap.get(municipality.ags);
 
         signups = users.length;
-        engagementLevels = engagement;
       }
 
       return {
         ags,
         goal,
         signups,
-        // Conditionally add key engagementLevels using spread operator
-        ...(engagementLevels && { engagementLevels }),
       };
     });
 
@@ -135,8 +125,14 @@ const computeStats = async ({
       user => date - new Date(user.createdAt) < timePassed
     );
 
-    const previous = users.length - filteredUsers.length;
-    const current = users.length;
+    let signups = users.length;
+
+    signups += getExistingUsers(ags);
+
+    // We add our already existing user base
+
+    const previous = signups - filteredUsers.length;
+    const current = signups;
 
     if (current > goal && previous < goal && current > signupThreshold) {
       wins.push({ ags, category: 'win', signups: [previous, current] });
@@ -211,8 +207,10 @@ const computeStats = async ({
     events: [...wins, ...newcomers, ...relativeChangers, ...absoluteChangers],
     municipalities: municipalitiesWithUsers,
     summary: {
-      users: userMuncipality.length,
-      municipalities: municipalitiesWithUsers.length,
+      previous: previousSummary,
+      users: userMuncipality.length + Math.round(17802 * 0.7) + 10000,
+      municipalities: municipalitiesWithUsers.length + 3,
+      timestamp: new Date().toISOString(),
     },
   };
 };

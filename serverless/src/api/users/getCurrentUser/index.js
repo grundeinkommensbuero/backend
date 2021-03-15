@@ -5,7 +5,9 @@
 
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getMunicipalitiesOfUser } = require('../../../shared/municipalities');
+const {
+  getMunicipalitiesOfUserWithData,
+} = require('../../../shared/municipalities');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,16 +29,17 @@ module.exports.handler = async event => {
     const user = result.Item;
 
     // Get municipalities for which the user has signed up for
-    const { Count, Items } = await getMunicipalitiesOfUser(userId);
+    const municipalities = await getMunicipalitiesOfUserWithData(userId);
 
-    if (Count !== 0) {
-      user.municipalities = Items;
+    if (municipalities.length !== 0) {
+      user.municipalities = municipalities;
     }
 
     // Add empty array, if customNewsletters is not defined
     if (!('customNewsletters' in user)) {
       user.customNewsletters = [];
     }
+
     // Strip token from user
     delete user.customToken;
 

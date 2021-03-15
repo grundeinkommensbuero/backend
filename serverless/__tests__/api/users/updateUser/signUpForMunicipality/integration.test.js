@@ -52,6 +52,7 @@ describe('updateUser sign up for munic api test', () => {
       },
       body: JSON.stringify({
         ags: randomAgs,
+        newsletterConsent: true,
       }),
     };
 
@@ -67,10 +68,12 @@ describe('updateUser sign up for munic api test', () => {
     );
 
     // Check user
-    expect(user.customNewsletters[0].ags).toEqual(randomAgs);
-    expect(user.customNewsletters[0].name).toEqual(testMunicipality.name);
-    expect(user.customNewsletters[0].extraInfo).toEqual(false);
-    expect(user.customNewsletters[0].value).toEqual(true);
+    const customNewsletter =
+      user.customNewsletters[user.customNewsletters.length - 1];
+    expect(customNewsletter.ags).toEqual(randomAgs);
+    expect(customNewsletter.name).toEqual(testMunicipality.name);
+    expect(customNewsletter.extraInfo).toEqual(false);
+    expect(customNewsletter.value).toEqual(true);
 
     // Check user municipality table
     expect(municipality.ags).toEqual(randomAgs);
@@ -115,11 +118,13 @@ describe('updateUser sign up for munic api test', () => {
     );
 
     // Check user
-    expect(user.customNewsletters[0].ags).toEqual(anotherRandomAgs);
-    expect(user.customNewsletters[0].name).toEqual(customMunicipalityName);
-    expect(user.customNewsletters[0].extraInfo).toEqual(false);
-    expect(user.customNewsletters[0].value).toEqual(true);
-    expect(user.customNewsletters[0].timestamp).toEqual(timestamp);
+    const customNewsletter =
+      user.customNewsletters[user.customNewsletters.length - 1];
+    expect(customNewsletter.ags).toEqual(anotherRandomAgs);
+    expect(customNewsletter.name).toEqual(customMunicipalityName);
+    expect(customNewsletter.extraInfo).toEqual(false);
+    expect(customNewsletter.value).toEqual(true);
+    expect(customNewsletter.timestamp).toEqual(timestamp);
 
     // Check user municipality table
     expect(municipality.ags).toEqual(anotherRandomAgs);

@@ -74,6 +74,17 @@ const isAuthorized = event => {
 const updateUser = ({ cognitoId, customNewsletters }) => {
   const timestamp = new Date().toISOString();
 
+  const data = {
+    ':newsletterConsent': {
+      value: false,
+      timestamp,
+    },
+    ':updatedAt': timestamp,
+  };
+
+  let updateExpression =
+    'set newsletterConsent = :newsletterConsent, updatedAt = :updatedAt';
+
   // Loop through custom newsletters and set the values to false
   if (typeof customNewsletters !== 'undefined') {
     for (const newsletter of customNewsletters) {
@@ -81,19 +92,11 @@ const updateUser = ({ cognitoId, customNewsletters }) => {
       newsletter.value = false;
       newsletter.extraInfo = false;
     }
+
+    data[':customNewsletters'] = customNewsletters;
+    updateExpression =
+      'set newsletterConsent = :newsletterConsent, customNewsletters = :customNewsletters, updatedAt = :updatedAt';
   }
-
-  const data = {
-    ':newsletterConsent': {
-      value: false,
-      timestamp,
-    },
-    ':customNewsletters': customNewsletters,
-    ':updatedAt': timestamp,
-  };
-
-  const updateExpression =
-    'set newsletterConsent = :newsletterConsent, customNewsletters = :customNewsletters, updatedAt = :updatedAt';
 
   return ddb
     .update({

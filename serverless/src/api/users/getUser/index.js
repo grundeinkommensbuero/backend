@@ -6,6 +6,9 @@
 const { getUser } = require('../../../shared/users');
 const { anonymizeEmail } = require('./utils');
 const { errorResponse } = require('../../../shared/apiResponse');
+const {
+  getMunicipalitiesOfUserWithData,
+} = require('../../../shared/municipalities');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -33,6 +36,13 @@ module.exports.handler = async event => {
       hasZipCode: 'zipCode' in user,
       email: anonEmail,
     };
+
+    // Get municipalities for which the user has signed up for
+    const municipalities = await getMunicipalitiesOfUserWithData(userId);
+
+    if (municipalities.length !== 0) {
+      userData.municipalities = municipalities;
+    }
 
     if ('username' in user) {
       userData.username = user.username;

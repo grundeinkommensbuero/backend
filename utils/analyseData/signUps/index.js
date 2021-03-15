@@ -1,16 +1,32 @@
 const { getAllUsers } = require('../../shared/users/getUsers');
 const CONFIG = require('../../config');
 
-const getNewUserCountSinceDate = async date => {
-  const users = await getAllUsers(CONFIG.PROD_USERS_TABLE_NAME);
+const getNewUserCountFromDate = async date => {
+  const users = await getAllUsers(
+    CONFIG.PROD_USERS_TABLE_NAME,
+    'begins_with(createdAt, :conditionValue)',
+    date
+  );
 
-  console.log('user count', users.length);
-
-  date = new Date(date);
-
-  const newUsers = users.filter(user => new Date(user.createdAt) > date);
-
-  console.log(`user count since ${date}`, newUsers.length);
+  console.log(date, users.length);
 };
 
-getNewUserCountSinceDate('2020-03-19');
+const getMunicipalitySignupsFromDate = async date => {
+  const signups = await getAllUsers(
+    CONFIG.PROD_USER_MUNICIPALITY_TABLE_NAME,
+    'begins_with(createdAt, :conditionValue)',
+    date
+  );
+
+  console.log(date, signups.length);
+};
+
+getNewUserCountFromDate('2021-02-23');
+getNewUserCountFromDate('2021-02-24');
+getNewUserCountFromDate('2021-02-25');
+getNewUserCountFromDate('2021-02-26');
+getNewUserCountFromDate('2021-02-27');
+getNewUserCountFromDate('2021-02-28');
+getNewUserCountFromDate('2021-03-01');
+getNewUserCountFromDate('2021-03-02');
+getNewUserCountFromDate('2021-03-03');

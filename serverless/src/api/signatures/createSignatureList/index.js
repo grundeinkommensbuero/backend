@@ -59,8 +59,13 @@ const handler = async event => {
     // we need the email to later send the pdf
     let email;
     let username;
-    if (event.pathParameters) {
-      userId = event.pathParameters.userId;
+    if (
+      event.pathParameters ||
+      (requestBody.triggeredByAdmin && 'userId' in requestBody)
+    ) {
+      userId = requestBody.triggeredByAdmin
+        ? requestBody.userId
+        : event.pathParameters.userId;
 
       // now we want to validate if the user actually exists
       try {

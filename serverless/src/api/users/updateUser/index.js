@@ -179,11 +179,13 @@ const updateUser = async (
     city,
     newsletterConsent,
     customNewsletters,
+    reminderMails,
     donation,
     confirmed,
     code,
     removeToken,
     ags,
+    store,
   },
   user,
   ipAddress,
@@ -194,10 +196,15 @@ const updateUser = async (
 
   // If custom newsletters are part of request we use that value, if not
   // we build our own array (adding to the existing one) of custom newsletters depending on the ags
+  // (but only if newsletter consent was passed as true)
   let customNewslettersArray;
   if (typeof customNewsletters !== 'undefined') {
     customNewslettersArray = customNewsletters;
-  } else if (typeof ags !== 'undefined' && !alreadySignedUpForMunicipality) {
+  } else if (
+    typeof ags !== 'undefined' &&
+    newsletterConsent &&
+    !alreadySignedUpForMunicipality
+  ) {
     // If array already exists, use that array
     customNewslettersArray = user.customNewsletters || [];
     customNewslettersArray.push({
@@ -209,17 +216,41 @@ const updateUser = async (
     });
   }
 
+  // If the store object was passed we want to get the current store object
+  // of the user and adjust it accordingly
+  let newStore;
+  if (typeof store !== 'undefined') {
+    // Keep all existing keys, add new ones, and overwrite
+    // if keys are in existing store and in request
+    newStore = { ...user.store, ...store };
+  }
+
   const data = {
     ':updatedAt': timestamp,
     ':username': username,
     ':zipCode': zipCode,
     ':city': city,
     ':customNewsletters': customNewslettersArray,
+    ':store': newStore,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
-    data[':newsletterConsent'] = {
-      value: newsletterConsent,
+    // If user is signing up for municipality, we want to keep
+    // the old newsletter consent if it was true
+    if (
+      typeof ags === 'undefined' ||
+      (typeof ags !== 'undefined' && !user.newsletterConsent.value)
+    ) {
+      data[':newsletterConsent'] = {
+        value: newsletterConsent,
+        timestamp,
+      };
+    }
+  }
+
+  if (typeof reminderMails !== 'undefined') {
+    data[':reminderMails'] = {
+      value: reminderMails,
       timestamp,
     };
   }
@@ -262,8 +293,13 @@ const updateUser = async (
     UpdateExpression: `
     ${removeToken ? 'REMOVE customToken' : ''}
     SET ${
-      typeof newsletterConsent !== 'undefined'
+      ':newsletterConsent' in data
         ? 'newsletterConsent = :newsletterConsent,'
+        : ''
+    }
+    ${
+      typeof reminderMails !== 'undefined'
+        ? 'reminderMails = :reminderMails,'
         : ''
     }
     ${
@@ -274,7 +310,8 @@ const updateUser = async (
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
-    ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''} 
+    ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''}
+    ${typeof store !== 'undefined' ? '#store = :store,' : ''} 
     ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
@@ -283,6 +320,10 @@ const updateUser = async (
     ReturnValues: 'UPDATED_NEW',
   };
 
+  if (typeof store !== 'undefined') {
+    params.ExpressionAttributeNames = { '#store': 'store' };
+  }
+
   await ddb.update(params).promise();
 
   // Return stuff relevant for donation mail
@@ -290,11 +331,7 @@ const updateUser = async (
 };
 
 const constructDonationObject = (donation, user, timestamp) => {
-  const { iban, recurring, ...rest } = donation;
-
-  // We do not want to save the name of the gifted and giftgiver, if the donation is a gift
-  delete rest.certificateReceiver;
-  delete rest.certificateGiver;
+  const { iban, recurring, yearly, ...rest } = donation;
 
   // Get existing donation object of user to alter it
   const donations = 'donations' in user ? user.donations : {};
@@ -322,6 +359,7 @@ const constructDonationObject = (donation, user, timestamp) => {
           createdAt: donations.recurringDonation.createdAt,
           id,
           firstDebitDate: donations.recurringDonation.firstDebitDate,
+          yearly,
           ...rest,
         };
       } else {
@@ -333,6 +371,7 @@ const constructDonationObject = (donation, user, timestamp) => {
           createdAt: timestamp,
           firstDebitDate: debitDate.toISOString(),
           id,
+          yearly,
           ...rest,
         };
       }
@@ -361,25 +400,14 @@ const constructDonationObject = (donation, user, timestamp) => {
 };
 
 // Computes the next debit date (15th of each months)
-// Exceptions in the beginning: 22.12, 15.01, 25.01
+// Exceptions in 2021: 03/04
 const computeDebitDate = now => {
   const date = new Date(now);
 
-  // If december 2020 before the 22th we set the debit date to 22th
-  if (
-    date.getFullYear() === 2020 &&
-    date.getMonth() === 11 &&
-    date.getDate() < 22
-  ) {
-    date.setDate(22);
-  } else if (
-    date.getFullYear() === 2021 &&
-    date.getMonth() === 0 &&
-    date.getDate() <= 24 &&
-    date.getDate() >= 15
-  ) {
-    // If january between inlcuding 15th and 24th set to 25th
-    date.setDate(25);
+  // If before the 4th of march we set the debit date to 4th
+  if (date < new Date('2021-03-04')) {
+    date.setMonth(2);
+    date.setDate(4);
   } else {
     // If it is already passed the 14th we set it to next month
     if (now.getDate() >= 15) {
