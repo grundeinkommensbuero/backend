@@ -1,7 +1,10 @@
-const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../testConfig');
-const { authenticate, removeCustomNewsletters } = require('../../../testUtils');
+const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../../testConfig');
+const {
+  authenticate,
+  removeCustomNewsletters,
+} = require('../../../../testUtils');
 const fetch = require('node-fetch');
-const { getUser } = require('../../../../../utils/shared/users/getUsers');
+const { getUser } = require('../../../../../../utils/shared/users/getUsers');
 const AWS = require('aws-sdk');
 const uuid = require('uuid/v4');
 const crypto = require('crypto-secure-random-digit');
@@ -40,6 +43,7 @@ describe('updateUser update donation api test', () => {
           firstName: 'Valentin',
           lastName: 'Schagerl',
           iban: 'DE26641500200001294334',
+          yearly: true,
         },
       }),
     };
@@ -318,6 +322,7 @@ describe('updateUser api test', () => {
       },
       body: JSON.stringify({
         newsletterConsent: true,
+        reminderMails: true,
         zipCode: '12051',
         username: 'Vali',
         city: 'Berlin',

@@ -145,15 +145,28 @@ const getUsersWithoutNewsletterFromState = async (tableName, state) => {
   });
 };
 
-// functions which gets all users and uses the lastEvaluatedKey
-// to make multiple requests
-const getAllUsers = async (tableName, users = [], startKey = null) => {
+// Function which gets all users and uses the lastEvaluatedKey
+// to make multiple requests. You can optionally add a filter condition.
+const getAllUsers = async (
+  tableName,
+  condition = null,
+  conditionValue = null,
+  users = [],
+  startKey = null
+) => {
   const params = {
     TableName: tableName,
   };
 
   if (startKey !== null) {
     params.ExclusiveStartKey = startKey;
+  }
+
+  if (condition !== null) {
+    params.FilterExpression = condition;
+    params.ExpressionAttributeValues = {
+      ':conditionValue': conditionValue,
+    };
   }
 
   const result = await ddb.scan(params).promise();
@@ -163,7 +176,13 @@ const getAllUsers = async (tableName, users = [], startKey = null) => {
 
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return await getAllUsers(tableName, users, result.LastEvaluatedKey);
+    return await getAllUsers(
+      tableName,
+      condition,
+      conditionValue,
+      users,
+      result.LastEvaluatedKey
+    );
   }
   // otherwise return the array
   return users;

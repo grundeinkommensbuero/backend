@@ -1,6 +1,9 @@
 const { deleteMailjetContact, syncMailjetContact } = require('../');
+const {
+  getMunicipalitiesOfUserWithData,
+} = require('../../../shared/municipalities');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
-const { getUser, getCognitoUser } = require('../../../shared/users');
+const { getUser } = require('../../../shared/users');
 
 module.exports.handler = async event => {
   try {
@@ -54,9 +57,12 @@ module.exports.handler = async event => {
 
             user.signatureLists = signatureListsResult.Items;
 
-            // We also need to get the cognito user to check if the user is verified
-            const { UserStatus } = await getCognitoUser(userId);
-            const verified = UserStatus === 'CONFIRMED';
+            // Get municipalities of user
+            user.municipalities = await getMunicipalitiesOfUserWithData(
+              user.cognitoId
+            );
+
+            const verified = 'confirmed' in user && user.confirmed.value;
 
             await syncMailjetContact(user, verified);
           }

@@ -28,6 +28,12 @@ provider:
   stage: dev
   region: eu-central-1
   memorySize: 512 # Overwrite the default memory size. Default is 1024
+  layers:
+    # Google Chrome for AWS Lambda as a layer
+    # Make sure you use the latest version depending on the region
+    # https://github.com/shelfio/chrome-aws-lambda-layer
+    - arn:aws:lambda:${self:provider.region}:764866452798:layer:chrome-aws-lambda:20
+
   timeout: 10
   # These environment variables are made available to our functions
   # under process.env.
@@ -37,6 +43,7 @@ provider:
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     STAGE: ${self:custom.stage}
+    MAP_IMAGE_BUCKET: xbge-map-images
     IMAGE_BUCKET: ${self:custom.imageBucketName}
     SIGNATURE_LISTS_BUCKET: ${self:custom.listsBucketName}
   # S3 configuration here, we don't need to define the bucket in resources
@@ -475,6 +482,16 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   getCurrentUser:
     handler: src/api/users/getCurrentUser/index.handler
@@ -498,6 +515,11 @@ functions:
           - dynamodb:Query
         Resource:
           - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   createQuestion:
     handler: src/api/users/questions/createQuestion/index.handler
@@ -695,6 +717,7 @@ functions:
           - s3:HeadObject
           - s3:PutObject
           - s3:PutObjectAcl
+          - s3:GetObject
         Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   adminCreateUser:
@@ -908,6 +931,16 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   fillMailjet:
     handler: src/triggers/mailjet/fillMailjet/index.handler
@@ -951,6 +984,16 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
@@ -1030,6 +1073,19 @@ functions:
           - s3:DeleteObject
         Resource: 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
+  saveMapAsImage:
+    handler: src/triggers/saveMapAsImage/index.handler
+    events:
+      - schedule: rate(15 minutes)
+    timeout: 60
+    memorySize: 2048
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-map-images/*'
+
   # getQuestions:
   #   handler: src/api/users/questions/getQuestions/index.handler
   #   events:
@@ -1083,8 +1139,8 @@ functions:
   sendWelcomeMails:
     handler: src/triggers/municipalities/sendWelcomeMails/index.handler
     timeout: 900 # Timeout for this specific function. Might take a while
-    # events: # Call this function every hour between 8am and 9pm
-    #   - schedule: cron(0 8-21 * * ? *)
+    events: # Call this function every day at 6:05 pm (via cloudwatch event)
+      - schedule: cron(5 17 * * ? *)
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -1101,6 +1157,11 @@ functions:
           - ses:SendEmail
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
   sendReminderMails:
     handler: src/triggers/sendReminderMails/index.handler
@@ -1134,6 +1195,42 @@ functions:
           path: analytics/crowdfunding
           method: get
           cors: true
+
+  shareMunicipality:
+    handler: src/misc/shareMunicipality/index.handler
+    events:
+      - http:
+          path: share-municipality/{userId}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
+      - Effect: 'Allow'
+        Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+        Resource: 'arn:aws:s3:::xbge-personalized-sharing-images/*'
 
   # Admin cognito auth triggers
 
@@ -1189,6 +1286,12 @@ functions:
       - cognitoUserPool:
           pool: UserPool
           trigger: VerifyAuthChallengeResponse
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
 
 # CloudFormation resource templates
 resources:
@@ -1207,9 +1310,10 @@ resources:
             KeyType: HASH
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        # ProvisionedThroughput:
+        # ReadCapacityUnits: 5
+        # WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: emailIndex
             KeySchema:
@@ -1217,9 +1321,9 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: 'ALL'
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            # ProvisionedThroughput:
+            #   ReadCapacityUnits: 5
+            #   WriteCapacityUnits: 5
 
     SignaturesTable:
       Type: AWS::DynamoDB::Table
@@ -1236,8 +1340,8 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_IMAGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
         GlobalSecondaryIndexes:
           - IndexName: userIdIndex
             KeySchema:
@@ -1246,8 +1350,8 @@ resources:
             Projection:
               ProjectionType: 'ALL'
             ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
 
     MunicipalitiesTable:
       Type: AWS::DynamoDB::Table
@@ -1259,9 +1363,10 @@ resources:
         KeySchema:
           - AttributeName: ags
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
+        # ProvisionedThroughput:
+        #   ReadCapacityUnits: 5
+        #   WriteCapacityUnits: 5
 
     UserMunicipalityTable:
       Type: AWS::DynamoDB::Table
