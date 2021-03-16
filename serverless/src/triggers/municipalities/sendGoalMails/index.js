@@ -69,13 +69,17 @@ const analyseMunicipalities = async municipalities => {
           // || (reachedGoal && (!('mails' in Item) || !Item.mails.sentReachedGoal))
         ) {
           const event = reached50 ? '50' : 'goal';
-          // Send mail to all users
-          await sendMailsForMunicipality(municipality, event, ratio);
 
-          // Set flag, that we have sent mails
-          await setFlag(municipality, event);
+          // For testing purposes send mail for specific municipality in dev stage
+          if (stage === 'prod' || (stage === 'dev' && ags === '14628230')) {
+            // Send mail to all users
+            await sendMailsForMunicipality(municipality, event, ratio);
 
-          console.log('sent mails for municipality', municipality);
+            // Set flag, that we have sent mails
+            await setFlag(municipality, event);
+
+            console.log('sent mails for municipality', municipality);
+          }
         }
       } else {
         console.log('No municipality found with ags', ags);
