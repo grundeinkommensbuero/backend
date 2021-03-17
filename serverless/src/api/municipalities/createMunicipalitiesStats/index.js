@@ -83,7 +83,9 @@ const computeStats = async ({
         population,
       });
     } else {
-      municipalityMap.get(ags).users.push({ userId, createdAt });
+      const municipality = municipalityMap.get(ags);
+
+      municipality.users.push({ userId, createdAt });
     }
   }
 
@@ -101,11 +103,18 @@ const computeStats = async ({
       signups += getExistingUsers(ags);
 
       if (municipalityMap.has(municipality.ags)) {
-        signups = municipalityMap.get(municipality.ags).users.length;
+        const { users } = municipalityMap.get(municipality.ags);
+
+        signups = users.length;
       }
 
-      return { ags, goal, signups };
+      return {
+        ags,
+        goal,
+        signups,
+      };
     });
+
     return { municipalities: allMunicipalitiesWithStats };
   }
 
