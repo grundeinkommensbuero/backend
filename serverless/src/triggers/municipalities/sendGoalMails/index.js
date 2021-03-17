@@ -21,7 +21,8 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const bucket = 'xbge-municipalities-stats';
 const stage = process.env.STAGE;
 const fileName = 'statsWithAll.json';
-const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
+const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
+const FOURTY_HOURS = 40 * 60 * 60 * 1000;
 
 // Munic to test: 01051014
 
@@ -46,7 +47,7 @@ module.exports.handler = async event => {
 // Loops through municipalities and checks if municipalities are
 // over 50% of the goal and have reached goal (the latter is deactivated for now)
 const analyseMunicipalities = async municipalities => {
-  for (const { signups, goal, ags, engagementLevels } of municipalities) {
+  for (const { signups, goal, ags } of municipalities) {
     const ratio = signups / goal;
     const reached50 = ratio >= 0.5 && ratio < 1;
 
@@ -54,32 +55,20 @@ const analyseMunicipalities = async municipalities => {
     // const reachedGoal = ratio >= 1;
 
     if (reached50) {
-      // Now we need to check, if we have already sent a mail for this municipality
+      // Get municipality to get name
       const { Item } = await getMunicipality(ags);
 
       if (typeof Item !== 'undefined') {
-        // We need the engagement levels to check if there are any organizers
-        const municipality = { ...Item, goal, signups, engagementLevels };
+        const municipality = { ...Item, goal, signups };
 
-        // Check if we have already set the flags for this municipality
-        if (
-          reached50 &&
-          (!('mails' in Item) || !Item.mails.sentReached50)
-          // NOTE: not needed for now, will be reactivated soon
-          // || (reachedGoal && (!('mails' in Item) || !Item.mails.sentReachedGoal))
-        ) {
-          const event = reached50 ? '50' : 'goal';
+        const event = reached50 ? '50' : 'goal';
 
-          // For testing purposes send mail for specific municipality in dev stage
-          if (stage === 'prod' || (stage === 'dev' && ags === '14628230')) {
-            // Send mail to all users
-            await sendMailsForMunicipality(municipality, event, ratio);
+        // For testing purposes send mail for specific municipality in dev stage
+        if (stage === 'prod' || (stage === 'dev' && ags === '14628230')) {
+          // Send mail to all users
+          await sendMailsForMunicipality(municipality, event, ratio);
 
-            // Set flag, that we have sent mails
-            await setFlag(municipality, event);
-
-            console.log('sent mails for municipality', municipality);
-          }
+          console.log('sent mails for municipality', municipality);
         }
       } else {
         console.log('No municipality found with ags', ags);
@@ -93,12 +82,25 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
   // First we have to get all users of this municipality
   const users = await getAllUsersOfMunicipality(municipality.ags);
 
-  for (const { userId } of users) {
+  for (const { userId, mails, createdAt } of users) {
     // Get user record from users table to get email, username etc
     const result = await getUser(userId);
 
-    if ('Item' in result) {
+    // Check if we have already set the flags for this user
+    // and user still exists.
+    // And we also want to only send the email, if the user signed up for the municipality
+    // more than 40 hours ago, so that the user does not receive the welcome mail
+    // and goal mail too soon after one another
+    if (
+      'Item' in result &&
+      result.Item.newsletterConsent.value &&
+      (typeof mails === 'undefined' || !mails.sentReached50) &&
+      new Date() - new Date(createdAt) > FOURTY_HOURS
+    ) {
       await sendMail(result.Item, municipality, event, ratio);
+
+      // Set flag, that we have sent mails
+      await setFlag(municipality.ags, userId, mails, event);
     }
   }
 
@@ -108,12 +110,8 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
   }
 };
 
-const setFlag = (municipality, event) => {
-  let flags = {};
-
-  if ('mails' in municipality) {
-    flags = municipality.mails;
-  }
+const setFlag = (ags, userId, mails, event) => {
+  const flags = mails || {};
 
   if (event === '50') {
     flags.sentReached50 = true;
@@ -122,8 +120,11 @@ const setFlag = (municipality, event) => {
   }
 
   const params = {
-    TableName: municipalitiesTableName,
-    Key: { ags: municipality.ags },
+    TableName: userMunicipalityTableName,
+    Key: {
+      ags,
+      userId,
+    },
     UpdateExpression: 'SET mails = :flags',
     ExpressionAttributeValues: {
       ':flags': flags,
