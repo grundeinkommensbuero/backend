@@ -1122,7 +1122,6 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
-          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
       - Effect: Allow
@@ -1135,6 +1134,11 @@ functions:
           - ses:SendEmail
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   sendWelcomeMails:
     handler: src/triggers/municipalities/sendWelcomeMails/index.handler
