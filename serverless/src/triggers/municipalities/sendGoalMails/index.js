@@ -105,9 +105,11 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
   }
 
   // send info mail to xbge team
-  if (stage === 'prod') {
-    await sendInfoMail(municipality, event);
-  }
+  // NOTE: this does not make sense anymore, because the email is sent
+  // every time now, because we set the flag for users and not for the municipality anymore
+  // if (stage === 'prod') {
+  //   await sendInfoMail(municipality, event);
+  // }
 };
 
 const setFlag = (ags, userId, mails, event) => {
