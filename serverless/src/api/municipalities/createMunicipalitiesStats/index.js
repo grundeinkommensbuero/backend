@@ -135,7 +135,7 @@ const computeStats = async ({
     const previous = signups - filteredUsers.length;
     const current = signups;
 
-    if (current > goal && previous < goal && current > signupThreshold) {
+    if (current >= goal && previous < goal && current > signupThreshold) {
       wins.push({ ags, category: 'win', signups: [previous, current] });
       // Newcomers used to be previous === 0,
       // but these tend to have low signup numbers
@@ -154,7 +154,7 @@ const computeStats = async ({
     }
 
     // If municipality is qualified add it to array
-    if (current > goal) {
+    if (current >= goal) {
       qualifiedMunicipalities.push({ ags, current, population });
     }
 
