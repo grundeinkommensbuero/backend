@@ -74,6 +74,7 @@ const computeStats = async ({
   let relativeChangers = [];
   let absoluteChangers = [];
   const municipalitiesWithUsers = [];
+  const qualifiedMunicipalities = [];
 
   const municipalityMap = new Map();
   for (const { userId, ags, createdAt, population } of userMuncipality) {
@@ -152,6 +153,11 @@ const computeStats = async ({
       absoluteChangers.push({ ags, previous, current, absoluteChange });
     }
 
+    // If municipality is qualified add it to array
+    if (current > goal) {
+      qualifiedMunicipalities.push({ ags, current, population });
+    }
+
     municipalitiesWithUsers.push({
       ags,
       signups: current,
@@ -206,6 +212,7 @@ const computeStats = async ({
   return {
     events: [...wins, ...newcomers, ...relativeChangers, ...absoluteChangers],
     municipalities: municipalitiesWithUsers,
+    qualifiedMunicipalities,
     summary: {
       previous: previousSummary,
       users: userMuncipality.length + Math.round(17802 * 0.7) + 10000,
