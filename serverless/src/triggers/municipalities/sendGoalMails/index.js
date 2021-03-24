@@ -97,7 +97,7 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
       result.Item.newsletterConsent.value &&
       (typeof mails === 'undefined' ||
         (event === '50' && !mails.sentReached50) ||
-        !mails.sentReachedGoal) &&
+        (event === 'goal' && !mails.sentReachedGoal)) &&
       new Date() - new Date(createdAt) > FOURTY_HOURS
     ) {
       await sendMail(result.Item, municipality, event, ratio);
