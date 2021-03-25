@@ -50,11 +50,9 @@ const analyseMunicipalities = async municipalities => {
   for (const { signups, goal, ags } of municipalities) {
     const ratio = signups / goal;
     const reached50 = ratio >= 0.5 && ratio < 1;
+    const reachedGoal = ratio >= 1;
 
-    // NOTE: not needed for now, will be reactivated soon
-    // const reachedGoal = ratio >= 1;
-
-    if (reached50) {
+    if (reached50 || reachedGoal) {
       // Get municipality to get name
       const { Item } = await getMunicipality(ags);
 
@@ -64,7 +62,10 @@ const analyseMunicipalities = async municipalities => {
         const event = reached50 ? '50' : 'goal';
 
         // For testing purposes send mail for specific municipality in dev stage
-        if (stage === 'prod' || (stage === 'dev' && ags === '14628230')) {
+        if (
+          stage === 'prod' ||
+          (stage === 'dev' && (ags === '14628230' || ags === '14713000'))
+        ) {
           // Send mail to all users
           await sendMailsForMunicipality(municipality, event, ratio);
 
@@ -86,7 +87,7 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
     // Get user record from users table to get email, username etc
     const result = await getUser(userId);
 
-    // Check if we have already set the flags for this user
+    // Check if we have already set the flag (depending on the event) for this user
     // and user still exists.
     // And we also want to only send the email, if the user signed up for the municipality
     // more than 40 hours ago, so that the user does not receive the welcome mail
@@ -94,7 +95,9 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
     if (
       'Item' in result &&
       result.Item.newsletterConsent.value &&
-      (typeof mails === 'undefined' || !mails.sentReached50) &&
+      (typeof mails === 'undefined' ||
+        (event === '50' && !mails.sentReached50) ||
+        (event === 'goal' && !mails.sentReachedGoal)) &&
       new Date() - new Date(createdAt) > FOURTY_HOURS
     ) {
       await sendMail(result.Item, municipality, event, ratio);
