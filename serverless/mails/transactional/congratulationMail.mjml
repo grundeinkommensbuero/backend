@@ -21,11 +21,8 @@
          <h2>Ein großes Danke dafür!</h2>
           Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment [[TOTAL_COUNT_ALL_USERS]] gesammelt.
 
-          Wir haben also noch etwas vor uns. Hier kannst du dir neue Listen herunterladen.
+          Wir haben also noch etwas vor uns. 
         </mj-text>
-        <mj-button  padding-top="20px" padding-bottom="20px" href="https://TODO/unterschriftenliste/?userId=[[USER_ID]]">
-          Liste herunterladen
-        </mj-button>
       </mj-column>
     </mj-section>
 
