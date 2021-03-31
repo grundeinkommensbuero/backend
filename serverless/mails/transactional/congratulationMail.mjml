@@ -19,7 +19,7 @@
           vor Kurzem an uns zurück. Damit hast du insgesamt schon [[TOTAL_COUNT]] Unterschriften beigetragen.
           <br><br>
          <h2>Ein großes Danke dafür!</h2>
-          Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment {{TOTAL_COUNT_ALL_USERS}} gesammelt.
+          Bitte sammle auch weiter Unterschriften. Zusammen haben wir im Moment [[TOTAL_COUNT_ALL_USERS]] gesammelt.
 
           Wir haben also noch etwas vor uns. Hier kannst du dir neue Listen herunterladen.
         </mj-text>
