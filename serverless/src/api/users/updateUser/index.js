@@ -207,13 +207,23 @@ const updateUser = async (
   ) {
     // If array already exists, use that array
     customNewslettersArray = user.customNewsletters || [];
-    customNewslettersArray.push({
-      name: municipalityName,
-      ags,
-      value: true,
-      extraInfo: false,
-      timestamp,
-    });
+
+    // Check if the municipality is already included in the array
+    const foundIndex = customNewslettersArray.findIndex(
+      newsletter => newsletter.ags === ags
+    );
+
+    if (foundIndex !== -1) {
+      customNewslettersArray[foundIndex].value = true;
+    } else {
+      customNewslettersArray.push({
+        name: municipalityName,
+        ags,
+        value: true,
+        extraInfo: false,
+        timestamp,
+      });
+    }
   }
 
   // If the store object was passed we want to get the current store object
@@ -409,8 +419,8 @@ const computeDebitDate = now => {
     date.setMonth(2);
     date.setDate(4);
   } else {
-    // If it is already passed the 14th we set it to next month
-    if (now.getDate() >= 15) {
+    // If it is already passed the 11th at 3 pm we set it to next month
+    if (now.getDate() > 11 || (now.getDate() === 11 && now.getHours() > 14)) {
       date.setMonth(now.getMonth() + 1);
     }
 
