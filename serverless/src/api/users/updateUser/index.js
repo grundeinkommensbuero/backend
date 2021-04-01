@@ -409,8 +409,8 @@ const computeDebitDate = now => {
     date.setMonth(2);
     date.setDate(4);
   } else {
-    // If it is already passed the 14th we set it to next month
-    if (now.getDate() >= 15) {
+    // If it is already passed the 11th at 3 pm we set it to next month
+    if (now.getDate() > 11 || (now.getDate() === 11 && now.getHours() > 14)) {
       date.setMonth(now.getMonth() + 1);
     }
 
