@@ -27,7 +27,7 @@ describe('Test computeDebitDate', () => {
     const debitDate = computeDebitDate(date);
 
     expect(debitDate.getDate()).toEqual(15);
-    expect(debitDate.getMonth()).toEqual(2);
+    expect(debitDate.getMonth()).toEqual(3);
     expect(debitDate.getFullYear()).toEqual(2021);
   });
 
@@ -48,6 +48,46 @@ describe('Test computeDebitDate', () => {
 
     expect(debitDate.getDate()).toEqual(15);
     expect(debitDate.getMonth()).toEqual(3);
+    expect(debitDate.getFullYear()).toEqual(2021);
+  });
+
+  it('should compute correct date', () => {
+    const date = new Date('2021-05-10');
+
+    const debitDate = computeDebitDate(date);
+
+    expect(debitDate.getDate()).toEqual(15);
+    expect(debitDate.getMonth()).toEqual(4);
+    expect(debitDate.getFullYear()).toEqual(2021);
+  });
+
+  it('should compute correct date', () => {
+    const date = new Date('2021-05-11 14:45:00');
+
+    const debitDate = computeDebitDate(date);
+
+    expect(debitDate.getDate()).toEqual(15);
+    expect(debitDate.getMonth()).toEqual(4);
+    expect(debitDate.getFullYear()).toEqual(2021);
+  });
+
+  it('should compute correct date', () => {
+    const date = new Date('2021-05-11 15:45:00');
+
+    const debitDate = computeDebitDate(date);
+
+    expect(debitDate.getDate()).toEqual(15);
+    expect(debitDate.getMonth()).toEqual(5);
+    expect(debitDate.getFullYear()).toEqual(2021);
+  });
+
+  it('should compute correct date', () => {
+    const date = new Date('2021-05-12');
+
+    const debitDate = computeDebitDate(date);
+
+    expect(debitDate.getDate()).toEqual(15);
+    expect(debitDate.getMonth()).toEqual(5);
     expect(debitDate.getFullYear()).toEqual(2021);
   });
 });
