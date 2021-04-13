@@ -27,7 +27,7 @@ const generateCsv = users => {
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
-        if (new Date(donation.debitDate) > new Date('2021-03-05')) {
+        if (new Date(donation.debitDate) > new Date('2021-03-17')) {
           dataStringOnetimeDonations += createDonationString(donation, false);
         }
       }
@@ -38,36 +38,39 @@ const generateCsv = users => {
       // TODO handle yearly properly, because we don't want to add it every month
       if (donation.yearly) {
         console.log('is yearly', donation.id, donation.createdAt);
-      }
+      } else {
+        if ('updatedAt' in donation) {
+          console.log(
+            'Donation updated (userId, donationId, updatedAt)',
+            user.cognitoId,
+            donation.id,
+            donation.updatedAt
+          );
+        }
 
-      if ('updatedAt' in donation) {
-        console.log(
-          'Donation updated (userId, donationId, updatedAt)',
-          user.cognitoId,
-          donation.id,
-          donation.updatedAt
-        );
-      }
+        if ('cancelledAt' in donation) {
+          console.log(
+            'Donation cancelled (userId, donationId, updatedAt)',
+            user.cognitoId,
+            donation.id,
+            donation.cancelledAt
+          );
 
-      if ('cancelledAt' in donation) {
-        console.log(
-          'Donation cancelled (userId, donationId, updatedAt)',
-          user.cognitoId,
-          donation.id,
-          donation.cancelledAt
-        );
-
-        // If donation was also updated and updated is newer than cancelled we
-        // add the donation
-        if (
-          'updatedAt' in donation &&
-          new Date(donation.cancelledAt) < new Date(donation.updatedAt)
-        ) {
-          console.log('Was cancelled and then updated', donation.id);
+          // If donation was also updated and updated is newer than cancelled we
+          // add the donation
+          if (
+            'updatedAt' in donation &&
+            new Date(donation.cancelledAt) < new Date(donation.updatedAt)
+          ) {
+            console.log('Was cancelled and then updated', donation.id);
+            dataStringRecurringDonations += createDonationString(
+              donation,
+              true
+            );
+          }
+        } else {
           dataStringRecurringDonations += createDonationString(donation, true);
         }
-      } else {
-        dataStringRecurringDonations += createDonationString(donation, true);
       }
     }
   }
