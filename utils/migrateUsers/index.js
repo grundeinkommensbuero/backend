@@ -10,6 +10,7 @@ const paths = {
   'change-2': './data/change_users_2.csv',
   signaturesTest: './data/signatures_test_users.csv',
   typeform: './data/Ergebnisse Briefaktion.csv',
+  olympia: './data/olympia_210414.csv',
 };
 
 const config = { region: 'eu-central-1' };
@@ -48,20 +49,26 @@ const addUser = async (email, username) => {
 // eslint-disable-next-line no-unused-vars
 const migrateUsers = async () => {
   try {
-    const users = await readCsv('change-2');
+    const users = await readCsv('olympia');
+    let alreadyExistedCount = 0;
+    let count = 0;
 
     for (const user of users) {
       try {
-        // console.log('user', user);
         await createUser(user);
+
+        console.log('processed', count++, users.length, user.email);
       } catch (error) {
         if (error.code === 'UsernameExistsException') {
           console.log('user exists', user.email);
+          alreadyExistedCount++;
         } else {
           console.log('different error', error);
         }
       }
     }
+
+    console.log('already existed', alreadyExistedCount);
   } catch (error) {
     console.log('error while migrating users', error);
   }
@@ -105,6 +112,18 @@ const readCsv = source => {
               createdAt: new Date(transformDate(row[10])).toISOString(),
               source,
             };
+          } else if (source === 'olympia') {
+            // Only if newsletter is "ja" we want to add the user
+            if (row[11] === 'ja') {
+              user = {
+                email: row[1],
+                username: row[3],
+                zipCode: row[7],
+                city: row[8],
+                createdAt: new Date(transformDate(row[12])).toISOString(),
+                source,
+              };
+            }
           }
 
           if (typeof user !== 'undefined') {
@@ -153,11 +172,16 @@ const createUserInDynamo = (userId, user) => {
     Item: {
       cognitoId: userId,
       email: user.email.toLowerCase(),
+      confirmed: {
+        value: true,
+        timestamp,
+      },
       createdAt: timestamp,
       // username and zipCode might be undefined, the key will just be
       // left out in dynamo
       username: user.username,
       zipCode: user.zipCode,
+      city: user.city,
       // the timestamp of the newsletter consent depends on the change data
       newsletterConsent: {
         value: true,
@@ -178,3 +202,5 @@ const createUserInDynamo = (userId, user) => {
 };
 
 module.exports = { createUser };
+
+migrateUsers();
