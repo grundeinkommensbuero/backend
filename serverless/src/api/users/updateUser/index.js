@@ -207,13 +207,23 @@ const updateUser = async (
   ) {
     // If array already exists, use that array
     customNewslettersArray = user.customNewsletters || [];
-    customNewslettersArray.push({
-      name: municipalityName,
-      ags,
-      value: true,
-      extraInfo: false,
-      timestamp,
-    });
+
+    // Check if the municipality is already included in the array
+    const foundIndex = customNewslettersArray.findIndex(
+      newsletter => newsletter.ags === ags
+    );
+
+    if (foundIndex !== -1) {
+      customNewslettersArray[foundIndex].value = true;
+    } else {
+      customNewslettersArray.push({
+        name: municipalityName,
+        ags,
+        value: true,
+        extraInfo: false,
+        timestamp,
+      });
+    }
   }
 
   // If the store object was passed we want to get the current store object
