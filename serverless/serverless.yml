@@ -628,6 +628,25 @@ functions:
               - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
                 - 'index/emailIndex'
 
+  confirmUser:
+    handler: src/api/users/confirmUser/index.handler
+    events:
+      - http:
+          path: users/{userId}/confirm
+          method: post
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   createSurveyAnswer:
     handler: src/api/users/createSurveyAnswer/index.handler
     events:
