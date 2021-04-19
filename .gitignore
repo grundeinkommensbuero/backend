@@ -5,3 +5,4 @@ list*.pdf
 !utils/seedDatabase/fillMunicipalities/data/plz-3-meinbge-user-promille.csv
 utils/seedDatabase/createMunicipalityShareImages/municipalityImages
 utils/seedDatabase/createMunicipalityShareImages/output
+secretConfig.js
