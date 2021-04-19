@@ -1,6 +1,7 @@
 const { apiKey, apiSecret } = require('../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 const fetch = require('node-fetch').default;
+const { getMunicipalityStats } = require('../../shared/municipalities');
 
 const createdSurveyAttributes = [];
 const contactListIdXbge = '10234980';
@@ -66,6 +67,7 @@ const updateMailjetContact = async ({
   newsletterConsent,
   createdAt,
   municipalities,
+  store,
 }) => {
   const mailjetUser = {
     usernameWithSpace: '',
@@ -82,6 +84,8 @@ const updateMailjetContact = async ({
     signedUpForMunicipality: false,
     mostRecentMunicipalityName: '',
     mostRecentMunicipalitySlug: '',
+    remindToDonate: false,
+    donated: false,
   };
 
   // construct name with space before
@@ -137,6 +141,14 @@ const updateMailjetContact = async ({
 
     mailjetUser.mostRecentMunicipalityName = municipalities[0].name;
     mailjetUser.mostRecentMunicipalitySlug = municipalities[0].slug;
+
+    // Get percentage to goal
+    const { percentToGoal } = await getMunicipalityStats(
+      municipalities[0].ags,
+      municipalities[0].population
+    );
+
+    mailjetUser.mostRecentMunicipalityPercent = percentToGoal;
   }
 
   // Because mailjet does now allow arrays we need to handle
@@ -176,6 +188,25 @@ const updateMailjetContact = async ({
           Value: survey.answer,
         });
       }
+    }
+  }
+
+  // Check the store if user wanted to be reminded to donate and if they donated
+  if (typeof store !== 'undefined') {
+    if ('donationOnboardingReaction' in store) {
+      // For some reason (can't remember why, donationOnboardingReaction is an array)
+      for (const onboardingReaction of store.donationOnboardingReaction) {
+        if (
+          onboardingReaction &&
+          onboardingReaction.reaction === 'remindMeLater'
+        ) {
+          mailjetUser.remindToDonate = true;
+        }
+      }
+    }
+
+    if ('donationPledge' in store) {
+      mailjetUser.donated = true;
     }
   }
 
@@ -240,6 +271,18 @@ const updateMailjetContact = async ({
       {
         Name: 'most_recent_municipality_slug',
         Value: mailjetUser.mostRecentMunicipalitySlug,
+      },
+      {
+        Name: 'most_recent_municipality_percent',
+        Value: mailjetUser.mostRecentMunicipalityPercent,
+      },
+      {
+        Name: 'remind_to_donate',
+        Value: mailjetUser.remindToDonate,
+      },
+      {
+        Name: 'donated',
+        Value: mailjetUser.donated,
       },
       ...mailjetUser.surveyParams,
     ],

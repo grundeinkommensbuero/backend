@@ -941,6 +941,14 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
 
   fillMailjet:
     handler: src/triggers/mailjet/fillMailjet/index.handler
@@ -994,6 +1002,14 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UserMunicipalityTable', 'Arn'] }
+                - 'index/agsIndex'
 
   sendCongratulationMails:
     handler: src/triggers/sendCongratulationMails/index.handler
