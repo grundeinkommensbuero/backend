@@ -29,9 +29,9 @@ const deleteUsers = async () => {
   // filter users to check if the creation of the user was more than
   // x days ago
   const date = new Date();
-  const seventyDays = 70 * 24 * 60 * 60 * 1000;
+  const hundredDays = 100 * 24 * 60 * 60 * 1000;
   const filteredUsers = unconfirmedUsers.filter(
-    user => date - new Date(user.createdAt) > seventyDays
+    user => date - new Date(user.createdAt) > hundredDays
   );
 
   console.log(
