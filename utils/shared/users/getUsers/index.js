@@ -188,6 +188,41 @@ const getAllUsers = async (
   return users;
 };
 
+// New function to get unconfirmed user after refactoring
+const getAllUnconfirmedUsers = async (
+  tableName,
+  users = [],
+  startKey = null
+) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression:
+      'attribute_not_exists(confirmed) OR #key1.#key2 = :confirmed',
+    ExpressionAttributeNames: { '#key1': 'confirmed', '#key2': 'value' },
+    ExpressionAttributeValues: { ':confirmed': false },
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getAllUnconfirmedUsers(
+      tableName,
+      users,
+      result.LastEvaluatedKey
+    );
+  }
+  // otherwise return the array
+  return users;
+};
+
 // functions which gets all users with pledge and uses the lastEvaluatedKey
 // to make multiple requests
 const getUsersWithPledge = async (tableName, users = [], startKey = null) => {
@@ -305,6 +340,7 @@ const isVerified = (user, unverifiedCognitoUsers) => {
 
 module.exports = {
   getAllUsers,
+  getAllUnconfirmedUsers,
   getAllCognitoUsers,
   getAllUnverifiedCognitoUsers,
   getUser,
