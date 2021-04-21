@@ -6,3 +6,4 @@ list*.pdf
 utils/seedDatabase/createMunicipalityShareImages/municipalityImages
 utils/seedDatabase/createMunicipalityShareImages/output
 secretConfig.js
+usersWhoGotMail.json
