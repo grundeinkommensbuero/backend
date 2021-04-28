@@ -11,22 +11,22 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@serverless/eslint-config": "^2.1.0",
-    "aws-sdk": "^2.685.0",
+    "@serverless/eslint-config": "^3.0.0",
+    "aws-sdk": "^2.895.0",
     "babel-eslint": "^10.1.0",
     "bottleneck": "^2.19.5",
-    "cli-table3": "^0.5.1",
-    "copy-dynamodb-table": "^2.0.20",
-    "csv": "^5.3.2",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.2",
+    "cli-table3": "^0.6.0",
+    "copy-dynamodb-table": "^2.2.1",
+    "csv": "^5.5.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
     "in-words": "^0.2.2",
     "node-mailjet": "^3.3.1",
-    "pdf-lib": "^1.9.0",
-    "redoc-cli": "^0.9.8"
+    "pdf-lib": "^1.16.0",
+    "redoc-cli": "^0.11.4"
   },
   "dependencies": {
-    "nodemailer": "^6.4.10"
+    "nodemailer": "^6.6.0"
   }
 }
