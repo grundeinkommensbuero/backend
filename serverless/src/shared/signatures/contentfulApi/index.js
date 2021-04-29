@@ -43,8 +43,10 @@ const makeApiCall = async (campaign, contentfulCounts) => {
   // parse result to json
   const json = await result.json();
 
-  contentfulCounts[campaign] = {
-    minimum: json.fields.minimum,
-    addToSignatureCount: json.fields.addToSignatureCount,
-  };
+  if ('fields' in json) {
+    contentfulCounts[campaign] = {
+      minimum: json.fields.minimum,
+      addToSignatureCount: json.fields.addToSignatureCount,
+    };
+  }
 };
