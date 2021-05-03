@@ -865,8 +865,8 @@ functions:
 
   mergeReferredUsers:
     handler: src/triggers/mergeReferredUsers/index.handler
-    events: # Call this function every day at 11 pm (via cloudwatch event)
-      - schedule: cron(0 22 * * ? *)
+    events:
+      - schedule: rate(60 minutes)
     timeout: 100 # Timeout for this specific function.
     iamRoleStatements:
       - Effect: 'Allow'
