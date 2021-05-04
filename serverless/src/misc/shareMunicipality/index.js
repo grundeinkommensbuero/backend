@@ -8,17 +8,14 @@ const AWS = require('aws-sdk');
 const jimp = require('jimp/dist');
 const { errorResponse } = require('../../shared/apiResponse');
 const { getUser } = require('../../shared/users');
-const {
-  getMunicipality,
-} = require('../../shared/municipalities');
+const { getMunicipality } = require('../../shared/municipalities');
 
 const isbot = require('isbot');
 
 const pathToFont = __dirname + '/ideal-bold.fnt';
 const s3 = new AWS.S3();
 const outputBucket = 'xbge-personalized-sharing-images';
-const redirectUrl = 'https://expedition-grundeinkommen.de/';
-
+const redirectUrl = 'https://www.startnext.com/Dv6';
 
 module.exports.handler = async event => {
   try {
@@ -31,10 +28,7 @@ module.exports.handler = async event => {
     // Get user agent to check if source is crawler
     const isBot = isbot(event.headers['User-Agent']);
 
-    const {
-      ags,
-      addProfilePicture,
-    } = event.queryStringParameters;
+    const { ags, addProfilePicture } = event.queryStringParameters;
 
     // get user id from path parameter
     const userId = event.pathParameters.userId;
@@ -68,7 +62,11 @@ module.exports.handler = async event => {
         profilePictureUrl = user.profilePictures['900'];
       }
 
-      const captionsCrowdfunding = { mainCaption: '$USERNAME lässt #Grundeinkommen Realität werden.', altMainCaption: 'Ich lasse #Grundeinkommen Realität werden.', subCaption: '' };
+      const captionsCrowdfunding = {
+        mainCaption: '$USERNAME lässt #Grundeinkommen Realität werden.',
+        altMainCaption: 'Ich lasse #Grundeinkommen Realität werden.',
+        subCaption: '',
+      };
 
       // Render combined image
       const buffer = await createRenderedImage(
@@ -92,17 +90,19 @@ module.exports.handler = async event => {
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="twitter:card" content="summary_large_image" />
-        ${renderedImageUrl
-        ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
-        : ''
-      }
+        ${
+          renderedImageUrl
+            ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
+            : ''
+        }
         <meta name="twitter:title" content="${title}" />
         <meta name="twitter:description" content="${description}" />
         
-        ${renderedImageUrl
-        ? `<meta property="og:image" content="${renderedImageUrl}" />`
-        : ''
-      }
+        ${
+          renderedImageUrl
+            ? `<meta property="og:image" content="${renderedImageUrl}" />`
+            : ''
+        }
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         
@@ -110,8 +110,7 @@ module.exports.handler = async event => {
 
         <script>
           if(${!isBot}) {
-            window.location.href = "${redirectUrl}/?referredByUser=${user.cognitoId
-      }";
+            window.location.href = "${redirectUrl}";
           }
         </script>
         <style>
@@ -151,8 +150,7 @@ module.exports.handler = async event => {
         <div class="loader"></div>
         <p>
           Solltest du nicht automatisch weitergeleitet werden,<br/>klicke bitte
-          <a href="${redirectUrl}/?referredByUser=${user.cognitoId
-      }"><b>HIER</b></a>
+          <a href="${redirectUrl}><b>HIER</b></a>
         </p>
       </body>
     </html>
@@ -200,9 +198,9 @@ const createCompositeImage = async (
   username,
   municipalityName
 ) => {
-  const backgroundUrlCrowdfunding = profilePictureUrl ?
-    'https://images.ctfassets.net/af08tobnb0cl/694pHdfxxgXfIl4IckPzHL/38e066345bde0b587a911bbaff16a614/Teilen_Crowdfundingv3_leer.png' :
-    'https://images.ctfassets.net/af08tobnb0cl/5WDl82fjV2aPFl6olbx8EO/ceabe8fa8e6e461d88b244d2f26c2cbb/Teilen_Crowdfunding_v3.png';
+  const backgroundUrlCrowdfunding = profilePictureUrl
+    ? 'https://images.ctfassets.net/af08tobnb0cl/694pHdfxxgXfIl4IckPzHL/38e066345bde0b587a911bbaff16a614/Teilen_Crowdfundingv3_leer.png'
+    : 'https://images.ctfassets.net/af08tobnb0cl/5WDl82fjV2aPFl6olbx8EO/ceabe8fa8e6e461d88b244d2f26c2cbb/Teilen_Crowdfunding_v3.png';
 
   const background = await jimp.read(backgroundUrlCrowdfunding);
 
@@ -263,8 +261,8 @@ const uploadImage = async (buffer, userId, ags) => {
 const printText = async (image, captions, username, municipalityName) => {
   const mainCaption = username
     ? captions.mainCaption
-      .replace('$USERNAME', username)
-      .replace('$MUNICIPALITY_NAME', municipalityName)
+        .replace('$USERNAME', username)
+        .replace('$MUNICIPALITY_NAME', municipalityName)
     : captions.altMainCaption.replace('$MUNICIPALITY_NAME', municipalityName);
 
   const font = await jimp.loadFont(pathToFont);
