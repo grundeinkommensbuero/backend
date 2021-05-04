@@ -7,11 +7,8 @@
 const AWS = require('aws-sdk');
 const jimp = require('jimp/dist');
 const { errorResponse } = require('../../shared/apiResponse');
-const fetch = require('node-fetch').default;
-const { accessToken, spaceId } = require('../../../contentfulConfig');
 const { getUser } = require('../../shared/users');
 const {
-  // getMunicipalityStats,
   getMunicipality,
 } = require('../../shared/municipalities');
 
@@ -19,15 +16,9 @@ const isbot = require('isbot');
 
 const pathToFont = __dirname + '/ideal-bold.fnt';
 const s3 = new AWS.S3();
-const emblemBucketUrl =
-  'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
 const outputBucket = 'xbge-personalized-sharing-images';
 const redirectUrl = 'https://expedition-grundeinkommen.de/';
-const contentfulRequestHeaders = {
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-  },
-};
+
 
 module.exports.handler = async event => {
   try {
@@ -41,7 +32,6 @@ module.exports.handler = async event => {
     const isBot = isbot(event.headers['User-Agent']);
 
     const {
-      version: templateVersion,
       ags,
       addProfilePicture,
     } = event.queryStringParameters;
@@ -67,9 +57,6 @@ module.exports.handler = async event => {
 
     const municipality = municipalityResult.Item;
 
-    // Not needed for now
-    // const stats = await getMunicipalityStats(ags, municipality.population);
-
     let renderedImageUrl = null;
     // Only generate new image if is bot
     if (isBot) {
@@ -81,18 +68,12 @@ module.exports.handler = async event => {
         profilePictureUrl = user.profilePictures['900'];
       }
 
-      // Get template image
-      const { templates, captions } = await getTemplatesFromContentful(
-        templateVersion,
-        profilePictureUrl
-      );
+      const captionsCrowdfunding = { mainCaption: '$USERNAME lässt #Grundeinkommen Realität werden.', altMainCaption: 'Ich lasse #Grundeinkommen Realität werden.', subCaption: '' };
 
       // Render combined image
       const buffer = await createRenderedImage(
-        templates,
-        ags,
         profilePictureUrl,
-        captions,
+        captionsCrowdfunding,
         user.username,
         municipality.name
       );
@@ -111,19 +92,17 @@ module.exports.handler = async event => {
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="twitter:card" content="summary_large_image" />
-        ${
-          renderedImageUrl
-            ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
-            : ''
-        }
+        ${renderedImageUrl
+        ? `<meta name="twitter:image" content="${renderedImageUrl}" />`
+        : ''
+      }
         <meta name="twitter:title" content="${title}" />
         <meta name="twitter:description" content="${description}" />
         
-        ${
-          renderedImageUrl
-            ? `<meta property="og:image" content="${renderedImageUrl}" />`
-            : ''
-        }
+        ${renderedImageUrl
+        ? `<meta property="og:image" content="${renderedImageUrl}" />`
+        : ''
+      }
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         
@@ -131,9 +110,8 @@ module.exports.handler = async event => {
 
         <script>
           if(${!isBot}) {
-            window.location.href = "${redirectUrl}/?referredByUser=${
-      user.cognitoId
-    }";
+            window.location.href = "${redirectUrl}/?referredByUser=${user.cognitoId
+      }";
           }
         </script>
         <style>
@@ -173,9 +151,8 @@ module.exports.handler = async event => {
         <div class="loader"></div>
         <p>
           Solltest du nicht automatisch weitergeleitet werden,<br/>klicke bitte
-          <a href="${redirectUrl}/?referredByUser=${
-      user.cognitoId
-    }"><b>HIER</b></a>
+          <a href="${redirectUrl}/?referredByUser=${user.cognitoId
+      }"><b>HIER</b></a>
         </p>
       </body>
     </html>
@@ -194,82 +171,21 @@ module.exports.handler = async event => {
   }
 };
 
-// Get all entries of type shareTemplate from contentful
-// and retrieve the corresponding image depending on templateVersion
-const getTemplatesFromContentful = async (
-  templateVersion,
-  profilePictureUrl
-) => {
-  const result = await fetch(
-    `https://cdn.contentful.com/spaces/${spaceId}/entries?content_type=shareTemplate`,
-    contentfulRequestHeaders
-  );
-
-  // parse result to json
-  const json = await result.json();
-
-  const asset = json.items.find(
-    item => item.fields.version === templateVersion
-  );
-
-  const assetId = profilePictureUrl
-    ? asset.fields.backgroundImage.sys.id
-    : asset.fields.backgroundImageAlternative.sys.id;
-  const emblemId = asset.fields.genericEmblem.sys.id;
-
-  const mainCaption = asset.fields.mainCaption;
-  const altMainCaption = asset.fields.altMainCaption;
-  const subCaption = asset.fields.subCaption;
-
-  const [templateUrl, emblemUrl] = await Promise.all([
-    getAssetFromContentful(assetId),
-    getAssetFromContentful(emblemId),
-  ]);
-
-  return {
-    templates: { templateUrl, emblemUrl },
-    captions: { mainCaption, altMainCaption, subCaption },
-  };
-};
-
-// Get some asset from Contentful by ID
-const getAssetFromContentful = async assetId => {
-  const assetResult = await fetch(
-    `https://cdn.contentful.com/spaces/${spaceId}/assets/${assetId}`,
-    contentfulRequestHeaders
-  );
-
-  // parse result to json
-  const json = await assetResult.json();
-  return json.fields.file.url;
-};
-
 const createRenderedImage = async (
-  templates,
-  ags,
   profilePictureUrl,
   captions,
   username,
   municipalityName
 ) => {
   try {
-    // Note: deactived using real emblem for now due to legal reasons
-    // const emblem = await jimp.read(`${emblemBucketUrl}/${ags}.png`);
-    const genericEmblem = await jimp.read(`https:${templates.emblemUrl}`);
-
     return createCompositeImage(
-      templates.templateUrl,
-      genericEmblem,
       profilePictureUrl,
       captions,
       username,
       municipalityName
     );
   } catch (error) {
-    const genericEmblem = await jimp.read(`https:${templates.emblemUrl}`);
     return createCompositeImage(
-      templates.templateUrl,
-      genericEmblem,
       profilePictureUrl,
       captions,
       username,
@@ -279,21 +195,16 @@ const createRenderedImage = async (
 };
 
 const createCompositeImage = async (
-  backgroundUrl,
-  emblem,
   profilePictureUrl,
   captions,
   username,
   municipalityName
 ) => {
-  const background = await jimp.read(`https:${backgroundUrl}`);
+  const backgroundUrlCrowdfunding = profilePictureUrl ?
+    'https://images.ctfassets.net/af08tobnb0cl/694pHdfxxgXfIl4IckPzHL/38e066345bde0b587a911bbaff16a614/Teilen_Crowdfundingv3_leer.png' :
+    'https://images.ctfassets.net/af08tobnb0cl/5WDl82fjV2aPFl6olbx8EO/ceabe8fa8e6e461d88b244d2f26c2cbb/Teilen_Crowdfunding_v3.png';
 
-  emblem.scaleToFit(180, 180, jimp.RESIZE_BEZIER);
-  background.composite(
-    emblem,
-    1050 - emblem.bitmap.width / 2,
-    500 - emblem.bitmap.height / 2
-  );
+  const background = await jimp.read(backgroundUrlCrowdfunding);
 
   let profilePicture;
   if (profilePictureUrl) {
@@ -352,15 +263,14 @@ const uploadImage = async (buffer, userId, ags) => {
 const printText = async (image, captions, username, municipalityName) => {
   const mainCaption = username
     ? captions.mainCaption
-        .replace('$USERNAME', username)
-        .replace('$MUNICIPALITY_NAME', municipalityName)
+      .replace('$USERNAME', username)
+      .replace('$MUNICIPALITY_NAME', municipalityName)
     : captions.altMainCaption.replace('$MUNICIPALITY_NAME', municipalityName);
 
   const font = await jimp.loadFont(pathToFont);
 
   await image
-    .print(font, image.bitmap.width / 2 - 50, 150, mainCaption, 700)
+    .print(font, image.bitmap.width / 2 - 50, 150, mainCaption, 500)
     .print(font, image.bitmap.width / 2 - 50, 400, captions.subCaption, 350);
-
   return image;
 };
