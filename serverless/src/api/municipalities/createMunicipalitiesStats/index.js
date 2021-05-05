@@ -15,7 +15,6 @@ const {
   getAllMunicipalitiesWithUsers,
   getAllMunicipalities,
   getStatsJson,
-  getExistingUsers,
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
@@ -101,8 +100,6 @@ const computeStats = async ({
 
       let signups = 0;
 
-      signups += getExistingUsers(ags);
-
       if (municipalityMap.has(municipality.ags)) {
         const { users } = municipalityMap.get(municipality.ags);
 
@@ -126,9 +123,7 @@ const computeStats = async ({
       user => date - new Date(user.createdAt) < timePassed
     );
 
-    let signups = users.length;
-
-    signups += getExistingUsers(ags);
+    const signups = users.length;
 
     // We add our already existing user base
 
@@ -215,7 +210,7 @@ const computeStats = async ({
     qualifiedMunicipalities,
     summary: {
       previous: previousSummary,
-      users: userMuncipality.length + Math.round(17802 * 0.7) + 10000,
+      users: userMuncipality.length + 6000,
       municipalities: municipalitiesWithUsers.length + 3,
       timestamp: new Date().toISOString(),
     },
