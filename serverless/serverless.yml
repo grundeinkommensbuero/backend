@@ -863,6 +863,20 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  mergeReferredUsers:
+    handler: src/triggers/mergeReferredUsers/index.handler
+    events:
+      - schedule: rate(60 minutes)
+    timeout: 100 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   deleteUnverified:
     handler: src/triggers/deleteUnverifiedUsers/index.handler
     events: # Call this function every day at 0 am (via cloudwatch event)
