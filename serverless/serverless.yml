@@ -1271,6 +1271,28 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::xbge-personalized-sharing-images/*'
 
+  signIn:
+    handler: src/api/users/signIn/index.handler
+    events:
+      - http:
+          path: users/sign-in
+          method: post
+          cors: true
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminUpdateUserAttributes
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+
   # Admin cognito auth triggers
 
   createAuthChallenge:
@@ -1282,8 +1304,6 @@ functions:
       - cognitoUserPool:
           pool: UserPool
           trigger: CreateAuthChallenge
-    environment:
-      SES_FROM_ADDRESS: support@expedition-grundeinkommen.de
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -1448,6 +1468,10 @@ resources:
           - phone_number
         Schema:
           - Name: source
+            Mutable: true
+            Required: false
+            AttributeDataType: String
+          - Name: authChallenge
             Mutable: true
             Required: false
             AttributeDataType: String
