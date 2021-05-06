@@ -845,6 +845,11 @@ paths:
                                 userId:
                                   type: string
                                   description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
+                          referredUsers:
+                            description: Other users which signed up because this user shared, array of userIds
+                            type: array
+                            items:
+                              type: string
         '401':
           description: Not authorized to get user
           content:
