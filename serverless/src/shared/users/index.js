@@ -107,6 +107,31 @@ const getAllUnconfirmedUsers = async (users = [], startKey = null) => {
   return users;
 };
 
+const getReferredUsers = async (users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(#key1.#key2)',
+    ExpressionAttributeNames: { '#key1': 'store', '#key2': 'referredByUser' },
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getReferredUsers(users, result.LastEvaluatedKey);
+  }
+
+  // otherwise return the array
+  return users;
+};
+
 const getCognitoUser = userId => {
   const params = {
     UserPoolId: userPoolId,
@@ -182,6 +207,7 @@ module.exports = {
   getUserByMail,
   getAllUsers,
   getAllUnconfirmedUsers,
+  getReferredUsers,
   getCognitoUser,
   updateNewsletterConsent,
   createUserInCognito,
