@@ -360,10 +360,12 @@ const createNewsletterString = customNewsletters => {
 
   if (typeof customNewsletters !== 'undefined') {
     for (const newsletter of customNewsletters) {
-      newsletterString += `${newsletter.name}, `;
+      if (newsletter.value) {
+        newsletterString += `${newsletter.name}, `;
 
-      if (newsletter.extraInfo) {
-        extraInfo = true;
+        if (newsletter.extraInfo) {
+          extraInfo = true;
+        }
       }
     }
   }
