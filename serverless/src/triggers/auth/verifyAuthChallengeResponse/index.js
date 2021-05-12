@@ -26,13 +26,13 @@ exports.handler = async event => {
   return event;
 };
 
-const sendEmail = (userAttributes, code) => {
+const sendEmail = (email, code) => {
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
         To: [
           {
-            Email: userAttributes.email,
+            Email: email,
           },
         ],
         TemplateID: 1583518,
