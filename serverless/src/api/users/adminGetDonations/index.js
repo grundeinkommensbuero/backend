@@ -67,11 +67,15 @@ const sortDonations = donations => {
         new Date(debitDate2).getFullYear() &&
       new Date(debitDate1).getDate() === new Date(debitDate2).getDate()
     ) {
-      if (donation1.firstName < donation2.firstName) {
+      if (
+        donation1.firstName.toLowerCase() < donation2.firstName.toLowerCase()
+      ) {
         return -1;
       }
 
-      if (donation1.firstName > donation2.firstName) {
+      if (
+        donation1.firstName.toLowerCase() > donation2.firstName.toLowerCase()
+      ) {
         return 1;
       }
     }
