@@ -6,10 +6,16 @@ const ses = new AWS.SES();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const mail = require('raw-loader!./loginCodeMail.html').default;
 const { errorResponse } = require('../../../shared/apiResponse');
+const { getUser } = require('../../../shared/users');
 
 module.exports.handler = async event => {
   try {
-    const { email } = JSON.parse(event.body);
+    // Either userId or email was passed in body
+    const { email, userId } = JSON.parse(event.body);
+
+    if (typeof email === 'undefined' && typeof userId === 'undefined') {
+      return errorResponse(400, 'Missing email or username');
+    }
 
     // Store challenge as a custom attribute in Cognito
     // Generate a new secret login code and mail it to the user
@@ -26,11 +32,19 @@ module.exports.handler = async event => {
           },
         ],
         UserPoolId: process.env.USER_POOL_ID,
-        Username: email,
+        Username: email || userId,
       })
       .promise();
 
-    await sendEmailViaSes(email, secretLoginCode);
+    let emailTo = email;
+    // If param was userId and not email we need to get the email to send an email with code
+    if (typeof email === 'undefined') {
+      const { Item } = await getUser(userId);
+
+      emailTo = Item.email;
+    }
+
+    await sendEmailViaSes(emailTo, secretLoginCode);
 
     return {
       statusCode: 204,

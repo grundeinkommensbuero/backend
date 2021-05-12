@@ -1298,6 +1298,11 @@ functions:
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
           - cognito-idp:AdminUpdateUserAttributes
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
