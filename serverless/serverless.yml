@@ -850,19 +850,6 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
-  sendVerificationMail:
-    handler: src/triggers/auth/sendVerificationMail/index.handler
-    events:
-      - cognitoUserPool:
-          pool: UserPool
-          trigger: CustomMessage
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - dynamodb:PutItem
-        Resource:
-          - 'Fn::GetAtt': [UsersTable, Arn]
-
   mergeReferredUsers:
     handler: src/triggers/mergeReferredUsers/index.handler
     events:
@@ -1312,14 +1299,11 @@ functions:
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
 
-  # Admin cognito auth triggers
+  # User cognito auth triggers
 
   createAuthChallenge:
     handler: src/triggers/auth/createAuthChallenge/index.handler
     events:
-      - cognitoUserPool:
-          pool: AdminUserPool
-          trigger: CreateAuthChallenge
       - cognitoUserPool:
           pool: UserPool
           trigger: CreateAuthChallenge
@@ -1339,18 +1323,12 @@ functions:
     handler: src/triggers/auth/defineAuthChallenge/index.handler
     events:
       - cognitoUserPool:
-          pool: AdminUserPool
-          trigger: DefineAuthChallenge
-      - cognitoUserPool:
           pool: UserPool
           trigger: DefineAuthChallenge
 
   preSignUp:
     handler: src/triggers/auth/preSignUp/index.handler
     events:
-      - cognitoUserPool:
-          pool: AdminUserPool
-          trigger: PreSignUp
       - cognitoUserPool:
           pool: UserPool
           trigger: PreSignUp
@@ -1359,10 +1337,56 @@ functions:
     handler: src/triggers/auth/verifyAuthChallengeResponse/index.handler
     events:
       - cognitoUserPool:
-          pool: AdminUserPool
-          trigger: VerifyAuthChallengeResponse
-      - cognitoUserPool:
           pool: UserPool
+          trigger: VerifyAuthChallengeResponse
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:${self:provider.region}:*:*'
+
+  # Admin cognito auth triggers
+
+  adminCreateAuthChallenge:
+    handler: src/triggers/adminAuth/createAuthChallenge/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: CreateAuthChallenge
+    environment:
+      SES_FROM_ADDRESS: support@expedition-grundeinkommen.de
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
+  adminDefineAuthChallenge:
+    handler: src/triggers/adminAuth/defineAuthChallenge/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: DefineAuthChallenge
+
+  adminPreSignUp:
+    handler: src/triggers/adminAuth/preSignUp/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
+          trigger: PreSignUp
+
+  adminVerifyAuthChallengeResponse:
+    handler: src/triggers/adminAuth/verifyAuthChallengeResponse/index.handler
+    events:
+      - cognitoUserPool:
+          pool: AdminUserPool
           trigger: VerifyAuthChallengeResponse
     iamRoleStatements:
       - Effect: 'Allow'
