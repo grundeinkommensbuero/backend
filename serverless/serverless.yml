@@ -1390,6 +1390,7 @@ functions:
       - cognitoUserPool:
           pool: AdminUserPool
           trigger: VerifyAuthChallengeResponse
+    iamRoleStatementsName: ${self:custom.stage}-admin-verify-challenge
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
