@@ -72,6 +72,7 @@ const uploadImage = (buffer, fileName) => {
     Key: `${fileName}.png`,
     Body: buffer,
     ContentType: jimp.MIME_PNG,
+    CacheControl: 'max-age=259200',
   };
 
   return s3.upload(params).promise();
