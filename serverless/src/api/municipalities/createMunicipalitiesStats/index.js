@@ -74,6 +74,11 @@ const computeStats = async ({
   let absoluteChangers = [];
   const municipalitiesWithUsers = [];
   const qualifiedMunicipalities = [];
+  const ninetyPercentMunicipalities = [];
+  const eightyPercentMunicipalities = [];
+  const seventyPercentMunicipalities = [];
+  const sixtyPercentMunicipalities = [];
+  const fiftyPercentMunicipalities = [];
 
   const municipalityMap = new Map();
   for (const { userId, ags, createdAt, population } of userMuncipality) {
@@ -151,6 +156,16 @@ const computeStats = async ({
     // If municipality is qualified add it to array
     if (current >= goal) {
       qualifiedMunicipalities.push({ ags, current, population });
+    } else if (current >= goal * 0.9) {
+      ninetyPercentMunicipalities.push({ ags, current, population });
+    } else if (current >= goal * 0.8) {
+      eightyPercentMunicipalities.push({ ags, current, population });
+    } else if (current >= goal * 0.7) {
+      seventyPercentMunicipalities.push({ ags, current, population });
+    } else if (current >= goal * 0.6) {
+      sixtyPercentMunicipalities.push({ ags, current, population });
+    } else if (current >= goal * 0.5) {
+      fiftyPercentMunicipalities.push({ ags, current, population });
     }
 
     municipalitiesWithUsers.push({
@@ -208,10 +223,19 @@ const computeStats = async ({
     events: [...wins, ...newcomers, ...relativeChangers, ...absoluteChangers],
     municipalities: municipalitiesWithUsers,
     qualifiedMunicipalities,
+    ninetyPercentMunicipalities,
+    eightyPercentMunicipalities,
+    seventyPercentMunicipalities,
+    sixtyPercentMunicipalities,
+    fiftyPercentMunicipalities,
     summary: {
       previous: previousSummary,
       users: userMuncipality.length + 6000,
-      municipalities: municipalitiesWithUsers.length + 3,
+      // Users who are not signed up for a municipality and are not included in the user count above
+      notIncludedUsers: 4245,
+      // Also needed for admin stats to only show the exact number of signups for municipalities
+      addedUsers: 6000,
+      municipalities: municipalitiesWithUsers.length,
       timestamp: new Date().toISOString(),
     },
   };
