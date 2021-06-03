@@ -2173,3 +2173,41 @@ paths:
                     type: string
                   error:
                     type: string
+
+  /municipalities/{ags}:
+    get:
+      summary: Gets info (without stats) for one municipalities
+      description: Takes ags as path param to get info for a specific municipality
+      parameters:
+        - in: path
+          name: ags
+          schema:
+            type: string
+          description: Allgemeiner Gemeindeschlüssel to get specific municipality
+          required: true
+      responses:
+        '200':
+          description: Municipality successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      ags:
+                        type: string
+                        description: Ags of municipality
+                      name:
+                        type: string
+                        description: Name of municipality
+                      slug:
+                        type: string
+                        description: Slug to form link to municipality page
+                      population:
+                        type: number
+                        description: Population of municipality
+                      goal:
+                        type: integer
+                        description: Goal which is aimed at for this municipality
