@@ -38,6 +38,31 @@ describe('createPledge api test', () => {
     expect(json).toHaveProperty('pledge');
   });
 
+  it('should create a new berlin 2 pledge for a user', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        pledgeId: 'berlin-2',
+        signatureCount: 6,
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/pledges`,
+      request
+    );
+
+    const json = await response.json();
+
+    expect(response.status).toEqual(201);
+    expect(json).toHaveProperty('userId');
+    expect(json).toHaveProperty('pledge');
+  });
+
   it('should not be able to create the same pledge twice', async () => {
     const request = {
       method: 'POST',
