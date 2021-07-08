@@ -1174,6 +1174,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
       - Effect: Allow
