@@ -22,6 +22,7 @@ const bucket = 'xbge-municipalities-stats';
 const stage = process.env.STAGE;
 const fileName = 'statsWithAll.json';
 const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
+const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 const FOURTY_HOURS = 40 * 60 * 60 * 1000;
 
 // Munic to test: 01051014
@@ -61,7 +62,6 @@ const analyseMunicipalities = async municipalities => {
 
         const event = reached50 ? '50' : 'goal';
 
-        // For testing purposes send mail for specific municipality in dev stage
         if (
           stage === 'prod' ||
           (stage === 'dev' && (ags === '14628230' || ags === '14713000'))
@@ -110,9 +110,11 @@ const sendMailsForMunicipality = async (municipality, event, ratio) => {
   // send info mail to xbge team
   // NOTE: this does not make sense anymore, because the email is sent
   // every time now, because we set the flag for users and not for the municipality anymore
-  // if (stage === 'prod') {
-  //   await sendInfoMail(municipality, event);
-  // }
+  if (event === 'goal' && !municipality.sentMailToTeam) {
+    await sendInfoMail(municipality, event);
+
+    await setSentToTeamFlag(municipality.ags);
+  }
 };
 
 const setFlag = (ags, userId, mails, event) => {
@@ -133,6 +135,22 @@ const setFlag = (ags, userId, mails, event) => {
     UpdateExpression: 'SET mails = :flags',
     ExpressionAttributeValues: {
       ':flags': flags,
+    },
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  return ddb.update(params).promise();
+};
+
+const setSentToTeamFlag = ags => {
+  const params = {
+    TableName: municipalitiesTableName,
+    Key: {
+      ags,
+    },
+    UpdateExpression: 'SET sentMailToTeam = :flag',
+    ExpressionAttributeValues: {
+      ':flag': true,
     },
     ReturnValues: 'UPDATED_NEW',
   };
@@ -168,12 +186,7 @@ const sendInfoMail = (municipality, event) => {
     } erreicht.`,
     to:
       stage === 'prod'
-        ? [
-            'valentin@expedition-grundeinkommen.de',
-            // 'lucia@expedition-grundeinkommen.de',
-            // 'laura@expedition-grundeinkommen.de',
-            // 'sarah@expedition-grundeinkommen.de',
-          ]
+        ? 'team@expedition-grundeinkommen.de'
         : 'valentin@expedition-grundeinkommen.de',
   };
 
