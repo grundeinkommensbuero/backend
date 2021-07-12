@@ -7,6 +7,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider();
 const mail = require('raw-loader!./loginCodeMail.html').default;
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUser } = require('../../../shared/users');
+const { sendErrorMail } = require('../../../shared/errorHandling');
 
 module.exports.handler = async event => {
   try {
@@ -55,11 +56,12 @@ module.exports.handler = async event => {
       isBase64Encoded: false,
     };
   } catch (error) {
-    console.log('Error signing in', error);
+    console.log('Error signing in', error, event.body);
     if (error.code === 'UserNotFoundException') {
       return errorResponse(404, 'User not found');
     }
 
+    await sendErrorMail('sign in', error);
     return errorResponse(500, 'Error while signing in user', error);
   }
 };
