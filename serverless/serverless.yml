@@ -1363,6 +1363,13 @@ functions:
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:${self:provider.region}:*:*'
 
+  verifyNewEmail:
+    handler: src/triggers/auth/verifyNewEmail/index.handler
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: CustomMessage
+
   # Admin cognito auth triggers
 
   adminCreateAuthChallenge:
