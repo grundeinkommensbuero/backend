@@ -1362,6 +1362,18 @@ functions:
           - ses:SendEmail
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:${self:provider.region}:*:*'
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminUpdateUserAttributes
+        # Due to a circular dependency issue we need to define the resource manually
+        # Not ideal, because we are giving permission to update every userpool, but I
+        # don't see it as security risk.
+        Resource: 'arn:aws:cognito-idp:eu-central-1:550953582247:userpool/*'
 
   verifyNewEmail:
     handler: src/triggers/auth/verifyNewEmail/index.handler
