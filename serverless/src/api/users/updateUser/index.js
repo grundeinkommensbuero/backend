@@ -174,6 +174,7 @@ const isAuthorized = event => {
 const updateUser = async (
   userId,
   {
+    email,
     username,
     zipCode,
     city,
@@ -236,6 +237,7 @@ const updateUser = async (
   }
 
   const data = {
+    ':email': email,
     ':updatedAt': timestamp,
     ':username': username,
     ':zipCode': zipCode,
@@ -317,6 +319,7 @@ const updateUser = async (
         ? 'customNewsletters = :customNewsletters,'
         : ''
     }
+    ${typeof email !== 'undefined' ? 'email = :email,' : ''}
     ${typeof username !== 'undefined' ? 'username = :username,' : ''}
     ${typeof zipCode !== 'undefined' ? 'zipCode = :zipCode,' : ''}
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
