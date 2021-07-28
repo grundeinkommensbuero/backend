@@ -18,12 +18,12 @@ const {
 } = require('../../../shared/municipalities');
 const { getMunicipalityGoal } = require('../../../shared/utils');
 
-const timePassed = 28 * 24 * 60 * 60 * 1000;
+const timePassed = 40 * 24 * 60 * 60 * 1000;
 const amountOfWins = 16;
 const amountOfNewcomers = 16;
 const amountOfChanged = 16;
-const changeThresholds = { absolute: 30, relative: 2 };
-const signupThreshold = 150;
+const changeThresholds = { absolute: 20, relative: 1 };
+const signupThreshold = 100;
 
 module.exports.handler = async event => {
   try {
