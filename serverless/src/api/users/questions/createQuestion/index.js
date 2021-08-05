@@ -13,6 +13,13 @@ const responseHeaders = {
 
 module.exports.handler = async event => {
   try {
+    if (!isAuthorized(event)) {
+      return errorResponse(
+        401,
+        'No permission to create question for other user'
+      );
+    }
+
     // get user id from path parameter
     const userId = event.pathParameters.userId;
 
@@ -95,4 +102,10 @@ const updateUser = (userId, question, timestamp, zipCode, username) => {
 
 const validateParams = (userId, question) => {
   return typeof userId !== 'undefined' && typeof question !== 'undefined';
+};
+
+const isAuthorized = event => {
+  return (
+    event.requestContext.authorizer.claims.sub === event.pathParameters.userId
+  );
 };
