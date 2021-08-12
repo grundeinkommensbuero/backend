@@ -27,7 +27,7 @@ const generateCsv = users => {
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
-        if (new Date(donation.debitDate) > new Date('2021-03-17')) {
+        if (new Date(donation.debitDate) > new Date('2021-07-17')) {
           dataStringOnetimeDonations += createDonationString(donation, false);
         }
       }
@@ -72,6 +72,12 @@ const generateCsv = users => {
             );
           }
         } else {
+          console.log(
+            'Donation  (userId, donationId)',
+            user.cognitoId,
+            donation.id,
+            donation.lastName
+          );
           dataStringRecurringDonations += createDonationString(donation, true);
         }
       }
