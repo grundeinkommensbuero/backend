@@ -19,13 +19,31 @@ describe('adminCreateUser api test', () => {
       },
       body: JSON.stringify({
         email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
-        campaignCode: `${randomWords()}-1`,
+        campaignCode: 'berlin-1',
       }),
     };
 
     const response = await fetch(`${INVOKE_URL}/admin/users`, request);
 
     expect(response.status).toEqual(201);
+  });
+
+  it('passed campaign should not exist', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        campaignCode: `${randomWords()}-1`,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/admin/users`, request);
+
+    expect(response.status).toEqual(400);
   });
 
   it('should have missing params (campaign)', async () => {

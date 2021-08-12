@@ -796,6 +796,12 @@ functions:
           - cognito-idp:AdminSetUserPassword
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+        Resource:
+          - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
   adminGetUsers:
     handler: src/api/users/adminGetUsers/index.handler

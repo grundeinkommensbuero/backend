@@ -7,6 +7,10 @@ const {
   createUserInCognito,
   confirmUserInCognito,
 } = require('../../../shared/users');
+const {
+  getUserMunicipalityLink,
+  createUserMunicipalityLink,
+} = require('../../../shared/municipalities');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const usersTableName = process.env.USERS_TABLE_NAME;
@@ -22,10 +26,24 @@ const stateToAgs = {
   hamburg: '02000000',
 };
 
+const stateToPopulation = {
+  berlin: 3669491,
+  bremen: 567559,
+  hamburg: 1847253,
+};
+
 module.exports.handler = async event => {
   try {
     // get email from body,
     const { email, campaignCode, extraInfo } = JSON.parse(event.body);
+
+    // create a (nice to later work with) object, which campaign it is
+    const campaign = constructCampaignId(campaignCode);
+    const ags = stateToAgs[campaign.state];
+
+    if (typeof ags === 'undefined') {
+      return errorResponse(400, 'No ags for this campaign found');
+    }
 
     const lowercaseEmail = email.toLowerCase();
 
@@ -47,6 +65,11 @@ module.exports.handler = async event => {
 
       // now create dynamo resource
       await createUserInDynamo(userId, lowercaseEmail, campaignCode, extraInfo);
+      await createUserMunicipalityLink(
+        ags,
+        userId,
+        stateToPopulation[campaign.state]
+      );
 
       try {
         // send email to to user to welcome them
@@ -72,9 +95,25 @@ module.exports.handler = async event => {
         try {
           const result = await getUserByMail(email);
           const user = result.Items[0];
+          const userId = user.cognitoId;
 
           // if not, we want to update the user
           await updateNewsletterSettings(user, campaignCode, extraInfo);
+
+          // Query user municipality table to check if user has already signed up for this munic
+          const userMunicipalityResult = await getUserMunicipalityLink(
+            ags,
+            userId
+          );
+
+          // If user has not already signed up for municipality...
+          if (!('Item' in userMunicipalityResult)) {
+            await createUserMunicipalityLink(
+              ags,
+              userId,
+              stateToPopulation[campaign.state]
+            );
+          }
 
           return errorResponse(
             200,
