@@ -1,10 +1,39 @@
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-const TEMPLATE = 2617393;
+const TEMPLATE_DEFAULT = 2617393;
+const TEMPLATE_BREMEN_DEFAULT = 3107979;
+const TEMPLATE_BREMEN_ACTIVE_USER = 3108929;
+const AGS_BREMEN = '04011000';
+
 const END_OF_QUALIFYING_PERIOD = '2021-03-21 18:00:00';
 
-const sendMail = ({ username, email, cognitoId: userId }, municipality) => {
+const sendMail = (
+  { username, email, cognitoId: userId, customNewsletters },
+  municipality
+) => {
+  let templateId;
+
+  if (municipality.ags === AGS_BREMEN) {
+    // If ags is bremen we want to check if user wants to get extra info (is active user)
+    // Depending on that we send a different template
+    if (customNewsletters) {
+      const newsletterSetting = customNewsletters.find(
+        newsletter => newsletter.ags === AGS_BREMEN
+      );
+
+      if (newsletterSetting && newsletterSetting.extraInfo) {
+        templateId = TEMPLATE_BREMEN_ACTIVE_USER;
+      } else {
+        templateId = TEMPLATE_BREMEN_DEFAULT;
+      }
+    } else {
+      templateId = TEMPLATE_BREMEN_DEFAULT;
+    }
+  } else {
+    templateId = TEMPLATE_DEFAULT;
+  }
+
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -13,7 +42,7 @@ const sendMail = ({ username, email, cognitoId: userId }, municipality) => {
             Email: email,
           },
         ],
-        TemplateID: TEMPLATE,
+        TemplateID: templateId,
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
