@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-// const sendMail = require('./sendMail');
+const sendMail = require('./sendMail');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
 const {
@@ -73,8 +73,11 @@ module.exports.handler = async event => {
 
       try {
         // send email to to user to welcome them
-        // TODO: reactivate sending of email
-        // await sendMail(email, campaignCode, userId);
+        // but only for bremen for now
+        // TODO: reactivate sending of email for other campaigns
+        if (campaignCode === 'bremen-1') {
+          await sendMail(email, userId, extraInfo);
+        }
 
         // return message (created)
         return {
