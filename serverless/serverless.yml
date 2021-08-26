@@ -534,6 +534,10 @@ functions:
             parameters:
               paths:
                 userId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -1144,19 +1148,19 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::xbge-map-images/*'
 
-  # getQuestions:
-  #   handler: src/api/users/questions/getQuestions/index.handler
-  #   events:
-  #     - http:
-  #         path: questions
-  #         method: get
-  #         cors: true
-  #   iamRoleStatements:
-  #     - Effect: 'Allow'
-  #       Action:
-  #         - dynamodb:Scan
-  #       Resource:
-  #         - 'Fn::GetAtt': [UsersTable, Arn]
+  getQuestions:
+    handler: src/api/users/questions/getQuestions/index.handler
+    events:
+      - http:
+          path: questions
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   sendGoalMails:
     handler: src/triggers/municipalities/sendGoalMails/index.handler

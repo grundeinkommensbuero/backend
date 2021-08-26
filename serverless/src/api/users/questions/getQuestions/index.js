@@ -118,7 +118,6 @@ const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
   if ('LastEvaluatedKey' in result) {
     return await getAllUsersWithQuestions(questions, result.LastEvaluatedKey);
   } 
-    // otherwise return the array
-    return questions;
-  
+  // otherwise return the array
+  return questions;
 };
