@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../../shared/users');
 const { errorResponse } = require('../../../../shared/apiResponse');
+const { constructCampaignId } = require('../../../../shared/utils');
 
 const tableName = process.env.USERS_TABLE_NAME;
 
@@ -23,9 +24,9 @@ module.exports.handler = async event => {
     // get user id from path parameter
     const userId = event.pathParameters.userId;
 
-    const { question, zipCode, username } = JSON.parse(event.body);
+    const { question, campaignCode } = JSON.parse(event.body);
 
-    if (!validateParams(userId, question)) {
+    if (!validateParams(userId)) {
       return errorResponse(400, 'User id was not provided');
     }
 
@@ -39,7 +40,7 @@ module.exports.handler = async event => {
 
       try {
         // otherwise proceed
-        await updateUser(userId, question, timestamp, zipCode, username);
+        await updateUser(userId, question, timestamp, campaignCode);
 
         // return message (no content)
         return {
@@ -65,43 +66,31 @@ module.exports.handler = async event => {
   }
 };
 
-const updateUser = (userId, question, timestamp, zipCode, username) => {
-  const questionObject = { timestamp, body: question };
+const updateUser = (userId, question, timestamp, campaignCode) => {
+  // create a (nice to later work with) object, which campaign it is
+  const campaign = constructCampaignId(campaignCode);
 
-  const values = { ':question': [questionObject] };
+  const questionObject = { timestamp, campaign };
 
-  // Zip code and username might not have been passed to endpoint
-  if (typeof username !== 'undefined') {
-    values[':username'] = username;
-  }
-
-  if (typeof zipCode !== 'undefined') {
-    values[':zipCode'] = zipCode.toString();
+  if (typeof question !== 'undefined') {
+    questionObject.body = question;
   }
 
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
-    UpdateExpression: `
-    SET ${
-      typeof zipCode !== 'undefined'
-        ? 'zipCode = if_not_exists(zipCode, :zipCode),'
-        : ''
-    }
-    ${
-      typeof username !== 'undefined'
-        ? 'username = if_not_exists(username, :username),'
-        : ''
-    }
-    questions = :question
-    `,
-    ExpressionAttributeValues: values,
+    UpdateExpression:
+      'SET questions = list_append(if_not_exists(questions, :emptyList),:question)',
+    ExpressionAttributeValues: {
+      ':question': [questionObject],
+      ':emptyList': [],
+    },
   };
   return ddb.update(params).promise();
 };
 
-const validateParams = (userId, question) => {
-  return typeof userId !== 'undefined' && typeof question !== 'undefined';
+const validateParams = userId => {
+  return typeof userId !== 'undefined';
 };
 
 const isAuthorized = event => {
