@@ -13,6 +13,7 @@ custom:
   signaturesTableName: ${self:custom.stage}-signatures
   municipalitiesTableName: ${self:custom.stage}-municipalities
   userMunicipalityTableName: ${self:custom.stage}-users-municipalities
+  meetupsTableName: ${self:custom.stage}-meetups
   imageBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-profile-pics
   listsBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-signature-lists
   output:
@@ -44,6 +45,7 @@ provider:
     SIGNATURES_TABLE_NAME: ${self:custom.signaturesTableName}
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
+    MEETUPS_TABLE_NAME: ${self:custom.meetupsTableName}
     STAGE: ${self:custom.stage}
     MAP_IMAGE_BUCKET: xbge-map-images
     IMAGE_BUCKET: ${self:custom.imageBucketName}
@@ -1326,6 +1328,34 @@ functions:
           - ses:SendRawEmail
         Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
 
+  createMeetup:
+    handler: src/api/meetups/createMeetup/index.handler
+    events:
+      - http:
+          path: meetups
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:PutItem
+        Resource:
+          - 'Fn::GetAtt': [MeetupsTable, Arn]
+
+  getMeetups:
+    handler: src/api/meetups/getMeetups/index.handler
+    events:
+      - http:
+          path: meetups
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [MeetupsTable, Arn]
+
   # User cognito auth triggers
 
   createAuthChallenge:
@@ -1541,6 +1571,18 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: 'ALL'
+
+    MeetupsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.meetupsTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
