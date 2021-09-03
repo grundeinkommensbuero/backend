@@ -27,7 +27,7 @@ const generateCsv = users => {
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
-        if (new Date(donation.debitDate) > new Date('2021-07-17')) {
+        if (new Date(donation.debitDate) > new Date('2021-08-17')) {
           dataStringOnetimeDonations += createDonationString(donation, false);
         }
       }
