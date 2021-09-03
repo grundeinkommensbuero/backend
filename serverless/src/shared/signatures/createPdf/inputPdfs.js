@@ -184,6 +184,54 @@ module.exports = {
     },
   },
 
+  'berlin-2': {
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdfs/berlin-2/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.B.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.B.QRCODE,
+        },
+      ],
+    },
+    SINGLE_SW: {
+      file: fs.readFileSync(__dirname + '/pdfs/berlin-2/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.B.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.B.QRCODE,
+        },
+      ],
+    },
+    SINGLE: {
+      file: fs.readFileSync(__dirname + '/pdfs/berlin-2/5er_FARBIG.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 1,
+          position: CODE_POSITIONS.B.BARCODE,
+        },
+        {
+          type: 'QR',
+          page: 1,
+          position: CODE_POSITIONS.B.QRCODE,
+        },
+      ],
+    },
+  },
+
   'hamburg-1': {
     COMBINED: {
       file: fs.readFileSync(__dirname + '/pdfs/hamburg-1/ALLES.pdf'),

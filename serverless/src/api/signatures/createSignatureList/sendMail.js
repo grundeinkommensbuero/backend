@@ -14,7 +14,7 @@ const STATES = {
 };
 
 // Functions which sends an email with the attached pdf and returns a promise
-const sendMail = (email, username, attachments, campaign) => {
+const sendMail = (email, userId, username, attachments, campaign) => {
   const params = {
     Messages: [
       {
@@ -36,6 +36,7 @@ const sendMail = (email, username, attachments, campaign) => {
         Variables: {
           username: username || '',
           state: STATES[campaign.state],
+          userId,
         },
         Attachments: attachments,
       },

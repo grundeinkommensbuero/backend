@@ -6,6 +6,7 @@ const CAMPAIGN_SHORTS = {
   'schleswig-holstein-1': 'sh',
   'brandenburg-1': 'bb',
   'berlin-1': 'b',
+  'berlin-2': 'b',
   'hamburg-1': 'hh',
   'bremen-1': 'hb',
 };
@@ -25,6 +26,7 @@ const GOALS = {
   'hamburg-1': '12.000',
   'bremen-1': '5.000',
   'berlin-1': '24.000',
+  'berlin-2': '24.000',
 };
 
 const NUM_TO_WORD = {

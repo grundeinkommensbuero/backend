@@ -11,6 +11,16 @@ module.exports = {
       type: 'SINGLE',
     },
   ],
+  'berlin-2': [
+    {
+      filename: 'Liste_schwarz-weiss.pdf',
+      type: 'SINGLE_SW',
+    },
+    {
+      filename: 'Liste_farbig.pdf',
+      type: 'SINGLE',
+    },
+  ],
   'hamburg-1': [
     {
       filename: 'Tipps_zum_Unterschriftensammeln.pdf',

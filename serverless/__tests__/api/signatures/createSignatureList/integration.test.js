@@ -45,6 +45,22 @@ describe('createSignatureList api test', () => {
     expect(json).toHaveProperty('signatureList');
   });
 
+  it('should create a new anonymous signature list for ber 2', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        campaignCode: 'berlin-2',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
   it('should create a new anonymous signature list for bb', async () => {
     const request = {
       method: 'POST',
