@@ -192,7 +192,8 @@ const handler = async event => {
                 requestBody.campaignCode
               );
 
-              await sendMail(email, username, attachments, campaign);
+              console.log('user id before sending mail', userId);
+              await sendMail(email, userId, username, attachments, campaign);
             }
 
             return {

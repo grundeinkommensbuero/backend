@@ -55,6 +55,7 @@ module.exports.handler = async event => {
         list.userId !== 'anonymous' &&
         !list.manually &&
         list.campaign.code !== 'berlin-1' &&
+        list.campaign.code !== 'berlin-2' &&
         list.campaign.code !== 'schleswig-holstein-1' &&
         list.campaign.code !== 'brandenburg-1' &&
         list.campaign.code !== 'dibb-1'
