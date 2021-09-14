@@ -50,51 +50,48 @@ module.exports.handler = async event => {
 const getRecentQuestions = async (questionLimit, userId) => {
   const users = await getAllUsersWithQuestions();
 
-  // Sort questions by most recent
-  users.sort(
-    (user1, user2) =>
-      new Date(user2.questions[0].timestamp) -
-      new Date(user1.questions[0].timestamp)
-  );
-
-  // get the first x elements of array
-  // First get 10 more, so we can filter out hidden ones
-  // This way we don't have to loop through the whole users array
-  const usersWithRecentQuestions = users
-    .slice(0, questionLimit + 10)
-    .filter(user => !user.questions[0].hidden)
-    .slice(0, questionLimit);
-
   const questions = [];
 
   // Construct new questions array
-  for (const user of usersWithRecentQuestions) {
-    const question = {
-      body: user.questions[0].body,
-      timestamp: user.questions[0].timestamp,
-      user: {
-        username: user.username,
-        profilePictures: user.profilePictures,
-      },
-      belongsToCurrentUser: user.cognitoId === userId,
-    };
+  users.forEach(user => {
+    user.questions.forEach(question => {
+      if (!question.hidden) {
+        const questionObj = {
+          body: question.body,
+          timestamp: question.timestamp,
+          user: {
+            username: user.username,
+            profilePictures: user.profilePictures,
+            userId: user.cognitoId,
+          },
+          belongsToCurrentUser: user.cognitoId === userId,
+        };
 
-    // Match zip code to city and add it to user object
-    if (!('city' in user)) {
-      if ('zipCode' in user) {
-        // Zip code should be string, but we need to make sure
-        question.user.city = zipCodeMatcher.getCityByZipCode(
-          user.zipCode.toString()
-        );
+        // Match zip code to city and add it to user object
+        if (!('city' in user)) {
+          if ('zipCode' in user) {
+            // Zip code should be string, but we need to make sure
+            questionObj.user.city = zipCodeMatcher.getCityByZipCode(
+              user.zipCode.toString()
+            );
+          }
+        } else {
+          questionObj.user.city = user.city;
+        }
+        questions.push(questionObj);
       }
-    } else {
-      question.user.city = user.city;
-    }
+    });
+  });
 
-    questions.push(question);
-  }
+  // Sort questions by date
+  questions.sort(
+    (question1, question2) =>
+      new Date(question2.timestamp) - new Date(question1.timestamp)
+  );
 
-  return questions;
+  // get requested number of questions
+  const sliceBy = questionLimit != 0 ? questionLimit : questions.length;
+  return questions.slice(0, sliceBy);
 };
 
 const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
@@ -117,7 +114,7 @@ const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
     return await getAllUsersWithQuestions(questions, result.LastEvaluatedKey);
-  } 
+  }
   // otherwise return the array
   return questions;
 };
