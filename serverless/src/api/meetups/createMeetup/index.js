@@ -51,6 +51,8 @@ const validateParams = ({
   coordinates,
   locationName,
   address,
+  city,
+  zipCode,
   endTime,
   startTime,
   description,
@@ -67,7 +69,9 @@ const validateParams = ({
     (typeof campaignCode === 'undefined' || typeof campaignCode === 'string') &&
     typeof description === 'string' &&
     (typeof contact === 'undefined' || typeof contact === 'string') &&
-    typeof address === 'string'
+    typeof address === 'string' &&
+    typeof city === 'string' &&
+    typeof zipCode === 'string'
   );
 };
 
@@ -77,6 +81,8 @@ const createMeetup = async ({
   coordinates,
   locationName,
   address,
+  city,
+  zipCode,
   endTime,
   startTime,
   description,
@@ -94,6 +100,8 @@ const createMeetup = async ({
     coordinates,
     locationName,
     address,
+    city,
+    zipCode,
     endTime,
     startTime,
     description,
