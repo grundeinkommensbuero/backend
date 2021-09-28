@@ -17,17 +17,17 @@ module.exports.handler = async event => {
     if (!isAuthorized(event)) {
       return errorResponse(
         401,
-        'No permission to create question for other user'
+        'No permission to create interaction for other user'
       );
     }
 
     // get user id from path parameter
     const userId = event.pathParameters.userId;
 
-    const { question, campaignCode } = JSON.parse(event.body);
+    const { body, campaignCode, type } = JSON.parse(event.body);
 
-    if (!validateParams(userId)) {
-      return errorResponse(400, 'User id was not provided');
+    if (!validateParams(userId, type)) {
+      return errorResponse(400, 'User id or type was not provided');
     }
 
     const timestamp = new Date().toISOString();
@@ -40,7 +40,7 @@ module.exports.handler = async event => {
 
       try {
         // otherwise proceed
-        await updateUser(userId, question, timestamp, campaignCode);
+        await updateUser(userId, body, timestamp, campaignCode, type);
 
         // return message (no content)
         return {
@@ -48,8 +48,8 @@ module.exports.handler = async event => {
           headers: responseHeaders,
           isBase64Encoded: false,
           body: JSON.stringify({
-            message: 'Successfully created new question',
-            question,
+            message: 'Successfully created new interaction',
+            body,
           }),
         };
       } catch (error) {
@@ -66,31 +66,38 @@ module.exports.handler = async event => {
   }
 };
 
-const updateUser = (userId, question, timestamp, campaignCode) => {
+const updateUser = (userId, body, timestamp, campaignCode, type) => {
   // create a (nice to later work with) object, which campaign it is
-  const campaign = constructCampaignId(campaignCode);
+  const campaign =
+    typeof campaignCode !== 'undefined'
+      ? constructCampaignId(campaignCode)
+      : null;
 
-  const questionObject = { timestamp, campaign };
+  const interactionObject = { timestamp, type };
 
-  if (typeof question !== 'undefined') {
-    questionObject.body = question;
+  if (typeof body !== 'undefined') {
+    interactionObject.body = body;
+  }
+
+  if (campaign !== null) {
+    interactionObject.campaign = campaign;
   }
 
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
     UpdateExpression:
-      'SET questions = list_append(if_not_exists(questions, :emptyList),:question)',
+      'SET interactions = list_append(if_not_exists(interactions, :emptyList),:interaction)',
     ExpressionAttributeValues: {
-      ':question': [questionObject],
+      ':interaction': [interactionObject],
       ':emptyList': [],
     },
   };
   return ddb.update(params).promise();
 };
 
-const validateParams = userId => {
-  return typeof userId !== 'undefined';
+const validateParams = (userId, type) => {
+  return typeof userId !== 'undefined' && typeof type !== 'undefined';
 };
 
 const isAuthorized = event => {
