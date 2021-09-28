@@ -423,14 +423,14 @@ paths:
                             type: string
                           original:
                             type: string
-                      questions:
+                      interactions:
                         type: array
                         items:
                           type: object
                           properties:
                             body:
                               type: string
-                              description: Text of the question
+                              description: Text of the interaction
                             timestamp:
                               type: string
                       hasZipCode:
@@ -781,14 +781,14 @@ paths:
                             type: string
                           original:
                             type: string
-                      questions:
+                      interactions:
                         type: array
                         items:
                           type: object
                           properties:
                             body:
                               type: string
-                              description: Text of the question
+                              description: Text of the interaction
                             timestamp:
                               type: string
                       donations:
@@ -970,27 +970,27 @@ paths:
                   error:
                     type: string
 
-  /users/{userId}/questions:
+  /users/{userId}/interactions:
     post:
-      summary: Creates a question to ubi for a specific user
+      summary: Creates a interaction to ubi for a specific user
       parameters:
         - in: path
           name: userId
           schema:
             type: string
           required: true
-          description: User id of user for whom a question should be created
+          description: User id of user for whom a interaction should be created
       requestBody:
-        description: Question object that is added
+        description: interaction object that is added
         required: true
         content:
           application/json:
             schema:
               type: object
               required:
-                - question
+                - interaction
               properties:
-                question:
+                interaction:
                   type: string
                 name:
                   type: string
@@ -998,7 +998,7 @@ paths:
                   type: string
       responses:
         '201':
-          description: Question was successfully created
+          description: interaction was successfully created
           content:
             application/json:
               schema:
@@ -1006,7 +1006,7 @@ paths:
                 properties:
                   message:
                     type: string
-                  question:
+                  interaction:
                     type: string
         '404':
           description: User not found
@@ -1126,15 +1126,6 @@ paths:
       responses:
         '200':
           description: User succesfully updated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  question:
-                    type: string
         '404':
           description: User not found
           content:

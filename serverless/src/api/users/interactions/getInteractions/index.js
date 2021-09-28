@@ -11,21 +11,21 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-const defaultQuestionLimit = 10;
+const defaultInteractionLimit = 10;
 
 module.exports.handler = async event => {
   try {
-    // If there is a query param use it as the number of questions to get,
+    // If there is a query param use it as the number of interactions to get,
     // otherwise the default
-    const questionLimit =
+    const interactionLimit =
       event.queryStringParameters && event.queryStringParameters.limit
         ? event.queryStringParameters.limit
-        : defaultQuestionLimit;
+        : defaultInteractionLimit;
 
     const userId =
       event.queryStringParameters && event.queryStringParameters.userId;
 
-    const questions = await getRecentQuestions(questionLimit, userId);
+    const interactions = await getRecentInteractions(interactionLimit, userId);
 
     // return message (no content)
     return {
@@ -33,45 +33,45 @@ module.exports.handler = async event => {
       headers: responseHeaders,
       isBase64Encoded: false,
       body: JSON.stringify({
-        message: 'Successfully retrieved users with most recent questions',
-        questions,
+        message: 'Successfully retrieved users with most recent interactions',
+        interactions,
       }),
     };
   } catch (error) {
     console.log('error', error);
     return errorResponse(
       500,
-      'Error while getting questions from table',
+      'Error while getting interactions from table',
       error
     );
   }
 };
 
-const getRecentQuestions = async (questionLimit, userId) => {
-  const users = await getAllUsersWithQuestions();
+const getRecentInteractions = async (interactionLimit, userId) => {
+  const users = await getAllUsersWithInteractions();
 
-  // Sort questions by most recent
+  // Sort interactions by most recent
   users.sort(
     (user1, user2) =>
-      new Date(user2.questions[0].timestamp) -
-      new Date(user1.questions[0].timestamp)
+      new Date(user2.interactions[0].timestamp) -
+      new Date(user1.interactions[0].timestamp)
   );
 
   // get the first x elements of array
   // First get 10 more, so we can filter out hidden ones
   // This way we don't have to loop through the whole users array
-  const usersWithRecentQuestions = users
-    .slice(0, questionLimit + 10)
-    .filter(user => !user.questions[0].hidden)
-    .slice(0, questionLimit);
+  const usersWithRecentInteractions = users
+    .slice(0, interactionLimit + 10)
+    .filter(user => !user.interactions[0].hidden)
+    .slice(0, interactionLimit);
 
-  const questions = [];
+  const interactions = [];
 
-  // Construct new questions array
-  for (const user of usersWithRecentQuestions) {
-    const question = {
-      body: user.questions[0].body,
-      timestamp: user.questions[0].timestamp,
+  // Construct new interactions array
+  for (const user of usersWithRecentInteractions) {
+    const interaction = {
+      body: user.interactions[0].body,
+      timestamp: user.interactions[0].timestamp,
       user: {
         username: user.username,
         profilePictures: user.profilePictures,
@@ -83,26 +83,29 @@ const getRecentQuestions = async (questionLimit, userId) => {
     if (!('city' in user)) {
       if ('zipCode' in user) {
         // Zip code should be string, but we need to make sure
-        question.user.city = zipCodeMatcher.getCityByZipCode(
+        interaction.user.city = zipCodeMatcher.getCityByZipCode(
           user.zipCode.toString()
         );
       }
     } else {
-      question.user.city = user.city;
+      interaction.user.city = user.city;
     }
 
-    questions.push(question);
+    interactions.push(interaction);
   }
 
-  return questions;
+  return interactions;
 };
 
-const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
+const getAllUsersWithInteractions = async (
+  interactions = [],
+  startKey = null
+) => {
   const params = {
     TableName: tableName,
-    FilterExpression: 'attribute_exists(questions)',
+    FilterExpression: 'attribute_exists(interactions)',
     ProjectionExpression:
-      'cognitoId, username, zipCode, profilePictures, questions, city',
+      'cognitoId, username, zipCode, profilePictures, interactions, city',
   };
 
   if (startKey !== null) {
@@ -112,12 +115,15 @@ const getAllUsersWithQuestions = async (questions = [], startKey = null) => {
   const result = await ddb.scan(params).promise();
 
   // add elements to existing array
-  questions.push(...result.Items);
+  interactions.push(...result.Items);
 
   // call same function again, if the whole table has not been scanned yet
   if ('LastEvaluatedKey' in result) {
-    return await getAllUsersWithQuestions(questions, result.LastEvaluatedKey);
-  } 
+    return await getAllUsersWithInteractions(
+      interactions,
+      result.LastEvaluatedKey
+    );
+  }
   // otherwise return the array
-  return questions;
+  return interactions;
 };
