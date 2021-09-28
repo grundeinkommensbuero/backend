@@ -22,10 +22,18 @@ module.exports.handler = async event => {
         ? event.queryStringParameters.limit
         : defaultInteractionLimit;
 
+    // If a type is passed only interactions with this type are returned
+    const interactionType =
+      event.queryStringParameters && event.queryStringParameters.type;
+
     const userId =
       event.queryStringParameters && event.queryStringParameters.userId;
 
-    const interactions = await getRecentInteractions(interactionLimit, userId);
+    const interactions = await getRecentInteractions(
+      interactionLimit,
+      userId,
+      interactionType
+    );
 
     // return message (no content)
     return {
@@ -47,7 +55,11 @@ module.exports.handler = async event => {
   }
 };
 
-const getRecentInteractions = async (interactionLimit, userId) => {
+const getRecentInteractions = async (
+  interactionLimit,
+  userId,
+  interactionType
+) => {
   const users = await getAllUsersWithInteractions();
 
   const interactions = [];
@@ -55,7 +67,10 @@ const getRecentInteractions = async (interactionLimit, userId) => {
   // Construct new interactions array
   users.forEach(user => {
     user.interactions.forEach(interaction => {
-      if (!interaction.hidden) {
+      if (
+        !interaction.hidden &&
+        (!interactionType || interaction.type === interactionType)
+      ) {
         const interactionObj = {
           body: interaction.body,
           timestamp: interaction.timestamp,
@@ -64,7 +79,6 @@ const getRecentInteractions = async (interactionLimit, userId) => {
             profilePictures: user.profilePictures,
             userId: user.cognitoId,
           },
-          belongsToCurrentUser: user.cognitoId === userId,
         };
 
         // Match zip code to city and add it to user object
