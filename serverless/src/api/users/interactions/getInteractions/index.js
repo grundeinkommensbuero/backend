@@ -50,51 +50,49 @@ module.exports.handler = async event => {
 const getRecentInteractions = async (interactionLimit, userId) => {
   const users = await getAllUsersWithInteractions();
 
-  // Sort interactions by most recent
-  users.sort(
-    (user1, user2) =>
-      new Date(user2.interactions[0].timestamp) -
-      new Date(user1.interactions[0].timestamp)
-  );
-
-  // get the first x elements of array
-  // First get 10 more, so we can filter out hidden ones
-  // This way we don't have to loop through the whole users array
-  const usersWithRecentInteractions = users
-    .slice(0, interactionLimit + 10)
-    .filter(user => !user.interactions[0].hidden)
-    .slice(0, interactionLimit);
-
   const interactions = [];
 
   // Construct new interactions array
-  for (const user of usersWithRecentInteractions) {
-    const interaction = {
-      body: user.interactions[0].body,
-      timestamp: user.interactions[0].timestamp,
-      user: {
-        username: user.username,
-        profilePictures: user.profilePictures,
-      },
-      belongsToCurrentUser: user.cognitoId === userId,
-    };
+  users.forEach(user => {
+    user.interactions.forEach(interaction => {
+      if (!interaction.hidden) {
+        const interactionObj = {
+          body: interaction.body,
+          timestamp: interaction.timestamp,
+          user: {
+            username: user.username,
+            profilePictures: user.profilePictures,
+            userId: user.cognitoId,
+          },
+          belongsToCurrentUser: user.cognitoId === userId,
+        };
 
-    // Match zip code to city and add it to user object
-    if (!('city' in user)) {
-      if ('zipCode' in user) {
-        // Zip code should be string, but we need to make sure
-        interaction.user.city = zipCodeMatcher.getCityByZipCode(
-          user.zipCode.toString()
-        );
+        // Match zip code to city and add it to user object
+        if (!('city' in user)) {
+          if ('zipCode' in user) {
+            // Zip code should be string, but we need to make sure
+            interactionObj.user.city = zipCodeMatcher.getCityByZipCode(
+              user.zipCode.toString()
+            );
+          }
+        } else {
+          interactionObj.user.city = user.city;
+        }
+        interactions.push(interactionObj);
       }
-    } else {
-      interaction.user.city = user.city;
-    }
+    });
+  });
 
-    interactions.push(interaction);
-  }
+  // Sort interactions by date
+  interactions.sort(
+    (interaction1, interaction2) =>
+      new Date(interaction2.timestamp) - new Date(interaction1.timestamp)
+  );
 
-  return interactions;
+  // get requested number of interactions
+  const sliceBy =
+    interactionLimit !== 0 ? interactionLimit : interactions.length;
+  return interactions.slice(0, sliceBy);
 };
 
 const getAllUsersWithInteractions = async (
