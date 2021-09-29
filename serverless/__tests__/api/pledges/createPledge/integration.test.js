@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const { authenticate } = require('../../../testUtils');
 
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
-const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+const userId = '92c1e189-52d0-45cc-adbe-8071696a3221';
 let token;
 
 describe('createPledge api test', () => {

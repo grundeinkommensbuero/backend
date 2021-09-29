@@ -972,7 +972,7 @@ paths:
 
   /users/{userId}/interactions:
     post:
-      summary: Creates a interaction to ubi for a specific user
+      summary: Creates a new interaction for a specific user
       parameters:
         - in: path
           name: userId
@@ -988,13 +988,13 @@ paths:
             schema:
               type: object
               required:
-                - interaction
+                - type
               properties:
-                interaction:
+                body:
                   type: string
-                name:
+                type:
                   type: string
-                zipCode:
+                campaignCode:
                   type: string
       responses:
         '201':
@@ -1007,7 +1007,16 @@ paths:
                   message:
                     type: string
                   interaction:
-                    type: string
+                    type: object
+                    properties:
+                      body:
+                        type: string
+                      type:
+                        type: string
+                      campaignCode:
+                        type: string
+                      timestamp:
+                        type: string
         '404':
           description: User not found
           content:
@@ -1317,12 +1326,7 @@ paths:
     get:
       summary: Get all interactions (of a certain type if parameter is passed)
       parameters:
-        - in: query
-          name: userId
-          schema:
-            type: string
-          description: Optionally a userId can be passed so the backend can already flag if an interaction belongs to a user. 
-        - in: query
+      - in: query
           name: limit
           schema:
             type: integer
@@ -1334,8 +1338,8 @@ paths:
           description: If passed only interactions with this type will be passed
       responses:
         '200':
-          content:
           description: Interactions successfully retrieved
+          content:
             application/json:
               schema:
                 type: object
@@ -1372,7 +1376,7 @@ paths:
                                   type: string
                                 original:
                                   type: string
-                            city: 
+                            city:
                               type: string
                               description: The city is computed based on the zip code (could be refactored to use municipality structure)
         '500':
@@ -1386,7 +1390,6 @@ paths:
                     type: string
                   error:
                     type: string
-        
 
   /admin/users:
     post:

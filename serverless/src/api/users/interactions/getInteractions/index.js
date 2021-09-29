@@ -26,13 +26,13 @@ module.exports.handler = async event => {
     const interactionType =
       event.queryStringParameters && event.queryStringParameters.type;
 
-    const userId =
-      event.queryStringParameters && event.queryStringParameters.userId;
+    const campaignCode =
+      event.queryStringParameters && event.queryStringParameters.campaignCode;
 
     const interactions = await getRecentInteractions(
       interactionLimit,
-      userId,
-      interactionType
+      interactionType,
+      campaignCode
     );
 
     // return message (no content)
@@ -57,8 +57,8 @@ module.exports.handler = async event => {
 
 const getRecentInteractions = async (
   interactionLimit,
-  userId,
-  interactionType
+  interactionType,
+  campaignCode
 ) => {
   const users = await getAllUsersWithInteractions();
 
@@ -69,11 +69,15 @@ const getRecentInteractions = async (
     user.interactions.forEach(interaction => {
       if (
         !interaction.hidden &&
-        (!interactionType || interaction.type === interactionType)
+        (!interactionType || interaction.type === interactionType)(
+          !campaignCode || interaction.campaign.code === campaignCode
+        )
       ) {
         const interactionObj = {
           body: interaction.body,
           timestamp: interaction.timestamp,
+          campaign: interaction.campaign,
+          type: interaction.type,
           user: {
             username: user.username,
             profilePictures: user.profilePictures,
