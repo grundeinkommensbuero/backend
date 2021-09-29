@@ -40,7 +40,13 @@ module.exports.handler = async event => {
 
       try {
         // otherwise proceed
-        await updateUser(userId, body, timestamp, campaignCode, type);
+        const createdInteraction = await updateUser(
+          userId,
+          body,
+          timestamp,
+          campaignCode,
+          type
+        );
 
         // return message (no content)
         return {
@@ -49,7 +55,7 @@ module.exports.handler = async event => {
           isBase64Encoded: false,
           body: JSON.stringify({
             message: 'Successfully created new interaction',
-            body,
+            interaction: createdInteraction,
           }),
         };
       } catch (error) {
@@ -66,7 +72,7 @@ module.exports.handler = async event => {
   }
 };
 
-const updateUser = (userId, body, timestamp, campaignCode, type) => {
+const updateUser = async (userId, body, timestamp, campaignCode, type) => {
   // create a (nice to later work with) object, which campaign it is
   const campaign =
     typeof campaignCode !== 'undefined'
@@ -93,7 +99,10 @@ const updateUser = (userId, body, timestamp, campaignCode, type) => {
       ':emptyList': [],
     },
   };
-  return ddb.update(params).promise();
+
+  await ddb.update(params).promise();
+
+  return interactionObject;
 };
 
 const validateParams = (userId, type) => {

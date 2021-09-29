@@ -4,7 +4,7 @@ const randomWords = require('random-words');
 const uuid = require('uuid/v4');
 const crypto = require('crypto-secure-random-digit');
 
-const USER_ID = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+const USER_ID = '92c1e189-52d0-45cc-adbe-8071696a3221';
 const randomAgs = crypto.randomDigits(6).join('');
 const randomUserId = uuid();
 const anotherRandomUserId = uuid();
