@@ -69,9 +69,9 @@ const getRecentInteractions = async (
     user.interactions.forEach(interaction => {
       if (
         !interaction.hidden &&
-        (!interactionType || interaction.type === interactionType)(
-          !campaignCode || interaction.campaign.code === campaignCode
-        )
+        (!interactionType || interaction.type === interactionType) &&
+        (!campaignCode ||
+          (interaction.campaign && interaction.campaign.code === campaignCode))
       ) {
         const interactionObj = {
           body: interaction.body,
