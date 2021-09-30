@@ -19,7 +19,7 @@ describe('createInteraction api test', () => {
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ body, type: 'pledge' }),
+      body: JSON.stringify({ body, type: 'pledgePackage' }),
     };
 
     const response = await fetch(
@@ -31,7 +31,7 @@ describe('createInteraction api test', () => {
 
     expect(response.status).toEqual(201);
     expect(json.interaction.body).toEqual(body);
-    expect(json.interaction.type).toEqual('pledge');
+    expect(json.interaction.type).toEqual('pledgePackage');
   });
 
   it('should create interaction with type question and campaignCode', async () => {

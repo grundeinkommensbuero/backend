@@ -42,7 +42,7 @@ describe('get interactions api test', () => {
     };
 
     const response = await fetch(
-      `${INVOKE_URL}/interactions?type=pledge`,
+      `${INVOKE_URL}/interactions?type=pledgePackage`,
       request
     );
 
@@ -52,7 +52,7 @@ describe('get interactions api test', () => {
     expect(json).toHaveProperty('interactions');
     expect(json.interactions[0]).toHaveProperty('user');
     expect(json.interactions[0]).toHaveProperty('type');
-    expect(json.interactions[0].type).toEqual('pledge');
+    expect(json.interactions[0].type).toEqual('pledgePackage');
   });
 
   it('should get most recent interactions with campaignCode', async () => {
