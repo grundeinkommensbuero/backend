@@ -19,7 +19,7 @@ module.exports.handler = async event => {
     // otherwise the default
     const interactionLimit =
       event.queryStringParameters && event.queryStringParameters.limit
-        ? event.queryStringParameters.limit
+        ? parseInt(event.queryStringParameters.limit, 10)
         : defaultInteractionLimit;
 
     // If a type is passed only interactions with this type are returned
@@ -110,6 +110,7 @@ const getRecentInteractions = async (
   // get requested number of interactions
   const sliceBy =
     interactionLimit !== 0 ? interactionLimit : interactions.length;
+
   return interactions.slice(0, sliceBy);
 };
 
