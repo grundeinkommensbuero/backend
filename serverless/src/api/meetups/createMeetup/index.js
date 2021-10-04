@@ -70,8 +70,8 @@ const validateParams = ({
     typeof description === 'string' &&
     (typeof contact === 'undefined' || typeof contact === 'string') &&
     typeof address === 'string' &&
-    typeof city === 'string' &&
-    typeof zipCode === 'string'
+    (typeof city === 'undefined' || typeof city === 'string') &&
+    (typeof zipCode === 'undefined' || typeof zipCode === 'string')
   );
 };
 
