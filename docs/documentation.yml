@@ -423,14 +423,14 @@ paths:
                             type: string
                           original:
                             type: string
-                      questions:
+                      interactions:
                         type: array
                         items:
                           type: object
                           properties:
                             body:
                               type: string
-                              description: Text of the question
+                              description: Text of the interaction
                             timestamp:
                               type: string
                       hasZipCode:
@@ -781,14 +781,14 @@ paths:
                             type: string
                           original:
                             type: string
-                      questions:
+                      interactions:
                         type: array
                         items:
                           type: object
                           properties:
                             body:
                               type: string
-                              description: Text of the question
+                              description: Text of the interaction
                             timestamp:
                               type: string
                       donations:
@@ -970,35 +970,35 @@ paths:
                   error:
                     type: string
 
-  /users/{userId}/questions:
+  /users/{userId}/interactions:
     post:
-      summary: Creates a question to ubi for a specific user
+      summary: Creates a new interaction for a specific user
       parameters:
         - in: path
           name: userId
           schema:
             type: string
           required: true
-          description: User id of user for whom a question should be created
+          description: User id of user for whom a interaction should be created
       requestBody:
-        description: Question object that is added
+        description: interaction object that is added
         required: true
         content:
           application/json:
             schema:
               type: object
               required:
-                - question
+                - type
               properties:
-                question:
+                body:
                   type: string
-                name:
+                type:
                   type: string
-                zipCode:
+                campaignCode:
                   type: string
       responses:
         '201':
-          description: Question was successfully created
+          description: interaction was successfully created
           content:
             application/json:
               schema:
@@ -1006,8 +1006,17 @@ paths:
                 properties:
                   message:
                     type: string
-                  question:
-                    type: string
+                  interaction:
+                    type: object
+                    properties:
+                      body:
+                        type: string
+                      type:
+                        type: string
+                      campaignCode:
+                        type: string
+                      timestamp:
+                        type: string
         '404':
           description: User not found
           content:
@@ -1126,15 +1135,6 @@ paths:
       responses:
         '200':
           description: User succesfully updated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  question:
-                    type: string
         '404':
           description: User not found
           content:
@@ -1310,6 +1310,75 @@ paths:
                 properties:
                   message:
                     type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /interactions:
+    get:
+      summary: Get all interactions (of a certain type if parameter is passed)
+      parameters:
+      - in: query
+          name: limit
+          schema:
+            type: integer
+          description: If passed only this number of interactions will be returned. Default is 10.
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: If passed only interactions with this type will be passed
+      responses:
+        '200':
+          description: Interactions successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  interactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        body:
+                          type: string
+                        timestamp:
+                          type: string
+                        type:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                            profilePictures:
+                              type: object
+                              description: Object containing links to images in various sizes
+                              properties:
+                                '200':
+                                  type: string
+                                '500':
+                                  type: string
+                                '900':
+                                  type: string
+                                '1200':
+                                  type: string
+                                original:
+                                  type: string
+                            city:
+                              type: string
+                              description: The city is computed based on the zip code (could be refactored to use municipality structure)
         '500':
           description: Server error
           content:

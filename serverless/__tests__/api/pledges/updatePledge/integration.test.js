@@ -3,7 +3,7 @@ const { authenticate } = require('../../../testUtils');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
 
-const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+const userId = '92c1e189-52d0-45cc-adbe-8071696a3221';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
 
 let token;

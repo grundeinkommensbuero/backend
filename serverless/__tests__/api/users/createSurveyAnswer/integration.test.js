@@ -2,7 +2,7 @@ const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
 
-const userId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+const userId = '92c1e189-52d0-45cc-adbe-8071696a3221';
 
 describe('createSurveyAnswer api test', () => {
   it('should be able to create survey answer', async () => {
