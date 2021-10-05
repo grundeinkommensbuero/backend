@@ -13,7 +13,7 @@ const uuid = require('uuid/v4');
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const email = 'vali_schagerl@web.de';
-const testUserId = '53b95dd2-74b8-49f4-abeb-add9c950c7d9';
+const testUserId = '92c1e189-52d0-45cc-adbe-8071696a3221';
 const randomAgs = crypto.randomDigits(6).join('');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
 const {

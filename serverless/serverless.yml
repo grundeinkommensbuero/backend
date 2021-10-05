@@ -525,11 +525,11 @@ functions:
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
 
-  createQuestion:
-    handler: src/api/users/questions/createQuestion/index.handler
+  createInteraction:
+    handler: src/api/users/interactions/createInteraction/index.handler
     events:
       - http:
-          path: users/{userId}/questions
+          path: users/{userId}/interactions
           method: post
           cors: true
           request:
@@ -1150,11 +1150,11 @@ functions:
           - s3:PutObjectAcl
         Resource: 'arn:aws:s3:::xbge-map-images/*'
 
-  getQuestions:
-    handler: src/api/users/questions/getQuestions/index.handler
+  getInteractions:
+    handler: src/api/users/interactions/getInteractions/index.handler
     events:
       - http:
-          path: questions
+          path: interactions
           method: get
           cors: true
     iamRoleStatements:
