@@ -6,7 +6,7 @@ const ses = new AWS.SES();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const mail = require('raw-loader!./loginCodeMail.html').default;
 const { errorResponse } = require('../../../shared/apiResponse');
-const { getUser } = require('../../../shared/users');
+const { getUser, createLoginCode } = require('../../../shared/users');
 const { sendErrorMail } = require('../../../shared/errorHandling');
 
 module.exports.handler = async event => {
@@ -20,22 +20,7 @@ module.exports.handler = async event => {
 
     // Store challenge as a custom attribute in Cognito
     // Generate a new secret login code and mail it to the user
-    const secretLoginCode = crypto.randomDigits(6).join('');
-
-    await cognito
-      .adminUpdateUserAttributes({
-        UserAttributes: [
-          {
-            Name: 'custom:authChallenge',
-            Value: `${secretLoginCode},${Math.round(
-              new Date().valueOf() / 1000
-            )}`,
-          },
-        ],
-        UserPoolId: process.env.USER_POOL_ID,
-        Username: email || userId,
-      })
-      .promise();
+    const secretLoginCode = await createLoginCode({ email, userId });
 
     let emailTo = email;
     // If param was userId and not email we need to get the email to send an email with code

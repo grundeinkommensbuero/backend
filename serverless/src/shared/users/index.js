@@ -6,6 +6,7 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
 const tableName = process.env.USERS_TABLE_NAME || 'prod-users';
 const userPoolId = process.env.USER_POOL_ID || 'eu-central-1_xx4VmPPdF';
+const crypto = require('crypto-secure-random-digit');
 
 const getUser = userId => {
   return ddb
@@ -202,6 +203,31 @@ const confirmUserInCognito = userId => {
   return cognito.adminSetUserPassword(setPasswordParams).promise();
 };
 
+// Stores challenge as a custom attribute in Cognito,
+// returns new login code
+// The function offers an overwrite for the user pool id, because some serverless functions
+// might not have env variable due to circular dependency
+const createLoginCode = async ({ email, userId, userPoolIdOverwrite }) => {
+  const secretLoginCode = crypto.randomDigits(6).join('');
+
+  await cognito
+    .adminUpdateUserAttributes({
+      UserAttributes: [
+        {
+          Name: 'custom:authChallenge',
+          Value: `${secretLoginCode},${Math.round(
+            new Date().valueOf() / 1000
+          )}`,
+        },
+      ],
+      UserPoolId: userPoolIdOverwrite || userPoolId,
+      Username: email || userId,
+    })
+    .promise();
+
+  return secretLoginCode;
+};
+
 module.exports = {
   getUser,
   getUserByMail,
@@ -213,4 +239,5 @@ module.exports = {
   createUserInCognito,
   confirmUserInCognito,
   getUsersWithDonations,
+  createLoginCode,
 };
