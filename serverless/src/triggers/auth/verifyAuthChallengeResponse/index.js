@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const { sendErrorMail } = require('../../../shared/errorHandling');
+const { createLoginCode } = require('../../../shared/users');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const ddb = new AWS.DynamoDB.DocumentClient();
@@ -34,10 +35,24 @@ exports.handler = async event => {
         await verifyEmail(event.userPoolId, userAttributes.sub);
         await updateUser(userAttributes.sub, userAttributes.email);
       }
-    } else if (event.request.challengeAnswer === 'resendCode') {
+    } else if (
+      event.request.challengeAnswer === 'resendCode' &&
+      Number(timestamp) > new Date().valueOf() / 1000 - LINK_TIMEOUT_SECONDS
+    ) {
+      // In this case the code is still valid
       // We want to send the second mail via Mailjet as a fallback
       await sendEmail(userAttributes.email, authChallenge);
       event.response.answerCorrect = false;
+    } else if (event.request.challengeAnswer === 'resendCode') {
+      // In this case the code is not valid anymore, which is why we need to create a new one
+      // Generate a new secret login code and mail it to the user
+      const secretLoginCode = await createLoginCode({
+        userId: userAttributes.sub,
+        userPoolIdOverwrite: event.userPoolId,
+      });
+
+      // We want to send the second mail via Mailjet as a fallback
+      await sendEmail(userAttributes.email, secretLoginCode);
     } else {
       event.response.answerCorrect = false;
     }
