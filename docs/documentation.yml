@@ -1326,7 +1326,7 @@ paths:
     get:
       summary: Get all interactions (of a certain type if parameter is passed)
       parameters:
-      - in: query
+        - in: query
           name: limit
           schema:
             type: integer
@@ -1336,6 +1336,11 @@ paths:
           schema:
             type: string
           description: If passed only interactions with this type will be passed
+        - in: query
+          name: campaignCode
+          schema:
+            type: string
+          description: If passed only interactions with this campaign code will be passed
       responses:
         '200':
           description: Interactions successfully retrieved
