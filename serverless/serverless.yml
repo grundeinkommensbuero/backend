@@ -549,6 +549,30 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  updateInteraction:
+    handler: src/api/users/interactions/updateInteraction/index.handler
+    events:
+      - http:
+          path: users/{userId}/interactions/{interactionId}
+          method: patch
+          cors: true
+          request:
+            parameters:
+              paths:
+                userId: true # not optional
+                interactionId: true # not optional
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   updateUser:
     handler: src/api/users/updateUser/index.handler
     events:
