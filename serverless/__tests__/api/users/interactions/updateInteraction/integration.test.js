@@ -113,6 +113,43 @@ describe('updateInteraction api test', () => {
     expect(user.interactions[0].done).toEqual(true);
     expect(user.interactions[0]).toHaveProperty('updatedAt');
   });
+
+  it('should not find interaction', async () => {
+    const body = 'Was machst du am Samstag?';
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({ body, done: true }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/interactions/blub`,
+      request
+    );
+
+    expect(response.status).toEqual(404);
+  });
+
+  it('should not be able to authorize', async () => {
+    const body = 'Was machst du am Samstag?';
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      body: JSON.stringify({ body, done: true }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/interactions/blub`,
+      request
+    );
+
+    expect(response.status).toEqual(401);
+  });
 });
 
 const createInteractions = interactions => {
