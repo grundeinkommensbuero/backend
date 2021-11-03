@@ -75,7 +75,7 @@ const getRecentInteractions = async (
       ) {
         const interactionObj = {
           body: interaction.body,
-          timestamp: interaction.timestamp,
+          createdAt: interaction.createdAt,
           campaign: interaction.campaign,
           type: interaction.type,
           user: {
@@ -104,7 +104,7 @@ const getRecentInteractions = async (
   // Sort interactions by date
   interactions.sort(
     (interaction1, interaction2) =>
-      new Date(interaction2.timestamp) - new Date(interaction1.timestamp)
+      new Date(interaction2.createdAt) - new Date(interaction1.createdAt)
   );
 
   // get requested number of interactions
