@@ -1015,10 +1015,76 @@ paths:
                         type: string
                       campaignCode:
                         type: string
-                      timestamp:
+                      createdAt:
+                        type: string
+                      id:
                         type: string
         '404':
           description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/{userId}/interactions/{interactionId}:
+    post:
+      summary: Updates an existing interaction for a specific user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id of user for whom a interaction should be updated
+        - in: path
+          name: interactionId
+          schema:
+            type: string
+          required: true
+          description: Id of interaction to be updated
+      requestBody:
+        description: Key/values which should be updated. You can also add any other new key.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              properties:
+                body:
+                  type: string
+                type:
+                  type: string
+                campaignCode:
+                  type: string
+      responses:
+        '204':
+          description: interaction was successfully updated
+        '404':
+          description: User or interaction not found
           content:
             application/json:
               schema:
@@ -1358,7 +1424,9 @@ paths:
                       properties:
                         body:
                           type: string
-                        timestamp:
+                        createdAt:
+                          type: string
+                        updatedAt:
                           type: string
                         type:
                           type: string
