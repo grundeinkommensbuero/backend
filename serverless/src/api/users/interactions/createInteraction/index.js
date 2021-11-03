@@ -4,6 +4,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../../shared/users');
 const { errorResponse } = require('../../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../../shared/utils');
+const uuid = require('uuid/v4');
 
 const tableName = process.env.USERS_TABLE_NAME;
 
@@ -79,7 +80,7 @@ const updateUser = async (userId, body, timestamp, campaignCode, type) => {
       ? constructCampaignId(campaignCode)
       : null;
 
-  const interactionObject = { timestamp, type };
+  const interactionObject = { createdAt: timestamp, type, id: uuid() };
 
   if (typeof body !== 'undefined') {
     interactionObject.body = body;
