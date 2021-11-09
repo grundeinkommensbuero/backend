@@ -78,6 +78,8 @@ const getRecentInteractions = async (
           createdAt: interaction.createdAt,
           campaign: interaction.campaign,
           type: interaction.type,
+          done: interaction.done,
+          id: interaction.id,
           user: {
             username: user.username,
             profilePictures: user.profilePictures,
