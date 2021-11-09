@@ -4,7 +4,6 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const { getUser } = require('../../../../shared/users');
 const { errorResponse } = require('../../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../../shared/utils');
-const uuid = require('uuid/v4');
 
 const tableName = process.env.USERS_TABLE_NAME;
 
@@ -24,14 +23,14 @@ module.exports.handler = async event => {
 
     // get user id from path parameter
     const userId = event.pathParameters.userId;
+    const interactionId = event.pathParameters.interactionId;
 
-    const { body, campaignCode, type } = JSON.parse(event.body);
+    const jsonBody = JSON.parse(event.body);
 
-    if (!validateParams(userId, type)) {
-      return errorResponse(400, 'User id or type was not provided');
+    if (!validateParams(userId, interactionId)) {
+      return errorResponse(400, 'User id or interaction id was not provided');
     }
 
-    const timestamp = new Date().toISOString();
     try {
       const result = await getUser(userId);
       // if user does not have Item as property, there was no user found
@@ -39,25 +38,28 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No user found with the passed user id');
       }
 
+      const { interactions } = result.Item;
+
+      if (typeof interactions === 'undefined') {
+        return errorResponse(404, 'Use has no interactions yet');
+      }
+
+      // Check if this interaction exists
+      const index = interactions.findIndex(({ id }) => id === interactionId);
+
+      if (index === -1) {
+        return errorResponse(404, 'No interaction found with the passed id');
+      }
+
       try {
         // otherwise proceed
-        const createdInteraction = await updateUser(
-          userId,
-          body,
-          timestamp,
-          campaignCode,
-          type
-        );
+        await updateInteraction(userId, interactions, index, jsonBody);
 
         // return message (no content)
         return {
-          statusCode: 201,
+          statusCode: 204,
           headers: responseHeaders,
           isBase64Encoded: false,
-          body: JSON.stringify({
-            message: 'Successfully created new interaction',
-            interaction: createdInteraction,
-          }),
         };
       } catch (error) {
         console.log('error while updating user', error);
@@ -73,41 +75,58 @@ module.exports.handler = async event => {
   }
 };
 
-const updateUser = async (userId, body, timestamp, campaignCode, type) => {
+const updateInteraction = (userId, interactions, index, jsonBody) => {
+  const timestamp = new Date().toISOString();
+
+  const { campaignCode, body, type, ...rest } = jsonBody;
+
+  // If an interaction id was passed in the json body we need to remove it,
+  // so it is not replaced later when adding values from rest (same with other "reserved" words)
+  delete rest.id;
+  delete rest.createdAt;
+  delete rest.updatedAt;
+
+  const interactionObject = interactions[index];
+
   // create a (nice to later work with) object, which campaign it is
   const campaign =
     typeof campaignCode !== 'undefined'
       ? constructCampaignId(campaignCode)
       : null;
 
-  const interactionObject = { createdAt: timestamp, type, id: uuid() };
-
+  // First overwrite existing values
   if (typeof body !== 'undefined') {
     interactionObject.body = body;
+  }
+
+  if (typeof type !== 'undefined') {
+    interactionObject.type = type;
   }
 
   if (campaign !== null) {
     interactionObject.campaign = campaign;
   }
 
+  interactionObject.updatedAt = timestamp;
+
+  // Add new values which where passes with the json body and
+  // set the item in the array
+  interactions[index] = { ...interactionObject, ...rest };
+
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
-    UpdateExpression:
-      'SET interactions = list_append(if_not_exists(interactions, :emptyList),:interaction)',
+    UpdateExpression: 'SET interactions = :interactions',
     ExpressionAttributeValues: {
-      ':interaction': [interactionObject],
-      ':emptyList': [],
+      ':interactions': interactions,
     },
   };
 
-  await ddb.update(params).promise();
-
-  return interactionObject;
+  return ddb.update(params).promise();
 };
 
-const validateParams = (userId, type) => {
-  return typeof userId !== 'undefined' && typeof type !== 'undefined';
+const validateParams = (userId, interactionId) => {
+  return typeof userId !== 'undefined' && typeof interactionId !== 'undefined';
 };
 
 const isAuthorized = event => {
