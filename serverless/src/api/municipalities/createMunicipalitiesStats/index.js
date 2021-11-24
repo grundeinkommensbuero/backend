@@ -230,11 +230,9 @@ const computeStats = async ({
     fiftyPercentMunicipalities,
     summary: {
       previous: previousSummary,
-      users: userMuncipality.length + 6000,
-      // Users who are not signed up for a municipality and are not included in the user count above
-      notIncludedUsers: 4245,
-      // Also needed for admin stats to only show the exact number of signups for municipalities
-      addedUsers: 6000,
+      users: userMuncipality.length + 6328,
+      // Needed for admin stats to only show the exact number of signups for municipalities
+      addedUsers: 6328,
       municipalities: municipalitiesWithUsers.length,
       timestamp: new Date().toISOString(),
     },
