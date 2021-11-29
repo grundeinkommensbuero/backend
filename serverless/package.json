@@ -26,23 +26,23 @@
     "jimp": "^0.16.1",
     "node-fetch": "^2.6.5",
     "node-mailjet": "^3.3.4",
-    "nodemailer": "^6.7.0",
-    "pdf-lib": "^1.16.0",
+    "nodemailer": "^6.7.2",
+    "pdf-lib": "^1.17.1",
     "raw-loader": "^4.0.2",
     "serverless-api-gateway-caching": "^1.7.4",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^8.1.1",
-    "jest": "^27.2.5",
+    "jest": "^27.4.0",
     "node-loader": "^2.0.0",
     "random-words": "^1.1.1",
-    "serverless": "^2.62.0",
+    "serverless": "^2.67.0",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-plugin-split-stacks": "^1.11.2",
-    "serverless-webpack": "^5.5.4",
+    "serverless-webpack": "^5.6.0",
     "uuid": "^3.4.0",
-    "webpack": "^5.58.1"
+    "webpack": "^5.64.4"
   },
   "jest": {
     "modulePathIgnorePatterns": [
