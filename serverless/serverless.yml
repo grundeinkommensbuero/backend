@@ -381,6 +381,48 @@ functions:
         Resource:
           - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
 
+  getActiveUserCount:
+    handler: src/api/users/getActiveUserCount/index.handler
+    events:
+      - http:
+          path: analytics/active-users
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:HeadObject
+          - s3:GetObject
+        Resource: 'arn:aws:s3:::xbge-active-users-stats/*'
+
+  createActiveUserCount:
+    handler: src/triggers/createActiveUserCount/index.handler
+    timeout: 300
+    events: # Call this function every x minutes
+      - schedule: rate(12 hours)
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatementsName: ${self:custom.stage}-create-active-user-count-role
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:ListUsers
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+      - Effect: Allow
+        Action:
+          - s3:HeadObject
+          - s3:PutObject
+          - s3:PutObjectAcl
+          - s3:GetObject
+        Resource: 'arn:aws:s3:::xbge-active-users-stats/*'
+
   getListCount:
     handler: src/api/signatures/getSignatureListCount/index.handler
     events:
@@ -643,6 +685,28 @@ functions:
     events:
       - http:
           path: users/unsubscribe-callback
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/emailIndex'
+
+  updateMailjetActivity:
+    handler: src/api/users/updateMailjetActivity/index.handler
+    events:
+      - http:
+          path: users/email-activity-callback
           method: post
           cors: true
     iamRoleStatements:
