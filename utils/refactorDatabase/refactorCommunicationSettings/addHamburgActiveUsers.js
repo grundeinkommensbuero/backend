@@ -9,7 +9,6 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const addActiveUsers = async () => {
   const users = await readCsv();
-
   console.log(users);
 
   for (const user of users) {
@@ -28,9 +27,21 @@ const updateUser = user => {
   const newsletters = user.customNewsletters;
   let hasHamburgNewsletter = false;
 
+  if (!newsletters) {
+    return Promise.resolve();
+  }
+
   const newNewsletterArray = newsletters.map(newsletter => {
     if (newsletter.name === 'Hamburg') {
-      newsletter.extraInfo = true;
+      if (!newsletter.extraInfo) {
+        console.log('did not have extra info', user.email);
+      }
+
+      if (newsletter.value) {
+        newsletter.extraInfo = true;
+      } else {
+        console.log('did have false for hamburg', user.email);
+      }
       hasHamburgNewsletter = true;
     }
 
