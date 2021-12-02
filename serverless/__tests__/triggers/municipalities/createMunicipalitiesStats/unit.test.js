@@ -7,25 +7,25 @@ const crypto = require('crypto-secure-random-digit');
 const {
   timePassed,
   computeStats,
-} = require('../../../../src/api/municipalities/createMunicipalitiesStats');
+} = require('../../../../src/triggers/municipalities/createMunicipalitiesStats');
 
 const populations = [
-  40000 /*0*/,
-  100 /*1*/,
-  35000 /*2*/,
-  50000 /*3*/,
-  70000 /*4*/,
-  30000 /*5*/,
-  100000 /*6*/,
-  2000000 /*7*/,
+  40000, // 0
+  100, // 1
+  35000, // 2
+  50000, // 3
+  70000, // 4
+  30000, // 5
+  100000, // 6
+  2000000, // 7
 ];
 const users = [
-  [320, 352], // 0 "new"
+  [40, 335], // 0 "new"
   [1, 4], // 1 –
   [250, 370], // 2 "win"
-  [100, 400], // 3 "new"
+  [80, 110], // 3 "new"
   [500, 750], // 4 "win"
-  [50, 250], // 5 -
+  [50, 70], // 5 -
   [370, 800], // 6 "change"
   [4000, 7000], // 7 "change"
 ];
