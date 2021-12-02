@@ -3,7 +3,9 @@
  * */
 
 const { errorResponse } = require('../../../shared/apiResponse');
-const { timePassed } = require('../createMunicipalitiesStats');
+const {
+  timePassed,
+} = require('../../../triggers/municipalities/createMunicipalitiesStats');
 const { getStatsJson } = require('../../../shared/municipalities');
 
 const responseHeaders = {
