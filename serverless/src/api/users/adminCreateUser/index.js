@@ -203,6 +203,10 @@ const updateNewsletterSettings = (user, campaignCode, extraInfo) => {
       customNewsletters[index].value = true;
       customNewsletters[index].timestamp = timestamp;
     }
+
+    if (extraInfo) {
+      customNewsletters[index].extraInfo = true;
+    }
   } else {
     customNewsletters.push({
       name: capitalizeState(campaign.state),
