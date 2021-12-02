@@ -823,7 +823,7 @@ functions:
         Resource: 'arn:aws:s3:::xbge-municipalities-stats/*'
 
   createMunicipalitiesStats:
-    handler: src/api/municipalities/createMunicipalitiesStats/index.handler
+    handler: src/triggers/municipalities/createMunicipalitiesStats/index.handler
     timeout: 300
     events: # Call this function every x minutes
       - schedule: rate(15 minutes)
