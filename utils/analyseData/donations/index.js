@@ -24,6 +24,7 @@ const generateCsv = users => {
   let dataStringOnetimeDonations = header;
   let dataStringRecurringDonations = header;
 
+  const stats = { count: 0, sum: 0 };
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
@@ -49,6 +50,9 @@ const generateCsv = users => {
             donation.id,
             donation.updatedAt
           );
+
+          stats.count++;
+          stats.sum += donation.amount;
         }
 
         if ('cancelledAt' in donation) {
@@ -70,6 +74,9 @@ const generateCsv = users => {
               donation,
               true
             );
+
+            stats.count++;
+            stats.sum += donation.amount;
           }
         } else {
           console.log(
@@ -79,6 +86,8 @@ const generateCsv = users => {
             donation.lastName
           );
           dataStringRecurringDonations += createDonationString(donation, true);
+          stats.count++;
+          stats.sum += donation.amount;
         }
       }
     }
@@ -95,6 +104,8 @@ const generateCsv = users => {
       .substring(0, 10)}.csv`,
     dataStringRecurringDonations
   );
+
+  console.log(stats);
 };
 
 const createDonationString = (donation, isRecurring) => {
