@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const { getUser } = require('../../../shared/users');
+const { generateRandomId } = require('../../../shared/utils');
 const {
   getMunicipality,
   createUserMunicipalityLink,
@@ -9,6 +10,7 @@ const { errorResponse } = require('../../../shared/apiResponse');
 const IBAN = require('iban');
 const uuid = require('uuid/v4');
 const sendMail = require('./sendMail');
+const sendLotteryMail = require('./sendLotteryMail');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -87,7 +89,7 @@ module.exports.handler = async event => {
 
       // We need to get the donation info holding essential params
       // for the email to be send
-      const [donationInfo] = await Promise.all(promises);
+      const [{ donationInfo, lotteryInfo }] = await Promise.all(promises);
 
       // Check if donation was updated to send an email
       if ('donation' in requestBody) {
@@ -98,6 +100,16 @@ module.exports.handler = async event => {
           // Take the username of the request body if exists
           // or the username of the user record if exists
           requestBody.certificateGiver || result.Item.username
+        );
+      }
+
+      if ('lottery' in requestBody) {
+        await sendLotteryMail(
+          result.Item.email,
+          lotteryInfo,
+          // Take the username of the request body if exists
+          // or the username of the user record if exists
+          requestBody.username || result.Item.username
         );
       }
 
@@ -186,6 +198,7 @@ const updateUser = async (
     code,
     removeToken,
     ags,
+    lottery,
     store,
   },
   user,
@@ -299,6 +312,10 @@ const updateUser = async (
     data[':updatedOnXbge'] = true;
   }
 
+  if (typeof lottery !== 'undefined') {
+    data[':lottery'] = { timestamp, year: lottery, id: generateRandomId(5) };
+  }
+
   const params = {
     TableName: tableName,
     Key: { cognitoId: userId },
@@ -325,6 +342,7 @@ const updateUser = async (
     ${typeof city !== 'undefined' ? 'city = :city,' : ''}
     ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''}
     ${typeof store !== 'undefined' ? '#store = :store,' : ''} 
+    ${typeof lottery !== 'undefined' ? 'lottery = :lottery,' : ''} 
     ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
@@ -340,7 +358,7 @@ const updateUser = async (
   await ddb.update(params).promise();
 
   // Return stuff relevant for donation mail
-  return donationInfo;
+  return { donationInfo, lotteryInfo: data[':lottery'] };
 };
 
 const constructDonationObject = (donation, user, timestamp) => {

@@ -24,6 +24,7 @@ exports.handler = async event => {
       event.request.challengeAnswer === authChallenge &&
       Number(timestamp) > new Date().valueOf() / 1000 - LINK_TIMEOUT_SECONDS
     ) {
+      console.log('answer correct');
       event.response.answerCorrect = true;
 
       // If answer is correct we want to check if email is not verified.
@@ -54,6 +55,7 @@ exports.handler = async event => {
       // We want to send the second mail via Mailjet as a fallback
       await sendEmail(userAttributes.email, secretLoginCode);
     } else {
+      console.log('answer false or timed out');
       event.response.answerCorrect = false;
     }
   } catch (error) {
