@@ -521,6 +521,9 @@ paths:
                 code:
                   type: string
                   description: The code used for double opt in, needs to be saved when confirming user
+                lottery:
+                  type: string
+                  description: Identifier of the lottery campaign (e.g. just the year '2021')
                 donation:
                   type: object
                   required:
@@ -850,6 +853,15 @@ paths:
                             type: array
                             items:
                               type: string
+                          lottery:
+                            type: object
+                            properties:
+                              year:
+                                type: string
+                              id:
+                                type: string
+                              timestamp:
+                                type: string
         '401':
           description: Not authorized to get user
           content:
