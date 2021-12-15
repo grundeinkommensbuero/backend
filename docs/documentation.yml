@@ -1213,8 +1213,8 @@ paths:
       responses:
         '200':
           description: User succesfully updated
-        '404':
-          description: User not found
+        '400':
+          description: Error in request
           content:
             application/json:
               schema:
@@ -1222,6 +1222,41 @@ paths:
                 properties:
                   message:
                     type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /users/email-activity-callback:
+    post:
+      summary: Mailjet callback to update user if they opened or clicked an email
+      description: Special api function to serve as callback for (mailjet events)[https://dev.mailjet.com/email/guides/webhooks/]
+      security:
+        - BasicAuth: []
+      requestBody:
+        description: Event array coming from mailjet
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  event:
+                    type: string
+      responses:
+        '200':
+          description: User succesfully updated
         '400':
           description: Error in request
           content:
@@ -2067,6 +2102,41 @@ paths:
                         properties:
                           keyOfSignatureCount:
                             type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /analytics/active-users:
+    get:
+      summary: Gets count of active users
+      responses:
+        '200':
+          description: Count successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      count:
+                        type: string
+                        description: Total count
+                      emailActivityCount:
+                        type: string
+                        description: Count of users who were active in the context of emails
+                      websiteActivityCount:
+                        type: string
+                        description: Count of users who were active on the website
         '500':
           description: Server error
           content:
