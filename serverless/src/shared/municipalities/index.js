@@ -180,6 +180,7 @@ const getMunicipalitiesOfUserWithData = async userId => {
             ...municipality,
             name: municipalityResult.Item.name,
             slug: municipalityResult.Item.slug,
+            groups: municipalityResult.Item.groups,
           });
         }
       })
