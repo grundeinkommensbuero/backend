@@ -228,6 +228,26 @@ const createLoginCode = async ({ email, userId, userPoolIdOverwrite }) => {
   return secretLoginCode;
 };
 
+const getAllCognitoUsers = async (
+  cognitoUsers = [],
+  paginationToken = null
+) => {
+  const params = {
+    UserPoolId: userPoolId,
+    PaginationToken: paginationToken,
+  };
+
+  const data = await cognito.listUsers(params).promise();
+
+  // add elements of user array
+  cognitoUsers.push(...data.Users);
+
+  if ('PaginationToken' in data) {
+    return await getAllCognitoUsers(cognitoUsers, data.PaginationToken);
+  }
+  return cognitoUsers;
+};
+
 module.exports = {
   getUser,
   getUserByMail,
@@ -240,4 +260,5 @@ module.exports = {
   confirmUserInCognito,
   getUsersWithDonations,
   createLoginCode,
+  getAllCognitoUsers,
 };
