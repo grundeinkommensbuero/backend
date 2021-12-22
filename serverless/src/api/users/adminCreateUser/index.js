@@ -35,7 +35,7 @@ const stateToPopulation = {
 module.exports.handler = async event => {
   try {
     // get email from body,
-    const { email, campaignCode, extraInfo } = JSON.parse(event.body);
+    const { emails, campaignCode, extraInfo } = JSON.parse(event.body);
 
     // create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(campaignCode);
@@ -45,103 +45,105 @@ module.exports.handler = async event => {
       return errorResponse(400, 'No ags for this campaign found');
     }
 
-    const lowercaseEmail = email.toLowerCase();
-
-    // if the listId is somehow undefined or null return error
-    if (typeof email === 'undefined' || typeof campaignCode === 'undefined') {
+    if (typeof emails === 'undefined' || typeof campaignCode === 'undefined') {
       return errorResponse(
         400,
         'Email or campaign code not provided in request'
       );
     }
 
-    // proceed by creating user
-    try {
-      const created = await createUserInCognito(lowercaseEmail);
-      const userId = created.User.Username;
+    let responseMessage = '';
 
-      // confirm user (by setting fake password)
-      await confirmUserInCognito(userId);
-
-      // now create dynamo resource
-      await createUserInDynamo(userId, lowercaseEmail, campaignCode, extraInfo);
-      await createUserMunicipalityLink(
-        ags,
-        userId,
-        stateToPopulation[campaign.state]
-      );
-
+    // proceed by creating users
+    for (const email of emails) {
       try {
+        const lowercaseEmail = email.toLowerCase();
+
+        const created = await createUserInCognito(lowercaseEmail);
+        const userId = created.User.Username;
+
+        // confirm user (by setting fake password)
+        await confirmUserInCognito(userId);
+
+        // now create dynamo resource
+        await createUserInDynamo(
+          userId,
+          lowercaseEmail,
+          campaignCode,
+          extraInfo
+        );
+        await createUserMunicipalityLink(
+          ags,
+          userId,
+          stateToPopulation[campaign.state]
+        );
+
+        responseMessage += `${email} wurde hinzugefügt.\n`;
+
         // send email to to user to welcome them
-        // but only for bremen for now
         // TODO: reactivate sending of email for other campaigns
-        if (campaignCode === 'bremen-1') {
-          await sendMail(email, userId, extraInfo);
-        }
-
-        // return message (created)
-        return {
-          statusCode: 201,
-          headers: responseHeaders,
-          isBase64Encoded: false,
-          body: JSON.stringify({ userId }),
-        };
+        // try {
+        //    await sendMail(lowercaseEmail, userId, extraInfo);
+        // } catch (error) {
+        //   console.log('Error while sending email', error);
+        //   return errorResponse(500, 'Error while sending email', error);
+        // }
       } catch (error) {
-        console.log('Error while sending email', error);
-        return errorResponse(500, 'Error while sending email', error);
-      }
-    } catch (error) {
-      console.log('error', error);
+        console.log('error', error);
 
-      // user already exists
-      if (error.code === 'UsernameExistsException') {
-        try {
-          const result = await getUserByMail(email);
-          const user = result.Items[0];
-          const userId = user.cognitoId;
+        // user already exists
+        if (error.code === 'UsernameExistsException') {
+          try {
+            const result = await getUserByMail(email);
+            const user = result.Items[0];
+            const userId = user.cognitoId;
 
-          // if not, we want to update the user
-          await updateNewsletterSettings(user, campaignCode, extraInfo);
+            // if not, we want to update the user
+            await updateNewsletterSettings(user, campaignCode, extraInfo);
 
-          // Query user municipality table to check if user has already signed up for this munic
-          const userMunicipalityResult = await getUserMunicipalityLink(
-            ags,
-            userId
-          );
-
-          // If user has not already signed up for municipality...
-          if (!('Item' in userMunicipalityResult)) {
-            await createUserMunicipalityLink(
+            // Query user municipality table to check if user has already signed up for this munic
+            const userMunicipalityResult = await getUserMunicipalityLink(
               ags,
-              userId,
-              stateToPopulation[campaign.state]
+              userId
+            );
+
+            // If user has not already signed up for municipality...
+            if (!('Item' in userMunicipalityResult)) {
+              await createUserMunicipalityLink(
+                ags,
+                userId,
+                stateToPopulation[campaign.state]
+              );
+            }
+
+            responseMessage += `${email} existiert schon. Daten wurden, falls notwendig, angepasst.\n`;
+          } catch (newsletterError) {
+            console.log(
+              'Error while (maybe) updating newsletter consent',
+              newsletterError
+            );
+            return errorResponse(
+              500,
+              'Error while (maybe) updating newsletter consent',
+              error
             );
           }
-
-          return errorResponse(
-            200,
-            'User existed, updated newsletter settings'
-          );
-        } catch (newsletterError) {
-          console.log(
-            'Error while (maybe) updating newsletter consent',
-            newsletterError
-          );
-          return errorResponse(
-            500,
-            'Error while (maybe) updating newsletter consent',
-            error
-          );
+        } else if (error.code === 'InvalidParameterException') {
+          // invalid email
+          return errorResponse(400, 'Invalid email', error);
+        } else {
+          return errorResponse(500, 'Error while creating user', error);
         }
       }
-
-      // invalid email
-      if (error.code === 'InvalidParameterException') {
-        return errorResponse(400, 'Invalid email', error);
-      }
-
-      return errorResponse(500, 'Error while creating user', error);
     }
+
+    // return message (created)
+    return {
+      statusCode: 200,
+      headers: responseHeaders,
+      isBase64Encoded: false,
+      body: JSON.stringify({ message: responseMessage }),
+    };
   } catch (error) {
     console.log('Error while parsing JSON', error);
     return errorResponse(400, 'JSON Parsing was not successful', error);
