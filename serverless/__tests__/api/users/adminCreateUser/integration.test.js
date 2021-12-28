@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const randomWords = require('random-words');
 
 let token;
+const email = `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`;
 
 describe('adminCreateUser api test', () => {
   beforeAll(async () => {
@@ -18,14 +19,36 @@ describe('adminCreateUser api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        emails: [email],
         campaignCode: 'berlin-1',
       }),
     };
 
     const response = await fetch(`${INVOKE_URL}/admin/users`, request);
 
-    expect(response.status).toEqual(201);
+    expect(response.status).toEqual(200);
+  });
+
+  it('should create a new user and update existing', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        emails: [
+          email,
+          `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        ],
+        campaignCode: 'berlin-1',
+        extraInfo: true,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/admin/users`, request);
+
+    expect(response.status).toEqual(200);
   });
 
   it('passed campaign should not exist', async () => {
