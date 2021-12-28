@@ -293,6 +293,26 @@ const unsubscribeUser = ({ cognitoId, customNewsletters }) => {
     .promise();
 };
 
+const deleteUserInCognito = userId => {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: userId,
+  };
+
+  return cognito.adminDeleteUser(params).promise();
+};
+
+const deleteUserInDynamo = userId => {
+  const params = {
+    TableName: tableName,
+    Key: {
+      cognitoId: userId,
+    },
+  };
+
+  return ddb.delete(params).promise();
+};
+
 module.exports = {
   getUser,
   getUserByMail,
@@ -307,4 +327,6 @@ module.exports = {
   createLoginCode,
   getAllCognitoUsers,
   unsubscribeUser,
+  deleteUserInCognito,
+  deleteUserInDynamo,
 };

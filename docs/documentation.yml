@@ -1707,6 +1707,36 @@ paths:
                     type: string
                   error:
                     type: string
+    delete:
+      summary: Deletes user as an admin
+      description: User is deleted in Cognito and Dynamo
+      security:
+        - AdminApiKeyAuth: []
+      responses:
+        '204':
+          description: User was successfully deleted
+        '401':
+          description: Not authorized to delete user
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
 
   /admin/signatures/{listId}:
     patch:
