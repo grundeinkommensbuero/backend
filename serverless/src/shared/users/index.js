@@ -248,6 +248,51 @@ const getAllCognitoUsers = async (
   return cognitoUsers;
 };
 
+// Unsubscribe from every newsletter by setting newsletter consent and reminderMails to false,
+// as well as setting value in every item in customNewsletters to false
+const unsubscribeUser = ({ cognitoId, customNewsletters }) => {
+  const timestamp = new Date().toISOString();
+
+  const data = {
+    ':newsletterConsent': {
+      value: false,
+      timestamp,
+    },
+    ':reminderMails': {
+      value: false,
+      timestamp,
+    },
+    ':updatedAt': timestamp,
+  };
+
+  // Loop through custom newsletters and set the values to false
+  if (typeof customNewsletters !== 'undefined') {
+    for (const newsletter of customNewsletters) {
+      newsletter.timestamp = timestamp;
+      newsletter.value = false;
+      newsletter.extraInfo = false;
+    }
+
+    data[':customNewsletters'] = customNewsletters;
+  }
+
+  return ddb
+    .update({
+      TableName: tableName,
+      Key: { cognitoId },
+      UpdateExpression: `SET newsletterConsent = :newsletterConsent,
+      reminderMails = :reminderMails,
+      ${
+        ':customNewsletters' in data
+          ? 'customNewsletters = :customNewsletters,'
+          : ''
+      } updatedAt = :updatedAt`,
+      ExpressionAttributeValues: data,
+      ReturnValues: 'UPDATED_NEW',
+    })
+    .promise();
+};
+
 module.exports = {
   getUser,
   getUserByMail,
@@ -261,4 +306,5 @@ module.exports = {
   getUsersWithDonations,
   createLoginCode,
   getAllCognitoUsers,
+  unsubscribeUser,
 };
