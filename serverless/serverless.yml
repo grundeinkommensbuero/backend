@@ -897,6 +897,27 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
+  adminUpdateUser:
+    handler: src/api/users/adminUpdateUser/index.handler
+    events:
+      - http:
+          path: admin/users/{userId}
+          method: patch
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   adminGetUsers:
     handler: src/api/users/adminGetUsers/index.handler
     events:
@@ -904,9 +925,6 @@ functions:
           path: admin/users
           method: get
           cors: true
-          caching:
-            enabled: true
-            ttlInSeconds: 600
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
