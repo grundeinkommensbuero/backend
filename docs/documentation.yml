@@ -1513,7 +1513,7 @@ paths:
 
   /admin/users:
     post:
-      summary: Creates a new user as admin
+      summary: Creates a new user or multiple users as admin
       security:
         - AdminApiKeyAuth: []
       requestBody:
@@ -1525,24 +1525,17 @@ paths:
               type: object
               required:
                 - campaignCode
-                - email
+                - emails
               properties:
                 campaignCode:
                   type: string
-                email:
-                  type: string
-      responses:
-        '201':
-          description: User was successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  userId:
+                emails:
+                  type: array
+                  items:
                     type: string
+      responses:
         '200':
-          description: User already exists
+          description: Users were successfully created or updated
           content:
             application/json:
               schema:
