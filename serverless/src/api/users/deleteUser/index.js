@@ -1,5 +1,9 @@
 const AWS = require('aws-sdk');
-const { getUser } = require('../../../shared/users');
+const {
+  getUser,
+  deleteUserInDynamo,
+  deleteUserInCognito,
+} = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
@@ -52,24 +56,4 @@ const isAuthorized = event => {
   return (
     event.requestContext.authorizer.claims.sub === event.pathParameters.userId
   );
-};
-
-const deleteUserInCognito = userId => {
-  const params = {
-    UserPoolId: userPoolId,
-    Username: userId,
-  };
-
-  return cognito.adminDeleteUser(params).promise();
-};
-
-const deleteUserInDynamo = userId => {
-  const params = {
-    TableName: tableName,
-    Key: {
-      cognitoId: userId,
-    },
-  };
-
-  return ddb.delete(params).promise();
 };

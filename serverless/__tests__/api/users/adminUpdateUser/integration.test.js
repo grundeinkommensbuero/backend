@@ -1,22 +1,21 @@
-const {
-  INVOKE_URL_WITHOUT_HTTPS,
-  DEV_USERS_TABLE,
-  BASIC_AUTH_USERNAME,
-  BASIC_AUTH_PASSWORD,
-} = require('../../../testConfig');
+const { DEV_USERS_TABLE, INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 const AWS = require('aws-sdk');
 const uuid = require('uuid/v4');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
+const { authenticateAdmin } = require('../../../testUtils');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const userId = uuid();
-const email = 'unsubscribe.test@expedition-grundeinkommen.de';
+const email = 'adminupdate.test@expedition-grundeinkommen.de';
 
-describe('unsubscribeUser api test', () => {
+let token;
+
+describe('adminUpdateUser api test', () => {
   beforeAll(async () => {
+    token = await authenticateAdmin();
     await createUser();
   });
 
@@ -26,17 +25,16 @@ describe('unsubscribeUser api test', () => {
 
   it('should be able to unsubscribe user', async () => {
     const request = {
-      method: 'POST',
+      method: 'PATCH',
       mode: 'cors',
-      body: JSON.stringify([
-        {
-          email,
-        },
-      ]),
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({ newsletterConsent: false }),
     };
 
     const response = await fetch(
-      `https://${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
+      `${INVOKE_URL}/admin/users/${userId}`,
       request
     );
 
@@ -50,63 +48,43 @@ describe('unsubscribeUser api test', () => {
       }
     }
 
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(204);
     expect(user.newsletterConsent.value).toEqual(false);
     expect(user.reminderMails.value).toEqual(false);
     expect(allFalse).toEqual(true);
   });
 
-  it('should not find email', async () => {
+  it('should be able to cancel donation', async () => {
     const request = {
-      method: 'POST',
+      method: 'PATCH',
       mode: 'cors',
-      body: JSON.stringify([
-        {
-          email: 'valentin@expedition-grundeinkommen.de',
-        },
-      ]),
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({ donation: { cancel: true } }),
     };
 
     const response = await fetch(
-      `https://${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
+      `${INVOKE_URL}/admin/users/${userId}`,
       request
     );
 
-    expect(response.status).toEqual(200);
+    // Get user to check if unsubscribed correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+    expect(user.donations.recurringDonation).toHaveProperty('cancelledAt');
   });
 
-  it('should have missing auth', async () => {
+  it('should not be able to authorize', async () => {
     const request = {
-      method: 'POST',
+      method: 'PATCH',
       mode: 'cors',
-      body: JSON.stringify([
-        {
-          email: 'valentin@expedition-grundeinkommen.de',
-        },
-      ]),
+      body: JSON.stringify({ newsletterConsent: false }),
     };
 
     const response = await fetch(
-      `https://${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
-      request
-    );
-
-    expect(response.status).toEqual(401);
-  });
-
-  it('should have wrong auth params', async () => {
-    const request = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify([
-        {
-          email: 'valentin@expedition-grundeinkommen.de',
-        },
-      ]),
-    };
-
-    const response = await fetch(
-      `https://${BASIC_AUTH_USERNAME}:blub@${INVOKE_URL_WITHOUT_HTTPS}/users/unsubscribe-callback`,
+      `${INVOKE_URL}/admin/users/${userId}`,
       request
     );
 
@@ -122,6 +100,14 @@ const createUser = () => {
     Item: {
       cognitoId: userId,
       email,
+      donations: {
+        recurringDonation: {
+          iban: '123192312',
+          createdAt: timestamp,
+          firstDebitDate: timestamp,
+          id: '1231231',
+        },
+      },
       newsletterConsent: {
         value: true,
         timestamp,
