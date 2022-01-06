@@ -1646,6 +1646,91 @@ paths:
                   error:
                     type: string
 
+  /admin/users/{userId}:
+    patch:
+      summary: Updates user as an admin
+      description: So far you can only unsubscribe user or cancel donation.
+      security:
+        - AdminApiKeyAuth: []
+      requestBody:
+        description: Basically the action that should be invoked
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                donation:
+                  type: object
+                  properties:
+                    cancel:
+                      type: boolean
+                newsletterConsent:
+                  type: boolean
+                  description: Should only be false, if true nothing happens.
+      responses:
+        '204':
+          description: User was successfully updated
+        '401':
+          description: Not authorized to update user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+    delete:
+      summary: Deletes user as an admin
+      description: User is deleted in Cognito and Dynamo
+      security:
+        - AdminApiKeyAuth: []
+      responses:
+        '204':
+          description: User was successfully deleted
+        '401':
+          description: Not authorized to delete user
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
   /admin/signatures/{listId}:
     patch:
       summary: Updates a signature list as an admin

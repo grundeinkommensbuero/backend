@@ -897,6 +897,54 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UserMunicipalityTable, Arn]
 
+  adminUpdateUser:
+    handler: src/api/users/adminUpdateUser/index.handler
+    events:
+      - http:
+          path: admin/users/{userId}
+          method: patch
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
+  adminDeleteUser:
+    handler: src/api/users/adminDeleteUser/index.handler
+    events:
+      - http:
+          path: admin/users/{userId}
+          method: delete
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPoolUserPool
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - cognito-idp:AdminDeleteUser
+        Resource:
+          - 'Fn::GetAtt': [CognitoUserPoolUserPool, Arn]
+
   adminGetUsers:
     handler: src/api/users/adminGetUsers/index.handler
     events:
@@ -904,9 +952,6 @@ functions:
           path: admin/users
           method: get
           cors: true
-          caching:
-            enabled: true
-            ttlInSeconds: 600
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
