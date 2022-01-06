@@ -104,3 +104,58 @@ module.exports.removeStore = userId => {
   };
   return ddb.update(params).promise();
 };
+
+// Creates user in cognito and dynamo
+module.exports.createUser = async email => {
+  const { User } = await createUserInCognito(email);
+  await createUserInDynamo(User.Username, email);
+
+  // return userId
+  return User.Username;
+};
+
+// Create a new cognito user in our user pool
+const createUserInCognito = email => {
+  const params = {
+    UserPoolId: USER_POOL_ID,
+    Username: email.toLowerCase(),
+    UserAttributes: [
+      {
+        Name: 'email_verified',
+        Value: 'true',
+      },
+      {
+        Name: 'email',
+        Value: email.toLowerCase(),
+      },
+    ],
+    MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
+  };
+
+  return cognito.adminCreateUser(params).promise();
+};
+
+// Create user in dynamo db
+const createUserInDynamo = (userId, email) => {
+  const timestamp = new Date().toISOString();
+
+  const params = {
+    TableName: DEV_USERS_TABLE,
+    Item: {
+      cognitoId: userId,
+      email,
+      createdAt: timestamp,
+    },
+  };
+
+  return ddb.put(params).promise();
+};
+
+module.exports.getCognitoUser = userId => {
+  const params = {
+    UserPoolId: USER_POOL_ID,
+    Username: userId,
+  };
+
+  return cognito.adminGetUser(params).promise();
+};

@@ -33,14 +33,14 @@ const formatDonations = users => {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
         donation.iban = anonymizeIban(donation.iban);
-        onetimeDonations.push(donation);
+        onetimeDonations.push({ ...donation, userId: user.cognitoId });
       }
     }
 
     if ('recurringDonation' in user.donations) {
       const donation = user.donations.recurringDonation;
       donation.iban = anonymizeIban(donation.iban);
-      recurringDonations.push(donation);
+      recurringDonations.push({ ...donation, userId: user.cognitoId });
     }
   }
 
