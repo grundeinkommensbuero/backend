@@ -1011,6 +1011,26 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  adminExportDonations:
+    handler: src/api/users/adminExportDonations/index.handler
+    events:
+      - http:
+          path: admin/donations/export
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   mergeReferredUsers:
     handler: src/triggers/mergeReferredUsers/index.handler
     events:
