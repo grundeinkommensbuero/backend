@@ -31,16 +31,16 @@ const generateCsv = users => {
     'SvcLvl,PmtMtd,Amt,AmtCcy,MndtId,MndtLclInstrm,CdtrId,ReqdExctnDt,MndtDtOfSgntr,SeqTp,RmtInf,PurpCd,RmtdNm,RmtdAcctCtry,RmtdAcctIBAN\n';
 
   let dataString = header;
+  const now = new Date();
 
   const stats = { count: 0, sum: 0 };
   for (const user of users) {
     if ('onetimeDonations' in user.donations) {
       for (const donation of user.donations.onetimeDonations) {
         const debitDate = new Date(donation.debitDate);
-        const now = new Date();
         if (
           debitDate.getFullYear() === now.getFullYear() &&
-          debitDate.getMonth === now.getMonth()
+          debitDate.getMonth() === now.getMonth()
         ) {
           dataString += createDonationString(donation, false);
         }
@@ -50,12 +50,18 @@ const generateCsv = users => {
     if ('recurringDonation' in user.donations) {
       const donation = user.donations.recurringDonation;
       // Leave out yearly donations unless they were added the same month
-      if (
-        donation.yearly &&
-        new Date(donation.firstDebitDate).getMonth() !== new Date().getMonth()
-      ) {
+      const debitDate = new Date(donation.firstDebitDate);
+      if (donation.yearly && debitDate.getMonth() !== now.getMonth()) {
         console.log('is yearly', donation.id, donation.createdAt);
-      } else {
+      } else if (
+        // We don't want to add the donation yet, if the first debate date is next month
+        // This is useful in case the donations are pulled later than the 11th of each month
+        !(
+          debitDate.getFullYear() > now.getFullYear() ||
+          (debitDate.getFullYear() === now.getFullYear() &&
+            debitDate.getMonth() > now.getMonth())
+        )
+      ) {
         if ('updatedAt' in donation) {
           console.log(
             'Donation updated (userId, donationId, updatedAt)',
