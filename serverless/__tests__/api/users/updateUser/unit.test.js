@@ -1,4 +1,6 @@
-const { computeDebitDate } = require('../../../../src/api/users/updateUser');
+const {
+  computeDebitDate,
+} = require('../../../../src/api/users/updateUser/computeDebitDate');
 
 describe('Test computeDebitDate', () => {
   it('should compute correct date', () => {
