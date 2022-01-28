@@ -99,7 +99,18 @@ module.exports.removeStore = userId => {
   const params = {
     TableName: DEV_USERS_TABLE,
     Key: { cognitoId: userId },
-    UpdateExpression: 'REMOVE store',
+    UpdateExpression: 'REMOVE #store',
+    ExpressionAttributeNames: { '#store': 'store' },
+    ReturnValues: 'UPDATED_NEW',
+  };
+  return ddb.update(params).promise();
+};
+
+module.exports.removeListFlow = userId => {
+  const params = {
+    TableName: DEV_USERS_TABLE,
+    Key: { cognitoId: userId },
+    UpdateExpression: 'REMOVE listFlow',
     ReturnValues: 'UPDATED_NEW',
   };
   return ddb.update(params).promise();
