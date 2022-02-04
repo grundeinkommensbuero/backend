@@ -19,6 +19,7 @@ module.exports.handler = async event => {
     const { listId } = event.pathParameters;
     const { email } = body;
     let { userId, count } = body;
+    let user;
 
     // if the one of the needed params is somehow undefined return error
     if (!validateParams(listId, count)) {
@@ -66,6 +67,7 @@ module.exports.handler = async event => {
         }
 
         userId = result.Items[0].cognitoId;
+        user = result.Items[0];
       } else if (typeof userId !== 'undefined') {
         // Check if user exists
         const result = await getUser(userId);
@@ -90,6 +92,8 @@ module.exports.handler = async event => {
             isBase64Encoded: false,
           };
         }
+
+        user = result.Item;
       } else {
         // If no user id or list id was passed, the user used the qr code
         usedQrCode = true;
@@ -119,7 +123,7 @@ module.exports.handler = async event => {
         ];
 
         if (typeof userId !== 'undefined') {
-          promises.push(updateUser(userId, listId, count, campaign));
+          promises.push(updateUser(user, userId, listId, count, campaign));
         }
 
         await Promise.all(promises);
@@ -167,23 +171,45 @@ const updateSignatureList = (id, userId, count, usedQrCode) => {
 };
 
 // Update user record to add the scan of this list
-const updateUser = (userId, listId, count, campaign) => {
+const updateUser = (user, userId, listId, count, campaign) => {
+  const timestamp = new Date().toISOString();
+
   // needs to be array because append_list works with an array
   const countObject = [
     {
       count: parseInt(count, 10),
-      timestamp: new Date().toISOString(),
+      timestamp,
       listId,
       campaign,
     },
   ];
 
+  const listFlow = user.listFlow;
+
+  // Update attributes
+  // We do not simply override all values because we want to keep the old timestamps
+  if (!('dowloadedList' in listFlow) || !listFlow.downloadedList.value) {
+    listFlow.downloadedList = { value: true, timestamp };
+  }
+
+  if (!('printedList' in listFlow) || !listFlow.printedList.value) {
+    listFlow.printedList = { value: true, timestamp };
+  }
+
+  if (!('signedList' in listFlow) || !listFlow.signedList.value) {
+    listFlow.signedList = { value: true, timestamp };
+  }
+
   const params = {
     TableName: usersTableName,
     Key: { cognitoId: userId },
     UpdateExpression:
-      'SET scannedLists = list_append(if_not_exists(scannedLists, :emptyList), :count)',
-    ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
+      'SET scannedLists = list_append(if_not_exists(scannedLists, :emptyList), :count), listFlow = :listFlow',
+    ExpressionAttributeValues: {
+      ':count': countObject,
+      ':emptyList': [],
+      ':listFlow': listFlow,
+    },
   };
   return ddb.update(params).promise();
 };
