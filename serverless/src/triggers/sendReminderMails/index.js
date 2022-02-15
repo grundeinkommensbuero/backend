@@ -46,21 +46,28 @@ module.exports.handler = async event => {
         ) {
           const user = result.Item;
 
-          const mailType = computeMailType(user, list);
+          const mailTypes = computeMailType(user, list);
 
-          if (mailType) {
-            // TODO: this will have to be updated, as soon as it is clear, what params the emails need
+          if (mailTypes.length > 0) {
+            const promises = [];
+            for (const mailType of mailTypes) {
+              // TODO: this will have to be updated, as soon as it is clear, what params the emails need
+              promises.push(
+                sendMail(
+                  user,
+                  list.id,
+                  list.campaign,
+                  mailType,
+                  signatureCounts,
+                  listCounts
+                )
+              );
+            }
+
             await Promise.all(
-              sendMail(
-                user,
-                list.id,
-                list.campaign,
-                mailType,
-                signatureCounts,
-                listCounts
-              ),
+              promises,
               // We also want to update user to save the email which was sent
-              updateUser(user, mailType)
+              await updateUser(user, mailTypes)
             );
           }
 
@@ -76,24 +83,51 @@ module.exports.handler = async event => {
   return event;
 };
 
-const updateUser = (user, mailType) => {
+const updateUser = (user, mailTypes) => {
   const timestamp = new Date().toISOString();
-
   const listFlow = user.listFlow || {};
   listFlow.emailsSent = listFlow.emailsSent || [];
-  listFlow.emailsSent.push({
-    key: mailType,
-    timestamp,
-  });
+
+  const ctaFlow = user.ctaFlow || {};
+  ctaFlow.emailsSent = ctaFlow.emailsSent || [];
+
+  // Depending on the mail type we save the emailSent
+  // in different keys
+  for (const mailType of mailTypes) {
+    if (mailType.startsWith('B')) {
+      listFlow.emailsSent.push({
+        key: mailType,
+        timestamp,
+      });
+    } else if (mailType.startsWith('A')) {
+      ctaFlow.emailsSent.push({
+        key: mailType,
+        timestamp,
+      });
+    }
+  }
+
+  const data = {
+    ':updatedAt': timestamp,
+  };
+
+  if (Object.keys(listFlow).length > 0) {
+    data[':listFlow'] = listFlow;
+  }
+
+  if (Object.keys(ctaFlow).length > 0) {
+    data[':ctaFlow'] = ctaFlow;
+  }
 
   const params = {
     TableName: usersTableName,
     Key: { cognitoId: user.cognitoId },
-    UpdateExpression: 'SET listFlow = :listFlow, updatedAt = :updatedAt',
-    ExpressionAttributeValues: {
-      ':listFlow': listFlow,
-      ':updatedAt': timestamp,
-    },
+    UpdateExpression: `SET ${
+      Object.keys(listFlow).length > 0 ? 'listFlow = :listFlow,' : ''
+    }
+    ${Object.keys(ctaFlow).length > 0 ? 'ctaFlow = :ctaFlow,' : ''}
+     updatedAt = :updatedAt`,
+    ExpressionAttributeValues: data,
     ReturnValues: 'UPDATED_NEW',
   };
 

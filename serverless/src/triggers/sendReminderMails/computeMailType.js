@@ -8,19 +8,80 @@ const stepToEmailMap = {
   sentList: 'B6',
 };
 
+// Is always the same for every mail in A flow
+const aRemindAfter = 7;
+
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
 // Based on user and list data this function computes
 // which mail should be sent next
 module.exports.computeMailType = (user, list) => {
   // Mailtypes will correspond to user flows
-  let mailType = null;
+  // There might be multiple mail types, if flows (A and B) overlap, therefore we use an array
+  const mailTypes = [];
 
   // Get last email from array of history of sent emails
-  const lastEmail =
+  const lastListEmail =
     'listFlow' in user &&
     'emailsSent' in user.listFlow &&
     user.listFlow.emailsSent.length > 0
       ? user.listFlow.emailsSent[user.listFlow.emailsSent.length - 1]
       : null;
+
+  // Get last email from array of history of sent emails
+  const lastCtaEmail =
+    'ctaFlow' in user &&
+    'emailsSent' in user.ctaFlow &&
+    user.ctaFlow.emailsSent.length > 0
+      ? user.ctaFlow.emailsSent[user.ctaFlow.emailsSent.length - 1]
+      : null;
+
+  // A Flow
+
+  // If list was created within the last 24 hours we send the first mail
+  // In comparison to the B flow, where we check if something happened x days ago,
+  // we now check if it happened during last day, because ideally we send the email the same day
+  // We also need to check if the user has signed up during this period or if it is an old user
+  const now = new Date();
+  if (
+    now - new Date(list.createdAt) < ONE_DAY &&
+    now - new Date(user.createdAt) < ONE_DAY
+  ) {
+    mailTypes.push('A1');
+  }
+  // If user has clicked cta in first email (shared = true) or has signed the list
+  // (if user has "scanned a list" that attribute is set automatically)
+  else if (
+    ('ctaFlow' in user &&
+      'shared' in user.ctaFlow &&
+      user.ctaFlow.shared.value &&
+      isXDaysAgo(new Date(user.ctaFlow.shared.timestamp), aRemindAfter)) ||
+    ('listFlow' in user &&
+      'signedList' in user.listFlow &&
+      user.listFlow.signedList.value &&
+      isXDaysAgo(new Date(user.listFlow.signedList.timestamp), aRemindAfter))
+  ) {
+    mailTypes.push('A2');
+  }
+  // If user has clicked CTA in A2 we send the next mail after a week
+  else if (
+    'ctaFlow' in user &&
+    'wantsToBeActive' in user.ctaFlow &&
+    user.ctaFlow.wantsToBeActive.value &&
+    isXDaysAgo(new Date(user.ctaFlow.wantsToBeActive.timestamp), aRemindAfter)
+  ) {
+    mailTypes.push('A3');
+  }
+  // Not depending on a cta we send A4 x days after A3
+  else if (
+    lastCtaEmail &&
+    lastCtaEmail.key === 'A3' &&
+    isXDaysAgo(new Date(lastCtaEmail.timestamp), aRemindAfter)
+  ) {
+    mailTypes.push('A4');
+  }
+
+  // B Flow
 
   if (
     (!('listFlow' in user) ||
@@ -29,70 +90,75 @@ module.exports.computeMailType = (user, list) => {
     // We also need to check if there are already other attributes set
     !laterAttributesAreSet(user.listFlow, 'downloadedList')
   ) {
-    mailType = computeFirstStep(list.createdAt, lastEmail);
+    const step = computeFirstStep(list.createdAt, lastListEmail);
+
+    if (step) {
+      mailTypes.push(step);
+    }
   } else if (
     'listFlow' in user &&
     (!('printedList' in user.listFlow) || !user.listFlow.printedList.value) &&
     // We also need to check if there are already other attributes set
     !laterAttributesAreSet(user.listFlow, 'printedList')
   ) {
-    mailType = computeNextStep(
+    const nextStep = computeNextStep(
       user,
       list.createdAt,
-      lastEmail,
+      lastListEmail,
       'downloadedList',
       'printedList'
     );
+
+    if (nextStep) {
+      mailTypes.push(nextStep);
+    }
   } else if (
     'listFlow' in user &&
     (!('signedList' in user.listFlow) || !user.listFlow.signedList.value) &&
     // We also need to check if there are already other attributes set
     !laterAttributesAreSet(user.listFlow, 'signedList')
   ) {
-    mailType = computeNextStep(
+    const nextStep = computeNextStep(
       user,
       list.createdAt,
-      lastEmail,
+      lastListEmail,
       'printedList',
       'signedList'
     );
+
+    if (nextStep) {
+      mailTypes.push(nextStep);
+    }
   } else if (
     'listFlow' in user &&
     (!('sentList' in user.listFlow) || !user.listFlow.sentList.value)
   ) {
-    mailType = computeNextStep(
+    const nextStep = computeNextStep(
       user,
       list.createdAt,
-      lastEmail,
+      lastListEmail,
       'signedList',
       'sentList'
     );
+
+    if (nextStep) {
+      mailTypes.push(nextStep);
+    }
   }
 
-  return mailType;
+  return mailTypes;
 };
 
-const computeFirstStep = (listCreatedAt, lastEmail) => {
-  let date;
-
+const computeFirstStep = (listCreatedAt, lastListEmail) => {
   // Depending on whether B2 was already sent,
   // we check if either B2 or B1 (list creation) was x
   // days ago
-  if (lastEmail && lastEmail.key === 'B2.1') {
-    date = new Date(lastEmail.timestamp);
-    date.setDate(date.getDate() + b2RemindAfter[1]);
-
-    if (isToday(date)) {
+  if (lastListEmail && lastListEmail.key === 'B2.1') {
+    if (isXDaysAgo(new Date(lastListEmail.timestamp), b2RemindAfter[1])) {
       return 'B2.2';
     }
-  } else {
-    date = new Date(listCreatedAt);
-
-    date.setDate(date.getDate() + b2RemindAfter[0]);
-
-    if (isToday(date)) {
-      return 'B2.1';
-    }
+  } else if (isXDaysAgo(new Date(listCreatedAt), b2RemindAfter[0])) {
+    return 'B2.1';
   }
 
   return null;
@@ -101,62 +167,59 @@ const computeFirstStep = (listCreatedAt, lastEmail) => {
 const computeNextStep = (
   user,
   listCreatedAt,
-  lastEmail,
+  lastListEmail,
   lastStep,
   currentStep
 ) => {
-  if (lastEmail && lastEmail.key.startsWith(stepToEmailMap[lastStep])) {
+  if (lastListEmail && lastListEmail.key.startsWith(stepToEmailMap[lastStep])) {
     // In this case we don't want to check when the last email was sent
     // but when the last attribute was set
     const dateOfAttribute = new Date(user.listFlow[lastStep].timestamp);
-    // Add days to createdAt and check if it is today
-    dateOfAttribute.setDate(dateOfAttribute.getDate() + b346RemindAfter[1]);
 
-    if (isToday(dateOfAttribute)) {
+    if (isXDaysAgo(dateOfAttribute, b346RemindAfter[1])) {
       return `${stepToEmailMap[currentStep]}.1`;
     }
   } else if (
-    lastEmail &&
-    lastEmail.key.startsWith(stepToEmailMap[currentStep])
+    lastListEmail &&
+    lastListEmail.key.startsWith(stepToEmailMap[currentStep])
   ) {
-    const date = new Date(lastEmail.timestamp);
+    const date = new Date(lastListEmail.timestamp);
 
     // If last email was the first of this step (e.g. B3.1), then send next one (B3.2)
-    if (lastEmail.key.endsWith('.1')) {
-      // Add days to createdAt and check if it is today
-      date.setDate(date.getDate() + b346RemindAfter[2]);
-      if (isToday(date)) {
-        return lastEmail.key.replace('.1', '.2');
-      }
-    } else {
-      date.setDate(date.getDate() + b346RemindAfter[3]);
-
+    if (
+      lastListEmail.key.endsWith('.1') &&
+      isXDaysAgo(date, b346RemindAfter[2])
+    ) {
+      return lastListEmail.key.replace('.1', '.2');
+    } else if (
+      isXDaysAgo(date, b346RemindAfter[3]) &&
+      currentStep in user.listFlow &&
+      user.listFlow[currentStep].remind
+    ) {
       // The last iteration of this step we only want to send
       // if user wanted to be reminded
-      if (
-        isToday(date) &&
-        currentStep in user.listFlow &&
-        user.listFlow[currentStep].remind
-      ) {
-        return lastEmail.key.replace('.2', '.3');
-      }
+
+      return lastListEmail.key.replace('.2', '.3');
     }
-  } else {
+  } else if (isXDaysAgo(new Date(listCreatedAt), b346RemindAfter[0])) {
     // This is the case were no email except for B1 (list creation was sent).
     // If the user only received B1, but has already said that they have achieved the last step
     // we skip mail to send next one instead instead.
     // For example, user has already downloaded list, then we skip B2 and send B3.
     // In the code, it is basically the same though, the timespan between mails is just different.
     // Add days to createdAt and check if it is today
-    const date = new Date(listCreatedAt);
-    date.setDate(date.getDate() + b346RemindAfter[0]);
 
-    if (isToday(date)) {
-      return `${stepToEmailMap[currentStep]}.1`;
-    }
+    return `${stepToEmailMap[currentStep]}.1`;
   }
 
   return null;
+};
+
+const isXDaysAgo = (date, days) => {
+  // Add days to date and check if it is today
+  date.setDate(date.getDate() + days);
+
+  return isToday(date);
 };
 
 const isToday = date => {
