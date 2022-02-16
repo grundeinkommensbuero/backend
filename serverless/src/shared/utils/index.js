@@ -101,6 +101,20 @@ const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
+const isXDaysAgo = (date, days) => {
+  // Add days to date and check if it is today
+  date.setDate(date.getDate() + days);
+
+  return isToday(date);
+};
+
+const isToday = date => {
+  return (
+    date.toISOString().substring(0, 10) ===
+    new Date().toISOString().substring(0, 10)
+  );
+};
+
 module.exports = {
   constructCampaignId,
   generateRandomId,
@@ -113,4 +127,5 @@ module.exports = {
   validatePhoneNumber,
   formatPhoneNumber,
   sleep,
+  isXDaysAgo,
 };

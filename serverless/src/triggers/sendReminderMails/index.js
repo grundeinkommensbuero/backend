@@ -67,7 +67,7 @@ module.exports.handler = async event => {
             await Promise.all(
               promises,
               // We also want to update user to save the email which was sent
-              await updateUser(user, mailTypes)
+              updateUser(user, mailTypes)
             );
           }
 
