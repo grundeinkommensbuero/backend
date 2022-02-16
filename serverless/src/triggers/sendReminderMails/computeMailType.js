@@ -1,3 +1,5 @@
+const { isXDaysAgo } = require('../../shared/utils');
+
 // Numbers define days after last email or after attribute was set
 const b2RemindAfter = [3, 7];
 const b346RemindAfter = [3, 1, 3, 3];
@@ -213,20 +215,6 @@ const computeNextStep = (
   }
 
   return null;
-};
-
-const isXDaysAgo = (date, days) => {
-  // Add days to date and check if it is today
-  date.setDate(date.getDate() + days);
-
-  return isToday(date);
-};
-
-const isToday = date => {
-  return (
-    date.toISOString().substring(0, 10) ===
-    new Date().toISOString().substring(0, 10)
-  );
 };
 
 // The param attribute is the one, which is "allowed" to be set
