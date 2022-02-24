@@ -2,7 +2,7 @@ const { errorResponse } = require('../../shared/apiResponse');
 const { getAllUsers, getAllCognitoUsers } = require('../../shared/users');
 const AWS = require('aws-sdk');
 
-const THREE_MONTHS = 60 * 24 * 60 * 60 * 1000;
+const TWO_MONTHS = 60 * 24 * 60 * 60 * 1000;
 const s3 = new AWS.S3({ region: 'eu-central-1' });
 const bucket = 'xbge-active-users-stats';
 const stage = process.env.STAGE;
@@ -18,7 +18,7 @@ module.exports.handler = async event => {
     for (const user of users) {
       // Check if last activity on website exists and was during last 3 months
       if ('store' in user && 'lastActivity' in user.store) {
-        if (new Date() - new Date(user.store.lastActivity) < THREE_MONTHS) {
+        if (new Date() - new Date(user.store.lastActivity) < TWO_MONTHS) {
           uniqueUsers.add(user.cognitoId);
           websiteActivityCount++;
         }
@@ -37,10 +37,7 @@ module.exports.handler = async event => {
             // Get timestamp from last sign in
             const [, timestamp] = lastSignIn.Value.split(',');
 
-            if (
-              new Date().valueOf() / 1000 - Number(timestamp) <
-              THREE_MONTHS
-            ) {
+            if (new Date().valueOf() / 1000 - Number(timestamp) < TWO_MONTHS) {
               uniqueUsers.add(user.cognitoId);
               websiteActivityCount++;
             }
@@ -52,7 +49,7 @@ module.exports.handler = async event => {
       if (
         'emailActivity' in user &&
         'lastOpen' in user.emailActivity &&
-        new Date() - new Date(user.emailActivity.lastOpen) < THREE_MONTHS
+        new Date() - new Date(user.emailActivity.lastOpen) < TWO_MONTHS
       ) {
         uniqueUsers.add(user.cognitoId);
         emailActivityCount++;
