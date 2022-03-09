@@ -23,6 +23,8 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 const AGS_BERLIN = '11000000';
 
 module.exports.handler = async event => {
+  return event;
+
   try {
     // Get all user municipality links of the last day (all users who have signed up for a municipality)
     const userMunicipalityLinks = await getAllMunicipalitiesWithUsers(

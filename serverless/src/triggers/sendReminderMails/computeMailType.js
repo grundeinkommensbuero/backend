@@ -39,11 +39,13 @@ module.exports.computeMailType = (user, list) => {
       : null;
 
   // A Flow
+  // TODO: activate A Flow as soon as mails are ready
 
   // If list was created within the last 24 hours we send the first mail
   // In comparison to the B flow, where we check if something happened x days ago,
   // we now check if it happened during last day, because ideally we send the email the same day
   // We also need to check if the user has signed up during this period or if it is an old user
+  /*
   const now = new Date();
   if (
     now - new Date(list.createdAt) < ONE_DAY &&
@@ -83,6 +85,7 @@ module.exports.computeMailType = (user, list) => {
     mailTypes.push('A4');
   }
 
+  */
   // B Flow
 
   if (
