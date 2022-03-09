@@ -2,109 +2,35 @@ const fs = require('fs');
 const { generateRandomId, constructCampaignId } = require('../../utils');
 const { checkIfIdExists } = require('..');
 const createSignatureList = require('../../../api/signatures/createSignatureList/createListInDynamo');
-const generatePdfLetter = require('./createPDFLetter');
+const generatePdf = require('./createPDF');
 
-module.exports = async (userId, user) => {
+module.exports = async userId => {
   // we only want the current day (YYYY-MM-DD), then it is also easier to filter
   const timestamp = new Date().toISOString().substring(0, 10);
 
-  const lists = [];
-  let isDuplex = false;
-  let isBBPlatform = false;
-  console.log(user);
+  const listConfig = await constructListConfig('democracy-1', 'democracy');
 
-  if (user.countB > 0) {
-    lists.push(await constructListConfig('berlin-1', 'berlin', user.countB));
-  }
-
-  if (user.countBB > 0) {
-    lists.push(
-      await constructListConfig('brandenburg-1', 'brandenburg', user.countBB)
-    );
-    isDuplex = true;
-  }
-
-  if (user.countHH > 0) {
-    lists.push(await constructListConfig('hamburg-1', 'hamburg', user.countHH));
-  }
-
-  if (user.countSH > 0) {
-    lists.push(
-      await constructListConfig(
-        'schleswig-holstein-1',
-        'schleswig-holstein',
-        user.countSH
-      )
-    );
-  }
-
-  if (user.countHB > 0) {
-    lists.push(await constructListConfig('bremen-1', 'bremen', user.countHB));
-    isDuplex = true;
-  }
-
-  if (user.countDibb > 0) {
-    lists.push(await constructListConfig('dibb-1', 'dibb', user.countDibb));
-    isDuplex = true;
-    isBBPlatform = true;
-  }
-
-  if (user.countVerkehrswende > 0) {
-    lists.push({
-      campaignCode: 'verkehrswende-1',
-      listCount: user.countVerkehrswende,
-    });
-    isDuplex = true;
-    isBBPlatform = true;
-  }
-
-  if (user.countVerkehrswende > 0) {
-    lists.push({
-      campaignCode: 'klimanotstand-1',
-      listCount: user.countKlimanotstand,
-    });
-    isDuplex = true;
-    isBBPlatform = true;
-  }
-
-  const mailMissing =
-    user.email === 'postbrief-april-ohne-mail@expedition-grundeinkommen.de';
-
-  const pdfBytes = await generatePdfLetter({
-    lists,
-    address: user.address,
-    needsMailMissingAddition: mailMissing,
-    isDuplex,
-    isBBPlatform,
+  generatePdf(
+    'https://xbge.de/qr/hh/?listId=',
+    listConfig.code,
+    'SINGLE_SW',
+    'democracy-1'
+  ).then(pdfBytes => {
+    fs.writeFileSync(`./lists/${listConfig.code}.pdf`, pdfBytes);
   });
 
-  for (const list of lists) {
-    if (
-      list.campaignCode !== 'klimanotstand-1' &&
-      list.campaignCode !== 'verkehrswende-1'
-    ) {
-      console.log('created list', list.code);
-      await createSignatureList(
-        list.code,
-        timestamp,
-        undefined,
-        constructCampaignId(list.campaignCode),
-        true,
-        mailMissing,
-        userId
-      );
-    }
-  }
-
-  // Remove "/" from names for saving to file
-  user.address.name = user.address.name.replace('/', '');
-
-  fs.writeFileSync(
-    `./lists/${isDuplex ? 'duplex' : 'simplex'}/${
-      user.needsEnvelope ? 'envelope' : 'no-envelope'
-    }/list_${user.address.name}.pdf`,
-    pdfBytes
+  await createSignatureList(
+    listConfig.code,
+    timestamp,
+    undefined,
+    constructCampaignId(listConfig.campaignCode),
+    true,
+    false,
+    userId
   );
+
+  console.log('created list', listConfig.code, userId);
+  // Remove "/" from names for saving to file
 };
 
 const constructListConfig = async (campaignCode, state, count) => {
