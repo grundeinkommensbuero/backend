@@ -87,4 +87,10 @@ module.exports = {
       type: 'COMBINED',
     },
   ],
+  'democracy-1': [
+    {
+      filename: 'Liste.pdf',
+      type: 'COMBINED',
+    },
+  ],
 };
