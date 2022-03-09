@@ -41,10 +41,6 @@ module.exports.handler = async event => {
     const campaign = constructCampaignId(campaignCode);
     const ags = stateToAgs[campaign.state];
 
-    if (typeof ags === 'undefined') {
-      return errorResponse(400, 'No ags for this campaign found');
-    }
-
     if (typeof emails === 'undefined' || typeof campaignCode === 'undefined') {
       return errorResponse(
         400,
@@ -72,11 +68,14 @@ module.exports.handler = async event => {
           campaignCode,
           extraInfo
         );
-        await createUserMunicipalityLink(
-          ags,
-          userId,
-          stateToPopulation[campaign.state]
-        );
+
+        if (typeof ags !== 'undefined') {
+          await createUserMunicipalityLink(
+            ags,
+            userId,
+            stateToPopulation[campaign.state]
+          );
+        }
 
         responseMessage += `${email} wurde hinzugefügt.\n`;
 
@@ -154,6 +153,7 @@ const createUserInDynamo = (userId, email, campaignCode, extraInfo) => {
   const timestamp = new Date().toISOString();
   // create a (nice to later work with) object, which campaign it is
   const campaign = constructCampaignId(campaignCode);
+  const ags = stateToAgs[campaign.state];
 
   const params = {
     TableName: usersTableName,
@@ -169,21 +169,24 @@ const createUserInDynamo = (userId, email, campaignCode, extraInfo) => {
         value: true,
         timestamp,
       },
-      customNewsletters: [
-        {
-          name: capitalizeState(campaign.state),
-          value: true,
-          extraInfo,
-          timestamp,
-          ags: stateToAgs[campaign.state],
-        },
-      ],
       migrated: {
         source: 'offline',
         campaign,
       },
     },
   };
+
+  if (typeof ags !== 'undefined') {
+    params.Item.customNewsletters = [
+      {
+        name: capitalizeState(campaign.state),
+        value: true,
+        extraInfo,
+        timestamp,
+        ags,
+      },
+    ];
+  }
 
   return ddb.put(params).promise();
 };
