@@ -11,6 +11,7 @@ const STATES = {
   berlin: 'Berlin',
   bremen: 'Bremen',
   dibb: 'Brandenburg',
+  democracy: 'Berlin',
 };
 
 // Functions which sends an email with the attached pdf and returns a promise

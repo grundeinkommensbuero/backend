@@ -32,7 +32,8 @@ module.exports.handler = async event => {
       if (
         list.userId !== 'anonymous' &&
         !list.manually &&
-        list.campaign.code === 'berlin-2'
+        (list.campaign.code === 'berlin-2' ||
+          list.campaign.code === 'democracy-1')
       ) {
         // Get user from users table to get email
         const result = await getUser(list.userId);
@@ -57,6 +58,7 @@ module.exports.handler = async event => {
                   user,
                   list.id,
                   list.campaign,
+                  getDaysSince(new Date(list.createdAt)),
                   mailType,
                   signatureCounts,
                   listCounts
@@ -132,4 +134,10 @@ const updateUser = (user, mailTypes) => {
   };
 
   return ddb.update(params).promise();
+};
+
+const getDaysSince = date => {
+  const now = new Date();
+
+  return Math.floor((now - date) / (1000 * 60 * 60 * 24));
 };
