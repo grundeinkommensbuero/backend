@@ -1,14 +1,16 @@
 const fs = require('fs');
 
-const createPDFLetter = require('./createPDFLetter');
-// const generatePdf = require('./createPDF');
+// const createPDFLetter = require('./createPDFLetter');
+const generatePdf = require('./createPDF');
+
 const CODE = '0123456789';
 const URL = 'https://xbge.de/qr/hh/?listId=';
 
-// generatePdf(URL, CODE, 'COMBINED', 'dibb-1').then(pdfBytes => {
-//   fs.writeFileSync('./test-dibb.pdf', pdfBytes);
-// });
+generatePdf(URL, CODE, 'SINGLE_SW', 'democracy-1').then(pdfBytes => {
+  fs.writeFileSync('./test-democracy.pdf', pdfBytes);
+});
 
+/*
 createPDFLetter({
   url: URL,
   code: CODE,
@@ -43,3 +45,4 @@ createPDFLetter({
 }).then(pdfBytes => {
   fs.writeFileSync('./test-serienbrief.pdf', pdfBytes);
 });
+*/

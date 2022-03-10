@@ -4,14 +4,14 @@ const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
 const zipCodeMatcher = require('../shared/zipCodeMatcher');
 
-const paths = {
-  mailerlite: './data/mailerlite_users.csv',
-  change: './data/change_users.csv',
-  'change-2': './data/change_users_2.csv',
-  signaturesTest: './data/signatures_test_users.csv',
-  typeform: './data/Ergebnisse Briefaktion.csv',
-  olympia: './data/olympia_210414.csv',
-};
+// const paths = {
+//   mailerlite: './data/mailerlite_users.csv',
+//   change: './data/change_users.csv',
+//   'change-2': './data/change_users_2.csv',
+//   signaturesTest: './data/signatures_test_users.csv',
+//   typeform: './data/Ergebnisse Briefaktion.csv',
+//   olympia: './data/olympia_210414.csv',
+// };
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);

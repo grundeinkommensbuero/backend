@@ -1,9 +1,12 @@
 const AWS = require('aws-sdk');
 const { getSignatureList } = require('../../../shared/signatures');
+const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
+const usersTableName = process.env.USERS_TABLE_NAME;
+
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -34,24 +37,38 @@ module.exports.handler = async event => {
         return errorResponse(404, 'No list found with the passed id');
       }
 
-      // otherwise proceed by updating dynamo resource
-      try {
-        await updateSignatureList(listId, count, mixed);
-        // return message
-        // We want to return a flag if the list was anonymous
-        return {
-          statusCode: 200,
-          headers: responseHeaders,
-          isBase64Encoded: false,
-          body: JSON.stringify({
-            isAnonymous: result.Item.userId === 'anonymous',
-            mailMissing: result.Item.mailMissing,
-          }),
-        };
-      } catch (error) {
-        console.log('Error while updating signature list', error);
-        return errorResponse(500, 'Error while updating signature list', error);
+      // Get user record and update user if list is not anonymous
+      const { userId } = result.Item;
+      const isAnonymous = userId === 'anonymous';
+
+      const promises = [];
+
+      if (!isAnonymous) {
+        const userResult = await getUser(userId);
+
+        // Check if user still exists and update list flow in user record
+        if ('Item' in result) {
+          promises.push(updateUser(userResult.Item));
+        }
       }
+
+      // otherwise proceed by updating dynamo resource
+      promises.push(updateSignatureList(listId, count, mixed));
+
+      // Execute (maybe) both promises async to increase performance
+      await Promise.all(promises);
+
+      // return message
+      // We want to return a flag if the list was anonymous
+      return {
+        statusCode: 200,
+        headers: responseHeaders,
+        isBase64Encoded: false,
+        body: JSON.stringify({
+          isAnonymous,
+          mailMissing: result.Item.mailMissing,
+        }),
+      };
     } catch (error) {
       console.log('Error while getting signature list', error);
       return errorResponse(500, 'Error while getting signature list', error);
@@ -78,6 +95,41 @@ const updateSignatureList = (id, count, mixed) => {
     UpdateExpression:
       'SET received = list_append(if_not_exists(received, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
+  };
+  return ddb.update(params).promise();
+};
+
+// Update user record to update list flow
+const updateUser = user => {
+  const timestamp = new Date().toISOString();
+
+  const listFlow = user.listFlow;
+
+  // Update attributes
+  // We do not simply override all values because we want to keep the old timestamps
+  if (!('dowloadedList' in listFlow) || !listFlow.downloadedList.value) {
+    listFlow.downloadedList = { value: true, timestamp };
+  }
+
+  if (!('printedList' in listFlow) || !listFlow.printedList.value) {
+    listFlow.printedList = { value: true, timestamp };
+  }
+
+  if (!('signedList' in listFlow) || !listFlow.signedList.value) {
+    listFlow.signedList = { value: true, timestamp };
+  }
+
+  if (!('sentList' in listFlow) || !listFlow.sentList.value) {
+    listFlow.sentList = { value: true, timestamp };
+  }
+
+  const params = {
+    TableName: usersTableName,
+    Key: { cognitoId: user.cognitoId },
+    UpdateExpression: 'SET  listFlow = :listFlow',
+    ExpressionAttributeValues: {
+      ':listFlow': listFlow,
+    },
   };
   return ddb.update(params).promise();
 };

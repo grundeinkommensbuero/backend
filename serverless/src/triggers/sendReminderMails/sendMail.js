@@ -2,22 +2,19 @@ const { apiKey, apiSecret } = require('../../../mailjetConfig');
 const { formatNumber } = require('../../shared/utils');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-const CAMPAIGN_SHORTS = {
-  'schleswig-holstein-1': 'sh',
-  'brandenburg-1': 'bb',
-  'berlin-1': 'b',
-  'berlin-2': 'b',
-  'hamburg-1': 'hh',
-  'bremen-1': 'hb',
-};
-
-const STATES = {
-  'schleswig-holstein': 'Schleswig-Holstein',
-  brandenburg: 'Brandenburg',
-  hamburg: 'Hamburg',
-  berlin: 'Berlin',
-  bremen: 'Bremen',
-  dibb: 'Brandenburg',
+// TODO as soon as tempaltes are ready
+const mailTypeToTemplate = {
+  'B2.1': 3719962,
+  'B2.2': 3719962,
+  'B3.1': 3720184,
+  'B3.2': 3720184,
+  'B3.3': 3720184,
+  'B4.1': 3720202,
+  'B4.2': 3720202,
+  'B4.3': 3720202,
+  'B6.1': 3717141,
+  'B6.2': 3717141,
+  'B6.3': 3717141,
 };
 
 const GOALS = {
@@ -27,16 +24,7 @@ const GOALS = {
   'bremen-1': '5.000',
   'berlin-1': '24.000',
   'berlin-2': '24.000',
-};
-
-const NUM_TO_WORD = {
-  2: 'zwei',
-  3: 'drei',
-  4: 'vier',
-  5: 'fünf',
-  6: 'sechs',
-  7: 'sieben',
-  8: 'acht',
+  'democracy-1': '20.000',
 };
 
 // Function which sends an email to remind user to send signature lists
@@ -45,17 +33,11 @@ const sendMail = (
   { email, username, cognitoId: userId },
   listId,
   campaign,
-  daysAgoListWasDownloaded,
+  daysSinceDownload,
   mailType,
   signatureCounts,
-  listCounts,
-  registeredSignatures,
-  attachments
+  listCounts
 ) => {
-  // If the list was from brandenburg plattform we want to pass the same info as brandenburg
-  const campaignCode =
-    campaign.code === 'dibb-1' ? 'brandenburg-1' : campaign.code;
-
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -64,41 +46,33 @@ const sendMail = (
             Email: email,
           },
         ],
-        // The final mails (mailType === 'ultimate' || 'penultimate') have a different template entirely
-        TemplateID: mailType ? 1709553 : 1698024,
-        Subject:
-          mailType === 'ultimate'
-            ? `Letzte Erinnerung: Bitte schick uns jetzt deine Unterschriften für ${
-                STATES[campaign.state]
-              } soll Grundeinkommen testen!`
-            : undefined,
+        TemplateID: mailTypeToTemplate[mailType],
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
           Name: 'Vali',
         },
         // TemplateErrorDeliver: true,
+        // TODO: as soon as templates are ready
         Variables: {
           username,
           userId,
-          campaignShort: CAMPAIGN_SHORTS[campaignCode],
-          state: STATES[campaign.state],
-          days: daysAgoListWasDownloaded,
-          // Compute how many weeks ago the list was sent
-          weeks: NUM_TO_WORD[Math.round(daysAgoListWasDownloaded / 7)],
-          signatureCount:
-            campaignCode in signatureCounts
-              ? formatNumber(signatureCounts[campaignCode].computed)
-              : '',
-          listCount:
-            campaignCode in listCounts
-              ? formatNumber(listCounts[campaignCode].total.downloads)
-              : '',
-          goal: GOALS[campaignCode],
           listId,
-          registeredSignatures,
+          campaign:
+            campaign.state === 'berlin'
+              ? 'Berlin soll Grundeinkommen testen'
+              : 'Demokratie für alle',
+          days: daysSinceDownload,
+          signatureCount:
+            campaign.code in signatureCounts
+              ? formatNumber(signatureCounts[campaign.code].computed)
+              : '0',
+          listCount:
+            campaign.code in listCounts
+              ? formatNumber(listCounts[campaign.code].total.downloads)
+              : '0',
+          goal: GOALS[campaign.code],
         },
-        Attachments: attachments,
       },
     ],
   });

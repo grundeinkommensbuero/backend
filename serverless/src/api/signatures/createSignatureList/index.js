@@ -50,9 +50,10 @@ const handler = async event => {
     // create a (nice to later work with) object, which campaign it is
     const campaign = constructCampaignId(requestBody.campaignCode);
 
-    const date = new Date();
-    // we only want the current day (YYYY-MM-DD), then it is also easier to filter
-    const timestamp = date.toISOString().substring(0, 10);
+    // In comparison to old versions of this code, we now save the complete timestamp
+    // in order to better compare dates in the reminder mails
+    const timestamp = new Date().toISOString();
+    const day = timestamp.substring(0, 10);
 
     // get user id from request body (might not exist, in that case we go a different route)
     let userId;
@@ -96,7 +97,7 @@ const handler = async event => {
     // now we check, if there already is an entry for the list for this day
     const foundSignatureLists = await getSignatureList(
       userId,
-      timestamp,
+      day,
       campaign.code
     );
 
@@ -234,16 +235,16 @@ const handler = async event => {
 };
 
 // function to check, if there already is a signature list for this specific day (owned by user or anonymous)
-const getSignatureList = async (userId, timestamp, campaignCode) => {
+const getSignatureList = async (userId, day, campaignCode) => {
   const params = {
     TableName: signaturesTableName,
     FilterExpression:
-      'createdAt = :timestamp AND campaign.code = :campaignCode AND attribute_not_exists(fakeScannedByUser)',
+      'begins_with(createdAt, :day) AND campaign.code = :campaignCode AND attribute_not_exists(fakeScannedByUser)',
     IndexName: 'userIdIndex',
     KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
       ':userId': userId,
-      ':timestamp': timestamp,
+      ':day': day,
       ':campaignCode': campaignCode,
     },
   };
