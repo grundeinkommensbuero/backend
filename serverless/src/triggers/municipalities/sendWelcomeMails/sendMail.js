@@ -2,8 +2,10 @@ const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
 const TEMPLATE_DEFAULT = 2617393;
+const TEMPLATE_BERLIN = 'TODO';
 const TEMPLATE_BREMEN_DEFAULT = 3107979;
 const TEMPLATE_BREMEN_ACTIVE_USER = 3108929;
+const AGS_BERLIN = '11000000';
 const AGS_BREMEN = '04011000';
 
 const END_OF_QUALIFYING_PERIOD = '2021-03-21 18:00:00';
@@ -30,6 +32,8 @@ const sendMail = (
     } else {
       templateId = TEMPLATE_BREMEN_DEFAULT;
     }
+  } else if (municipality.ags === AGS_BERLIN) {
+    templateId = TEMPLATE_BERLIN;
   } else {
     templateId = TEMPLATE_DEFAULT;
   }

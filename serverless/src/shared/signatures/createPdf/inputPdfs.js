@@ -99,6 +99,14 @@ const CODE_POSITIONS = {
       height: 37,
     },
   },
+  DFA: {
+    BARCODE: {
+      x: 680,
+      y: 35,
+      width: 120,
+      height: 55,
+    },
+  },
 };
 
 // Here we define on which pages the qr and barcodes should be placed
@@ -496,6 +504,29 @@ module.exports = {
           type: 'QR',
           page: 0,
           position: CODE_POSITIONS.HB.QRCODE,
+        },
+      ],
+    },
+  },
+
+  'democracy-1': {
+    COMBINED: {
+      file: fs.readFileSync(__dirname + '/pdfs/democracy-1/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.DFA.BARCODE,
+        },
+      ],
+    },
+    SINGLE_SW: {
+      file: fs.readFileSync(__dirname + '/pdfs/democracy-1/5er.pdf'),
+      codes: [
+        {
+          type: 'BAR',
+          page: 0,
+          position: CODE_POSITIONS.DFA.BARCODE,
         },
       ],
     },

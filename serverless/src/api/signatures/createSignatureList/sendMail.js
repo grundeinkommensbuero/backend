@@ -11,6 +11,7 @@ const STATES = {
   berlin: 'Berlin',
   bremen: 'Bremen',
   dibb: 'Brandenburg',
+  democracy: 'Berlin',
 };
 
 // Functions which sends an email with the attached pdf and returns a promise
@@ -37,6 +38,10 @@ const sendMail = (email, userId, username, attachments, campaign) => {
           username: username || '',
           state: STATES[campaign.state],
           userId,
+          campaign:
+            campaign.state === 'berlin'
+              ? 'Berlin will Grundeinkommen testen'
+              : 'Demokratie für Alle',
         },
         Attachments: attachments,
       },

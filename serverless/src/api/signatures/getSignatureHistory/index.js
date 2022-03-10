@@ -64,10 +64,11 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
     if (!list.manually) {
       // we have to bring the date into the same format (UNIX time) as now
       const createdAt = Date.parse(list.createdAt);
+      const day = list.createdAt.substring(0, 10);
 
       if (createdAt > startDate && createdAt < endDate) {
-        if (!(list.createdAt in stats[list.campaign.code].history)) {
-          stats[list.campaign.code].history[list.createdAt] = {
+        if (!(day in stats[list.campaign.code].history)) {
+          stats[list.campaign.code].history[day] = {
             downloads: 0,
             received: 0,
             scannedLists: new Set(),
@@ -76,8 +77,7 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
           };
         }
 
-        stats[list.campaign.code].history[list.createdAt].downloads +=
-          list.downloads;
+        stats[list.campaign.code].history[day].downloads += list.downloads;
       }
     }
 

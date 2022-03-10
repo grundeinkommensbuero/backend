@@ -211,4 +211,42 @@ describe('createSignatureList api test', () => {
 
     expect(response.status).toEqual(401);
   });
+
+  it('should create a new anonymous signature list for democracy 1', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        campaignCode: 'democracy-1',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/signatures`, request);
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
+
+  it('should create a new signature list for democracy 1 via authenticated route', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        campaignCode: 'democracy-1',
+      }),
+    };
+
+    const response = await fetch(
+      `${INVOKE_URL}/users/${userId}/signatures`,
+      request
+    );
+    const json = await response.json();
+
+    expect(response.status).toBeLessThan(202);
+    expect(json).toHaveProperty('signatureList');
+  });
 });
