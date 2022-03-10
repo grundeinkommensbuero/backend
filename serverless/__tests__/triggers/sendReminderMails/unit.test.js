@@ -337,7 +337,7 @@ describe('Test compute mail type for B reminder mails', () => {
     expect(mailTypes[0]).toEqual('B3.3');
   });
 
-  it('should compute mail type B3.3 because no remind flag', async () => {
+  it('should not compute mail type B3.3 because no remind flag', async () => {
     const date = new Date();
     date.setDate(date.getDate() - 3);
 

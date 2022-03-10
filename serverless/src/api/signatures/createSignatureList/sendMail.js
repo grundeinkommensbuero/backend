@@ -38,6 +38,10 @@ const sendMail = (email, userId, username, attachments, campaign) => {
           username: username || '',
           state: STATES[campaign.state],
           userId,
+          campaign:
+            campaign.state === 'berlin'
+              ? 'Berlin will Grundeinkommen testen'
+              : 'Demokratie für Alle',
         },
         Attachments: attachments,
       },
