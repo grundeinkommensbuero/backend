@@ -71,9 +71,9 @@ module.exports.handler = async event => {
               // We also want to update user to save the email which was sent
               updateUser(user, mailTypes)
             );
-          }
 
-          console.log('success sending mail to', user.email);
+            console.log('success sending mail to', user.email);
+          }
         }
       }
     }
