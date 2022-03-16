@@ -6,7 +6,7 @@ module.exports.analyseSignatureLists = async () => {
 
   // loop through lists to compute stats
   for (const list of signatureLists) {
-    if (!list.fakeScannedByUser) {
+    if (!list.fakeScannedByUser && !list.manually) {
       const campaign = list.campaign.code;
 
       // check if campaign is already in stats
