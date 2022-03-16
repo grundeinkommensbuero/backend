@@ -65,7 +65,10 @@ const processBatchOfUsers = async (event, context, startKey, totalCount) => {
         user.cognitoId
       );
 
-      user.signatureLists = signatureListsResult.Items;
+      // Sort lists by date (earliest first)
+      user.signatureLists = signatureListsResult.Items.sort(
+        (a, b) => a.createdAt - b.createdAt
+      );
 
       // Get municipalities of user
       user.municipalities = await getMunicipalitiesOfUserWithData(
