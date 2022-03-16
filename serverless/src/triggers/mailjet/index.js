@@ -72,7 +72,7 @@ const updateMailjetContact = async ({
   const mailjetUser = {
     usernameWithSpace: '',
     downloadedListCount: 0,
-    lastDownloadedListDate: '',
+    lastDownloadedListDate: new Date('1990-01-01').toISOString(),
     campaignsOfDownloadedLists: '',
     receivedSignatureCount: 0,
     scannedSignatureCount: 0,
@@ -104,8 +104,9 @@ const updateMailjetContact = async ({
   // how many he*she has scanned and how many lists were downloaded
 
   if (signatureLists.length > 0) {
-    mailjetUser.lastDownloadedListDate =
-      signatureLists[signatureLists.length - 1].createdAt;
+    mailjetUser.lastDownloadedListDate = new Date(
+      signatureLists[signatureLists.length - 1].createdAt
+    ).toISOString();
 
     for (const list of signatureLists) {
       if ('received' in list) {
