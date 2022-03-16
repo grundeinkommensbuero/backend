@@ -72,6 +72,8 @@ const updateMailjetContact = async ({
   const mailjetUser = {
     usernameWithSpace: '',
     downloadedListCount: 0,
+    lastDownloadedListDate: '',
+    campaignsOfDownloadedLists: '',
     receivedSignatureCount: 0,
     scannedSignatureCount: 0,
     pledgedSignatureCount: 0,
@@ -101,15 +103,27 @@ const updateMailjetContact = async ({
   // Check how many signatures we already received from the user,
   // how many he*she has scanned and how many lists were downloaded
 
-  for (const list of signatureLists) {
-    if ('received' in list) {
-      for (const scan of list.received) {
-        mailjetUser.receivedSignatureCount += scan.count;
-      }
-    }
+  if (signatureLists.length > 0) {
+    mailjetUser.lastDownloadedListDate =
+      signatureLists[signatureLists.length - 1].createdAt;
 
-    if (list.downloads) {
-      mailjetUser.downloadedListCount += list.downloads;
+    for (const list of signatureLists) {
+      if ('received' in list) {
+        for (const scan of list.received) {
+          mailjetUser.receivedSignatureCount += scan.count;
+        }
+      }
+
+      if (list.downloads) {
+        mailjetUser.downloadedListCount += list.downloads;
+      }
+
+      // Add campaign of list to corresponding attribute
+      if (
+        !mailjetUser.campaignsOfDownloadedLists.includes(list.campaign.code)
+      ) {
+        mailjetUser.campaignsOfDownloadedLists += `${list.campaign.code},`;
+      }
     }
   }
 
@@ -247,6 +261,14 @@ const updateMailjetContact = async ({
       {
         Name: 'downloaded_lists',
         Value: mailjetUser.downloadedListCount,
+      },
+      {
+        Name: 'campaigns_of_downloaded_lists',
+        Value: mailjetUser.campaignsOfDownloadedLists,
+      },
+      {
+        Name: 'last_downloaded_list_date',
+        Value: mailjetUser.lastDownloadedListDate,
       },
       {
         Name: 'user_id',
