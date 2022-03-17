@@ -25,6 +25,10 @@ const sendMail = (
   totalCountForAllUsers
 ) => {
   console.log('about to send email');
+  if (campaign.code !== 'democracy-1') {
+    return null;
+  }
+
   return mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -33,7 +37,8 @@ const sendMail = (
             Email: email,
           },
         ],
-        TemplateID: 1480788,
+        // TemplateID: 1480788,
+        TemplateID: 3768236, // democracy
         TemplateLanguage: true,
         TemplateErrorReporting: {
           Email: 'valentin@expedition-grundeinkommen.de',
