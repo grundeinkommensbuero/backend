@@ -73,7 +73,7 @@ const updateMailjetContact = async ({
     usernameWithSpace: '',
     downloadedListCount: 0,
     lastDownloadedListDate: new Date('1990-01-01').toISOString(),
-    campaignsOfDownloadedLists: '',
+    campaignsOfDownloadedLists: 'nowhere', // mailjet does not save empty strings
     receivedSignatureCount: 0,
     scannedSignatureCount: 0,
     pledgedSignatureCount: 0,
@@ -118,6 +118,8 @@ const updateMailjetContact = async ({
       if (list.downloads) {
         mailjetUser.downloadedListCount += list.downloads;
       }
+
+      mailjetUser.campaignsOfDownloadedLists = '';
 
       // Add campaign of list to corresponding attribute
       if (
