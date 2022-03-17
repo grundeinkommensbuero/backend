@@ -95,7 +95,7 @@ const processBatchOfUsers = async (event, context, startKey, totalCount) => {
           event,
           context,
           result.LastEvaluatedKey,
-          totalCount
+          totalCount + count
         );
       } else {
         // Start new lambda function
