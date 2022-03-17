@@ -73,7 +73,7 @@ const updateMailjetContact = async ({
     usernameWithSpace: '',
     downloadedListCount: 0,
     lastDownloadedListDate: new Date('1990-01-01').toISOString(),
-    campaignsOfDownloadedLists: 'nowhere', // mailjet does not save empty strings
+    campaignsOfDownloadedLists: 'none', // mailjet does not save empty strings
     receivedSignatureCount: 0,
     scannedSignatureCount: 0,
     pledgedSignatureCount: 0,
