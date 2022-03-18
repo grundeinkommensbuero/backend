@@ -184,11 +184,11 @@ const updateUser = (user, userId, listId, count, campaign) => {
     },
   ];
 
-  const listFlow = user.listFlow;
+  const listFlow = user.listFlow || {};
 
   // Update attributes
   // We do not simply override all values because we want to keep the old timestamps
-  if (!('dowloadedList' in listFlow) || !listFlow.downloadedList.value) {
+  if (!('downloadedList' in listFlow) || !listFlow.downloadedList.value) {
     listFlow.downloadedList = { value: true, timestamp };
   }
 

@@ -293,6 +293,12 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
 
   getSignatureCount:
     handler: src/api/signatures/getSignatureCount/index.handler
