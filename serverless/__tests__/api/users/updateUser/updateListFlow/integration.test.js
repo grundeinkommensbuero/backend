@@ -11,9 +11,10 @@ const listFlow = {
   hasPrinted: true,
 };
 
-describe('updateUser sign up for munic api test', () => {
+describe('updateUser list flow', () => {
   beforeAll(async () => {
     token = await authenticate();
+    await removeListFlow(userId);
   });
 
   afterAll(async () => {
