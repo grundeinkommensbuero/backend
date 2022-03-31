@@ -1800,6 +1800,13 @@ resources:
         UserPoolId:
           Ref: CognitoUserPoolUserPool
         GenerateSecret: false
+        TokenValidityUnits:
+          AccessToken: hours
+          RefreshToken: days
+          IdToken: hours
+        AccessTokenValidity: 2
+        IdTokenValidity: 2
+        RefreshTokenValidity: 120
 
     # Authorizer for general user pool
     # https://stackoverflow.com/questions/41664708/cognito-user-pool-authorizer-with-serverless-framework
