@@ -97,6 +97,55 @@ const formatPhoneNumber = phoneNumber => {
   return string.replace(new RegExp('[()/-\\s]', 'g'), '').replace('+', '00');
 };
 
+// This only checks the correct format YYYY-MM-DD, not if month year, day make sense
+const validateDate = dateString => {
+  const regex = /^\d{4}-\d{1,2}-\d{1,2}$/;
+  return regex.test(dateString);
+};
+
+const validateCustomNewsletters = customNewsletters => {
+  if (typeof customNewsletters !== 'object') {
+    return false;
+  }
+
+  for (const newsletter of customNewsletters) {
+    if (
+      typeof newsletter.name !== 'string' ||
+      typeof newsletter.value !== 'boolean' ||
+      typeof newsletter.extraInfo !== 'boolean' ||
+      typeof newsletter.timestamp !== 'string'
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const validateWantsToCollect = wantsToCollect => {
+  if (!('inGeneral' in wantsToCollect || 'meetup' in wantsToCollect)) {
+    return false;
+  }
+
+  if (
+    'inGeneral' in wantsToCollect &&
+    typeof wantsToCollect.inGeneral !== 'boolean'
+  ) {
+    return false;
+  }
+
+  if (
+    'meetup' in wantsToCollect &&
+    (typeof wantsToCollect.meetup.location !== 'string' ||
+      typeof wantsToCollect.meetup.date !== 'string' ||
+      !validateDate(wantsToCollect.meetup.date))
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
@@ -126,6 +175,9 @@ module.exports = {
   validateZipCode,
   validatePhoneNumber,
   formatPhoneNumber,
+  validateDate,
+  validateCustomNewsletters,
+  validateWantsToCollect,
   sleep,
   isXDaysAgo,
 };

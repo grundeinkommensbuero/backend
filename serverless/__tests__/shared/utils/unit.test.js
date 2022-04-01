@@ -4,6 +4,7 @@ const {
   validateZipCode,
   formatPhoneNumber,
   validatePhoneNumber,
+  validateDate,
 } = require('../../../src/shared/utils');
 
 describe('util functions tests', () => {
@@ -197,6 +198,37 @@ describe('util functions tests', () => {
 
   it('should not validate phone number', async () => {
     const result = validatePhoneNumber('0049 1517953677');
+
+    expect(result).toEqual(false);
+  });
+
+  it('should validate date', async () => {
+    const result = validateDate('2022-06-12');
+
+    expect(result).toEqual(true);
+  });
+
+  // Not a real date, but my validation function doesn't test it, so should be true
+  it('should validate date', async () => {
+    const result = validateDate('2022-18-12');
+
+    expect(result).toEqual(true);
+  });
+
+  it('should not validate date', async () => {
+    const result = validateDate('2022/06/12');
+
+    expect(result).toEqual(false);
+  });
+
+  it('should not validate date', async () => {
+    const result = validateDate('12.06.2022');
+
+    expect(result).toEqual(false);
+  });
+
+  it('should not validate date', async () => {
+    const result = validateDate('12-06-2022');
 
     expect(result).toEqual(false);
   });

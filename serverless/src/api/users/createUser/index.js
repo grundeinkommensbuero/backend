@@ -13,10 +13,11 @@ const {
   validatePhoneNumber,
   formatPhoneNumber,
   validateEmail,
+  validateCustomNewsletters,
+  validateWantsToCollect,
 } = require('../../../shared/utils');
 
 const tableName = process.env.USERS_TABLE_NAME;
-const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -104,6 +105,7 @@ const saveUser = ({
   ags,
   store,
   phoneNumber,
+  wantsToCollect,
 }) => {
   const timestamp = new Date().toISOString();
 
@@ -123,6 +125,25 @@ const saveUser = ({
         timestamp,
       },
     ];
+  }
+
+  let wantsToCollectObject;
+
+  if (typeof wantsToCollect !== 'undefined') {
+    wantsToCollectObject = { createdAt: timestamp };
+
+    if (wantsToCollect.inGeneral) {
+      wantsToCollectObject.inGeneral = true;
+    }
+
+    if ('meetup' in wantsToCollect) {
+      wantsToCollectObject.meetups = [
+        {
+          ...wantsToCollect.meetup,
+          timestamp,
+        },
+      ];
+    }
   }
 
   const params = {
@@ -154,6 +175,7 @@ const saveUser = ({
         typeof phoneNumber !== 'undefined'
           ? formatPhoneNumber(phoneNumber)
           : undefined, // Format it to all digit
+      wantsToCollect: wantsToCollectObject,
     },
   };
 
@@ -163,22 +185,11 @@ const saveUser = ({
 // Validates if zip code and phone number are correct (if passed)
 // and if the needed params are there
 const validateParams = requestBody => {
-  if ('customNewsletters' in requestBody) {
-    const { customNewsletters } = requestBody;
-    if (typeof customNewsletters !== 'object') {
-      return false;
-    }
-
-    for (const newsletter of customNewsletters) {
-      if (
-        typeof newsletter.name !== 'string' ||
-        typeof newsletter.value !== 'boolean' ||
-        typeof newsletter.extraInfo !== 'boolean' ||
-        typeof newsletter.timestamp !== 'string'
-      ) {
-        return false;
-      }
-    }
+  if (
+    'customNewsletters' in requestBody &&
+    !validateCustomNewsletters(requestBody.customNewsletters)
+  ) {
+    return false;
   }
 
   if ('zipCode' in requestBody && !validateZipCode(requestBody.zipCode)) {
@@ -188,6 +199,13 @@ const validateParams = requestBody => {
   if (
     'phoneNumber' in requestBody &&
     !validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))
+  ) {
+    return false;
+  }
+
+  if (
+    'wantsToCollect' in requestBody &&
+    !validateWantsToCollect(requestBody.wantsToCollect)
   ) {
     return false;
   }
