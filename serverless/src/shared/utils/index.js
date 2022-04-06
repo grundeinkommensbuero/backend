@@ -135,6 +135,13 @@ const validateWantsToCollect = wantsToCollect => {
   }
 
   if (
+    'question' in wantsToCollect &&
+    typeof wantsToCollect.question !== 'string'
+  ) {
+    return false;
+  }
+
+  if (
     'meetup' in wantsToCollect &&
     (typeof wantsToCollect.meetup.location !== 'string' ||
       typeof wantsToCollect.meetup.date !== 'string' ||

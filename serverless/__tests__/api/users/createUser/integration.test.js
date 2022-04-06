@@ -181,6 +181,7 @@ describe('createUser api test', () => {
       wantsToCollect: {
         inGeneral: true,
         meetup: { location: 'Tempelhofer Feld', date: '2022-06-01' },
+        question: 'blub',
       },
     };
 
@@ -202,6 +203,13 @@ describe('createUser api test', () => {
     expect(user.email).toEqual(userData.email);
     expect(user.zipCode).toEqual(userData.zipCode);
     expect(user.newsletterConsent.value).toEqual(userData.newsletterConsent);
+
+    expect(user.wantsToCollect.inGeneral).toEqual(
+      userData.wantsToCollect.inGeneral
+    );
+    expect(user.wantsToCollect.question).toEqual(
+      userData.wantsToCollect.question
+    );
     expect(user.wantsToCollect.meetups[0].location).toEqual(
       userData.wantsToCollect.meetup.location
     );
