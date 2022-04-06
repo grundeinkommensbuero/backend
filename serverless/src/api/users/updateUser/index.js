@@ -300,6 +300,10 @@ const updateUser = async (
     if (wantsToCollect.inGeneral) {
       newWantsToCollect.inGeneral = true;
     }
+
+    if ('question' in wantsToCollect) {
+      newWantsToCollect.question = wantsToCollect.question;
+    }
   }
 
   const data = {

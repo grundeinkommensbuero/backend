@@ -778,8 +778,8 @@ describe('updateUser update wantsToCollect', () => {
     await ddb.update(params).promise();
   });
 
-  it('should set wants to collect', async () => {
-    const wantsToCollect = { inGeneral: true };
+  it('should set wants to collect with question', async () => {
+    const wantsToCollect = { inGeneral: true, question: 'blub' };
 
     const request = {
       method: 'PATCH',
@@ -800,6 +800,7 @@ describe('updateUser update wantsToCollect', () => {
     expect(response.status).toEqual(204);
     expect(user.wantsToCollect).toHaveProperty('createdAt');
     expect(user.wantsToCollect.inGeneral).toEqual(true);
+    expect(user.wantsToCollect.question).toEqual(wantsToCollect.question);
   });
 
   it('should update wantsToCollect', async () => {

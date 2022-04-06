@@ -136,6 +136,10 @@ const saveUser = ({
       wantsToCollectObject.inGeneral = true;
     }
 
+    if ('question' in wantsToCollect) {
+      wantsToCollectObject.question = wantsToCollect.question;
+    }
+
     if ('meetup' in wantsToCollect) {
       wantsToCollectObject.meetups = [
         {
