@@ -443,6 +443,27 @@ describe('updateUser api test', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('should be able to update user with phone number', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '004964423893023',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+  });
+
   it('should be able to update only zip code', async () => {
     const request = {
       method: 'PATCH',
@@ -503,6 +524,27 @@ describe('updateUser api test', () => {
         Authorization: token,
       },
       body: JSON.stringify({}),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have incorrect phone number', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '00496a423893023',
+      }),
     };
 
     const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
@@ -713,6 +755,177 @@ describe('updateUser update newsletters test', () => {
       },
       body: JSON.stringify({
         customNewsletters,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+});
+
+describe('updateUser update wantsToCollect', () => {
+  beforeAll(async () => {
+    token = await authenticate();
+
+    const params = {
+      TableName: DEV_USERS_TABLE,
+      Key: { cognitoId: userId },
+      UpdateExpression: 'REMOVE wantsToCollect',
+      ReturnValues: 'UPDATED_NEW',
+    };
+
+    await ddb.update(params).promise();
+  });
+
+  it('should set wants to collect with question', async () => {
+    const wantsToCollect = { inGeneral: true, question: 'blub' };
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        wantsToCollect,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+    expect(user.wantsToCollect).toHaveProperty('createdAt');
+    expect(user.wantsToCollect.inGeneral).toEqual(true);
+    expect(user.wantsToCollect.question).toEqual(wantsToCollect.question);
+  });
+
+  it('should update wantsToCollect', async () => {
+    const wantsToCollect = {
+      meetup: { location: 'Tempelhofer Feld', date: '2022-06-01' },
+    };
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        wantsToCollect,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+    expect(user.wantsToCollect).toHaveProperty('updatedAt');
+    expect(user.wantsToCollect.meetups[0]).toHaveProperty('timestamp');
+    expect(user.wantsToCollect.meetups[0].date).toEqual(
+      wantsToCollect.meetup.date
+    );
+    expect(user.wantsToCollect.meetups[0].location).toEqual(
+      wantsToCollect.meetup.location
+    );
+  });
+
+  it('should update wantsToCollect and something else', async () => {
+    const wantsToCollect = {
+      meetup: { location: 'Tempelhofer Feld', date: '2022-06-10' },
+    };
+
+    const username = 'Wall-E';
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        wantsToCollect,
+        username,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+
+    expect(response.status).toEqual(204);
+    expect(user.wantsToCollect).toHaveProperty('updatedAt');
+    expect(user.wantsToCollect.meetups[1]).toHaveProperty('timestamp');
+    expect(user.wantsToCollect.meetups[1].date).toEqual(
+      wantsToCollect.meetup.date
+    );
+    expect(user.wantsToCollect.meetups[0].location).toEqual(
+      wantsToCollect.meetup.location
+    );
+    expect(user.username).toEqual(username);
+  });
+
+  it('should have missing param', async () => {
+    const wantsToCollect = {
+      meetup: { location: 'Tempelhofer Feld' },
+    };
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        wantsToCollect,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing param', async () => {
+    const wantsToCollect = {
+      meetup: { date: '2022-06-10' },
+    };
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        wantsToCollect,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have missing param', async () => {
+    const wantsToCollect = {
+      blub: 'blub',
+    };
+
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        wantsToCollect,
       }),
     };
 

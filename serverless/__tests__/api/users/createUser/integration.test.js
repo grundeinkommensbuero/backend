@@ -54,6 +54,27 @@ describe('createUser api test', () => {
     expect(response.status).toEqual(201);
   });
 
+  it('should create a new user with phone number', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '004964423893023',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(201);
+  });
+
   it('should create a new user with newsletter consent and source', async () => {
     const request = {
       method: 'POST',
@@ -73,6 +94,129 @@ describe('createUser api test', () => {
     const response = await fetch(`${INVOKE_URL}/users`, request);
 
     expect(response.status).toEqual(201);
+  });
+
+  it('should create a new user with wantsToCollect in general ', async () => {
+    const userData = {
+      userId: uuid(),
+      email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+      newsletterConsent: true,
+      zipCode: '12051',
+      username: 'Vali',
+      wantsToCollect: { inGeneral: true },
+    };
+
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(userData),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userData.userId);
+
+    expect(response.status).toEqual(201);
+    expect(user.cognitoId).toEqual(userData.userId);
+    expect(user.confirmed.value).toEqual(false);
+    expect(user.username).toEqual(userData.username);
+    expect(user.email).toEqual(userData.email);
+    expect(user.zipCode).toEqual(userData.zipCode);
+    expect(user.newsletterConsent.value).toEqual(userData.newsletterConsent);
+    expect(user.wantsToCollect.inGeneral).toEqual(
+      userData.wantsToCollect.inGeneral
+    );
+  });
+
+  it('should create a new user with wantsToCollect at meetup', async () => {
+    const userData = {
+      userId: uuid(),
+      email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+      newsletterConsent: true,
+      zipCode: '12051',
+      username: 'Vali',
+      wantsToCollect: {
+        meetup: { location: 'Tempelhofer Feld', date: '2022-06-01' },
+      },
+    };
+
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(userData),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userData.userId);
+
+    expect(response.status).toEqual(201);
+    expect(user.cognitoId).toEqual(userData.userId);
+    expect(user.confirmed.value).toEqual(false);
+    expect(user.username).toEqual(userData.username);
+    expect(user.email).toEqual(userData.email);
+    expect(user.zipCode).toEqual(userData.zipCode);
+    expect(user.newsletterConsent.value).toEqual(userData.newsletterConsent);
+    expect(user.wantsToCollect.inGeneral).toEqual(
+      userData.wantsToCollect.inGeneral
+    );
+    expect(user.wantsToCollect.meetups[0].location).toEqual(
+      userData.wantsToCollect.meetup.location
+    );
+    expect(user.wantsToCollect.meetups[0].date).toEqual(
+      userData.wantsToCollect.meetup.date
+    );
+    expect(user.wantsToCollect.meetups[0]).toHaveProperty('timestamp');
+  });
+
+  it('should create a new user with wantsToCollect at meetup and in general', async () => {
+    const userData = {
+      userId: uuid(),
+      email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+      newsletterConsent: true,
+      zipCode: '12051',
+      username: 'Vali',
+      wantsToCollect: {
+        inGeneral: true,
+        meetup: { location: 'Tempelhofer Feld', date: '2022-06-01' },
+        question: 'blub',
+      },
+    };
+
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(userData),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    // Get user to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userData.userId);
+
+    expect(response.status).toEqual(201);
+    expect(user.cognitoId).toEqual(userData.userId);
+    expect(user.confirmed.value).toEqual(false);
+    expect(user.username).toEqual(userData.username);
+    expect(user.email).toEqual(userData.email);
+    expect(user.zipCode).toEqual(userData.zipCode);
+    expect(user.newsletterConsent.value).toEqual(userData.newsletterConsent);
+
+    expect(user.wantsToCollect.inGeneral).toEqual(
+      userData.wantsToCollect.inGeneral
+    );
+    expect(user.wantsToCollect.question).toEqual(
+      userData.wantsToCollect.question
+    );
+    expect(user.wantsToCollect.meetups[0].location).toEqual(
+      userData.wantsToCollect.meetup.location
+    );
+    expect(user.wantsToCollect.meetups[0].date).toEqual(
+      userData.wantsToCollect.meetup.date
+    );
+    expect(user.wantsToCollect.meetups[0]).toHaveProperty('timestamp');
   });
 
   it('should create a new user for municipality', async () => {
@@ -224,6 +368,67 @@ describe('createUser api test', () => {
         referral: 'test-referral',
         newsletterConsent: true,
         zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have wrong email', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have wrong phone number', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '12051',
+        username: 'Vali',
+        city: 'Berlin',
+        phoneNumber: '0151a7953677',
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users`, request);
+
+    expect(response.status).toEqual(400);
+  });
+
+  it('should have wrong zip code', async () => {
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        userId: uuid(),
+        email: `${randomWords()}.${randomWords()}@expedition-grundeinkommen.de`,
+        referral: 'test-referral',
+        newsletterConsent: true,
+        zipCode: '2074',
         username: 'Vali',
         city: 'Berlin',
       }),

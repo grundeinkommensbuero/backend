@@ -8,8 +8,16 @@ const {
   createUserMunicipalityLink,
 } = require('../../../shared/municipalities');
 
+const {
+  validateZipCode,
+  validatePhoneNumber,
+  formatPhoneNumber,
+  validateEmail,
+  validateCustomNewsletters,
+  validateWantsToCollect,
+} = require('../../../shared/utils');
+
 const tableName = process.env.USERS_TABLE_NAME;
-const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -96,6 +104,8 @@ const saveUser = ({
   municipalityName,
   ags,
   store,
+  phoneNumber,
+  wantsToCollect,
 }) => {
   const timestamp = new Date().toISOString();
 
@@ -117,6 +127,29 @@ const saveUser = ({
     ];
   }
 
+  let wantsToCollectObject;
+
+  if (typeof wantsToCollect !== 'undefined') {
+    wantsToCollectObject = { createdAt: timestamp };
+
+    if (wantsToCollect.inGeneral) {
+      wantsToCollectObject.inGeneral = true;
+    }
+
+    if ('question' in wantsToCollect) {
+      wantsToCollectObject.question = wantsToCollect.question;
+    }
+
+    if ('meetup' in wantsToCollect) {
+      wantsToCollectObject.meetups = [
+        {
+          ...wantsToCollect.meetup,
+          timestamp,
+        },
+      ];
+    }
+  }
+
   const params = {
     TableName: tableName,
     Item: {
@@ -133,7 +166,7 @@ const saveUser = ({
       },
       customNewsletters: customNewslettersArray,
       createdAt: timestamp,
-      zipCode,
+      zipCode: typeof zipCode !== 'undefined' ? zipCode.toString() : undefined, // Parse to string if is number
       referral,
       city,
       username,
@@ -142,34 +175,49 @@ const saveUser = ({
       confirmed: {
         value: false,
       },
+      phoneNumber:
+        typeof phoneNumber !== 'undefined'
+          ? formatPhoneNumber(phoneNumber)
+          : undefined, // Format it to all digit
+      wantsToCollect: wantsToCollectObject,
     },
   };
 
   return ddb.put(params).promise();
 };
 
+// Validates if zip code and phone number are correct (if passed)
+// and if the needed params are there
 const validateParams = requestBody => {
-  if ('customNewsletters' in requestBody) {
-    const { customNewsletters } = requestBody;
-    if (typeof customNewsletters !== 'object') {
-      return false;
-    }
+  if (
+    'customNewsletters' in requestBody &&
+    !validateCustomNewsletters(requestBody.customNewsletters)
+  ) {
+    return false;
+  }
 
-    for (const newsletter of customNewsletters) {
-      if (
-        typeof newsletter.name !== 'string' ||
-        typeof newsletter.value !== 'boolean' ||
-        typeof newsletter.extraInfo !== 'boolean' ||
-        typeof newsletter.timestamp !== 'string'
-      ) {
-        return false;
-      }
-    }
+  if ('zipCode' in requestBody && !validateZipCode(requestBody.zipCode)) {
+    return false;
+  }
+
+  if (
+    'phoneNumber' in requestBody &&
+    !validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))
+  ) {
+    return false;
+  }
+
+  if (
+    'wantsToCollect' in requestBody &&
+    !validateWantsToCollect(requestBody.wantsToCollect)
+  ) {
+    return false;
   }
 
   return (
     'userId' in requestBody &&
     'email' in requestBody &&
-    'newsletterConsent' in requestBody
+    'newsletterConsent' in requestBody &&
+    validateEmail(requestBody.email)
   );
 };

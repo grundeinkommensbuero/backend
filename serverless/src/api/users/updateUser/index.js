@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 const { getUser } = require('../../../shared/users');
-const { generateRandomId } = require('../../../shared/utils');
 const {
   getMunicipality,
   createUserMunicipalityLink,
@@ -12,6 +11,14 @@ const uuid = require('uuid/v4');
 const sendMail = require('./sendMail');
 const sendLotteryMail = require('./sendLotteryMail');
 const { computeDebitDate } = require('./computeDebitDate');
+const {
+  validateZipCode,
+  formatPhoneNumber,
+  validatePhoneNumber,
+  generateRandomId,
+  validateCustomNewsletters,
+  validateWantsToCollect,
+} = require('../../../shared/utils');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USERS_TABLE_NAME;
@@ -157,25 +164,32 @@ const validateParams = (pathParameters, requestBody) => {
     }
   }
 
-  if ('customNewsletters' in requestBody) {
-    const { customNewsletters } = requestBody;
-    if (typeof customNewsletters !== 'object') {
-      return false;
-    }
-
-    for (const newsletter of customNewsletters) {
-      if (
-        typeof newsletter.name !== 'string' ||
-        typeof newsletter.value !== 'boolean' ||
-        typeof newsletter.extraInfo !== 'boolean' ||
-        typeof newsletter.timestamp !== 'string'
-      ) {
-        return false;
-      }
-    }
+  if (
+    'customNewsletters' in requestBody &&
+    !validateCustomNewsletters(requestBody.customNewsletters)
+  ) {
+    return false;
   }
 
   if ('listFlow' in requestBody && typeof requestBody.listFlow !== 'object') {
+    return false;
+  }
+
+  if ('zipCode' in requestBody && !validateZipCode(requestBody.zipCode)) {
+    return false;
+  }
+
+  if (
+    'phoneNumber' in requestBody &&
+    !validatePhoneNumber(formatPhoneNumber(requestBody.phoneNumber))
+  ) {
+    return false;
+  }
+
+  if (
+    'wantsToCollect' in requestBody &&
+    !validateWantsToCollect(requestBody.wantsToCollect)
+  ) {
     return false;
   }
 
@@ -206,6 +220,8 @@ const updateUser = async (
     lottery,
     store,
     listFlow,
+    phoneNumber,
+    wantsToCollect,
   },
   user,
   ipAddress,
@@ -261,15 +277,49 @@ const updateUser = async (
     newListFlow = { ...user.listFlow, ...listFlow };
   }
 
+  let newWantsToCollect;
+  if (typeof wantsToCollect !== 'undefined') {
+    if ('wantsToCollect' in user) {
+      newWantsToCollect = user.wantsToCollect;
+      newWantsToCollect.updatedAt = timestamp;
+    } else {
+      newWantsToCollect = { createdAt: timestamp };
+    }
+
+    if ('meetup' in wantsToCollect) {
+      if (!('meetups' in newWantsToCollect)) {
+        newWantsToCollect.meetups = [];
+      }
+
+      newWantsToCollect.meetups.push({
+        ...wantsToCollect.meetup,
+        timestamp,
+      });
+    }
+
+    if (wantsToCollect.inGeneral) {
+      newWantsToCollect.inGeneral = true;
+    }
+
+    if ('question' in wantsToCollect) {
+      newWantsToCollect.question = wantsToCollect.question;
+    }
+  }
+
   const data = {
     ':email': email,
     ':updatedAt': timestamp,
     ':username': username,
-    ':zipCode': zipCode,
+    ':zipCode': typeof zipCode !== 'undefined' ? zipCode.toString() : undefined, // Parse to string if is number
     ':city': city,
     ':customNewsletters': customNewslettersArray,
     ':store': newStore,
     ':listFlow': newListFlow,
+    ':wantsToCollect': newWantsToCollect,
+    ':phoneNumber':
+      typeof phoneNumber !== 'undefined'
+        ? formatPhoneNumber(phoneNumber) // Format it to all digit
+        : undefined,
   };
 
   if (typeof newsletterConsent !== 'undefined') {
@@ -356,8 +406,14 @@ const updateUser = async (
     ${typeof donation !== 'undefined' ? 'donations = :donations,' : ''}
     ${typeof store !== 'undefined' ? '#store = :store,' : ''} 
     ${typeof listFlow !== 'undefined' ? 'listFlow = :listFlow,' : ''} 
+    ${
+      typeof wantsToCollect !== 'undefined'
+        ? 'wantsToCollect = :wantsToCollect,'
+        : ''
+    } 
     ${typeof lottery !== 'undefined' ? 'lottery = :lottery,' : ''} 
     ${':confirmed' in data ? 'confirmed = :confirmed,' : ''} 
+    ${typeof phoneNumber !== 'undefined' ? 'phoneNumber = :phoneNumber,' : ''}
     ${user.source === 'bb-platform' ? 'updatedOnXbge = :updatedOnXbge,' : ''}
     updatedAt = :updatedAt
     `,
