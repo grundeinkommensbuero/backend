@@ -242,6 +242,22 @@ paths:
                         type: string
                         description: In iso format
                         required: true
+                wantsToCollect:
+                  type: object
+                  description: Should either include inGeneral or meetup if it should be saved that the user either wants to collect in general or at a specific event.
+                  properties:
+                    inGeneral:
+                      type: boolean
+                    meetup:
+                      type: object
+                      description: Must have location and date, but can also include anything else
+                      properties:
+                        location:
+                          type: string
+                          required: true
+                        date:
+                          type: string
+                          required: true
       responses:
         '201':
           description: User was successfully created
@@ -581,7 +597,22 @@ paths:
                 listFlow:
                   type: object
                   description: Can contain any key. All keys will be added to existing list flow. If a key already exists it will be overwritten.
-
+                wantsToCollect:
+                  type: object
+                  description: Should either include inGeneral or meetup if it should be saved that the user either wants to collect in general or at a specific event.
+                  properties:
+                    inGeneral:
+                      type: boolean
+                    meetup:
+                      type: object
+                      description: Must have location and date, but can also include anything else
+                      properties:
+                        location:
+                          type: string
+                          required: true
+                        date:
+                          type: string
+                          required: true
       responses:
         '204':
           description: User was successfully updated
@@ -833,39 +864,62 @@ paths:
                                   type: number
                                 id:
                                   type: string
-                          municipalities:
+                      municipalities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ags:
+                              type: string
+                            createdAt:
+                              type: string
+                            population:
+                              type: number
+                            name:
+                              type: string
+                            slug:
+                              type: string
+                              description: The slug to open the page of this specific municipality
+                            userId:
+                              type: string
+                              description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
+                      referredUsers:
+                        description: Other users which signed up because this user shared, array of userIds
+                        type: array
+                        items:
+                          type: string
+                      lottery:
+                        type: object
+                        properties:
+                          year:
+                            type: string
+                          id:
+                            type: string
+                          timestamp:
+                            type: string
+                      wantsToCollect:
+                        type: object
+                        properties:
+                          meetups:
                             type: array
+                            description: Events to which the user has signed up for
                             items:
                               type: object
+                              description: Includes date, location and timestamp and possible anything else
                               properties:
-                                ags:
+                                location:
                                   type: string
-                                createdAt:
+                                date:
                                   type: string
-                                population:
-                                  type: number
-                                name:
+                                timestamp:
                                   type: string
-                                slug:
-                                  type: string
-                                  description: The slug to open the page of this specific municipality
-                                userId:
-                                  type: string
-                                  description: This is kinda redundant in this case but is due to the fact that we got the array from the userId - ags table
-                          referredUsers:
-                            description: Other users which signed up because this user shared, array of userIds
-                            type: array
-                            items:
-                              type: string
-                          lottery:
-                            type: object
-                            properties:
-                              year:
-                                type: string
-                              id:
-                                type: string
-                              timestamp:
-                                type: string
+                          inGeneral:
+                            type: boolean
+                          createdAt:
+                            type: string
+                          updatedAt:
+                            type: string
+
         '401':
           description: Not authorized to get user
           content:
