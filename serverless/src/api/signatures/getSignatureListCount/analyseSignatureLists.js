@@ -25,6 +25,8 @@ module.exports.analyseSignatureLists = async () => {
             lists: 0,
             downloads: 0,
           },
+          userCount: 0,
+          users: [],
         };
       }
 
@@ -34,10 +36,22 @@ module.exports.analyseSignatureLists = async () => {
       } else {
         stats[campaign].byUser.lists++;
         stats[campaign].byUser.downloads += list.downloads;
+
+        if (!stats[campaign].users.includes(list.userId)) {
+          stats[campaign].userCount++;
+          stats[campaign].users.push(list.userId);
+        }
       }
 
       stats[campaign].total.lists++;
       stats[campaign].total.downloads += list.downloads;
+    }
+  }
+
+  // Remove users array for every campaign
+  for (const campaign in stats) {
+    if (Object.prototype.hasOwnProperty.call(stats, campaign)) {
+      delete stats[campaign].users;
     }
   }
 

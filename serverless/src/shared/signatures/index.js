@@ -168,6 +168,7 @@ const getSignatureCountOfAllLists = async () => {
         withMixed: 0,
         scannedByUser: 0,
         computed: 0,
+        withoutAnonymous: 0,
       };
     }
 
@@ -183,6 +184,10 @@ const getSignatureCountOfAllLists = async () => {
         }
 
         stats[campaign].withMixed += parseInt(scan.count, 10);
+
+        if (list.userId !== 'anonymous') {
+          stats[campaign].withoutAnonymous += parseInt(scan.count, 10);
+        }
 
         // Needed for computation of approximated count of signatures
         scans.push({ ...scan, isReceived: true });
