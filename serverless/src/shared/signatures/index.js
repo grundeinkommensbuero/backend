@@ -169,6 +169,7 @@ const getSignatureCountOfAllLists = async () => {
         scannedByUser: 0,
         computed: 0,
         withoutAnonymous: 0,
+        userMap: {},
       };
     }
 
@@ -187,6 +188,13 @@ const getSignatureCountOfAllLists = async () => {
 
         if (list.userId !== 'anonymous') {
           stats[campaign].withoutAnonymous += parseInt(scan.count, 10);
+
+          // We want to create a user map to later count the signatures by power users
+          if (!(list.userId in stats[campaign].userMap)) {
+            stats[campaign].userMap[list.userId] = 0;
+          }
+
+          stats[campaign].userMap[list.userId] += parseInt(scan.count, 10);
         }
 
         // Needed for computation of approximated count of signatures
@@ -239,6 +247,27 @@ const getSignatureCountOfAllLists = async () => {
           );
         }
       }
+
+      // Count power users
+      let signaturesOfPowerUsers = 0;
+      let powerUserCount = 0;
+      for (const userId in stats[campaign].userMap) {
+        if (
+          Object.prototype.hasOwnProperty.call(stats[campaign].userMap, userId)
+        ) {
+          const countOfUser = stats[campaign].userMap[userId];
+          if (stats[campaign].userMap[userId] > 30) {
+            signaturesOfPowerUsers += countOfUser;
+            powerUserCount++;
+          }
+        }
+      }
+
+      stats[campaign].ofPowerUsers = signaturesOfPowerUsers;
+      stats[campaign].powerUserCount = powerUserCount;
+      stats[campaign].userCount = Object.keys(stats[campaign].userMap).length;
+
+      delete stats[campaign].userMap;
     }
   }
 

@@ -17,6 +17,14 @@ const CODE_POSITIONS = {
       height: 41,
     },
   },
+  B2: {
+    BARCODE: {
+      x: 732,
+      y: 5,
+      width: 95,
+      height: 38,
+    },
+  },
   HH: {
     BARCODE: {
       x: 687,
@@ -198,13 +206,8 @@ module.exports = {
       codes: [
         {
           type: 'BAR',
-          page: 1,
-          position: CODE_POSITIONS.B.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 1,
-          position: CODE_POSITIONS.B.QRCODE,
+          page: 0,
+          position: CODE_POSITIONS.B2.BARCODE,
         },
       ],
     },
@@ -213,28 +216,8 @@ module.exports = {
       codes: [
         {
           type: 'BAR',
-          page: 1,
-          position: CODE_POSITIONS.B.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 1,
-          position: CODE_POSITIONS.B.QRCODE,
-        },
-      ],
-    },
-    SINGLE: {
-      file: fs.readFileSync(__dirname + '/pdfs/berlin-2/5er_FARBIG.pdf'),
-      codes: [
-        {
-          type: 'BAR',
-          page: 1,
-          position: CODE_POSITIONS.B.BARCODE,
-        },
-        {
-          type: 'QR',
-          page: 1,
-          position: CODE_POSITIONS.B.QRCODE,
+          page: 0,
+          position: CODE_POSITIONS.B2.BARCODE,
         },
       ],
     },
