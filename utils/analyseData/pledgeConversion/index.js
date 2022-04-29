@@ -34,11 +34,17 @@ const getPledgeConversion = async (
 
   let receivedSignatureSum = 0;
 
+  let pledgesWithoutNumber = 0;
+
   for (const user of usersFromState) {
     let pledgedSignatureCount = 0;
     for (const pledge of user.pledges) {
       if (pledge.campaign.code === campaignCode) {
-        pledgedSignatureCount += pledge.signatureCount;
+        if (pledge.signatureCount) {
+          pledgedSignatureCount += pledge.signatureCount;
+        } else {
+          pledgesWithoutNumber++;
+        }
       }
     }
 
@@ -53,7 +59,7 @@ const getPledgeConversion = async (
     for (const signatureList of signatureListsResult.Items) {
       if ('received' in signatureList) {
         for (const scan of signatureList.received) {
-          receivedSignatureCount += scan.count;
+          receivedSignatureCount += parseInt(scan.count, 10);
         }
       }
     }
@@ -67,6 +73,15 @@ const getPledgeConversion = async (
 
     if (conversion === 0) {
       usersWithoutReceivedSignaturesCount++;
+    }
+
+    if (isNaN(conversion)) {
+      console.log(
+        'is nan',
+        pledgedSignatureCount,
+        receivedSignatureCount,
+        conversion
+      );
     }
 
     if (
@@ -102,6 +117,8 @@ const getPledgeConversion = async (
   }
 
   console.log('Users count', usersFromState.length);
+  console.log('Pledges without number', pledgesWithoutNumber);
+  console.log('Conversion sum', conversionSum);
 
   console.log(
     'Users without received signatures: ',
@@ -111,7 +128,12 @@ const getPledgeConversion = async (
   console.log('Power users who pledged more: ', powerUsersWhoPledgedMore);
 
   console.log('Power users who pledged less: ', powerUsersWhoPledgedLess);
+  console.log(
+    'conversionWithoutPowerUsersWhoPledgedLess: ',
+    conversionWithoutPowerUsersWhoPledgedLess
+  );
 
+  console.log('receivedSignatureSum: ', receivedSignatureSum);
   console.log(
     'Average received signatures',
     receivedSignatureSum / usersFromState.length
@@ -166,7 +188,7 @@ const getAnonymousSignatureCount = async (
 getPledgeConversion(
   PROD_USERS_TABLE_NAME,
   PROD_SIGNATURES_TABLE_NAME,
-  'hamburg-1'
+  'berlin-1'
 );
 
-getAnonymousSignatureCount(PROD_SIGNATURES_TABLE_NAME, 'hamburg-1');
+// getAnonymousSignatureCount(PROD_SIGNATURES_TABLE_NAME, 'hamburg-1');
