@@ -16,19 +16,20 @@ module.exports.handler = async event => {
 
     console.log('body', requestBody);
 
-    // Request body has an array of events
-    const { email } = requestBody[0];
     try {
-      // check if there is a user with the passed email
-      const result = await getUserByMail(email);
+      // Request body has an array of events
+      for (const { email } of requestBody) {
+        // check if there is a user with the passed email
+        const result = await getUserByMail(email);
 
-      console.log('user', result);
+        console.log('user', result);
 
-      // if user does not have Item as property, there was no user found
-      if (result.Count === 0) {
-        console.log('No user found with the passed email');
-      } else {
-        await unsubscribeUser(result.Items[0]);
+        // if user does not have Item as property, there was no user found
+        if (result.Count === 0) {
+          console.log('No user found with the passed email');
+        } else {
+          await unsubscribeUser(result.Items[0]);
+        }
       }
 
       // updating user was successful, return appropriate json
