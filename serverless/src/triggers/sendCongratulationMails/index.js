@@ -28,7 +28,6 @@ module.exports.handler = async event => {
     let campaignToday;
     for (const list of signatureLists) {
       if (
-        list.campaign.code === 'democracy-1' ||
         list.campaign.code === 'berlin-2' ||
         list.campaign.code === 'hamburg-2'
       ) {
