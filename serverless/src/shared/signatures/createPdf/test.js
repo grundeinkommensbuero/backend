@@ -3,11 +3,11 @@ const fs = require('fs');
 // const createPDFLetter = require('./createPDFLetter');
 const generatePdf = require('./createPDF');
 
-const CODE = '0123456789';
+const CODE = '0123456';
 const URL = 'https://xbge.de/qr/hh/?listId=';
 
-generatePdf(URL, CODE, 'SINGLE_SW', 'democracy-1').then(pdfBytes => {
-  fs.writeFileSync('./test-democracy.pdf', pdfBytes);
+generatePdf(URL, CODE, 'SINGLE_SW', 'berlin-2').then(pdfBytes => {
+  fs.writeFileSync('./test-berlin.pdf', pdfBytes);
 });
 
 /*

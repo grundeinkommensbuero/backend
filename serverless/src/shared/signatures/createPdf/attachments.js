@@ -13,12 +13,8 @@ module.exports = {
   ],
   'berlin-2': [
     {
-      filename: 'Liste_schwarz-weiss.pdf',
+      filename: 'Liste.pdf',
       type: 'SINGLE_SW',
-    },
-    {
-      filename: 'Liste_farbig.pdf',
-      type: 'SINGLE',
     },
   ],
   'hamburg-1': [
