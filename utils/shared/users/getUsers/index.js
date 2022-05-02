@@ -164,9 +164,12 @@ const getAllUsers = async (
 
   if (condition !== null) {
     params.FilterExpression = condition;
-    params.ExpressionAttributeValues = {
-      ':conditionValue': conditionValue,
-    };
+
+    if (conditionValue) {
+      params.ExpressionAttributeValues = {
+        ':conditionValue': conditionValue,
+      };
+    }
   }
 
   const result = await ddb.scan(params).promise();
