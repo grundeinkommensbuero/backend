@@ -28,12 +28,10 @@ module.exports.handler = async event => {
     // Loop through lists to check if a list was created x days ago
     for (const list of signatureLists) {
       // We only need to check lists of users and lists which were not part of letter action.
-      // Also we want to deactivate the berlin, sh and brandenburg lists for now...
       if (
         list.userId !== 'anonymous' &&
         !list.manually &&
-        (list.campaign.code === 'berlin-2' ||
-          list.campaign.code === 'democracy-1')
+        list.campaign.code === 'berlin-2'
       ) {
         // Get user from users table to get email
         const result = await getUser(list.userId);
