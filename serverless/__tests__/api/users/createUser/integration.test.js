@@ -228,6 +228,7 @@ describe('createUser api test', () => {
         ags: randomAgs,
         userId: randomUserId,
         email: randomEmail,
+        extraInfo: true,
         referral: 'test-referral',
         newsletterConsent: true,
         zipCode: '12051',
@@ -255,7 +256,7 @@ describe('createUser api test', () => {
     expect(user.email).toEqual(randomEmail);
     expect(user.customNewsletters[0].ags).toEqual(randomAgs);
     expect(user.customNewsletters[0].name).toEqual(testMunicipality.name);
-    expect(user.customNewsletters[0].extraInfo).toEqual(false);
+    expect(user.customNewsletters[0].extraInfo).toEqual(true);
     expect(user.customNewsletters[0].value).toEqual(true);
 
     // Check user municipality table

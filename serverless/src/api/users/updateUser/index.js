@@ -222,6 +222,7 @@ const updateUser = async (
     listFlow,
     phoneNumber,
     wantsToCollect,
+    extraInfo,
   },
   user,
   ipAddress,
@@ -239,7 +240,9 @@ const updateUser = async (
   } else if (
     typeof ags !== 'undefined' &&
     newsletterConsent &&
-    !alreadySignedUpForMunicipality
+    // If extra info was passed we want to override the newsletter settings, even
+    // if they are already signed up to municipality
+    (!alreadySignedUpForMunicipality || extraInfo)
   ) {
     // If array already exists, use that array
     customNewslettersArray = user.customNewsletters || [];
@@ -251,12 +254,15 @@ const updateUser = async (
 
     if (foundIndex !== -1) {
       customNewslettersArray[foundIndex].value = true;
+      if (extraInfo) {
+        customNewslettersArray[foundIndex].extraInfo = true;
+      }
     } else {
       customNewslettersArray.push({
         name: municipalityName,
         ags,
         value: true,
-        extraInfo: false,
+        extraInfo: extraInfo || false,
         timestamp,
       });
     }
