@@ -82,6 +82,46 @@ describe('updateUser sign up for munic api test', () => {
     expect(municipality).toHaveProperty('createdAt');
   });
 
+  it('should be able to sign up for municipality with extra info', async () => {
+    const request = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        ags: randomAgs,
+        newsletterConsent: true,
+        extraInfo: true,
+      }),
+    };
+
+    const response = await fetch(`${INVOKE_URL}/users/${userId}`, request);
+
+    expect(response.status).toEqual(204);
+
+    // Get user and municpality to check if saved correctly
+    const { Item: user } = await getUser(DEV_USERS_TABLE, userId);
+    const { Item: municipality } = await getUserMunicipalityLink(
+      randomAgs,
+      userId
+    );
+
+    // Check user
+    const customNewsletter =
+      user.customNewsletters[user.customNewsletters.length - 1];
+    expect(customNewsletter.ags).toEqual(randomAgs);
+    expect(customNewsletter.name).toEqual(testMunicipality.name);
+    expect(customNewsletter.extraInfo).toEqual(true);
+    expect(customNewsletter.value).toEqual(true);
+
+    // Check user municipality table
+    expect(municipality.ags).toEqual(randomAgs);
+    expect(municipality.userId).toEqual(userId);
+    expect(municipality.population).toEqual(testMunicipality.population);
+    expect(municipality).toHaveProperty('createdAt');
+  });
+
   it('should be able to sign up for municipality with newsletter settings as params', async () => {
     const customMunicipalityName = 'blub';
     const timestamp = new Date().toISOString();

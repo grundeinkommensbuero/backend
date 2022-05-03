@@ -106,6 +106,7 @@ const saveUser = ({
   store,
   phoneNumber,
   wantsToCollect,
+  extraInfo,
 }) => {
   const timestamp = new Date().toISOString();
 
@@ -121,7 +122,7 @@ const saveUser = ({
         name: municipalityName,
         ags,
         value: true,
-        extraInfo: false,
+        extraInfo: extraInfo || false,
         timestamp,
       },
     ];
