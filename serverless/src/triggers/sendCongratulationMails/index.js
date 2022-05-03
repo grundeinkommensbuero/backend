@@ -86,22 +86,16 @@ module.exports.handler = async event => {
       }
     }
 
-    /*
-    TODO: reactivate for berlin-2
     // Make api call to contentful to compute the total number of signatures
     const contentfulCounts = await getSignatureCountFromContentful();
 
     // Use the same function as in getSignatureCount to get total count
     const totalCountForAllUsers = await getSignatureCountOfAllLists();
 
-    */
     // go through the user map to send a mail to every user
     // of whom we have scanned a list during the last day
     for (const key in usersMap) {
       if (usersMap[key].dailyCount > 0) {
-        /*
-
-        TODO: reactivate for berlin-2
         let totalCountForThisCampaign =
           totalCountForAllUsers[usersMap[key].campaign.code].computed;
         const contentfulCountForThisCampaign =
@@ -128,6 +122,9 @@ module.exports.handler = async event => {
           );
         }
 
+        /*
+        Probably not needed anymore
+
         // If there is no pdf url (e.g. user has ordered list via mail)
         // get the url for the latest anonymous list
         if (!usersMap[key].pdfUrl) {
@@ -138,6 +135,7 @@ module.exports.handler = async event => {
         }
 
         */
+
         try {
           // await sendMail(usersMap[key], totalCountForThisCampaign);
           await sendMail(usersMap[key], 0);

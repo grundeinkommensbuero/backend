@@ -8,7 +8,7 @@ const campaigns = {
   'brandenburg-1': 'JrA0oRRv0IvBq6KFR0HAY',
   'hamburg-1': '5Lit4YciGc6MxsIJ6M4aNI',
   'berlin-1': '48SFq6zs6sIdUs1APadYmm',
-  'berlin-2': '48SFq6zs6sIdUs1APadYmm',
+  'berlin-2': 'UhoaMuq6ePPH7iSsb0Kyj',
   'bremen-1': '6BgXlAhocgSwZGozhJEqmn',
 };
 const requestParams = {
