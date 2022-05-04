@@ -11,7 +11,8 @@ const stepToEmailMap = {
 };
 
 // Is always the same for every mail in A flow
-const aRemindAfter = 7;
+const aRemindAfter = 14;
+const aRemindAfterShort = 7;
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -39,40 +40,34 @@ module.exports.computeMailType = (user, list) => {
       : null;
 
   // A Flow
-  // TODO: activate A Flow as soon as mails are ready
 
   // If list was created within the last 24 hours we send the first mail
   // In comparison to the B flow, where we check if something happened x days ago,
   // we now check if it happened during last day, because ideally we send the email the same day
   // We also need to check if the user has signed up during this period or if it is an old user
-  /*
+
   const now = new Date();
   if (
     now - new Date(list.createdAt) < ONE_DAY &&
-    now - new Date(user.createdAt) < ONE_DAY
+    now - new Date(user.createdAt) < ONE_DAY &&
+    list.campaign.code === 'berlin-2'
   ) {
     mailTypes.push('A1');
   }
   // If user has clicked cta in first email (shared = true) or has signed the list
   // (if user has "scanned a list" that attribute is set automatically)
   else if (
-    ('ctaFlow' in user &&
-      'shared' in user.ctaFlow &&
-      user.ctaFlow.shared.value &&
-      isXDaysAgo(new Date(user.ctaFlow.shared.timestamp), aRemindAfter)) ||
-    ('listFlow' in user &&
-      'signedList' in user.listFlow &&
-      user.listFlow.signedList.value &&
-      isXDaysAgo(new Date(user.listFlow.signedList.timestamp), aRemindAfter))
+    lastCtaEmail &&
+    isXDaysAgo(new Date(lastCtaEmail.timestamp), aRemindAfter) &&
+    lastCtaEmail.key === 'A1'
   ) {
     mailTypes.push('A2');
   }
   // If user has clicked CTA in A2 we send the next mail after a week
   else if (
-    'ctaFlow' in user &&
-    'wantsToBeActive' in user.ctaFlow &&
-    user.ctaFlow.wantsToBeActive.value &&
-    isXDaysAgo(new Date(user.ctaFlow.wantsToBeActive.timestamp), aRemindAfter)
+    lastCtaEmail &&
+    isXDaysAgo(new Date(lastCtaEmail.timestamp), aRemindAfterShort) &&
+    lastCtaEmail.key === 'A2'
   ) {
     mailTypes.push('A3');
   }
@@ -80,12 +75,11 @@ module.exports.computeMailType = (user, list) => {
   else if (
     lastCtaEmail &&
     lastCtaEmail.key === 'A3' &&
-    isXDaysAgo(new Date(lastCtaEmail.timestamp), aRemindAfter)
+    isXDaysAgo(new Date(lastCtaEmail.timestamp), aRemindAfterShort)
   ) {
     mailTypes.push('A4');
   }
 
-  */
   // B Flow
 
   if (

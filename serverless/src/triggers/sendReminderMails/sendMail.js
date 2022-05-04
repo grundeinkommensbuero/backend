@@ -2,8 +2,11 @@ const { apiKey, apiSecret } = require('../../../mailjetConfig');
 const { formatNumber } = require('../../shared/utils');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-// TODO as soon as tempaltes are ready
 const mailTypeToTemplate = {
+  A1: 3909123,
+  A2: 3910093,
+  A3: 3910460,
+  A4: 3910768,
   'B2.1': 3719962,
   'B2.2': 3719962,
   'B3.1': 3720184,
