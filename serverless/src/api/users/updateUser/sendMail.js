@@ -1,7 +1,7 @@
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-const RECURRING_DONATION_TEMPLATE = 1885162;
+const RECURRING_DONATION_TEMPLATE = 3911029;
 const YEARLY_DONATION_TEMPLATE = 2606607;
 const ONETIME_DONATION_TEMPLATE = 2060355;
 const CANCEL_TEMPLATE = 2209988;

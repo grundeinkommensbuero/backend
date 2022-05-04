@@ -9,7 +9,10 @@ describe('Test compute mail type for A reminder mails', () => {
     date.setHours(date.getHours() - 3);
 
     const user = { createdAt: date.toISOString() };
-    const list = { createdAt: date.toISOString() };
+    const list = {
+      createdAt: date.toISOString(),
+      campaign: { code: 'berlin-2' },
+    };
 
     const mailTypes = computeMailType(user, list);
 
@@ -43,46 +46,20 @@ describe('Test compute mail type for A reminder mails', () => {
     expect(mailTypes.length).toEqual(0);
   });
 
-  it('should compute mail type A2 because user shared', async () => {
+  it('should compute mail type A2 because A1 was sent 14 days ago', async () => {
     const date = new Date();
-    date.setDate(date.getDate() - 7);
+    date.setDate(date.getDate() - 14);
 
     const user = {
-      ctaFlow: { shared: { value: true, timestamp: date.toISOString() } },
+      ctaFlow: {
+        emailsSent: [{ key: 'A1', timestamp: date.toISOString() }],
+      },
     };
     const list = { createdAt: date.toISOString() };
 
     const mailTypes = computeMailType(user, list);
 
     expect(mailTypes[0]).toEqual('A2');
-  });
-
-  it('should compute mail type A2 because user signed list', async () => {
-    const date = new Date();
-    date.setDate(date.getDate() - 7);
-
-    const user = {
-      listFlow: { signedList: { value: true, timestamp: date.toISOString() } },
-    };
-    const list = { createdAt: date.toISOString() };
-
-    const mailTypes = computeMailType(user, list);
-
-    expect(mailTypes[0]).toEqual('A2');
-  });
-
-  it('should not compute mail type A2 because user signed list only six days ago', async () => {
-    const date = new Date();
-    date.setDate(date.getDate() - 6);
-
-    const user = {
-      listFlow: { signedList: { value: true, timestamp: date.toISOString() } },
-    };
-    const list = { createdAt: date.toISOString() };
-
-    const mailTypes = computeMailType(user, list);
-
-    expect(mailTypes.length).toEqual(0);
   });
 
   it('should compute mail type A3', async () => {
@@ -91,7 +68,7 @@ describe('Test compute mail type for A reminder mails', () => {
 
     const user = {
       ctaFlow: {
-        wantsToBeActive: { value: true, timestamp: date.toISOString() },
+        emailsSent: [{ key: 'A2', timestamp: date.toISOString() }],
       },
     };
     const list = { createdAt: date.toISOString() };
@@ -107,7 +84,7 @@ describe('Test compute mail type for A reminder mails', () => {
 
     const user = {
       ctaFlow: {
-        wantsToBeActive: { value: true, timestamp: date.toISOString() },
+        emailsSent: [{ key: 'A2', timestamp: date.toISOString() }],
       },
     };
     const list = { createdAt: date.toISOString() };
@@ -126,7 +103,6 @@ describe('Test compute mail type for A reminder mails', () => {
 
     const user = {
       ctaFlow: {
-        wantsToBeActive: { value: true, timestamp: date.toISOString() },
         emailsSent: [{ key: 'A3', timestamp: emailDate.toISOString() }],
       },
     };
@@ -146,7 +122,6 @@ describe('Test compute mail type for A reminder mails', () => {
 
     const user = {
       ctaFlow: {
-        wantsToBeActive: { value: true, timestamp: date.toISOString() },
         emailsSent: [{ key: 'A3', timestamp: emailDate.toISOString() }],
       },
     };
