@@ -19,19 +19,17 @@ module.exports.computeMailType = (user, municipalitySignupCreatedAt) => {
   }
 
   if (lastEmail) {
-    // If user has reacted in any way to mail C1, we don't send another C1
-    // and only send C2, if user wanted to be reminded
     if (
-      'reacted' in user.welcomeFlow &&
-      user.welcomeFlow.reacted.value &&
-      'remind' in user.welcomeFlow &&
-      user.welcomeFlow.remind.value &&
-      isXDaysAgo(new Date(user.welcomeFlow.remind.timestamp), remindAfter)
+      (isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
+        !('listFlow' in user)) ||
+      !('sentList' in user.listFlow) ||
+      !user.listFlow.sentList.value
     ) {
       return 'C2';
     }
 
     // Only send C1.2 if user has not reacted
+    /* Not needed for now
     if (
       lastEmail.key === 'C1.1' &&
       isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
@@ -39,6 +37,7 @@ module.exports.computeMailType = (user, municipalitySignupCreatedAt) => {
     ) {
       return 'C1.2';
     }
+    */
   }
 
   return null;
