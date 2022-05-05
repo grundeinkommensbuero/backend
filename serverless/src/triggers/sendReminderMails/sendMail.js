@@ -63,7 +63,7 @@ const sendMail = (
           listId,
           campaign:
             campaign.state === 'berlin'
-              ? 'Berlin soll Grundeinkommen testen'
+              ? 'Volksentscheid Grundeinkommen'
               : 'Demokratie für alle',
           days: daysSinceDownload,
           signatureCount:
