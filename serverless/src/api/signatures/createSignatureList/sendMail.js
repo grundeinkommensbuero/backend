@@ -40,7 +40,7 @@ const sendMail = (email, userId, username, attachments, campaign) => {
           userId,
           campaign:
             campaign.state === 'berlin'
-              ? 'Berlin will Grundeinkommen testen'
+              ? 'Volksentscheid Grundeinkommen'
               : 'Demokratie für Alle',
         },
         Attachments: attachments,

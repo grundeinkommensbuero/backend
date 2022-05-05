@@ -1373,6 +1373,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
       - Effect: 'Allow'
@@ -1390,6 +1391,14 @@ functions:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [MunicipalitiesTable, Arn]
+      - Effect: 'Allow' # for the global secondary index of signatures table
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
+                - 'index/userIdIndex'
 
   sendReminderMails:
     handler: src/triggers/sendReminderMails/index.handler

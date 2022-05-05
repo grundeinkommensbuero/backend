@@ -19,18 +19,19 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const usersTableName = process.env.USERS_TABLE_NAME;
 
+const EIGHT_DAYS = 8 * 24 * 60 * 60 * 1000;
 const ONE_DAY = 24 * 60 * 60 * 1000;
 const AGS_BERLIN = '11000000';
 
 module.exports.handler = async event => {
-  return event;
-
   try {
-    // Get all user municipality links of the last day (all users who have signed up for a municipality)
+    // Get all user municipality links of the last 8 days (all users who have signed up for a municipality)
+    // Berlin should receive the first mail after 7 days after signup, other municipalities one day
     const userMunicipalityLinks = await getAllMunicipalitiesWithUsers(
-      new Date(new Date() - ONE_DAY).toISOString()
+      new Date(new Date() - EIGHT_DAYS).toISOString()
     );
 
+    console.log(userMunicipalityLinks);
     // Send mails to all those users
     await sendMails(userMunicipalityLinks);
   } catch (error) {
@@ -69,6 +70,8 @@ const sendMails = async userMunicipalityLinks => {
           'berlin-2'
         );
 
+        console.log('lists', signatureListsResult);
+
         if (signatureListsResult.Count === 0) {
           // If today is x days after user signed up for municipality
           // or x days after the first mail was sent, we send the email
@@ -76,14 +79,15 @@ const sendMails = async userMunicipalityLinks => {
           const mailType = computeMailType(user, createdAt);
 
           if (mailType) {
-            await Promise.all(
+            await Promise.all([
               sendMail(user, municipalityResult.Item, mailType),
               // We also want to update user to save the email which was sent
-              updateUser(user, mailType)
-            );
+              updateUser(user, mailType),
+            ]);
           }
         }
-      } else {
+      } else if (new Date() - new Date(createdAt) < ONE_DAY) {
+        // Other municipalities should receive the welcome mail within one day
         await sendMail(user, municipalityResult.Item);
         console.log('sent mail to', userResult.Item.email);
       }
