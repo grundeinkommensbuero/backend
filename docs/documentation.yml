@@ -1940,6 +1940,55 @@ paths:
                   error:
                     type: string
 
+  /admin/collectors:
+    get:
+      summary: Gets list of collectors
+      security:
+        - AdminApiKeyAuth: []
+      responses:
+        '200':
+          description: Collectors successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inGeneral:
+                    type: array
+                    description: Array of users who want to collect in general, see "Gets current authenticated user" for attributes
+                  meetups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                        location:
+                          type: string
+                        collectors:
+                          type: array
+                          description: Array of users who want to attend event, see "Gets current authenticated user" for attributes
+        '401':
+          description: Not authorized to get users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
   /images/upload-url:
     post:
       summary: Create a signed url to upload image
