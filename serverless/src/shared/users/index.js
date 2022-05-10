@@ -82,6 +82,30 @@ const getUsersWithDonations = async (users = [], startKey = null) => {
   return users;
 };
 
+const getCollectors = async (users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(wantsToCollect)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getCollectors(users, result.LastEvaluatedKey);
+  }
+
+  // otherwise return the array
+  return users;
+};
+
 const getAllUnconfirmedUsers = async (users = [], startKey = null) => {
   const params = {
     TableName: tableName,
@@ -324,6 +348,7 @@ module.exports = {
   createUserInCognito,
   confirmUserInCognito,
   getUsersWithDonations,
+  getCollectors,
   createLoginCode,
   getAllCognitoUsers,
   unsubscribeUser,
