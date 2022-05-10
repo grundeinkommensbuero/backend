@@ -50,7 +50,6 @@ module.exports.handler = async event => {
           if (mailTypes.length > 0) {
             const promises = [];
             for (const mailType of mailTypes) {
-              // TODO: this will have to be updated, as soon as it is clear, what params the emails need
               promises.push(
                 sendMail(
                   user,
