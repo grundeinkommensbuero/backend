@@ -20,10 +20,11 @@ module.exports.computeMailType = (user, municipalitySignupCreatedAt) => {
 
   if (lastEmail) {
     if (
-      (isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
-        !('listFlow' in user)) ||
-      !('sentList' in user.listFlow) ||
-      !user.listFlow.sentList.value
+      lastEmail.key === 'C1.1' &&
+      isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
+      (!('listFlow' in user) ||
+        !('sentList' in user.listFlow) ||
+        !user.listFlow.sentList.value)
     ) {
       return 'C2';
     }
