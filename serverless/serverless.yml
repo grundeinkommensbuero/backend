@@ -1445,6 +1445,11 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['SignaturesTable', 'Arn'] }
                 - 'index/userIdIndex'
+      - Effect: 'Allow'
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource: 'arn:aws:ses:eu-central-1:550953582247:identity/support@expedition-grundeinkommen.de'
 
   getCrowdfundingData:
     handler: src/api/crowdfunding/getCrowdfundingData/index.handler
