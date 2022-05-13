@@ -19,8 +19,8 @@ const CODE_POSITIONS = {
   },
   B2: {
     BARCODE: {
-      x: 732,
-      y: 5,
+      x: 710,
+      y: 22,
       width: 95,
       height: 38,
     },
