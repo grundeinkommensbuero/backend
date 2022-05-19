@@ -47,7 +47,7 @@ module.exports.handler = async event => {
         const userResult = await getUser(userId);
 
         // Check if user still exists and update list flow in user record
-        if ('Item' in result) {
+        if ('Item' in userResult) {
           promises.push(updateUser(userResult.Item));
         }
       }
