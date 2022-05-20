@@ -8,15 +8,18 @@ module.exports = async userId => {
   // we only want the current day (YYYY-MM-DD), then it is also easier to filter
   const timestamp = new Date().toISOString().substring(0, 10);
 
-  const listConfig = await constructListConfig('democracy-1', 'democracy');
+  const listConfig = await constructListConfig('berlin-2', 'berlin');
 
   generatePdf(
     'https://xbge.de/qr/hh/?listId=',
     listConfig.code,
     'SINGLE_SW',
-    'democracy-1'
+    'berlin-2'
   ).then(pdfBytes => {
-    fs.writeFileSync(`./lists/${listConfig.code}.pdf`, pdfBytes);
+    fs.writeFileSync(
+      `./lists/general/Volksentscheid Grundeinkommen Berlin ${listConfig.code}.pdf`,
+      pdfBytes
+    );
   });
 
   await createSignatureList(
