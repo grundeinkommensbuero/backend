@@ -203,4 +203,4 @@ const createUserInDynamo = (userId, user) => {
 
 module.exports = { createUser };
 
-migrateUsers();
+// migrateUsers();
