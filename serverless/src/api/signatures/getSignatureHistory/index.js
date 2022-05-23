@@ -71,6 +71,13 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
           stats[list.campaign.code].history[day] = {
             downloads: 0,
             received: 0,
+            // These are the counts for lists which are not the default list
+            // without barcode and not the soli ort list, so people we assume
+            // go through the online journey
+            receivedOnlineLists: 0,
+            // These are the default lists (no barcode), so we assume they are the ones
+            // uses for street collection
+            receivedDefaultLists: 0,
             scannedLists: new Set(),
             scanned: 0,
             usersWhoScanned: new Set(),
@@ -95,6 +102,13 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
             stats[list.campaign.code].history[day] = {
               usersWhoScanned: new Set(),
               received: 0,
+              // These are the counts for lists which are not the default list
+              // without barcode and not the soli ort list, so people we assume
+              // go through the online journey
+              receivedOnlineLists: 0,
+              // These are the default lists (no barcode), so we assume they are the ones
+              // uses for street collection
+              receivedDefaultLists: 0,
               downloads: 0,
               scanned: 0,
               scannedLists: new Set(),
@@ -124,6 +138,13 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
             stats[list.campaign.code].history[day] = {
               usersWhoScanned: new Set(),
               received: 0,
+              // These are the counts for lists which are not the default list
+              // without barcode and not the soli ort list, so people we assume
+              // go through the online journey
+              receivedOnlineLists: 0,
+              // These are the default lists (no barcode), so we assume they are the ones
+              // uses for street collection
+              receivedDefaultLists: 0,
               downloads: 0,
               scanned: 0,
               scannedLists: new Set(),
@@ -131,6 +152,20 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
           }
 
           stats[list.campaign.code].history[day].received += scan.count;
+
+          if (!list.manually && list.id !== '0' && list.id !== '1') {
+            stats[list.campaign.code].history[
+              day
+            ].receivedOnlineLists += parseInt(scan.count, 10);
+
+            console.log('list id', list.id);
+          }
+
+          if (list.id === '0' || list.id === '1') {
+            stats[list.campaign.code].history[
+              day
+            ].receivedDefaultLists += parseInt(scan.count, 10);
+          }
         }
       }
     }
@@ -164,6 +199,16 @@ const cleanAndSortStats = stats => {
 
           if ('received' in stats[campaign].history[day]) {
             dayObject.received = stats[campaign].history[day].received;
+          }
+
+          if ('receivedOnlineLists' in stats[campaign].history[day]) {
+            dayObject.receivedOnlineLists =
+              stats[campaign].history[day].receivedOnlineLists;
+          }
+
+          if ('receivedDefaultLists' in stats[campaign].history[day]) {
+            dayObject.receivedDefaultLists =
+              stats[campaign].history[day].receivedDefaultLists;
           }
 
           if ('scanned' in stats[campaign].history[day]) {

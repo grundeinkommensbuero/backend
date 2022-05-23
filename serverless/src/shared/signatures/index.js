@@ -167,6 +167,15 @@ const getSignatureCountOfAllLists = async () => {
         withoutMixed: 0,
         withMixed: 0,
         scannedByUser: 0,
+        // These are the counts for lists which are not the default list
+        // without barcode and not the soli ort list, so people we assume
+        // go through the online journey
+        scannedByUserOnlineLists: 0,
+        receivedOnlineLists: 0,
+        // These are the default lists (no barcode), so we assume they are the ones
+        // uses for street collection
+        scannedByUserDefaultLists: 0,
+        receivedDefaultLists: 0,
         computed: 0,
         withoutAnonymous: 0,
         userMap: {},
@@ -197,6 +206,14 @@ const getSignatureCountOfAllLists = async () => {
           stats[campaign].userMap[list.userId] += parseInt(scan.count, 10);
         }
 
+        if (!list.manually && list.id !== '0' && list.id !== '1') {
+          stats[campaign].receivedOnlineLists += parseInt(scan.count, 10);
+        }
+
+        if (list.id === '0' || list.id === '1') {
+          stats[campaign].receivedDefaultLists += parseInt(scan.count, 10);
+        }
+
         // Needed for computation of approximated count of signatures
         scans.push({ ...scan, isReceived: true });
       }
@@ -209,6 +226,14 @@ const getSignatureCountOfAllLists = async () => {
 
         // Needed for computation of approximated count of signatures
         scans.push({ ...scan, isReceived: false });
+
+        if (!list.manually && list.id !== '0' && list.id !== '1') {
+          stats[campaign].scannedByUserOnlineLists += parseInt(scan.count, 10);
+        }
+
+        if (list.id === '0' || list.id === '1') {
+          stats[campaign].scannedByUserDefaultLists += parseInt(scan.count, 10);
+        }
       }
     }
 
