@@ -968,6 +968,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
+          - dynamodb:Scan
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
       - Effect: 'Allow' # for the global secondary index of signatures table
@@ -989,10 +990,6 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:Scan
-        Resource:
-          - 'Fn::GetAtt': [SignaturesTable, Arn]
-      - Effect: 'Allow'
-        Action:
           - dynamodb:GetItem
         Resource:
           - 'Fn::GetAtt': [SignaturesTable, Arn]
