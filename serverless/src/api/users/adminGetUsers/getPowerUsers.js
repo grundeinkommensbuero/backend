@@ -1,5 +1,5 @@
 const { getScannedSignatureLists } = require('../../../shared/signatures');
-const { getUser } = require('../../../shared/users');
+const { getUser, getUsersWithScannedLists } = require('../../../shared/users');
 
 const getPowerUsers = async signaturesMinimum => {
   // user object will contain signature count for a specific user id
@@ -26,19 +26,37 @@ const getPowerUsers = async signaturesMinimum => {
 
       if ('received' in list) {
         for (const scan of list.received) {
-          usersMap[list.userId].signatureCount[
-            list.campaign.code
-          ].received += parseInt(scan.count, 10);
+          usersMap[list.userId].signatureCount[list.campaign.code].received +=
+            parseInt(scan.count, 10);
         }
+      }
+    }
+  }
+
+  // New algorithm: we don't compute the scanned by user
+  // anymore by checking the lists, but we use the saved scans
+  // inside the user record
+  const usersWithScannedLists = await getUsersWithScannedLists();
+
+  for (const user of usersWithScannedLists) {
+    // Intiailize object in map
+    // (we need to do this here as well, because user might not have had an own list)
+    if (!(user.cognitoId in usersMap)) {
+      usersMap[user.cognitoId] = { signatureCount: {} };
+    }
+
+    for (const scan of user.scannedLists) {
+      // Initialize signature count object for this user
+      if (!(scan.campaign.code in usersMap[user.cognitoId].signatureCount)) {
+        usersMap[user.cognitoId].signatureCount[scan.campaign.code] = {
+          received: 0,
+          scannedByUser: 0,
+        };
       }
 
-      if ('scannedByUser' in list) {
-        for (const scan of list.scannedByUser) {
-          usersMap[list.userId].signatureCount[
-            list.campaign.code
-          ].scannedByUser += parseInt(scan.count, 10);
-        }
-      }
+      usersMap[user.cognitoId].signatureCount[
+        scan.campaign.code
+      ].scannedByUser += parseInt(scan.count, 10);
     }
   }
 

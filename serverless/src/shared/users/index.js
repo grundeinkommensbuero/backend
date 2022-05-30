@@ -157,6 +157,29 @@ const getReferredUsers = async (users = [], startKey = null) => {
   return users;
 };
 
+const getUsersWithScannedLists = async (users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(scannedLists)',
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getUsersWithScannedLists(users, result.LastEvaluatedKey);
+  }
+  // otherwise return the array
+  return users;
+};
+
 const getCognitoUser = userId => {
   const params = {
     UserPoolId: userPoolId,
@@ -348,6 +371,7 @@ module.exports = {
   createUserInCognito,
   confirmUserInCognito,
   getUsersWithDonations,
+  getUsersWithScannedLists,
   getCollectors,
   createLoginCode,
   getAllCognitoUsers,
