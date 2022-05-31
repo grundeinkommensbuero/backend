@@ -154,17 +154,20 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
           stats[list.campaign.code].history[day].received += scan.count;
 
           if (!list.manually && list.id !== '0' && list.id !== '1') {
-            stats[list.campaign.code].history[
-              day
-            ].receivedOnlineLists += parseInt(scan.count, 10);
+            stats[list.campaign.code].history[day].receivedOnlineLists +=
+              parseInt(scan.count, 10);
 
-            console.log('list id', list.id);
+            console.log(
+              'list id online list',
+              list.id,
+              list.userId,
+              scan.count
+            );
           }
 
           if (list.id === '0' || list.id === '1') {
-            stats[list.campaign.code].history[
-              day
-            ].receivedDefaultLists += parseInt(scan.count, 10);
+            stats[list.campaign.code].history[day].receivedDefaultLists +=
+              parseInt(scan.count, 10);
           }
         }
       }
