@@ -180,6 +180,34 @@ const getUsersWithScannedLists = async (users = [], startKey = null) => {
   return users;
 };
 
+// Bring your lists to work is a campaign started during the second phase of berlin campaign
+const getUsersForListsToWork = async (users = [], startKey = null) => {
+  const params = {
+    TableName: tableName,
+    FilterExpression: 'attribute_exists(#store.#listsToWork)',
+    ExpressionAttributeNames: {
+      '#store': 'store',
+      '#listsToWork': 'listsToWork',
+    },
+  };
+
+  if (startKey !== null) {
+    params.ExclusiveStartKey = startKey;
+  }
+
+  const result = await ddb.scan(params).promise();
+
+  // add elements to existing array
+  users.push(...result.Items);
+
+  // call same function again, if the whole table has not been scanned yet
+  if ('LastEvaluatedKey' in result) {
+    return await getUsersForListsToWork(users, result.LastEvaluatedKey);
+  }
+  // otherwise return the array
+  return users;
+};
+
 const getCognitoUser = userId => {
   const params = {
     UserPoolId: userPoolId,
@@ -372,6 +400,7 @@ module.exports = {
   confirmUserInCognito,
   getUsersWithDonations,
   getUsersWithScannedLists,
+  getUsersForListsToWork,
   getCollectors,
   createLoginCode,
   getAllCognitoUsers,
