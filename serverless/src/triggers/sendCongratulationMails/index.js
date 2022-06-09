@@ -137,8 +137,7 @@ module.exports.handler = async event => {
         */
 
         try {
-          // await sendMail(usersMap[key], totalCountForThisCampaign);
-          await sendMail(usersMap[key], 0);
+          await sendMail(usersMap[key], totalCountForThisCampaign);
           console.log(
             'success sending mail to',
             usersMap[key].email,
