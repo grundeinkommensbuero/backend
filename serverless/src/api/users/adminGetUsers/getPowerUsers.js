@@ -71,6 +71,7 @@ const getPowerUsers = async signaturesMinimum => {
     if ('Item' in result) {
       user.email = result.Item.email;
       user.username = result.Item.username;
+      user.cognitoId = result.Item.cognitoId;
       user.newsletterConsent = result.Item.newsletterConsent;
       user.stillExists = true;
     } else {

@@ -161,7 +161,8 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
               'list id online list',
               list.id,
               list.userId,
-              scan.count
+              scan.count,
+              day
             );
           }
 
