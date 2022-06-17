@@ -54,6 +54,30 @@ const getSignatureListsOfUser = async (
   return ddb.query(params).promise();
 };
 
+const getSignatureCountOfUser = async (
+  tableName,
+  userId,
+  campaignCode = null
+) => {
+  const { Items: lists } = await getSignatureListsOfUser(
+    tableName,
+    userId,
+    campaignCode
+  );
+
+  let count = 0;
+
+  for (const list of lists) {
+    if ('received' in list) {
+      for (const scan of list.received) {
+        count += scan.count;
+      }
+    }
+  }
+
+  return count;
+};
+
 const getScannedByUserSignatureLists = async (
   tableName,
   signatureLists = [],
@@ -88,5 +112,6 @@ const getScannedByUserSignatureLists = async (
 module.exports = {
   getSignatureLists,
   getSignatureListsOfUser,
+  getSignatureCountOfUser,
   getScannedByUserSignatureLists,
 };
