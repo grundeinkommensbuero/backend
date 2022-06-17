@@ -158,13 +158,15 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
 
           stats[list.campaign.code].history[day].received += scan.count;
 
-          if (!(list.userId in usersMap)) {
-            usersMap[list.userId] = 0;
-          }
+          if (list.userId !== 'anonymous') {
+            if (!(list.userId in usersMap)) {
+              usersMap[list.userId] = 0;
+            }
 
-          // Add count to user map so we can later check,
-          // if online lists were actually from power users
-          usersMap[list.userId] += parseInt(scan.count, 10);
+            // Add count to user map so we can later check,
+            // if online lists were actually from power users
+            usersMap[list.userId] += parseInt(scan.count, 10);
+          }
 
           if (!list.manually && list.id !== '0' && list.id !== '1') {
             stats[list.campaign.code].history[day].receivedOnlineLists.push({
@@ -225,7 +227,10 @@ const cleanAndSortStats = (stats, usersMap) => {
 
             for (const { count, userId } of stats[campaign].history[day]
               .receivedOnlineLists) {
-              if (usersMap[userId] <= ONLINE_COUNT_THRESHOLD) {
+              if (
+                userId === 'anonymous' ||
+                usersMap[userId] <= ONLINE_COUNT_THRESHOLD
+              ) {
                 onlineCount += count;
               }
             }
