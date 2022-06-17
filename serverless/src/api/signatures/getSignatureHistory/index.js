@@ -6,6 +6,9 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
+// If a user has more than this threshold theye are power collectors, not "online"
+const ONLINE_COUNT_THRESHOLD = 20;
+
 module.exports.handler = async event => {
   try {
     let startDate;
@@ -50,6 +53,8 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
   const signatureLists = await getAllSignatureLists();
 
   const stats = {};
+  // Users map to map signature count to user to check if "online lists" were from power users
+  const usersMap = {};
 
   for (const list of signatureLists) {
     if (!(list.campaign.code in stats)) {
@@ -74,7 +79,7 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
             // These are the counts for lists which are not the default list
             // without barcode and not the soli ort list, so people we assume
             // go through the online journey
-            receivedOnlineLists: 0,
+            receivedOnlineLists: [],
             // These are the default lists (no barcode), so we assume they are the ones
             // uses for street collection
             receivedDefaultLists: 0,
@@ -105,7 +110,7 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
               // These are the counts for lists which are not the default list
               // without barcode and not the soli ort list, so people we assume
               // go through the online journey
-              receivedOnlineLists: 0,
+              receivedOnlineLists: [],
               // These are the default lists (no barcode), so we assume they are the ones
               // uses for street collection
               receivedDefaultLists: 0,
@@ -141,7 +146,7 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
               // These are the counts for lists which are not the default list
               // without barcode and not the soli ort list, so people we assume
               // go through the online journey
-              receivedOnlineLists: 0,
+              receivedOnlineLists: [],
               // These are the default lists (no barcode), so we assume they are the ones
               // uses for street collection
               receivedDefaultLists: 0,
@@ -153,9 +158,19 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
 
           stats[list.campaign.code].history[day].received += scan.count;
 
+          if (!(list.userId in usersMap)) {
+            usersMap[list.userId] = 0;
+          }
+
+          // Add count to user map so we can later check,
+          // if online lists were actually from power users
+          usersMap[list.userId] += parseInt(scan.count, 10);
+
           if (!list.manually && list.id !== '0' && list.id !== '1') {
-            stats[list.campaign.code].history[day].receivedOnlineLists +=
-              parseInt(scan.count, 10);
+            stats[list.campaign.code].history[day].receivedOnlineLists.push({
+              userId: list.userId,
+              count: parseInt(scan.count, 10),
+            });
 
             console.log(
               'list id online list',
@@ -175,10 +190,10 @@ const getListDownloadsAndScansForTimespan = async (startDate, endDate) => {
     }
   }
 
-  return cleanAndSortStats(stats);
+  return cleanAndSortStats(stats, usersMap);
 };
 
-const cleanAndSortStats = stats => {
+const cleanAndSortStats = (stats, usersMap) => {
   for (const campaign in stats) {
     if (Object.prototype.hasOwnProperty.call(stats, campaign)) {
       const historyArray = [];
@@ -206,8 +221,16 @@ const cleanAndSortStats = stats => {
           }
 
           if ('receivedOnlineLists' in stats[campaign].history[day]) {
-            dayObject.receivedOnlineLists =
-              stats[campaign].history[day].receivedOnlineLists;
+            let onlineCount = 0;
+
+            for (const { count, userId } of stats[campaign].history[day]
+              .receivedOnlineLists) {
+              if (usersMap[userId] <= ONLINE_COUNT_THRESHOLD) {
+                onlineCount += count;
+              }
+            }
+
+            dayObject.receivedOnlineLists = onlineCount;
           }
 
           if ('receivedDefaultLists' in stats[campaign].history[day]) {
