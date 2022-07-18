@@ -159,10 +159,11 @@ const sleep = ms => {
 };
 
 const isXDaysAgo = (date, days) => {
+  const dateToCompare = new Date(date);
   // Add days to date and check if it is today
-  date.setDate(date.getDate() + days);
+  dateToCompare.setDate(dateToCompare.getDate() + days);
 
-  return isToday(date);
+  return isToday(dateToCompare);
 };
 
 const isToday = date => {
