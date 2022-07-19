@@ -44,9 +44,19 @@ module.exports.handler = async event => {
           console.log('about to update user', userId);
           console.log('came from users table', cameFromUsersTable);
 
+          // If email was changed we need to delete the old mailjet record
+          if (
+            cameFromUsersTable &&
+            record.dynamodb.OldImage.email.S !==
+              record.dynamodb.NewImage.email.S
+          ) {
+            await deleteMailjetContact(record.dynamodb.OldImage.email.S);
+          }
+
           // We want to get the normal dynamo record to not have to deal
           // with the weird data format of the stream
           const result = await getUser(userId);
+          console.log('result', result);
 
           if ('Item' in result) {
             const user = result.Item;
