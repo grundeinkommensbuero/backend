@@ -2620,3 +2620,200 @@ paths:
                       goal:
                         type: integer
                         description: Goal which is aimed at for this municipality
+
+  /vouchers:
+    get:
+      summary: Gets list of sold vouchers
+      security:
+        - BasicAuth: []
+      parameters:
+        - in: query
+          name: safeAddress
+          schema:
+            type: string
+          description: If passed only vouchers sold to this safeAddress are returned
+        - in: query
+          name: timestamp
+          schema:
+            type: string
+          description: Timestamp as iso string. Only vouchers sold after this date are returned.
+      responses:
+        '200':
+          description: Vouchers successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        providerId:
+                          type: string
+                        amount:
+                          type: number
+                        code:
+                          type: string
+                        name:
+                          type: string
+                        sold:
+                          type: object
+                          properties:
+                            safeAddress:
+                              type: string
+                            timestamp:
+                              type: string
+                            transactionId:
+                              type: string
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+    post:
+      summary: Purchase voucher of specific provider
+      security:
+        - BasicAuth: []
+      requestBody:
+        description: Object containing voucher info
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - providerId
+                - safeAddress
+                - amount
+                - transactionId
+              properties:
+                providerId:
+                  type: string
+                amount:
+                  type: number
+                safeAddress:
+                  type: string
+                transactionId:
+                  type: string
+      responses:
+        '200':
+          description: Voucher successfully purchased
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                      amount:
+                        type: number
+                      code:
+                        type: string
+                      name:
+                        type: string
+                      sold:
+                        type: object
+                        properties:
+                          safeAddress:
+                            type: string
+                          timestamp:
+                            type: string
+                          transactionId:
+                            type: string
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+  /vouchers/providers:
+    get:
+      summary: Gets list of providers and their count of available vouchers
+      security:
+        - BasicAuth: []
+      responses:
+        '200':
+          description: Providers successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        shopUrl:
+                          type: string
+                        logoUrl:
+                          type: string
+                        availableOffers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              countAvailable:
+                                type: integer
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string

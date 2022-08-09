@@ -14,6 +14,7 @@ custom:
   municipalitiesTableName: ${self:custom.stage}-municipalities
   userMunicipalityTableName: ${self:custom.stage}-users-municipalities
   meetupsTableName: ${self:custom.stage}-meetups
+  vouchersTableName: ${self:custom.stage}-vouchers
   imageBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-profile-pics
   listsBucketName: ${opt:projectName, 'xbge'}-${self:custom.stage}-signature-lists
   output:
@@ -46,6 +47,7 @@ provider:
     MUNICIPALITIES_TABLE_NAME: ${self:custom.municipalitiesTableName}
     USER_MUNICIPALITY_TABLE_NAME: ${self:custom.userMunicipalityTableName}
     MEETUPS_TABLE_NAME: ${self:custom.meetupsTableName}
+    VOUCHERS_TABLE_NAME: ${self:custom.vouchersTableName}
     STAGE: ${self:custom.stage}
     MAP_IMAGE_BUCKET: xbge-map-images
     IMAGE_BUCKET: ${self:custom.imageBucketName}
@@ -1340,6 +1342,58 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  # Vouchers
+  purchaseVoucher:
+    handler: src/api/vouchers/purchaseVoucher/index.handler
+    events:
+      - http:
+          path: vouchers
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [VouchersTable, Arn]
+
+  getVoucherProviders:
+    handler: src/api/vouchers/getVoucherProviders/index.handler
+    events:
+      - http:
+          path: vouchers/providers
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [VouchersTable, Arn]
+
+  getVouchers:
+    handler: src/api/vouchers/getVouchers/index.handler
+    events:
+      - http:
+          path: vouchers
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - 'Fn::GetAtt': [VouchersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['VouchersTable', 'Arn'] }
+                - 'index/safeAddressIndex'
+
   sendGoalMails:
     handler: src/triggers/municipalities/sendGoalMails/index.handler
     timeout: 900 # Timeout for this specific function. Might take a while
@@ -1792,6 +1846,27 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+
+    VouchersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.vouchersTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: soldTo
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: safeAddressIndex
+            KeySchema:
+              - AttributeName: soldTo
+                KeyType: HASH
+            Projection:
+              ProjectionType: 'ALL'
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
