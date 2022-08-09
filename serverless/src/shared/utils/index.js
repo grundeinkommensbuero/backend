@@ -1,4 +1,5 @@
 const randomBytes = require('crypto').randomBytes;
+const { username, password } = require('../../../basicAuth');
 
 // Construct campaign identifier, so we know, from where the user comes
 const constructCampaignId = campaignCode => {
@@ -173,6 +174,19 @@ const isToday = date => {
   );
 };
 
+const checkBasicAuth = event => {
+  const authorizationHeader = event.headers.Authorization;
+
+  if (!authorizationHeader) {
+    return false;
+  }
+
+  const encodedCreds = authorizationHeader.split(' ')[1];
+  const plainCreds = new Buffer(encodedCreds, 'base64').toString().split(':');
+
+  return plainCreds[0] === username && plainCreds[1] === password;
+};
+
 module.exports = {
   constructCampaignId,
   generateRandomId,
@@ -190,4 +204,5 @@ module.exports = {
   sleep,
   isXDaysAgo,
   isToday,
+  checkBasicAuth,
 };

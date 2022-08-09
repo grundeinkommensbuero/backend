@@ -3,8 +3,8 @@
  */
 
 const { getUserByMail, unsubscribeUser } = require('../../../shared/users');
-const { username, password } = require('../../../../basicAuth');
 const { errorResponse } = require('../../../shared/apiResponse');
+const { checkBasicAuth } = require('../../../shared/utils');
 
 module.exports.handler = async event => {
   try {
@@ -53,14 +53,5 @@ module.exports.handler = async event => {
 
 // Checks if basic auth is provided and username and password are correct
 const isAuthorized = event => {
-  const authorizationHeader = event.headers.Authorization;
-
-  if (!authorizationHeader) {
-    return false;
-  }
-
-  const encodedCreds = authorizationHeader.split(' ')[1];
-  const plainCreds = new Buffer(encodedCreds, 'base64').toString().split(':');
-
-  return plainCreds[0] === username && plainCreds[1] === password;
+  return checkBasicAuth(event);
 };
