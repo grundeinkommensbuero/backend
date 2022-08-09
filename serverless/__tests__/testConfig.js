@@ -9,6 +9,7 @@ module.exports = {
   DEV_USERS_TABLE: 'dev-users',
   DEV_MUNICIPALITIES_TABLE: 'dev-municipalities',
   DEV_USER_MUNICIPALITY_TABLE: 'dev-users-municipalities',
+  DEV_VOUCHERS_TABLE: 'dev-vouchers',
   CLIENT_ID: SECRET_CONFIG.CLIENT_ID,
   ADMIN_CLIENT_ID: SECRET_CONFIG.ADMIN_CLIENT_ID,
   USER_ID: '92c1e189-52d0-45cc-adbe-8071696a3221',
