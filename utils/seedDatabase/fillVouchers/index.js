@@ -6,12 +6,31 @@ const uuid = require('uuid/v4');
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
+const crypto = require('crypto');
+
+const secretKey = 'key';
+
+const encrypt = data => {
+  const cipher = crypto.createCipheriv('AES-256-ECB', secretKey, null);
+  let encrypted = cipher.update(data, 'utf8', 'base64');
+  encrypted += cipher.final('base64');
+  console.log('enc', encrypted);
+  return encrypted;
+};
+
+const decrypt = data => {
+  const decipheriv = crypto.createDecipheriv('AES-256-ECB', secretKey, null);
+  let decryptediv = decipheriv.update(data, 'base64', 'utf8');
+  decryptediv += decipheriv.final('utf8');
+  return decryptediv;
+};
+
 const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 4 });
 
 const safeAddresses = [uuid(), uuid(), uuid(), uuid()];
 
 const fillDatabase = async () => {
-  for (let i = 0; i < 3000; i++) {
+  for (let i = 0; i < 300; i++) {
     await limiter.schedule(async () => {
       await createVoucher(
         {
@@ -31,12 +50,12 @@ const fillDatabase = async () => {
 };
 
 const getAmount = i => {
-  if (i < 1000) {
-    return 30;
-  } else if (i < 2000) {
-    return 50;
+  if (i < 100) {
+    return 10;
+  } else if (i < 200) {
+    return 15;
   }
-  return 100;
+  return 25;
 };
 
 const getPurchaseInfo = i => {
@@ -72,7 +91,7 @@ const createVoucher = (provider, amount, sold) => {
       id: uuid(),
       provider,
       amount,
-      code: uuid(),
+      code: encrypt('Encrypt-Me :-)'),
     },
   };
 
