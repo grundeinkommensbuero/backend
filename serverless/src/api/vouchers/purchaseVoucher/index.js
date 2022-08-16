@@ -5,11 +5,14 @@ const tableName = process.env.VOUCHERS_TABLE_NAME;
 
 const { errorResponse } = require('../../../shared/apiResponse');
 const { checkBasicAuth } = require('../../../shared/utils');
+const { getVouchers } = require('../../../shared/vouchers');
 
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 };
+
+const LIMIT = 70;
 
 module.exports.handler = async event => {
   try {
@@ -24,6 +27,18 @@ module.exports.handler = async event => {
     }
 
     const { providerId, amount, safeAddress, transactionId } = requestBody;
+
+    if (await checkIfTransactionIdIsUsed(transactionId)) {
+      return errorResponse(
+        400,
+        'Transaction id was already used',
+        'transactionIdUsed'
+      );
+    }
+
+    if (await checkIfLimitIsReached(safeAddress, amount)) {
+      return errorResponse(403, 'Limit is reached');
+    }
 
     const voucher = await getFirstVoucherOfProvider(providerId, amount);
 
@@ -101,6 +116,37 @@ const getFirstVoucherOfProvider = async (
   }
 
   return null;
+};
+
+const checkIfTransactionIdIsUsed = async transactionId => {
+  const result = await getVoucherByTransactionId(transactionId);
+
+  return result.Count !== 0;
+};
+
+const getVoucherByTransactionId = transactionId => {
+  const params = {
+    TableName: tableName,
+    KeyConditionExpression: 'transactionId = :transactionId',
+    IndexName: 'transactionIdIndex',
+    ExpressionAttributeValues: {
+      ':transactionId': transactionId,
+    },
+  };
+
+  return ddb.query(params).promise();
+};
+
+const checkIfLimitIsReached = async (safeAddress, amount) => {
+  const vouchers = await getVouchers(safeAddress);
+
+  let sum = 0;
+
+  for (const voucher of vouchers) {
+    sum += voucher.amount;
+  }
+
+  return sum + amount >= LIMIT;
 };
 
 const purchaseVoucher = (voucherId, safeAddress, transactionId, timestamp) => {

@@ -2741,8 +2741,37 @@ paths:
                             type: string
                           transactionId:
                             type: string
+        '400':
+          description: Error in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
         '401':
           description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden due to limit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: No vouchers with the passed amount found
           content:
             application/json:
               schema:

@@ -1357,6 +1357,22 @@ functions:
           - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [VouchersTable, Arn]
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['VouchersTable', 'Arn'] }
+                - 'index/transactionIdIndex'
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['VouchersTable', 'Arn'] }
+                - 'index/safeAddressIndex'
 
   getVoucherProviders:
     handler: src/api/vouchers/getVoucherProviders/index.handler
@@ -1856,6 +1872,8 @@ resources:
             AttributeType: S
           - AttributeName: soldTo
             AttributeType: S
+          - AttributeName: transactionId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
@@ -1867,6 +1885,12 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: 'ALL'
+          - IndexName: transactionIdIndex
+            KeySchema:
+              - AttributeName: transactionId
+                KeyType: HASH
+            Projection:
+              ProjectionType: 'KEYS_ONLY'
 
     # General user pool
     # A Cognito User Pool created by an event can be overridden by using the logical resource name
