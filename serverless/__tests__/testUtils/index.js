@@ -9,6 +9,9 @@ const {
   DEV_USER_MUNICIPALITY_TABLE,
   DEV_MUNICIPALITIES_TABLE,
   DEV_USERS_TABLE,
+  BASIC_AUTH_USERNAME,
+  BASIC_AUTH_PASSWORD,
+  INVOKE_URL,
 } = require('../testConfig');
 const AWS = require('aws-sdk');
 
@@ -16,6 +19,9 @@ const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 const config = { region: 'eu-central-1' };
 const cognito = new AWS.CognitoIdentityServiceProvider(config);
+
+const fetch = require('node-fetch');
+const uuid = require('uuid/v4');
 
 module.exports.authenticate = async (userId = USER_ID) => {
   return makeAuthenticationCall(USER_POOL_ID, CLIENT_ID, userId);
@@ -169,4 +175,27 @@ module.exports.getCognitoUser = userId => {
   };
 
   return cognito.adminGetUser(params).promise();
+};
+
+module.exports.purchaseVoucher = safeAddress => {
+  // Purchase voucher
+  const transactionId = uuid();
+
+  const postRequest = {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      Authorization: `Basic ${Buffer.from(
+        `${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`
+      ).toString('base64')}`,
+    },
+    body: JSON.stringify({
+      safeAddress: safeAddress || uuid(),
+      providerId: 'goodbuy',
+      amount: 25,
+      transactionId,
+    }),
+  };
+
+  return fetch(`${INVOKE_URL}/vouchers`, postRequest);
 };

@@ -4,7 +4,7 @@ const {
   BASIC_AUTH_PASSWORD,
 } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const uuid = require('uuid/v4');
+const { purchaseVoucher } = require('../../../testUtils');
 
 describe('getVouchers api test', () => {
   it('should get all vouchers', async () => {
@@ -42,6 +42,8 @@ describe('getVouchers api test', () => {
 
   it('should get all sold vouchers of one address', async () => {
     const safeAddress = 'e9e903e5-311a-4c6d-9317-c2fcd3b8716e';
+    await purchaseVoucher(safeAddress);
+
     const request = {
       method: 'get',
       mode: 'cors',
@@ -183,26 +185,3 @@ describe('getVouchers api test', () => {
     expect(response.status).toEqual(401);
   });
 });
-
-const purchaseVoucher = safeAddress => {
-  // Purchase voucher
-  const transactionId = uuid();
-
-  const postRequest = {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      Authorization: `Basic ${Buffer.from(
-        `${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`
-      ).toString('base64')}`,
-    },
-    body: JSON.stringify({
-      safeAddress: safeAddress || uuid(),
-      providerId: 'goodbuy',
-      amount: 30,
-      transactionId,
-    }),
-  };
-
-  return fetch(`${INVOKE_URL}/vouchers`, postRequest);
-};
