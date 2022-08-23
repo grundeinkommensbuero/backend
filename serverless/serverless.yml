@@ -1056,6 +1056,27 @@ functions:
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
 
+  adminEnableCirclesShop:
+    handler: src/api/users/adminEnableCirclesShop/index.handler
+    events:
+      - http:
+          path: admin/users/{userId}/enable-shop
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: AdminApiGatewayAuthorizer
+    memorySize: 1024 # memorySize for this specific function.
+    timeout: 30 # Timeout for this specific function.
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource:
+          - 'Fn::GetAtt': [UsersTable, Arn]
+
   mergeReferredUsers:
     handler: src/triggers/mergeReferredUsers/index.handler
     events:
