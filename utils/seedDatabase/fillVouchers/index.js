@@ -1,25 +1,53 @@
-const { DEV_VOUCHERS_TABLE_NAME } = require('../../config');
+const { PROD_VOUCHERS_TABLE_NAME } = require('../../config');
 const AWS = require('aws-sdk');
 const Bottleneck = require('bottleneck');
 const uuid = require('uuid/v4');
+const fs = require('fs');
+const parse = require('csv-parse');
 
 const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const crypto = require('crypto');
 
-const secretKey = 'key';
+const SECRET_KEY = 'dKgNjQnTqVsYh2x4A7C9FcHeKhPkRnUr';
+
+const PATH = './data/goodbuy/Codes_GoodBuy.csv';
+
+const PROVIDERS = {
+  taste: {
+    name: 'Geschmack braucht keinen Namen',
+    id: 'taste',
+    logoUrl:
+      'https://directus.volksentscheid-grundeinkommen.de/assets/c094224b-a5d0-4911-899d-67019e7b2a0a',
+    shopUrl: 'https://geschmack.org',
+  },
+  goodbuy: {
+    name: 'Goodbuy',
+    id: 'goodbuy',
+    logoUrl:
+      'https://directus.volksentscheid-grundeinkommen.de/assets/819423cf-2fd0-407e-bc5d-a06105287ba0',
+    shopUrl: 'https://www.goodbuy.eu',
+  },
+  sirplus: {
+    name: 'Sirplus',
+    id: 'sirplus',
+    logoUrl:
+      'https://directus.volksentscheid-grundeinkommen.de/assets/c25e6f9c-46a3-4ba8-9100-7571ee5e0eb7',
+    shopUrl: 'https://sirplus.de',
+  },
+};
 
 const encrypt = data => {
-  const cipher = crypto.createCipheriv('AES-256-ECB', secretKey, null);
+  const cipher = crypto.createCipheriv('AES-256-ECB', SECRET_KEY, null);
   let encrypted = cipher.update(data, 'utf8', 'base64');
   encrypted += cipher.final('base64');
-  console.log('enc', encrypted);
+  console.log('enc', data, encrypted);
   return encrypted;
 };
 
 const decrypt = data => {
-  const decipheriv = crypto.createDecipheriv('AES-256-ECB', secretKey, null);
+  const decipheriv = crypto.createDecipheriv('AES-256-ECB', SECRET_KEY, null);
   let decryptediv = decipheriv.update(data, 'base64', 'utf8');
   decryptediv += decipheriv.final('utf8');
   return decryptediv;
@@ -27,96 +55,56 @@ const decrypt = data => {
 
 const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 4 });
 
-const safeAddresses = [uuid(), uuid(), uuid(), uuid()];
-
 const fillDatabase = async () => {
-  for (let i = 0; i < 300; i++) {
-    await limiter.schedule(async () => {
-      await createVoucher(
-        {
-          name: 'Goodbuy',
-          id: 'goodbuy',
-          logoUrl:
-            'https://cdn.shopify.com/s/files/1/0260/0819/1060/files/LOGO_GOOD_BUY_Farbe_rgb_Unterzeile_540x.png?v=1654701435',
-          shopUrl: 'https://www.goodbuy.eu/',
-        },
-        getAmount(i),
-        getPurchaseInfo(i)
-      );
+  const vouchers = await readCsv();
 
-      console.log('Created', i);
+  for (const voucher of vouchers) {
+    await limiter.schedule(async () => {
+      await createVoucher(PROVIDERS.goodbuy, 50, voucher);
     });
   }
 };
 
-const getAmount = i => {
-  if (i < 100) {
-    return 10;
-  } else if (i < 200) {
-    return 15;
-  }
-  return 25;
-};
-
-const getPurchaseInfo = i => {
-  if (i > 2500) {
-    return {
-      safeAddress: getSafeAddress(i),
-      timestamp: createRandomDate().toISOString(),
-      transactionId: uuid(),
-    };
-  }
-
-  return null;
-};
-
-const getSafeAddress = i => {
-  if (i < 2600) {
-    return safeAddresses[0];
-  } else if (i < 2700) {
-    return safeAddresses[1];
-  } else if (i < 2800) {
-    return safeAddresses[2];
-  } else if (i < 2900) {
-    return safeAddresses[3];
-  }
-
-  return uuid();
-};
-
-const createVoucher = (provider, amount, sold) => {
+const createVoucher = (provider, amount, code) => {
   const params = {
-    TableName: DEV_VOUCHERS_TABLE_NAME,
+    TableName: PROD_VOUCHERS_TABLE_NAME,
     Item: {
       id: uuid(),
       provider,
       amount,
-      code: encrypt('Encrypt-Me :-)'),
+      code: encrypt(code),
     },
   };
 
-  if (sold) {
-    params.Item.soldTo = sold.safeAddress;
-    params.Item.soldAt = sold.timestamp;
-    params.Item.transactionId = sold.transactionId;
-  }
-
+  console.log(params.Item);
   return ddb.put(params).promise();
 };
 
-const createRandomDate = () => {
-  const date = new Date();
-  const pastDate = new Date();
+const readCsv = () => {
+  return new Promise(resolve => {
+    const codes = [];
+    let count = 0;
 
-  pastDate.setDate(date.getDate() - 4);
+    fs.createReadStream(PATH)
+      .pipe(parse({ delimiter: ',' }))
+      .on('data', row => {
+        let code;
+        // leave out headers
+        if (count > 0) {
+          code = row[9];
 
-  const randomDate = new Date(
-    pastDate.getTime() +
-      Math.floor(Math.random() * (date.getTime() - pastDate.getTime())) +
-      1
-  );
+          codes.push(code);
+        }
 
-  return randomDate;
+        count++;
+      })
+      .on('end', () => {
+        console.log('finished parsing');
+        resolve(codes);
+      });
+  });
 };
 
-fillDatabase();
+// fillDatabase();
+
+console.log(decrypt('MATExZmXUVfVsJ66xU0ZEA=='));
