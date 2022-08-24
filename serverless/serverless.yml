@@ -1139,6 +1139,7 @@ functions:
           maximumRetryAttempts: 5
           arn:
             Fn::GetAtt: [SignaturesTable, StreamArn]
+    timeout: 900 # Timeout for this specific function.
     environment:
       USER_POOL_ID:
         Ref: CognitoUserPoolUserPool
@@ -1158,6 +1159,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - dynamodb:GetItem
+          - dynamodb:UpdateItem
         Resource:
           - 'Fn::GetAtt': [UsersTable, Arn]
       - Effect: 'Allow'

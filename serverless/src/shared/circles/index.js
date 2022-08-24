@@ -13,15 +13,16 @@ const trustCirclesUser = async safeAddress => {
     headers: {
       Authorization: `Basic ${process.env.CIRCLES_BASIC_AUTH}`,
     },
-    body: {
+    body: JSON.stringify({
       safeAddresses: [safeAddress],
-    },
+    }),
     method: 'POST',
   });
 
   // Api might not have worked, which is why we check the status
   // and try again
   if (!(await getCirclesTrustStatus(safeAddress))) {
+    console.log('trying again to trust user');
     await sleep(500);
     await trustCirclesUser(safeAddress);
   }
@@ -32,15 +33,17 @@ const getCirclesTrustStatus = async safeAddress => {
     headers: {
       Authorization: `Basic ${process.env.CIRCLES_BASIC_AUTH}`,
     },
-    body: {
+    body: JSON.stringify({
       safeAddresses: [safeAddress],
-    },
+    }),
     method: 'POST',
   });
 
-  if (result.status === 404 || result.status === 500) {
+  if (result.status !== 200) {
     return false;
   }
+
+  console.log(result);
 
   const { trusted } = await result.json();
 
@@ -54,7 +57,7 @@ const getCirclesTrustStatus = async safeAddress => {
 const enableShop = user => {
   // Keep all existing keys, add new ones, and overwrite
   // if keys are in existing store and in request
-  const newStore = { ...user.store, enableVoucherStore: true };
+  const newStore = { ...user.store, voucherStoreEnabled: true };
 
   const params = {
     TableName: tableName,

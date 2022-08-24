@@ -84,12 +84,17 @@ module.exports.handler = async event => {
 
             const signatureCount = countSignatures(user.signatureLists);
 
+            console.log('sig count', signatureCount);
+            console.log('store', user.store.circlesResumee);
+
             if (
               signatureCount >= CIRCLES_MINIMUM &&
               'store' in user &&
               'circlesResumee' in user.store &&
-              'safeAddress' in user.store.circlesResumee
+              'safeAddress' in user.store.circlesResumee &&
+              !user.store.voucherStoreEnabled
             ) {
+              console.log('enabling shop for', user.email);
               await trustCirclesUser(user.store.circlesResumee.safeAddress);
               await enableShop(user);
             }
