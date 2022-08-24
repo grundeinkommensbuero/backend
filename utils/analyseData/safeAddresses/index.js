@@ -4,9 +4,20 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const getSafeAddresses = async () => {
+  const states = {
+    AskUserName: 0,
+    Dashboard: 0,
+    InfoSecurity: 0,
+    Login: 0,
+    Trusts: 0,
+  };
+
   for (const user of await getAllUsers()) {
+    states[user.store.circlesResumee.lastState.tag]++;
     console.log(user.store.circlesResumee);
   }
+
+  console.log(states);
 };
 
 const getAllUsers = async (
@@ -17,7 +28,7 @@ const getAllUsers = async (
   startKey = null
 ) => {
   const params = {
-    TableName: 'dev-users',
+    TableName: 'prod-users',
     FilterExpression: 'attribute_exists(#store.#circles)',
     ExpressionAttributeNames: {
       '#store': 'store',

@@ -6,7 +6,7 @@ const config = { region: 'eu-central-1' };
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 const tableName = process.env.USERS_TABLE_NAME;
 
-const CIRCLES_URL = 'voucher-server.circles.pink';
+const CIRCLES_URL = 'https://voucher-server.circles.pink';
 
 const trustCirclesUser = async safeAddress => {
   await fetch(`${CIRCLES_URL}/trust-users`, {
