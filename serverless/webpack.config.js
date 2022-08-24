@@ -134,6 +134,9 @@ module.exports = {
         process.env.MAILJET_API_SECRET
       ),
       'process.env.QUERY_TOKEN': JSON.stringify(process.env.QUERY_TOKEN),
+      'process.env.CIRCLES_BASIC_AUTH': JSON.stringify(
+        process.env.CIRCLES_BASIC_AUTH
+      ),
     }),
   ],
 };

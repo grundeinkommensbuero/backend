@@ -1,9 +1,12 @@
 const { deleteMailjetContact, syncMailjetContact } = require('../');
+const { trustCirclesUser, enableShop } = require('../../../shared/circles');
 const {
   getMunicipalitiesOfUserWithData,
 } = require('../../../shared/municipalities');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { getUser } = require('../../../shared/users');
+
+const CIRCLES_MINIMUM = 20;
 
 module.exports.handler = async event => {
   try {
@@ -78,6 +81,18 @@ module.exports.handler = async event => {
             const verified = 'confirmed' in user && user.confirmed.value;
 
             await syncMailjetContact(user, verified);
+
+            const signatureCount = countSignatures(user.signatureLists);
+
+            if (
+              signatureCount >= CIRCLES_MINIMUM &&
+              'store' in user &&
+              'circlesResumee' in user.store &&
+              'safeAddress' in user.store.circlesResumee
+            ) {
+              await trustCirclesUser(user.store.circlesResumee.safeAddress);
+              await enableShop(user);
+            }
           }
         }
       }
@@ -88,4 +103,18 @@ module.exports.handler = async event => {
   }
 
   return event;
+};
+
+const countSignatures = signatureLists => {
+  let signatureCount = 0;
+
+  for (const list of signatureLists) {
+    if ('received' in list) {
+      for (const scan of list.received) {
+        signatureCount += scan.count;
+      }
+    }
+  }
+
+  return signatureCount;
 };
