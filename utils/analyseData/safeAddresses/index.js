@@ -59,4 +59,12 @@ const getAllUsers = async (
   return users;
 };
 
+const searchCirclesName = async circlesName => {
+  for (const user of await getAllUsers()) {
+    if (user.store.circlesResumee.name === circlesName) {
+      console.log(user);
+    }
+  }
+};
+
 getSafeAddresses();
