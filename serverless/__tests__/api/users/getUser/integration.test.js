@@ -15,7 +15,6 @@ describe('getUser api test', () => {
 
     expect(json).toHaveProperty('user');
     expect(json.user).toHaveProperty('hasZipCode');
-    expect(json.user).toHaveProperty('questions');
     expect(json.user).toHaveProperty('municipalities');
 
     expect(response.status).toEqual(200);

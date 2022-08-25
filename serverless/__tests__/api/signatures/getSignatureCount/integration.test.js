@@ -2,8 +2,8 @@ const { INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
 
 const listId = '7525800';
-const userId = '92c1e189-52d0-45cc-adbe-8071696a3221';
-const email = 'vali_schagerl@web.de';
+const userId = 'f0c844ec-2786-4fe6-95c2-0d427e58560d';
+const email = 'valentin@expedition-grundeinkommen.de';
 
 describe('getSignatureCount api test', () => {
   it('should get signature count of all lists', async () => {
