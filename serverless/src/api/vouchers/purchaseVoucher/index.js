@@ -12,7 +12,7 @@ const responseHeaders = {
   'Content-Type': 'application/json',
 };
 
-const LIMIT = 70;
+const LIMIT = 35;
 
 module.exports.handler = async event => {
   try {
@@ -146,7 +146,7 @@ const checkIfLimitIsReached = async (safeAddress, amount) => {
     sum += voucher.amount;
   }
 
-  return sum + amount >= LIMIT;
+  return sum + amount > LIMIT;
 };
 
 const purchaseVoucher = (voucherId, safeAddress, transactionId, timestamp) => {
