@@ -6,7 +6,7 @@ const {
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { getUser } = require('../../../shared/users');
 
-const CIRCLES_MINIMUM = 20;
+const CIRCLES_MINIMUM = 10;
 
 module.exports.handler = async event => {
   try {
