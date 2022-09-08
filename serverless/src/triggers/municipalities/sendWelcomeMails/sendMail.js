@@ -7,7 +7,8 @@ const TEMPLATE_BREMEN_ACTIVE_USER = 3108929;
 const AGS_BERLIN = '11000000';
 const AGS_BREMEN = '04011000';
 
-const mailTypeToBerlinTemplate = { 'C1.1': 3911086, C2: 3911126 };
+// C1.1 links to A1 template for now
+const mailTypeToBerlinTemplate = { 'C1.1': 3909123, C2: 3911126 };
 
 const END_OF_QUALIFYING_PERIOD = '2021-03-21 18:00:00';
 

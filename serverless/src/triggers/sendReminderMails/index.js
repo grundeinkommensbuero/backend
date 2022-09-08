@@ -16,6 +16,9 @@ const ddb = new AWS.DynamoDB.DocumentClient(config);
 const usersTableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
+  // Deactived for now
+  return event;
+
   try {
     // Get general stats
     // and Get all lists which were not received yet

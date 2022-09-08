@@ -18,28 +18,29 @@ module.exports.computeMailType = (user, municipalitySignupCreatedAt) => {
     return 'C1.1';
   }
 
-  if (lastEmail) {
-    if (
-      lastEmail.key === 'C1.1' &&
-      isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
-      (!('listFlow' in user) ||
-        !('sentList' in user.listFlow) ||
-        !user.listFlow.sentList.value)
-    ) {
-      return 'C2';
-    }
+  // Not needed for now, only one mail
+  // if (lastEmail) {
+  //   if (
+  //     lastEmail.key === 'C1.1' &&
+  //     isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
+  //     (!('listFlow' in user) ||
+  //       !('sentList' in user.listFlow) ||
+  //       !user.listFlow.sentList.value)
+  //   ) {
+  //     return 'C2';
+  //   }
 
-    // Only send C1.2 if user has not reacted
-    /* Not needed for now
-    if (
-      lastEmail.key === 'C1.1' &&
-      isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
-      (!('reacted' in user.welcomeFlow) || !user.welcomeFlow.value)
-    ) {
-      return 'C1.2';
-    }
-    */
-  }
+  //   // Only send C1.2 if user has not reacted
+  //   /* Not needed for now
+  //   if (
+  //     lastEmail.key === 'C1.1' &&
+  //     isXDaysAgo(new Date(lastEmail.timestamp), remindAfter) &&
+  //     (!('reacted' in user.welcomeFlow) || !user.welcomeFlow.value)
+  //   ) {
+  //     return 'C1.2';
+  //   }
+  //   */
+  // }
 
   return null;
 };
