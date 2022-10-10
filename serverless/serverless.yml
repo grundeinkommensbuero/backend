@@ -1396,6 +1396,14 @@ functions:
               - '/'
               - - { 'Fn::GetAtt': ['VouchersTable', 'Arn'] }
                 - 'index/safeAddressIndex'
+      - Effect: 'Allow' # for the global secondary index
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::Join:
+              - '/'
+              - - { 'Fn::GetAtt': ['UsersTable', 'Arn'] }
+                - 'index/safeAddressIndex'
 
   getVoucherProviders:
     handler: src/api/vouchers/getVoucherProviders/index.handler
@@ -1786,6 +1794,8 @@ resources:
             AttributeType: S
           - AttributeName: email
             AttributeType: S
+          - AttributeName: circlesSafeAddress
+            AttributeType: S
         KeySchema:
           - AttributeName: cognitoId
             KeyType: HASH
@@ -1802,6 +1812,14 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: 'ALL'
+          - IndexName: safeAddressIndex
+            KeySchema:
+              - AttributeName: circlesSafeAddress
+                KeyType: HASH
+            Projection:
+              ProjectionType: 'INCLUDE'
+              NonKeyAttributes:
+                - circlesLimit
             # ProvisionedThroughput:
             #   ReadCapacityUnits: 5
             #   WriteCapacityUnits: 5
