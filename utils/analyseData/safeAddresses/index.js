@@ -12,12 +12,19 @@ const getSafeAddresses = async () => {
     Trusts: 0,
   };
 
+  const safeAddresses = [];
+
   for (const user of await getAllUsers()) {
     states[user.store.circlesResumee.lastState.tag]++;
+    if (user.store.circlesResumee.safeAddress) {
+      safeAddresses.push(user.store.circlesResumee.safeAddress);
+    }
+
     console.log(user.store.circlesResumee);
   }
 
   console.log(states);
+  console.log('safe addresses', safeAddresses.length);
 };
 
 const getAllUsers = async (
