@@ -4,6 +4,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.VOUCHERS_TABLE_NAME;
 
 const { errorResponse } = require('../../../shared/apiResponse');
+const { getUserBySafeAddress } = require('../../../shared/users');
 const { checkBasicAuth } = require('../../../shared/utils');
 const { getVouchers } = require('../../../shared/vouchers');
 
@@ -139,6 +140,7 @@ const getVoucherByTransactionId = transactionId => {
 
 const checkIfLimitIsReached = async (safeAddress, amount) => {
   const vouchers = await getVouchers(safeAddress);
+  const individualLimit = await getIndividiualLimit(safeAddress);
 
   let sum = 0;
 
@@ -146,7 +148,9 @@ const checkIfLimitIsReached = async (safeAddress, amount) => {
     sum += voucher.amount;
   }
 
-  return sum + amount > LIMIT;
+  const limit = individualLimit || LIMIT;
+
+  return sum + amount > limit;
 };
 
 const purchaseVoucher = (voucherId, safeAddress, transactionId, timestamp) => {
@@ -164,6 +168,16 @@ const purchaseVoucher = (voucherId, safeAddress, transactionId, timestamp) => {
   };
 
   return ddb.update(params).promise();
+};
+
+const getIndividiualLimit = async safeAddress => {
+  const result = await getUserBySafeAddress(safeAddress);
+
+  if (result.Count === 0) {
+    return null;
+  }
+
+  return result.Items[0].circlesLimit || null;
 };
 
 const validateParams = ({ safeAddress, providerId, amount, transactionId }) => {

@@ -35,6 +35,17 @@ const getUserByMail = async (email, startKey = null) => {
   return ddb.query(params).promise();
 };
 
+const getUserBySafeAddress = async safeAddress => {
+  const params = {
+    TableName: tableName,
+    IndexName: 'safeAddressIndex',
+    KeyConditionExpression: 'circlesSafeAddress = :safeAddress',
+    ExpressionAttributeValues: { ':safeAddress': safeAddress },
+  };
+
+  return ddb.query(params).promise();
+};
+
 // function to get all users from dynamo
 const getAllUsers = async (users = [], startKey = null) => {
   const params = {
@@ -391,6 +402,7 @@ const deleteUserInDynamo = userId => {
 module.exports = {
   getUser,
   getUserByMail,
+  getUserBySafeAddress,
   getAllUsers,
   getAllUnconfirmedUsers,
   getReferredUsers,

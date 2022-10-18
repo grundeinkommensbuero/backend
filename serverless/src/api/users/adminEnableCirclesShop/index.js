@@ -23,10 +23,19 @@ module.exports.handler = async event => {
       'circlesResumee' in user.store &&
       'safeAddress' in user.store.circlesResumee
     ) {
-      await Promise.all([
-        trustCirclesUser(user.store.circlesResumee.safeAddress),
-        enableShop(user),
-      ]);
+      // NOTE: Only enable shop in the user for now (we need to trigger trust and check by hand beforehand,
+      // if trust was successful), because this structure does not really make sense
+      // because the trust process might take a few minutes in the background and might
+      // not work at all. An idea would be to initiate the trust and save a flag in the user.
+      // For all users with that flag it should be checked in a cron job if the trust worked.
+      // Only then the shop should be enabled.
+
+      // await Promise.all([
+      //   trustCirclesUser(user.store.circlesResumee.safeAddress),
+      //   enableShop(user),
+      // ]);
+
+      await enableShop(user);
     } else {
       return errorResponse(400, 'User has no safe address');
     }

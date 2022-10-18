@@ -153,7 +153,7 @@ const createUserInCognito = email => {
 };
 
 // Create user in dynamo db
-const createUserInDynamo = (userId, email) => {
+const createUserInDynamo = (userId, email, attributes) => {
   const timestamp = new Date().toISOString();
 
   const params = {
@@ -162,6 +162,7 @@ const createUserInDynamo = (userId, email) => {
       cognitoId: userId,
       email,
       createdAt: timestamp,
+      ...attributes,
     },
   };
 
@@ -199,3 +200,5 @@ module.exports.purchaseVoucher = safeAddress => {
 
   return fetch(`${INVOKE_URL}/vouchers`, postRequest);
 };
+
+module.exports.createUserInDynamo = createUserInDynamo;

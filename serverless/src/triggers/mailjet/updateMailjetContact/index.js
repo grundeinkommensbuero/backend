@@ -87,17 +87,23 @@ module.exports.handler = async event => {
             console.log('sig count', signatureCount);
             console.log('store', user.store.circlesResumee);
 
-            if (
-              signatureCount >= CIRCLES_MINIMUM &&
-              'store' in user &&
-              'circlesResumee' in user.store &&
-              'safeAddress' in user.store.circlesResumee &&
-              !user.store.voucherStoreEnabled
-            ) {
-              console.log('enabling shop for', user.email);
-              await trustCirclesUser(user.store.circlesResumee.safeAddress);
-              await enableShop(user);
-            }
+            // NOTE: disable for now, because this structure does not really make sense
+            // because the trust process might take a few minutes in the background and might
+            // not work at all. An idea would be to initiate the trust and save a flag in the user.
+            // For all users with that flag it should be checked in a cron job if the trust worked.
+            // Only then the shop should be enabled.
+
+            // if (
+            //   signatureCount >= CIRCLES_MINIMUM &&
+            //   'store' in user &&
+            //   'circlesResumee' in user.store &&
+            //   'safeAddress' in user.store.circlesResumee &&
+            //   !user.store.voucherStoreEnabled
+            // ) {
+            //   console.log('enabling shop for', user.email);
+            //   await trustCirclesUser(user.store.circlesResumee.safeAddress);
+            //   await enableShop(user);
+            // }
           }
         }
       }
