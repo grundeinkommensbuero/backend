@@ -25,7 +25,7 @@
     "isbot": "^3.3.4",
     "jimp": "^0.16.1",
     "node-fetch": "^2.6.7",
-    "node-mailjet": "^3.3.4",
+    "node-mailjet": "^3.4.1",
     "nodemailer": "^6.7.2",
     "pdf-lib": "^1.17.1",
     "raw-loader": "^4.0.2",
