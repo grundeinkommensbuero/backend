@@ -1445,7 +1445,7 @@ functions:
     handler: src/triggers/municipalities/sendGoalMails/index.handler
     timeout: 900 # Timeout for this specific function. Might take a while
     events: # Call this function every hour between 8am and 9pm
-      - schedule: cron(0 8-21 * * ? *)
+      # - schedule: cron(0 8-21 * * ? *)
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
