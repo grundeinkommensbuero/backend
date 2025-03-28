@@ -20,7 +20,7 @@ const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 //   'berlin-0': 'Berlin',
 // };
 
-const TEMPLATE_DEFAULT = 3107979;
+const TEMPLATE_DEFAULT = 6782444;
 const TEMPLATE_ACTIVE_USER = 3108929;
 
 // Function which sends an email to welcome the user to our expedition
