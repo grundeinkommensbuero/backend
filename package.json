@@ -11,9 +11,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.28.0",
     "@serverless/eslint-config": "^5.0.1",
     "aws-sdk": "^2.1202.0",
-    "babel-eslint": "^10.1.0",
     "bottleneck": "^2.19.5",
     "cli-table3": "^0.6.2",
     "copy-dynamodb-table": "^2.2.1",
@@ -24,8 +24,7 @@
     "in-words": "^0.2.3",
     "node-mailjet": "^3.3.1",
     "pdf-lib": "^1.17.1",
-    "redoc-cli": "^0.13.19",
-    "serverless-esbuild": "^1.55.0"
+    "redoc-cli": "^0.13.19"
   },
   "dependencies": {
     "nodemailer": "^6.7.8"

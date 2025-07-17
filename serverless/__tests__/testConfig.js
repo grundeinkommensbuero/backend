@@ -1,10 +1,10 @@
 const SECRET_CONFIG = require('./secretConfig');
 
 module.exports = {
-  INVOKE_URL: 'https://2j0bcp5tr9.execute-api.eu-central-1.amazonaws.com/dev',
+  INVOKE_URL: 'https://51kjphvbxi.execute-api.eu-central-1.amazonaws.com/dev',
   INVOKE_URL_WITHOUT_HTTPS:
-    '2j0bcp5tr9.execute-api.eu-central-1.amazonaws.com/dev',
-  USER_POOL_ID: 'eu-central-1_SYtDaO0qH',
+    '51kjphvbxi.execute-api.eu-central-1.amazonaws.com/dev',
+  USER_POOL_ID: 'eu-central-1_uLU400Ns2',
   ADMIN_POOL_ID: 'eu-central-1_R7ucfhvJM',
   DEV_USERS_TABLE: 'dev-users',
   DEV_MUNICIPALITIES_TABLE: 'dev-municipalities',

@@ -84,12 +84,7 @@ module.exports = {
   // You can let the plugin determine the correct handler entry points at build time
   entry: slsw.lib.entries,
   // Remove aws dependency because it is included in the lambdas anyway
-  externals: [
-    {
-      'aws-sdk': 'commonjs aws-sdk',
-    },
-    { 'chrome-aws-lambda': 'commonjs chrome-aws-lambda' },
-  ],
+  externals: [{ 'chrome-aws-lambda': 'commonjs chrome-aws-lambda' }],
   target: 'node',
   // Needed to use __dirname (https://stackoverflow.com/questions/41063214/reading-a-packaged-file-in-aws-lambda-package)
   node: {
