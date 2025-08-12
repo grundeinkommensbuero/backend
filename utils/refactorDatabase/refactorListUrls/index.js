@@ -2,12 +2,15 @@ const {
   PROD_SIGNATURES_TABLE_NAME,
   DEV_SIGNATURES_TABLE_NAME,
 } = require('../../config');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
 const { getSignatureLists } = require('../../shared/signatures');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 2 });
 
@@ -37,7 +40,7 @@ const updateList = ({ id, pdfUrl }) => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 run();

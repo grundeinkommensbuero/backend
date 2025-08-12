@@ -1,7 +1,9 @@
 const fs = require('fs');
-const AWS = require('aws-sdk');
+const { Pinpoint } = require('@aws-sdk/client-pinpoint');
 
-const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
+const pinpoint = new Pinpoint({
+  region: 'eu-central-1',
+});
 const projectId = '83c543b1094c4a91bf31731cd3f2f005';
 const parse = require('csv-parse');
 const CONFIG = require('../config');
@@ -36,7 +38,7 @@ const updatePinpoint = async () => {
           },
         };
 
-        await pinpoint.updateEndpoint(params).promise();
+        await pinpoint.updateEndpoint(params);
         console.log('success updating endpoint', userId);
       } else {
         console.log('user not found', user.email);

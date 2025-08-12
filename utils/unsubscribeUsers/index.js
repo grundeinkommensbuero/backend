@@ -1,9 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getUserByMail } = require('../shared/users/getUsers');
 const { PROD_USERS_TABLE_NAME } = require('../config');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const unsubscribeUsers = async (tableName, emails) => {
   for (const email of emails) {
@@ -57,8 +58,7 @@ const updateUser = (tableName, { cognitoId, customNewsletters }) => {
       UpdateExpression: updateExpression,
       ExpressionAttributeValues: data,
       ReturnValues: 'UPDATED_NEW',
-    })
-    .promise();
+    });
 };
 
 const emails = [];

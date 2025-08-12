@@ -1,8 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { Pinpoint } = require('@aws-sdk/client-pinpoint');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const pinpoint = new AWS.Pinpoint(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
+const pinpoint = new Pinpoint(config);
 
 const { getAllCognitoUsers, getUser } = require('../shared/users/getUsers');
 const { getSignatureLists } = require('../shared/signatures');
@@ -106,7 +108,7 @@ const getSignatureListsByUser = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 
@@ -127,7 +129,7 @@ const changeUserInList = (listId, userId) => {
     UpdateExpression: 'SET userId = :userId',
     ExpressionAttributeValues: { ':userId': userId },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const deleteEndpoint = async userId => {
@@ -136,7 +138,7 @@ const deleteEndpoint = async userId => {
     EndpointId: `email-endpoint-${userId}`,
   };
 
-  return pinpoint.deleteEndpoint(params).promise();
+  return pinpoint.deleteEndpoint(params);
 };
 
 copyData().then(() => {

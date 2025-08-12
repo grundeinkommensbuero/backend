@@ -7,10 +7,13 @@ const {
 const fetch = require('node-fetch');
 const randomWords = require('random-words');
 const crypto = require('crypto-secure-random-digit');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const uuid = require('uuid/v4');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 
 const email = 'vali_schagerl@web.de';
 const testUserId = '92c1e189-52d0-45cc-adbe-8071696a3221';
@@ -460,7 +463,7 @@ const getUserMunicipalityLink = (ags, userId) => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 const createMunicipality = municipality => {
@@ -469,7 +472,7 @@ const createMunicipality = municipality => {
     Item: municipality,
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const deleteMunicipality = ags => {
@@ -480,7 +483,7 @@ const deleteMunicipality = ags => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };
 
 const deleteUserMunicipalityLink = (ags, userId) => {
@@ -492,5 +495,5 @@ const deleteUserMunicipalityLink = (ags, userId) => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };

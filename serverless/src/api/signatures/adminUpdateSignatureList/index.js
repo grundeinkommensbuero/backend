@@ -1,9 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getSignatureList } = require('../../../shared/signatures');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const usersTableName = process.env.USERS_TABLE_NAME;
 
@@ -96,7 +97,7 @@ const updateSignatureList = (id, count, mixed) => {
       'SET received = list_append(if_not_exists(received, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // Update user record to update list flow
@@ -131,5 +132,5 @@ const updateUser = user => {
       ':listFlow': listFlow,
     },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

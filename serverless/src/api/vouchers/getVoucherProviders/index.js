@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.VOUCHERS_TABLE_NAME;
 
 const { errorResponse } = require('../../../shared/apiResponse');
@@ -86,7 +87,7 @@ const getAllAvailableVouchers = async (vouchers = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   vouchers.push(...result.Items);

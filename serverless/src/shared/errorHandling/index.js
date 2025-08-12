@@ -1,7 +1,9 @@
-const AWS = require('aws-sdk');
+const { SES } = require('@aws-sdk/client-ses');
 const nodemailer = require('nodemailer');
 
-const ses = new AWS.SES({ region: 'eu-central-1' });
+const ses = new SES({
+  region: 'eu-central-1',
+});
 
 module.exports.sendErrorMail = (source, error) => {
   const mailOptions = {

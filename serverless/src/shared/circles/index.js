@@ -1,9 +1,11 @@
 const fetch = require('node-fetch').default;
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { sleep } = require('../utils');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const tableName = process.env.USERS_TABLE_NAME;
 
 const CIRCLES_URL = 'https://voucher-server.circles.pink';
@@ -71,7 +73,7 @@ const enableShop = user => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 module.exports = {

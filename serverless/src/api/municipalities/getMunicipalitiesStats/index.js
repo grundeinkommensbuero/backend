@@ -34,7 +34,8 @@ module.exports.handler = async event => {
       shouldSendAllMunicipalities ? 'statsWithAll.json' : 'statsWithEvents.json'
     );
 
-    const body = JSON.parse(json.Body.toString());
+    const bodyString = await json.Body.transformToString();
+    const body = JSON.parse(bodyString);
 
     return {
       statusCode: 200,

@@ -1,4 +1,5 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getUser } = require('../../../shared/users');
 const {
   getMunicipality,
@@ -20,7 +21,7 @@ const {
   validateWantsToCollect,
 } = require('../../../shared/utils');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -431,7 +432,7 @@ const updateUser = async (
     params.ExpressionAttributeNames = { '#store': 'store' };
   }
 
-  await ddb.update(params).promise();
+  await ddb.update(params);
 
   // Return stuff relevant for donation mail
   return { donationInfo, lotteryInfo: data[':lottery'] };

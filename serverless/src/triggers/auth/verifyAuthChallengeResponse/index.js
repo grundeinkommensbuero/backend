@@ -1,11 +1,13 @@
-const AWS = require('aws-sdk');
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
 const { sendErrorMail } = require('../../../shared/errorHandling');
 const { createLoginCode } = require('../../../shared/users');
 const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 
-const ddb = new AWS.DynamoDB.DocumentClient();
-const cognito = new AWS.CognitoIdentityServiceProvider();
+const ddb = DynamoDBDocument.from(new DynamoDB());
+const cognito = new CognitoIdentityProvider();
 const tableName = process.env.USERS_TABLE_NAME;
 
 const LINK_TIMEOUT_SECONDS = 20 * 60; // number of seconds the magic link should be valid
@@ -98,7 +100,7 @@ const verifyEmail = (userPoolId, userId) => {
     UserAttributes: [{ Name: 'email_verified', Value: 'true' }],
   };
 
-  return cognito.adminUpdateUserAttributes(params).promise();
+  return cognito.adminUpdateUserAttributes(params);
 };
 
 const updateUser = (userId, email) => {
@@ -111,5 +113,5 @@ const updateUser = (userId, email) => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

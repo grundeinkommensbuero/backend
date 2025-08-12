@@ -2,10 +2,12 @@ const fs = require('fs');
 const parse = require('csv-parse');
 const { PROD_USERS_TABLE_NAME } = require('../../config');
 const { getUserByMail } = require('../../shared/users/getUsers');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const addActiveUsers = async () => {
   const users = await readCsv();
@@ -62,7 +64,7 @@ const updateUser = user => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // reads and parses the csv file and returns a promise containing

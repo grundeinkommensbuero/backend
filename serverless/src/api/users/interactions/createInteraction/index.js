@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const { getUser } = require('../../../../shared/users');
 const { errorResponse } = require('../../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../../shared/utils');
@@ -101,7 +102,7 @@ const updateUser = async (userId, body, timestamp, campaignCode, type) => {
     },
   };
 
-  await ddb.update(params).promise();
+  await ddb.update(params);
 
   return interactionObject;
 };

@@ -1,10 +1,12 @@
 const { INVOKE_URL, DEV_USERS_TABLE } = require('../../../../testConfig');
 const fetch = require('node-fetch');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { authenticate } = require('../../../../testUtils');
 const uuid = require('uuid/v4');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 const userId = '92c1e189-52d0-45cc-adbe-8071696a3221';
 let token;
 const interactionId = uuid();
@@ -162,5 +164,5 @@ const createInteractions = interactions => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

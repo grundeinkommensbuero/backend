@@ -1,10 +1,14 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { Upload } = require('@aws-sdk/lib-storage');
+const { S3 } = require('@aws-sdk/client-s3');
+
 const jimp = require('jimp/dist');
 const uuid = require('uuid/v4');
 const { getUser } = require('../../shared/users');
 
-const s3 = new AWS.S3();
-const ddb = new AWS.DynamoDB.DocumentClient();
+const s3 = new S3();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const bucketUrl = process.env.S3_IMAGES_URL;
 const tableName = process.env.USERS_TABLE_NAME;
 const bucket = process.env.IMAGE_BUCKET;
@@ -89,7 +93,7 @@ const deleteImage = url => {
 
   console.log('About to delete image', params);
 
-  return s3.deleteObject(params).promise();
+  return s3.deleteObject(params);
 };
 
 // Updates user to save url of image
@@ -103,7 +107,7 @@ const updateUser = (userId, urls) => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // Get image from S3
@@ -113,7 +117,7 @@ const getImage = filename => {
     Key: filename,
   };
 
-  return s3.getObject(params).promise();
+  return s3.getObject(params);
 };
 
 // Resize and upload image to S3
@@ -152,5 +156,8 @@ const uploadImage = async (buffer, userId, originalFilename) => {
 
   console.log('params', params);
 
-  return s3.upload(params).promise();
+  return new Upload({
+    client: s3,
+    params,
+  }).done();
 };

@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const tableName = process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 const { getSignatureCountFromContentful } = require('./contentfulApi');
 
@@ -13,7 +14,7 @@ const getSignatureList = id => {
       id,
     },
   };
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 // function to get signature lists for this particular user
@@ -31,7 +32,7 @@ const getSignatureListsOfUser = async (userId, campaignCode = null) => {
     params.ExpressionAttributeValues[':campaignCode'] = campaignCode;
   }
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 // function to get all signature lists of a specific user, where there is a received
@@ -46,7 +47,7 @@ const getScannedSignatureListsOfUser = async userId => {
     ExpressionAttributeValues: { ':userId': userId },
   };
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 // function to get all signature lists, where there is a received or scannedByUser key
@@ -64,7 +65,7 @@ const getScannedSignatureLists = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 
@@ -93,7 +94,7 @@ const getNotReceivedSignatureLists = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 
@@ -117,7 +118,7 @@ const getAllSignatureLists = async (signatureLists = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 
@@ -139,7 +140,7 @@ const checkIfIdExists = async id => {
     },
     ProjectionExpression: 'id',
   };
-  const result = await ddb.get(params).promise();
+  const result = await ddb.get(params);
   // if there is Item in result, there was an entry found
   return 'Item' in result && typeof result.Item !== 'undefined';
 };

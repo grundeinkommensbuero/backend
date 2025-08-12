@@ -1,9 +1,11 @@
-const AWS = require('aws-sdk');
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getRandomString } = require('../utils');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
+const cognito = new CognitoIdentityProvider(config);
 const tableName = process.env.USERS_TABLE_NAME || 'prod-users';
 const userPoolId = process.env.USER_POOL_ID || 'eu-central-1_xx4VmPPdF';
 const crypto = require('crypto-secure-random-digit');
@@ -15,8 +17,7 @@ const getUser = userId => {
       Key: {
         cognitoId: userId,
       },
-    })
-    .promise();
+    });
 };
 
 const getUserByMail = async (email, startKey = null) => {
@@ -32,7 +33,7 @@ const getUserByMail = async (email, startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 const getUserBySafeAddress = async safeAddress => {
@@ -43,7 +44,7 @@ const getUserBySafeAddress = async safeAddress => {
     ExpressionAttributeValues: { ':safeAddress': safeAddress },
   };
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 // function to get all users from dynamo
@@ -56,7 +57,7 @@ const getAllUsers = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -79,7 +80,7 @@ const getUsersWithDonations = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -103,7 +104,7 @@ const getCollectors = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -130,7 +131,7 @@ const getAllUnconfirmedUsers = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -154,7 +155,7 @@ const getReferredUsers = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -178,7 +179,7 @@ const getUsersWithScannedLists = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -206,7 +207,7 @@ const getUsersForListsToWork = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -225,7 +226,7 @@ const getCognitoUser = userId => {
     Username: userId,
   };
 
-  return cognito.adminGetUser(params).promise();
+  return cognito.adminGetUser(params);
 };
 
 const updateNewsletterConsent = (userId, newsletterConsent) => {
@@ -251,8 +252,7 @@ const updateNewsletterConsent = (userId, newsletterConsent) => {
       UpdateExpression: updateExpression,
       ExpressionAttributeValues: data,
       ReturnValues: 'UPDATED_NEW',
-    })
-    .promise();
+    });
 };
 
 // Create a new cognito user in our user pool
@@ -272,7 +272,7 @@ const createUserInCognito = email => {
     ],
     MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
   };
-  return cognito.adminCreateUser(params).promise();
+  return cognito.adminCreateUser(params);
 };
 
 // confirm user in cognito by setting a random password
@@ -286,7 +286,7 @@ const confirmUserInCognito = userId => {
     Permanent: true,
   };
   // set fake password to confirm user
-  return cognito.adminSetUserPassword(setPasswordParams).promise();
+  return cognito.adminSetUserPassword(setPasswordParams);
 };
 
 // Stores challenge as a custom attribute in Cognito,
@@ -308,8 +308,7 @@ const createLoginCode = async ({ email, userId, userPoolIdOverwrite }) => {
       ],
       UserPoolId: userPoolIdOverwrite || userPoolId,
       Username: email || userId,
-    })
-    .promise();
+    });
 
   return secretLoginCode;
 };
@@ -323,7 +322,7 @@ const getAllCognitoUsers = async (
     PaginationToken: paginationToken,
   };
 
-  const data = await cognito.listUsers(params).promise();
+  const data = await cognito.listUsers(params);
 
   // add elements of user array
   cognitoUsers.push(...data.Users);
@@ -375,8 +374,7 @@ const unsubscribeUser = ({ cognitoId, customNewsletters }) => {
       } updatedAt = :updatedAt`,
       ExpressionAttributeValues: data,
       ReturnValues: 'UPDATED_NEW',
-    })
-    .promise();
+    });
 };
 
 const deleteUserInCognito = userId => {
@@ -385,7 +383,7 @@ const deleteUserInCognito = userId => {
     Username: userId,
   };
 
-  return cognito.adminDeleteUser(params).promise();
+  return cognito.adminDeleteUser(params);
 };
 
 const deleteUserInDynamo = userId => {
@@ -396,7 +394,7 @@ const deleteUserInDynamo = userId => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };
 
 module.exports = {

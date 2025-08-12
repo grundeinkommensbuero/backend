@@ -1,11 +1,13 @@
 const fs = require('fs');
 const parse = require('csv-parse');
 const pdfLib = require('pdf-lib');
-const AWS = require('aws-sdk');
+const { SES } = require('@aws-sdk/client-ses');
 const nodemailer = require('nodemailer');
 const inWords = require('in-words').de;
 
-const ses = new AWS.SES({ region: 'eu-central-1' });
+const ses = new SES({
+  region: 'eu-central-1',
+});
 const pathToDonors = './spendenbescheinigungen_olympia.csv';
 const file = fs.readFileSync('./vorlage.pdf');
 const logo = fs.readFileSync('./logo.jpg');

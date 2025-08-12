@@ -1,5 +1,4 @@
 const { INVOKE_URL } = require('../../../testConfig');
-const AWS = require('aws-sdk');
 const fetch = require('node-fetch');
 
 let token;

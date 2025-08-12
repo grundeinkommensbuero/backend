@@ -1,9 +1,13 @@
 const { errorResponse } = require('../../shared/apiResponse');
 const { getAllUsers, getAllCognitoUsers } = require('../../shared/users');
-const AWS = require('aws-sdk');
+
+const { Upload } = require('@aws-sdk/lib-storage');
+const { S3 } = require('@aws-sdk/client-s3');
 
 const TWO_MONTHS = 60 * 24 * 60 * 60 * 1000;
-const s3 = new AWS.S3({ region: 'eu-central-1' });
+const s3 = new S3({
+  region: 'eu-central-1',
+});
 const bucket = 'xbge-active-users-stats';
 const stage = process.env.STAGE;
 
@@ -77,5 +81,8 @@ const saveJson = (json, fileName) => {
     ContentType: 'application/json',
   };
 
-  return s3.upload(params).promise();
+  return new Upload({
+    client: s3,
+    params,
+  }).done();
 };

@@ -1,12 +1,26 @@
 const webpack = require('webpack');
 const slsw = require('serverless-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+const glob = require('glob');
 
 require('dotenv').config();
 
 // taken from example
 // (https://github.com/serverless-heaven/serverless-webpack/blob/master/examples/typescript/webpack.config.js)
 const isLocal = slsw.lib.webpack.isLocal;
+
+const lambdaDirs = glob.sync('src/**/!(*.*)'); // matches only directories (not files)
+
+const vm2Files = ['bridge.js', 'setup-sandbox.js'];
+
+const vm2Patterns = lambdaDirs.flatMap(dir =>
+  vm2Files.map(file => ({
+    from: path.resolve(__dirname, `node_modules/vm2/lib/${file}`),
+    to: path.join(dir, file),
+  }))
+);
 
 const functionsWithPdf = [
   'createSignatureList',
@@ -108,8 +122,21 @@ module.exports = {
       },
     ],
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        // Exclude copied vm2 runtime files from minification
+        exclude: [/setup-sandbox\.js$/, /bridge\.js$/, /set-node-sandbox\.js$/],
+      }),
+    ],
+  },
   plugins: [
     copyStaticFilesPlugin(),
+    new CopyWebpackPlugin({
+      patterns: vm2Patterns,
+    }),
+
     // We also want to make some env variables available for config
     new webpack.DefinePlugin({
       // Needed to fix issue with Formidable pack (dependency of node-mailjet)

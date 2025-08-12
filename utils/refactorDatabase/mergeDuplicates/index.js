@@ -1,4 +1,5 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getAllUsers, getUserByMail } = require('../../shared/users/getUsers');
 const {
   deleteUserInCognito,
@@ -12,7 +13,7 @@ const {
 const CONFIG = require('../../config');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const usersTableName = CONFIG.PROD_USERS_TABLE_NAME;
 const signaturesTableName = CONFIG.PROD_SIGNATURES_TABLE_NAME;
 const userPoolId = CONFIG.PROD_USER_POOL_ID;
@@ -245,7 +246,7 @@ const updateUserRecord = (user, duplicate) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const updateSignatureLists = async (userId, duplicateId) => {
@@ -291,7 +292,7 @@ const updateUserIdInSignatureList = (id, userId) => {
     ExpressionAttributeValues: { ':userId': userId },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const updateScansInSignatureList = (id, scans) => {
@@ -302,7 +303,7 @@ const updateScansInSignatureList = (id, scans) => {
     ExpressionAttributeValues: { ':scans': scans },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 mergeDuplicates();

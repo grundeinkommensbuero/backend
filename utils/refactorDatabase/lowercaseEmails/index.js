@@ -1,11 +1,15 @@
 const { getAllCognitoUsers } = require('../../shared/users/getUsers');
-const AWS = require('aws-sdk');
+
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
 const { PROD_USERS_TABLE_NAME, PROD_USER_POOL_ID } = require('../../config');
 
 const config = { region: 'eu-central-1' };
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const cognito = new CognitoIdentityProvider(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const limiter = new Bottleneck({ minTime: 200, maxConcurrent: 2 });
 
@@ -80,7 +84,7 @@ const updateCognitoUser = (userPoolId, userId, email) => {
     ],
   };
 
-  return cognito.adminUpdateUserAttributes(params).promise();
+  return cognito.adminUpdateUserAttributes(params);
 };
 
 const updateDynamoUser = (tableName, userId, email) => {
@@ -90,7 +94,7 @@ const updateDynamoUser = (tableName, userId, email) => {
     UpdateExpression: 'SET email = :email',
     ExpressionAttributeValues: { ':email': email },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 lowercaseEmailsInCognito(PROD_USER_POOL_ID, PROD_USERS_TABLE_NAME);

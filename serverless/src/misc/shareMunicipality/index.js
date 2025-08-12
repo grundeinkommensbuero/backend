@@ -4,7 +4,11 @@
  * @param {*} event
  */
 
-const AWS = require('aws-sdk');
+
+
+const { Upload } = require('@aws-sdk/lib-storage');
+const { S3 } = require('@aws-sdk/client-s3');
+
 const jimp = require('jimp/dist');
 const { errorResponse } = require('../../shared/apiResponse');
 const fetch = require('node-fetch').default;
@@ -18,7 +22,7 @@ const {
 const isbot = require('isbot');
 
 const pathToFont = __dirname + '/ideal-bold.fnt';
-const s3 = new AWS.S3();
+const s3 = new S3();
 const emblemBucketUrl =
   'https://xbge-municipalities-emblems.s3.eu-central-1.amazonaws.com/wappen';
 const outputBucket = 'xbge-personalized-sharing-images';
@@ -346,7 +350,10 @@ const uploadImage = async (buffer, userId, ags) => {
     },
   };
 
-  return s3.upload(params).promise();
+  return new Upload({
+    client: s3,
+    params,
+  }).done();
 };
 
 const printText = async (image, captions, username, municipalityName) => {

@@ -1,4 +1,6 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const fs = require('fs');
 const parse = require('csv-parse');
 const Bottleneck = require('bottleneck');
@@ -14,7 +16,7 @@ const zipCodeMatcher = require('../shared/zipCodeMatcher');
 // };
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const {
   confirmUser,
   createUserInCognito,
@@ -198,7 +200,7 @@ const createUserInDynamo = (userId, user) => {
         user.source === 'typeform-bb-platform' ? 'bb-platform' : undefined,
     },
   };
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 module.exports = { createUser };

@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const tableName = 'dev-vouchers';
 
 const emptyTable = async () => {
@@ -27,7 +28,7 @@ const removeVoucher = id => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };
 
 const getVouchers = async (vouchers = [], startKey = null) => {
@@ -38,7 +39,7 @@ const getVouchers = async (vouchers = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   vouchers.push(...result.Items);
 

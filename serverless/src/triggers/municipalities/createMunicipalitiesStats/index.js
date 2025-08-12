@@ -3,10 +3,13 @@
  * as a json file on the server.
  * */
 
-const AWS = require('aws-sdk');
+
+
+const { Upload } = require('@aws-sdk/lib-storage');
+const { S3 } = require('@aws-sdk/client-s3');
 
 const config = { region: 'eu-central-1' };
-const s3 = new AWS.S3(config);
+const s3 = new S3(config);
 const bucket = 'xbge-municipalities-stats';
 const stage = process.env.STAGE;
 
@@ -248,7 +251,10 @@ const saveJson = (json, fileName) => {
     ContentType: 'application/json',
   };
 
-  return s3.upload(params).promise();
+  return new Upload({
+    client: s3,
+    params,
+  }).done();
 };
 
 module.exports.timePassed = timePassed;

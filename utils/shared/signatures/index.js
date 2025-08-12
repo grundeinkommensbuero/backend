@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 // Function to get all signature lists
 const getSignatureLists = async (
@@ -16,7 +17,7 @@ const getSignatureLists = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 
@@ -51,7 +52,7 @@ const getSignatureListsOfUser = async (
     params.ExpressionAttributeValues[':campaignCode'] = campaignCode;
   }
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 const getSignatureCountOfUser = async (
@@ -92,7 +93,7 @@ const getScannedByUserSignatureLists = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 

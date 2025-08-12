@@ -1,8 +1,12 @@
 const chromium = require('chrome-aws-lambda');
 const jimp = require('jimp');
-const AWS = require('aws-sdk');
 
-const s3 = new AWS.S3({ region: 'eu-central-1' });
+const { Upload } = require('@aws-sdk/lib-storage');
+const { S3 } = require('@aws-sdk/client-s3');
+
+const s3 = new S3({
+  region: 'eu-central-1',
+});
 const url = 'https://expedition-grundeinkommen.de/playground/campaignMap';
 
 module.exports.handler = async event => {
@@ -75,5 +79,8 @@ const uploadImage = (buffer, fileName) => {
     CacheControl: 'max-age=259200',
   };
 
-  return s3.upload(params).promise();
+  return new Upload({
+    client: s3,
+    params,
+  }).done();
 };

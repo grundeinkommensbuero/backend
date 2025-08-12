@@ -1,12 +1,15 @@
 const { PROD_VOUCHERS_TABLE_NAME, VOUCHER_API_KEY } = require('../../config');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
-const uuid = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
-const parse = require('csv-parse');
+const { parse } = require('csv-parse');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const crypto = require('crypto');
 
@@ -69,7 +72,7 @@ const createVoucher = (provider, amount, code) => {
   const params = {
     TableName: PROD_VOUCHERS_TABLE_NAME,
     Item: {
-      id: uuid(),
+      id: uuidv4(),
       provider,
       amount,
       code: encrypt(code),
@@ -77,7 +80,7 @@ const createVoucher = (provider, amount, code) => {
   };
 
   console.log(params.Item);
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const readCsv = () => {

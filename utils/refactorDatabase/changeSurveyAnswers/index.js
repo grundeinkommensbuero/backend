@@ -1,8 +1,9 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getUsersWithSurvey } = require('../../shared/users/getUsers');
 const { PROD_USERS_TABLE_NAME } = require('../../config');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 
 const changeSurveyAnswers = async tableName => {
   try {
@@ -52,7 +53,7 @@ const saveSurveys = (tableName, userId, surveys) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 changeSurveyAnswers(PROD_USERS_TABLE_NAME);

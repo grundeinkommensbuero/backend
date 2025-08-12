@@ -1,4 +1,5 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const {
   INVOKE_URL,
   BASIC_AUTH_USERNAME,
@@ -8,7 +9,7 @@ const {
 const fetch = require('node-fetch');
 const uuid = require('uuid/v4');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 const randomWords = require('random-words');
 
 const providerId = randomWords();
@@ -80,5 +81,5 @@ const createVoucher = (provider, amount) => {
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };

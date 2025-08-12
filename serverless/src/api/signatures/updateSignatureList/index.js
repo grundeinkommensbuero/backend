@@ -1,9 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getSignatureList } = require('../../../shared/signatures');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUserByMail, getUser } = require('../../../shared/users');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 const usersTableName = process.env.USERS_TABLE_NAME;
 
@@ -167,7 +168,7 @@ const updateSignatureList = (id, userId, count, usedQrCode) => {
       'SET scannedByUser = list_append(if_not_exists(scannedByUser, :emptyList), :count)',
     ExpressionAttributeValues: { ':count': countObject, ':emptyList': [] },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // Update user record to add the scan of this list
@@ -211,7 +212,7 @@ const updateUser = (user, userId, listId, count, campaign) => {
       ':listFlow': listFlow,
     },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const validateParams = (listId, count) => {

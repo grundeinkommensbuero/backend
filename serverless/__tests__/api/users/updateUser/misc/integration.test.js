@@ -5,11 +5,14 @@ const {
 } = require('../../../../testUtils');
 const fetch = require('node-fetch');
 const { getUser } = require('../../../../../../utils/shared/users/getUsers');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const uuid = require('uuid/v4');
 const crypto = require('crypto-secure-random-digit');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 
 const userId = '92c1e189-52d0-45cc-adbe-8071696a3221';
 const otherUserId = '7f7dec33-177d-4177-b4a9-b9de7c5e9b55';
@@ -26,7 +29,7 @@ describe('updateUser update donation api test', () => {
       ReturnValues: 'UPDATED_NEW',
     };
 
-    await ddb.update(params).promise();
+    await ddb.update(params);
   });
 
   it('should be able to create recurring donation', async () => {
@@ -775,7 +778,7 @@ describe('updateUser update wantsToCollect', () => {
       ReturnValues: 'UPDATED_NEW',
     };
 
-    await ddb.update(params).promise();
+    await ddb.update(params);
   });
 
   it('should set wants to collect with question', async () => {
@@ -945,5 +948,5 @@ const addCustomToken = () => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

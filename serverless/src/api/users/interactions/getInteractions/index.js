@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const { errorResponse } = require('../../../../shared/apiResponse');
 const zipCodeMatcher = require('../../../../shared/zipCodeMatcher');
 
@@ -131,7 +132,7 @@ const getAllUsersWithInteractions = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   interactions.push(...result.Items);

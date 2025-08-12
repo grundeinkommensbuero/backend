@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.VOUCHERS_TABLE_NAME;
 
 const { errorResponse } = require('../../../shared/apiResponse');
@@ -101,7 +102,7 @@ const getFirstVoucherOfProvider = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   if (result.Count !== 0) {
     return result.Items[0];
@@ -135,7 +136,7 @@ const getVoucherByTransactionId = transactionId => {
     },
   };
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 const checkIfLimitIsReached = async (safeAddress, amount) => {
@@ -167,7 +168,7 @@ const purchaseVoucher = (voucherId, safeAddress, transactionId, timestamp) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const getIndividiualLimit = async safeAddress => {

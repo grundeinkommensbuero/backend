@@ -1,10 +1,14 @@
-const AWS = require('aws-sdk');
+const {
+  getSignedUrl: s3GetSignedUrl,
+} = require('@aws-sdk/s3-request-presigner');
+const { PutObjectCommand, S3 } = require('@aws-sdk/client-s3');
+
 const uuid = require('uuid/v4');
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getFileSuffix } = require('../../../shared/utils');
 
-const s3 = new AWS.S3();
+const s3 = new S3();
 const responseHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
@@ -69,7 +73,10 @@ const getSignedUrl = (userId, contentType) => {
     },
   };
 
-  return s3.getSignedUrlPromise('putObject', params);
+  return s3GetSignedUrl(s3, new PutObjectCommand(params), {
+    expiresIn:
+      "/* add value from 'Expires' from v2 call if present, else remove */",
+  });
 };
 
 // Validates request body for missing params or wrong content types

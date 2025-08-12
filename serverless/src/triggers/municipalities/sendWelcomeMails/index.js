@@ -4,7 +4,10 @@
  * Also includes the C flow for Berlin user journey.
  */
 
-const AWS = require('aws-sdk');
+
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { sendErrorMail } = require('../../../shared/errorHandling');
 const {
   getAllMunicipalitiesWithUsers,
@@ -16,7 +19,7 @@ const { computeMailType } = require('./computeMailType');
 const sendMail = require('./sendMail');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const usersTableName = process.env.USERS_TABLE_NAME;
 
 const EIGHT_DAYS = 8 * 24 * 60 * 60 * 1000;
@@ -117,5 +120,5 @@ const updateUser = (user, mailType) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

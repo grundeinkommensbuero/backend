@@ -5,10 +5,12 @@
 const { getUserByMail } = require('../../../shared/users');
 const { username, password } = require('../../../../basicAuth');
 const { errorResponse } = require('../../../shared/apiResponse');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -90,6 +92,5 @@ const updateUser = ({ cognitoId, emailActivity }, event) => {
         ':timestamp': timestamp,
       },
       ReturnValues: 'UPDATED_NEW',
-    })
-    .promise();
+    });
 };

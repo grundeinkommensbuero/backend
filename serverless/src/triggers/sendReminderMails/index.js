@@ -1,4 +1,5 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const {
   analyseSignatureLists,
 } = require('../../api/signatures/getSignatureListCount/analyseSignatureLists');
@@ -12,7 +13,7 @@ const { sendErrorMail } = require('../../shared/errorHandling');
 const { computeMailType } = require('./computeMailType');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const usersTableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -133,7 +134,7 @@ const updateUser = (user, mailTypes) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const getDaysSince = date => {

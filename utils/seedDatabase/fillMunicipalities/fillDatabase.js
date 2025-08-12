@@ -1,12 +1,15 @@
 const signups = require('./output/mockup-complete.json');
 const { DEV_USER_MUNICIPALITY_TABLE_NAME } = require('../../config');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
-const uuid = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 4 });
 
@@ -16,7 +19,7 @@ const fillDatabase = async () => {
       for (let i = 0; i < signup.signups; i++) {
         await updateUserMunicipalityTable(
           signup.ags,
-          uuid(),
+          uuidv4(),
           createRandomDate().toISOString(),
           signup.population
         );
@@ -38,7 +41,7 @@ const updateUserMunicipalityTable = (ags, userId, createdAt, population) => {
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const createRandomDate = () => {
