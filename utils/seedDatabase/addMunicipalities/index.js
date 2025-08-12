@@ -37,7 +37,6 @@ const createMunicipality = ({ ags, name, population, slug }) => {
     },
   };
 
-  return ddb.put(params).promise();
   return ddb.put(params);
 };
 
