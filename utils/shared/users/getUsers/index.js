@@ -1,8 +1,10 @@
-const AWS = require('aws-sdk');
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const cognito = new CognitoIdentityProvider(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const getCognitoUser = async (userPoolId, userId) => {
   const params = {
@@ -10,7 +12,7 @@ const getCognitoUser = async (userPoolId, userId) => {
     Username: userId,
   };
 
-  return cognito.adminGetUser(params).promise();
+  return cognito.adminGetUser(params);
 };
 
 const getAllUnverifiedCognitoUsers = async (
@@ -24,7 +26,7 @@ const getAllUnverifiedCognitoUsers = async (
     PaginationToken: paginationToken,
   };
 
-  const data = await cognito.listUsers(params).promise();
+  const data = await cognito.listUsers(params);
 
   // add elements of user array
   unverifiedCognitoUsers.push(...data.Users);
@@ -50,7 +52,7 @@ const getAllVerifiedCognitoUsers = async (
     PaginationToken: paginationToken,
   };
 
-  const data = await cognito.listUsers(params).promise();
+  const data = await cognito.listUsers(params);
 
   // add elements of user array
   verifiedCognitoUsers.push(...data.Users);
@@ -75,7 +77,7 @@ const getAllCognitoUsers = async (
     PaginationToken: paginationToken,
   };
 
-  const data = await cognito.listUsers(params).promise();
+  const data = await cognito.listUsers(params);
 
   // add elements of user array
   cognitoUsers.push(...data.Users);
@@ -101,7 +103,7 @@ const getAllCognitoUsersWithUnverifiedEmails = async (
     Filter: 'cognito:user_status = "UNCONFIRMED"',
   };
 
-  const data = await cognito.listUsers(params).promise();
+  const data = await cognito.listUsers(params);
 
   // add elements of user array
   cognitoUsers.push(...data.Users);
@@ -172,7 +174,7 @@ const getAllUsers = async (
     }
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -209,7 +211,7 @@ const getAllUnconfirmedUsers = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -238,7 +240,7 @@ const getUsersWithPledge = async (tableName, users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -262,7 +264,7 @@ const getUsersWithSurvey = async (tableName, users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -289,7 +291,7 @@ const getUsersWithDonations = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -316,7 +318,7 @@ const getUsersWithLottery = async (tableName, users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -337,7 +339,7 @@ const getUser = (tableName, id) => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 const getUserByMail = async (tableName, email) => {
@@ -348,7 +350,7 @@ const getUserByMail = async (tableName, email) => {
     ExpressionAttributeValues: { ':email': email.toLowerCase() },
   };
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 const isVerified = (user, unverifiedCognitoUsers) => {

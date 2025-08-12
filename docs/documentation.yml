@@ -15,7 +15,7 @@ info:
   contact:
     email: info@expedition-grundeinkommen.de
 servers:
-  - url: https://2j0bcp5tr9.execute-api.eu-central-1.amazonaws.com/dev
+  - url: https://51kjphvbxi.execute-api.eu-central-1.amazonaws.com/dev
     description: Development server (uses test data)
   - url: https://ag5gu1z06h.execute-api.eu-central-1.amazonaws.com/prod
     description: Production server (uses live data)

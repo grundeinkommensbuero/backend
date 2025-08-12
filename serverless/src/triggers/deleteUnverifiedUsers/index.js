@@ -1,9 +1,12 @@
-const AWS = require('aws-sdk');
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
 const { getAllUnconfirmedUsers } = require('../../shared/users');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
-const cognito = new AWS.CognitoIdentityServiceProvider();
+const ddb = DynamoDBDocument.from(new DynamoDB());
+const cognito = new CognitoIdentityProvider();
 
 const tableName = process.env.USERS_TABLE_NAME;
 const userPoolId = process.env.USER_POOL_ID;
@@ -60,7 +63,7 @@ const deleteUserInCognito = user => {
     Username: user.cognitoId,
   };
 
-  return cognito.adminDeleteUser(params).promise();
+  return cognito.adminDeleteUser(params);
 };
 
 const deleteUserInDynamo = user => {
@@ -72,5 +75,5 @@ const deleteUserInDynamo = user => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };

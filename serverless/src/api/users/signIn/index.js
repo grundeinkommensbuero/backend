@@ -1,9 +1,18 @@
-const AWS = require('aws-sdk');
+const {
+  CognitoIdentityProvider,
+} = require('@aws-sdk/client-cognito-identity-provider');
+const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
+
 const nodemailer = require('nodemailer');
 const crypto = require('crypto-secure-random-digit');
 
-const ses = new AWS.SES();
-const cognito = new AWS.CognitoIdentityServiceProvider();
+const sesClient = new SESv2Client({ region: 'eu-central-1' });
+
+const transporter = nodemailer.createTransport({
+  SES: { sesClient, SendEmailCommand },
+});
+
+const cognito = new CognitoIdentityProvider();
 const mail = require('raw-loader!./loginCodeMail.html').default;
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUser, createLoginCode } = require('../../../shared/users');
@@ -58,11 +67,6 @@ const sendEmailViaSes = (email, code) => {
     html: customEmail(email, code),
     to: email,
   };
-
-  // create Nodemailer SES transporter
-  const transporter = nodemailer.createTransport({
-    SES: ses,
-  });
 
   return transporter.sendMail(mailOptions);
 };

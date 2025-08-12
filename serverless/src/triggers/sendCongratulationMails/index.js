@@ -1,4 +1,6 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const sendMail = require('./sendMail');
 const {
   getSignatureCountFromContentful,
@@ -10,7 +12,7 @@ const {
 } = require('../../shared/signatures');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const signaturesTableName = process.env.SIGNATURES_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -170,7 +172,7 @@ const getReceivedSignatureLists = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 

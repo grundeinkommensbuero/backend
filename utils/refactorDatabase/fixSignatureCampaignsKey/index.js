@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const { PROD_USERS_TABLE_NAME } = require('../../config');
 
 const fixSignatureCampaignsKey = async tableName => {
@@ -48,7 +49,7 @@ const updateUser = async (tableName, userId, signatureCampaigns) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const getAllUsersWithWrongKey = async (
@@ -65,7 +66,7 @@ const getAllUsersWithWrongKey = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);

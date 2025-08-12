@@ -6,12 +6,15 @@ const {
 
 const { confirmUser } = require('../../shared/users/createUsers');
 const CONFIG = require('../../config');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
 
 const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 2 });
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 
 const refactorConfirmation = async (userPoolId, tableName) => {
   try {
@@ -63,7 +66,7 @@ const updateUser = (tableName, userId, confirmed) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 refactorConfirmation(CONFIG.PROD_USER_POOL_ID, CONFIG.PROD_USERS_TABLE_NAME);

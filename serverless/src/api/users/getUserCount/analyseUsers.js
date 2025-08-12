@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const { getAllUsers } = require('../../../shared/users');
 
 const tableNameWithoutConsent = 'users-without-consent';
@@ -57,9 +58,8 @@ module.exports.analyseUsers = async () => {
                 }
 
                 // otherwise only add it for the (only) verified users
-                campaignStats[
-                  campaign
-                ].verifiedUsers.signatures += signatureCount;
+                campaignStats[campaign].verifiedUsers.signatures +=
+                  signatureCount;
 
                 // Check if the signatureCount is already in the pledge map
                 if (!(signatureCount in campaignStats[campaign].pledgesMap)) {
@@ -148,7 +148,7 @@ const getAllUsersWithoutNewsletterConsent = () => {
   const params = {
     TableName: tableNameWithoutConsent,
   };
-  return ddb.scan(params).promise();
+  return ddb.scan(params);
 };
 
 const migrateUsersWithoutNewsletterConsent = async users => {

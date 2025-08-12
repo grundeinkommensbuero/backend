@@ -13,12 +13,17 @@ const {
   BASIC_AUTH_PASSWORD,
   INVOKE_URL,
 } = require('../testConfig');
-const AWS = require('aws-sdk');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const {
+  CognitoIdentityProvider,
+} = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 
 const config = { region: 'eu-central-1' };
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const cognito = new CognitoIdentityProvider(config);
 
 const fetch = require('node-fetch');
 const uuid = require('uuid/v4');
@@ -32,18 +37,15 @@ module.exports.authenticateAdmin = async () => {
 };
 
 const makeAuthenticationCall = async (poolId, clientId, userId) => {
-  const { AuthenticationResult } = await cognito
-    .adminInitiateAuth({
-      AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
-      UserPoolId: poolId,
-      ClientId: clientId,
-      AuthParameters: {
-        USERNAME: userId,
-        PASSWORD,
-      },
-    })
-    .promise();
-
+  const { AuthenticationResult } = await cognito.adminInitiateAuth({
+    AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
+    UserPoolId: poolId,
+    ClientId: clientId,
+    AuthParameters: {
+      USERNAME: userId,
+      PASSWORD,
+    },
+  });
   return AuthenticationResult.IdToken;
 };
 
@@ -56,7 +58,7 @@ module.exports.getUserMunicipalityLink = (ags, userId) => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 module.exports.createMunicipality = municipality => {
@@ -65,7 +67,7 @@ module.exports.createMunicipality = municipality => {
     Item: municipality,
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 module.exports.deleteMunicipality = ags => {
@@ -76,7 +78,7 @@ module.exports.deleteMunicipality = ags => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };
 
 module.exports.deleteUserMunicipalityLink = (ags, userId) => {
@@ -88,7 +90,7 @@ module.exports.deleteUserMunicipalityLink = (ags, userId) => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };
 
 module.exports.removeCustomNewsletters = userId => {
@@ -98,7 +100,7 @@ module.exports.removeCustomNewsletters = userId => {
     UpdateExpression: 'REMOVE customNewsletters',
     ReturnValues: 'UPDATED_NEW',
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 module.exports.removeStore = userId => {
@@ -109,7 +111,7 @@ module.exports.removeStore = userId => {
     ExpressionAttributeNames: { '#store': 'store' },
     ReturnValues: 'UPDATED_NEW',
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 module.exports.removeListFlow = userId => {
@@ -119,7 +121,7 @@ module.exports.removeListFlow = userId => {
     UpdateExpression: 'REMOVE listFlow',
     ReturnValues: 'UPDATED_NEW',
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // Creates user in cognito and dynamo
@@ -149,7 +151,7 @@ const createUserInCognito = email => {
     MessageAction: 'SUPPRESS', // we don't want to send an "invitation mail"
   };
 
-  return cognito.adminCreateUser(params).promise();
+  return cognito.adminCreateUser(params);
 };
 
 // Create user in dynamo db
@@ -166,7 +168,7 @@ const createUserInDynamo = (userId, email, attributes) => {
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 module.exports.getCognitoUser = userId => {
@@ -175,7 +177,7 @@ module.exports.getCognitoUser = userId => {
     Username: userId,
   };
 
-  return cognito.adminGetUser(params).promise();
+  return cognito.adminGetUser(params);
 };
 
 module.exports.purchaseVoucher = safeAddress => {

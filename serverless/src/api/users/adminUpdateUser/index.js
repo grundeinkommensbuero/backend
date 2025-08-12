@@ -1,8 +1,9 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUser, unsubscribeUser } = require('../../../shared/users');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -68,5 +69,5 @@ const cancelDonation = ({ cognitoId, donations }) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

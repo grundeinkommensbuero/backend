@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const { getUser } = require('../../../shared/users');
 const { errorResponse } = require('../../../shared/apiResponse');
 
@@ -75,6 +76,5 @@ const saveUser = (userId, { answer, surveyCode }) => {
       UpdateExpression: updateExpression,
       ExpressionAttributeValues: data,
       ReturnValues: 'UPDATED_NEW',
-    })
-    .promise();
+    });
 };

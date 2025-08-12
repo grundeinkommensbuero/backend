@@ -1,4 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { Upload } = require('@aws-sdk/lib-storage');
+const { S3 } = require('@aws-sdk/client-s3');
+
 const generatePdf = require('../../../shared/signatures/createPdf/createPDF');
 const generateAttachments = require('../../../shared/signatures/createPdf/generateAttachments');
 const sendMail = require('./sendMail');
@@ -14,8 +18,8 @@ const {
 } = require('../../../shared/utils');
 
 const config = { region: 'eu-central-1' };
-const s3 = new AWS.S3(config);
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const s3 = new S3(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const signaturesTableName =
   process.env.SIGNATURES_TABLE_NAME || 'prod-signatures';
 const usersTableName = process.env.USERS_TABLE_NAME || 'prod-users';
@@ -249,7 +253,7 @@ const getSignatureList = async (userId, day, campaignCode) => {
     },
   };
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 // updates entry in signature lists db to increment the download (the current download count is passed)
@@ -261,20 +265,23 @@ const incrementDownloads = (id, downloads) => {
     UpdateExpression: 'SET downloads = :downloads',
     ExpressionAttributeValues: { ':downloads': downloads },
   };
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // uploads pdf to s3 bucket
 const uploadPDF = (id, pdf) => {
-  return s3
-    .upload({
-      Bucket: bucket,
-      ACL: 'public-read',
-      Key: `${id}.pdf`,
-      Body: Buffer.from(pdf),
-      ContentType: 'application/pdf',
-    })
-    .promise();
+  return new Upload({
+    client: s3,
+
+    params: {
+        Bucket: bucket,
+        ACL: 'public-read',
+        Key: `${id}.pdf`,
+        Body: Buffer.from(pdf),
+        ContentType: 'application/pdf',
+      },
+  })
+    .done();
 };
 
 const updateUser = (userId, campaign) => {
@@ -293,7 +300,7 @@ const updateUser = (userId, campaign) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const isAuthorized = event => {

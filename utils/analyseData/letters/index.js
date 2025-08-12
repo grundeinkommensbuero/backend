@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const analyse = async () => {
   let receivedListCount = 0;
@@ -59,7 +60,7 @@ const getSignatureListsFromLetters = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 

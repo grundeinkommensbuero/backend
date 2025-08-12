@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.VOUCHERS_TABLE_NAME;
 
 const getVouchers = async (
@@ -44,8 +45,8 @@ const getVouchers = async (
 
   // If safe address is passed we want to do a query on the gsi
   const result = safeAddress
-    ? await ddb.query(params).promise()
-    : await ddb.scan(params).promise();
+    ? await ddb.query(params)
+    : await ddb.scan(params);
 
   // add elements to existing array
   vouchers.push(...result.Items);

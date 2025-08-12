@@ -1,8 +1,10 @@
 const { getAllUsers } = require('../../shared/users/getUsers');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const { PROD_USERS_TABLE_NAME } = require('../../config');
 
@@ -33,7 +35,7 @@ const updateUser = async user => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  await ddb.update(params).promise();
+  await ddb.update(params);
 };
 
 removeListFlow();

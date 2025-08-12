@@ -3,11 +3,14 @@
  * A token is being sent via the request and if the token is the same as the one in the database, we confirm the user.
  */
 
-const AWS = require('aws-sdk');
+
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { getUser } = require('../../../shared/users');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.USERS_TABLE_NAME;
 const TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
 
@@ -69,5 +72,5 @@ const confirmUser = (userId, token, ipAddress) => {
     },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

@@ -1,4 +1,6 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { Lambda } = require('@aws-sdk/client-lambda');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { syncMailjetContact } = require('../');
 const {
@@ -6,8 +8,8 @@ const {
 } = require('../../../shared/municipalities');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const lambda = new AWS.Lambda();
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
+const lambda = new Lambda();
 
 const tableName = process.env.USERS_TABLE_NAME;
 
@@ -44,7 +46,7 @@ const getBatchOfUsers = (startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  return ddb.scan(params).promise();
+  return ddb.scan(params);
 };
 
 const processBatchOfUsers = async (event, context, startKey, totalCount) => {
@@ -111,7 +113,7 @@ const processBatchOfUsers = async (event, context, startKey, totalCount) => {
           Payload: JSON.stringify(newEvent),
         };
 
-        await lambda.invoke(req).promise();
+        await lambda.invoke(req);
         console.log(
           'invoked new lambda with startKey',
           result.LastEvaluatedKey

@@ -4,7 +4,12 @@
  * reached 50% of the goal or the goal itself.
  */
 
-const AWS = require('aws-sdk');
+
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { S3 } = require('@aws-sdk/client-s3');
+const { SES } = require('@aws-sdk/client-ses');
 const {
   getMunicipality,
   getAllUsersOfMunicipality,
@@ -14,9 +19,11 @@ const sendMail = require('./sendMail');
 const nodemailer = require('nodemailer');
 const { sendErrorMail } = require('../../../shared/errorHandling');
 
-const ses = new AWS.SES({ region: 'eu-central-1' });
-const s3 = new AWS.S3();
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ses = new SES({
+  region: 'eu-central-1',
+});
+const s3 = new S3();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 
 const bucket = 'xbge-municipalities-stats';
 const stage = process.env.STAGE;
@@ -139,7 +146,7 @@ const setFlag = (ags, userId, mails, event) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const setSentToTeamFlag = ags => {
@@ -155,7 +162,7 @@ const setSentToTeamFlag = ags => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // Gets json file from s3
@@ -165,7 +172,7 @@ const getJson = () => {
     Key: `${stage}/${fileName}`,
   };
 
-  return s3.getObject(params).promise();
+  return s3.getObject(params);
 };
 
 // Send info mail to xbge Team (we just use ses here, because we don't need

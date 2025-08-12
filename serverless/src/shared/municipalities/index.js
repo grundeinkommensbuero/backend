@@ -1,8 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { S3 } = require('@aws-sdk/client-s3');
 const { getMunicipalityGoal } = require('../../shared/utils');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
-const s3 = new AWS.S3();
+const ddb = DynamoDBDocument.from(new DynamoDB());
+const s3 = new S3();
 const municipalitiesTableName = process.env.MUNICIPALITIES_TABLE_NAME;
 const userMunicipalityTableName = process.env.USER_MUNICIPALITY_TABLE_NAME;
 const bucket = 'xbge-municipalities-stats';
@@ -16,7 +18,7 @@ const getMunicipality = ags => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 const getAllUsersOfMunicipality = async (ags, users = [], startKey = null) => {
@@ -31,7 +33,7 @@ const getAllUsersOfMunicipality = async (ags, users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.query(params).promise();
+  const result = await ddb.query(params);
 
   // add elements to existing array
   users.push(...result.Items);
@@ -54,7 +56,7 @@ const getAllMunicipalities = async (municipalities = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   municipalities.push(...result.Items);
@@ -90,7 +92,7 @@ const getAllMunicipalitiesWithUsers = async (
     };
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   municipalities.push(...result.Items);
@@ -135,7 +137,7 @@ const createUserMunicipalityLink = (ags, userId, population) => {
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const getUserMunicipalityLink = (ags, userId) => {
@@ -147,7 +149,7 @@ const getUserMunicipalityLink = (ags, userId) => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 const getMunicipalitiesOfUser = userId => {
@@ -157,7 +159,7 @@ const getMunicipalitiesOfUser = userId => {
     ExpressionAttributeValues: { ':userId': userId },
   };
 
-  return ddb.query(params).promise();
+  return ddb.query(params);
 };
 
 // Get all municipalities of user. But not just the ags, but also
@@ -196,8 +198,7 @@ const getStatsJson = fileName => {
     Bucket: bucket,
     Key: `${stage}/${fileName}`,
   };
-
-  return s3.getObject(params).promise();
+  return s3.getObject(params);
 };
 
 const getExistingUsers = ags => {

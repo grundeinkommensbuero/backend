@@ -3,11 +3,14 @@
  * were referred by user A. The ids of those users will be saved in user A
  */
 
-const AWS = require('aws-sdk');
+
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getReferredUsers, getUser } = require('../../shared/users');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -44,5 +47,5 @@ const updateUser = ({ cognitoId, referredUsers }, referredUserId) => {
     ExpressionAttributeValues: { ':referredUsers': newReferredUsers },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

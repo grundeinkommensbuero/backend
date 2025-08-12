@@ -4,11 +4,11 @@ const {
   DEV_USERS_TABLE,
 } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const AWS = require('aws-sdk');
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
 const randomWords = require('random-words');
 
 const config = { region: 'eu-central-1' };
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const cognito = new CognitoIdentityProvider(config);
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
 const {
   authenticate,
@@ -74,5 +74,5 @@ const setPassword = userId => {
     Permanent: true,
   };
 
-  return cognito.adminSetUserPassword(params).promise();
+  return cognito.adminSetUserPassword(params);
 };

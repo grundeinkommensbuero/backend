@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const { SES } = require('@aws-sdk/client-ses');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto-secure-random-digit');
 const { apiKey, apiSecret } = require('../../../../mailjetConfig');
@@ -6,7 +6,7 @@ const mailjet = require('node-mailjet').connect(apiKey, apiSecret);
 const { getUser } = require('../../../shared/users');
 const { sleep } = require('../../../shared/utils');
 
-const ses = new AWS.SES();
+const ses = new SES();
 const THREE_MINUTES = 3 * 60 * 1000;
 // eslint-disable-next-line
 const fallBackMail = require('raw-loader!./loginCodeMail.html').default;

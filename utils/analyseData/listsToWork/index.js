@@ -1,9 +1,10 @@
 const { PROD_USERS_TABLE_NAME } = require('../../config');
 
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const run = async () => {
   const users = await getUsersForListsToWork();
@@ -26,7 +27,7 @@ const getUsersForListsToWork = async (users = [], startKey = null) => {
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
 
   // add elements to existing array
   users.push(...result.Items);

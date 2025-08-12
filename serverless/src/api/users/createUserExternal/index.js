@@ -4,9 +4,12 @@
  * In comparison to createUser, the user is also created in cognito, not just dynamo.
  */
 
-const AWS = require('aws-sdk');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const {
   getUserByMail,
   createUserInCognito,
@@ -199,7 +202,7 @@ const updateUser = (
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 // Creates and confirms user in cognito, creates user in dynamo
@@ -265,7 +268,7 @@ const createUserInDynamo = (
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 // Update userMunicipality table to create the link between user and munic
@@ -282,7 +285,7 @@ const createUserMunicipalityLink = (ags, userId, population) => {
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const getMunicipality = ags => {
@@ -293,7 +296,7 @@ const getMunicipality = ags => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 const getUserMunicipalityLink = (ags, userId) => {
@@ -305,7 +308,7 @@ const getUserMunicipalityLink = (ags, userId) => {
     },
   };
 
-  return ddb.get(params).promise();
+  return ddb.get(params);
 };
 
 // Validate request body, only email is not optional

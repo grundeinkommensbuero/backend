@@ -1,6 +1,9 @@
 const { INVOKE_URL, DEV_MUNICIPALITIES_TABLE } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const crypto = require('crypto-secure-random-digit');
 const uuid = require('uuid/v4');
 const { getMunicipalityGoal } = require('../../../../src/shared/utils');
@@ -8,7 +11,7 @@ const {
   DEV_USER_MUNICIPALITY_TABLE_NAME,
 } = require('../../../../../utils/config');
 
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = DynamoDBDocument.from(new DynamoDB({ region: 'eu-central-1' }));
 
 const randomAgs = crypto.randomDigits(6).join('');
 const population = 2000;
@@ -82,7 +85,7 @@ const createMunicipality = municipality => {
     Item: municipality,
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const createUserMunicipality = item => {
@@ -91,7 +94,7 @@ const createUserMunicipality = item => {
     Item: item,
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const deleteMunicipality = ags => {
@@ -102,5 +105,5 @@ const deleteMunicipality = ags => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };

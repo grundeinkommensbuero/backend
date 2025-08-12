@@ -1,7 +1,8 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 const { getAllUsers } = require('../shared/users/getUsers');
 const CONFIG = require('../config');
 
@@ -42,7 +43,7 @@ const removeEmptyValuesFromUser = async (tableName, user) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const moveScansToUsers = async (usersTableName, signaturesTableName) => {
@@ -80,7 +81,7 @@ const saveScansInUser = async (usersTableName, userId, scans) => {
     ExpressionAttributeValues: { ':scans': scans, ':emptyList': [] },
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const getScannedSignatureLists = async (
@@ -98,7 +99,7 @@ const getScannedSignatureLists = async (
     params.ExclusiveStartKey = startKey;
   }
 
-  const result = await ddb.scan(params).promise();
+  const result = await ddb.scan(params);
   // add elements to existing array
   signatureLists.push(...result.Items);
 

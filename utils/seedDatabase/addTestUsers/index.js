@@ -1,8 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const Bottleneck = require('bottleneck');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const {
   confirmUser,
@@ -11,7 +13,7 @@ const {
 
 const CONFIG = require('../../config');
 
-const tableName = CONFIG.DEV_TABLE_NAME;
+const tableName = CONFIG.DEV_USERS_TABLE_NAME;
 const userPoolId = CONFIG.DEV_USER_POOL_ID;
 
 // AWS Cognito limits to 10 per second, so be safe and do leet per second
@@ -81,7 +83,7 @@ const createUserInDynamo = (userId, user) => {
       ],
     },
   };
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 seedDatabase();

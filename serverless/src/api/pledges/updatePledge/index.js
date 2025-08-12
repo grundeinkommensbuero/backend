@@ -1,10 +1,11 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { getUser } = require('../../../shared/users');
 const { savePledge } = require('../../../shared/pledges');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.USERS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -119,5 +120,5 @@ const updatePledge = (
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };

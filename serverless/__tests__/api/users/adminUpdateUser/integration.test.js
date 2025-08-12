@@ -1,12 +1,15 @@
 const { DEV_USERS_TABLE, INVOKE_URL } = require('../../../testConfig');
 const fetch = require('node-fetch');
-const AWS = require('aws-sdk');
+
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const uuid = require('uuid/v4');
 const { getUser } = require('../../../../../utils/shared/users/getUsers');
 const { authenticateAdmin } = require('../../../testUtils');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
 
 const userId = uuid();
 const email = 'adminupdate.test@expedition-grundeinkommen.de';
@@ -131,7 +134,7 @@ const createUser = () => {
       ],
     },
   };
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 const deleteUser = () => {
@@ -142,5 +145,5 @@ const deleteUser = () => {
     },
   };
 
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };

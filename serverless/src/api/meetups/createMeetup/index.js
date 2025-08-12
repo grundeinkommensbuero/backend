@@ -1,9 +1,10 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { errorResponse } = require('../../../shared/apiResponse');
 const uuid = require('uuid/v4');
 const { constructCampaignId } = require('../../../shared/utils');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const tableName = process.env.MEETUPS_TABLE_NAME;
 
 module.exports.handler = async event => {
@@ -115,7 +116,7 @@ const createMeetup = async ({
     Item: meetup,
   };
 
-  await ddb.put(params).promise();
+  await ddb.put(params);
 
   return meetup;
 };

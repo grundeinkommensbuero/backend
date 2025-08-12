@@ -1,4 +1,6 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
 const sendMail = require('./sendMail');
 const { errorResponse } = require('../../../shared/apiResponse');
 const { constructCampaignId } = require('../../../shared/utils');
@@ -12,7 +14,7 @@ const {
   createUserMunicipalityLink,
 } = require('../../../shared/municipalities');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const usersTableName = process.env.USERS_TABLE_NAME;
 
 const responseHeaders = {
@@ -174,6 +176,7 @@ const createUserInDynamo = (userId, email, campaignCode, extraInfo) => {
         campaign,
       },
     },
+    removeUndefinedValues: true,
   };
 
   if (typeof ags !== 'undefined') {
@@ -188,7 +191,7 @@ const createUserInDynamo = (userId, email, campaignCode, extraInfo) => {
     ];
   }
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };
 
 // Update existing user to set or alter newsletter settings
@@ -234,7 +237,7 @@ const updateNewsletterSettings = (user, campaignCode, extraInfo) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
 
 const capitalizeState = state => {

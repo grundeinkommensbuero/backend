@@ -1,10 +1,17 @@
 // import { CognitoIdentityServiceProvider } from "aws-sdk";
-const AWS = require('aws-sdk');
+
+
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { Pinpoint } = require('@aws-sdk/client-pinpoint');
 
 const config = { region: 'eu-central-1' };
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const pinpoint = new AWS.Pinpoint({ region: 'eu-central-1' });
+const cognito = new CognitoIdentityProvider(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
+const pinpoint = new Pinpoint({
+  region: 'eu-central-1',
+});
 const pinpointProjectId = '83c543b1094c4a91bf31731cd3f2f005';
 
 const deleteUserInCognito = (userPoolId, userId) => {
@@ -13,7 +20,7 @@ const deleteUserInCognito = (userPoolId, userId) => {
     UserPoolId: userPoolId,
     Username: userId, // Username is the id of cognito
   };
-  return cognito.adminDeleteUser(params).promise();
+  return cognito.adminDeleteUser(params);
 };
 
 const deleteUserInDynamo = (tableName, userId) => {
@@ -24,7 +31,7 @@ const deleteUserInDynamo = (tableName, userId) => {
       cognitoId: userId, // Username is the id of cognito
     },
   };
-  return ddb.delete(params).promise();
+  return ddb.delete(params);
 };
 
 const deleteUserInPinpoint = userId => {
@@ -33,7 +40,7 @@ const deleteUserInPinpoint = userId => {
     EndpointId: `email-endpoint-${userId}`,
   };
 
-  return pinpoint.deleteEndpoint(params).promise();
+  return pinpoint.deleteEndpoint(params);
 };
 
 module.exports = {

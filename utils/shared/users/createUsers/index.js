@@ -1,8 +1,10 @@
-const AWS = require('aws-sdk');
+const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
 const config = { region: 'eu-central-1' };
-const ddb = new AWS.DynamoDB.DocumentClient(config);
-const cognito = new AWS.CognitoIdentityServiceProvider(config);
+const ddb = DynamoDBDocument.from(new DynamoDB(config));
+const cognito = new CognitoIdentityProvider(config);
 const { getRandomString } = require('../../utils');
 
 // Create a new cognito user in our user pool
@@ -27,7 +29,7 @@ module.exports.createUserInCognito = (userPoolId, email, source) => {
     params.UserAttributes.push({ Name: 'custom:source', Value: source });
   }
 
-  return cognito.adminCreateUser(params).promise();
+  return cognito.adminCreateUser(params);
 };
 
 // confirm user by setting a random password
@@ -42,7 +44,7 @@ module.exports.confirmUser = (userPoolId, userId) => {
   };
 
   // set fake password to confirm user
-  return cognito.adminSetUserPassword(setPasswordParams).promise();
+  return cognito.adminSetUserPassword(setPasswordParams);
 };
 
 module.exports.createUserInDynamo = (tableName, userId, user) => {
@@ -56,5 +58,5 @@ module.exports.createUserInDynamo = (tableName, userId, user) => {
     },
   };
 
-  return ddb.put(params).promise();
+  return ddb.put(params);
 };

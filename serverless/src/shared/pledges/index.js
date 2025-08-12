@@ -1,6 +1,7 @@
-const AWS = require('aws-sdk');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = DynamoDBDocument.from(new DynamoDB());
 const { constructCampaignId } = require('../../shared/utils');
 
 const tableName = process.env.USERS_TABLE_NAME;
@@ -36,5 +37,5 @@ module.exports.savePledge = (userId, { pledgeId, message, signatureCount }) => {
     ReturnValues: 'UPDATED_NEW',
   };
 
-  return ddb.update(params).promise();
+  return ddb.update(params);
 };
