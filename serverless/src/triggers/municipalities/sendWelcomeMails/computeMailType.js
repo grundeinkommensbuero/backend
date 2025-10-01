@@ -44,3 +44,44 @@ module.exports.computeMailType = (user, municipalitySignupCreatedAt) => {
 
   return null;
 };
+
+const WELCOME_DELAYS_DAYS = {
+  welcome1: 0, // send within 1 day of signup
+  welcome2: 3, // days after welcome1
+  welcome3: 3, // days after welcome2
+};
+
+module.exports.computeMailTypeHamburg = (user, municipalitySignupCreatedAt) => {
+  const emailsSent = user.welcomeFlow?.emailsSent?.map(e => e.key) || [];
+  const lastEmail =
+    user.welcomeFlow?.emailsSent?.[user.welcomeFlow.emailsSent.length - 1] ||
+    null;
+
+  if (!emailsSent.includes('welcome1')) {
+    const createdAt = new Date(municipalitySignupCreatedAt);
+    if (
+      isXDaysAgo(createdAt, WELCOME_DELAYS_DAYS.welcome1) ||
+      new Date() - createdAt < 24 * 60 * 60 * 1000
+    ) {
+      return 'welcome1';
+    }
+  }
+
+  if (emailsSent.includes('welcome1') && !emailsSent.includes('welcome2')) {
+    if (
+      isXDaysAgo(new Date(lastEmail.timestamp), WELCOME_DELAYS_DAYS.welcome2)
+    ) {
+      return 'welcome2';
+    }
+  }
+
+  if (emailsSent.includes('welcome2') && !emailsSent.includes('welcome3')) {
+    if (
+      isXDaysAgo(new Date(lastEmail.timestamp), WELCOME_DELAYS_DAYS.welcome3)
+    ) {
+      return 'welcome3';
+    }
+  }
+
+  return null;
+};
