@@ -7,6 +7,16 @@ const TEMPLATE_BREMEN_ACTIVE_USER = 3108929;
 const AGS_BERLIN = '11000000';
 const AGS_BREMEN = '04011000';
 
+const TEMPLATE_WELCOME1 = 6782444;
+const TEMPLATE_WELCOME2 = 7242887;
+const TEMPLATE_WELCOME3 = 7242888;
+
+const mailTypeToTemplateHamburg = {
+  welcome1: TEMPLATE_WELCOME1,
+  welcome2: TEMPLATE_WELCOME2,
+  welcome3: TEMPLATE_WELCOME3,
+};
+
 // C1.1 links to A1 template for now
 const mailTypeToBerlinTemplate = { 'C1.1': 3909123, C2: 3911126 };
 
@@ -37,6 +47,8 @@ const sendMail = (
     }
   } else if (municipality.ags === AGS_BERLIN) {
     templateId = mailTypeToBerlinTemplate[mailType];
+  } else if (mailType && mailTypeToTemplateHamburg[mailType]) {
+    templateId = mailTypeToTemplateHamburg[mailType];
   } else {
     templateId = TEMPLATE_DEFAULT;
   }

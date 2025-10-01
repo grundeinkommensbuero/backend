@@ -4,8 +4,6 @@
  * Also includes the C flow for Berlin user journey.
  */
 
-
-
 const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
 const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { sendErrorMail } = require('../../../shared/errorHandling');
@@ -15,7 +13,10 @@ const {
 } = require('../../../shared/municipalities');
 const { getSignatureListsOfUser } = require('../../../shared/signatures');
 const { getUser } = require('../../../shared/users');
-const { computeMailType } = require('./computeMailType');
+const {
+  computeMailType,
+  computeMailTypeHamburg,
+} = require('./computeMailType');
 const sendMail = require('./sendMail');
 
 const config = { region: 'eu-central-1' };
@@ -89,10 +90,16 @@ const sendMails = async userMunicipalityLinks => {
             ]);
           }
         }
-      } else if (new Date() - new Date(createdAt) < ONE_DAY) {
-        // Other municipalities should receive the welcome mail within one day
-        await sendMail(user, municipalityResult.Item);
-        console.log('sent mail to', userResult.Item.email);
+      } else {
+        const mailType = computeMailTypeHamburg(user, createdAt);
+
+        if (mailType) {
+          await Promise.all([
+            sendMail(user, municipalityResult.Item, mailType),
+            updateUser(user, mailType),
+          ]);
+          console.log(`sent ${mailType} to`, user.email);
+        }
       }
     }
   }
